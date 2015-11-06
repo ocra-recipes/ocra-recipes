@@ -25,6 +25,6 @@ ${EigenLgsm_INCLUDE_DIRS}
 
 ")
 add_subdirectory(ocra-core)
+add_subdirectory(solvers)
 #add_subdirectory(wocra)
 #add_subdirectory(gocra)
-#add_subdirectory(solvers)
