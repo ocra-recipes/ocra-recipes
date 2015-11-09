@@ -14,7 +14,7 @@ gOcraModel::gOcraModel(const std::string& name, int ndofs, bool freeRoot) :ocra:
 
 gOcraModel::~gOcraModel()
 {
-    
+
 }
 
 int gOcraModel::getDofIndex(const std::string& name) const
@@ -24,7 +24,7 @@ int gOcraModel::getDofIndex(const std::string& name) const
 
 const std::string& gOcraModel::getDofName(int index) const
 {
-  assert(index>=0 && index <ndofs);
+  assert(index>=0 && index <nbDofs());
   return doGetDofName(index);
 }
 

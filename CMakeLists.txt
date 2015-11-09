@@ -14,22 +14,14 @@ find_package(YARP REQUIRED)
 include_directories(
     ${Eigen_INCLUDE_DIRS}
     ${EigenLgsm_INCLUDE_DIRS}
-    ${Boost_INCLUDE_DIRS}
-    ${TinyXML_INCLUDE_DIRS}
+    # ${Boost_INCLUDE_DIRS}
+    # ${TinyXML_INCLUDE_DIRS}
 )
 
-message("
-
-
-${EigenLgsm_INCLUDE_DIRS}
-
-
-")
 add_subdirectory(ocra-core)
 
 set(OCRA_CORE_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/ocra-core/include CACHE PATH "")
 
-
 add_subdirectory(solvers)
 add_subdirectory(wocra)
-#add_subdirectory(gocra)
+add_subdirectory(gocra)
