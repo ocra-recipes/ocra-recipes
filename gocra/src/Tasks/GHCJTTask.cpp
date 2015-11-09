@@ -98,7 +98,7 @@ struct GHCJTTask::Pimpl
             frictionFunction.reset( new LinearizedCoulombFunction(fcVar, 1., 6, 0.) );
             const int outDim = frictionFunction->getDimension();
             const int inDim = 3;
-            frictionConstraint.set( new LinearFunction(fcVar, MatrixXd::Identity(outDim, inDim), VectorXd::Zero(outDim)) );
+            frictionConstraint.set( reinterpret_cast<LinearizedCoulombFunction *>(new LinearFunction(fcVar, MatrixXd::Identity(outDim, inDim), VectorXd::Zero(outDim))) );
         }
         if (isFreeFloating)
         {

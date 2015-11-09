@@ -320,8 +320,8 @@ namespace ocra
     // and decreaseRankOfParent, which are private and only accessible in ocra::detach. All other methods
     // will preserve the state of the class.
 
-    mutable parent_t& parent_;
-    mutable component_t& child_;
+    /*mutable*/ parent_t& parent_;
+    /*mutable*/ component_t& child_;
     size_t rankOfParent_;
     size_t rankOfChild_;
     mutable ParenthoodInfo info_;

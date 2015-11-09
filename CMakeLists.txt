@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
-list(APPEND CMAKE_CXX_FLAGS "-fpermissive")
+#list(APPEND CMAKE_CXX_FLAGS "-fpermissive")
 
 find_package(Eigen REQUIRED)
 find_package(EigenLgsm REQUIRED)

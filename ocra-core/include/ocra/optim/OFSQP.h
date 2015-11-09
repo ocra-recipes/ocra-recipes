@@ -179,7 +179,7 @@ private:
 		double *,double *,double *,double *,double *,double *,
 		int *,int *,int *,double *,int *,int *,int *,double *);*/
 	static void     diagnl(int, double, double **);
-	void			error(char string[],int *);
+	void			error(const char string[],int *);
 	void
 		estlam(int,int,int *,double,double **,double *,double *,double *,
 	struct _constraint *,double *,double *,double *,double *);
@@ -194,8 +194,8 @@ private:
 	void
 		resign(int,int,double *,double *,double *,struct _constraint *,
 		double *,int,int);
-	static void     sbout1(FILE *,int,char *,double,double *,int,int);
-	static void     sbout2(FILE *,int,int,char *,char *,double *);
+	static void     sbout1(FILE *,int,const char *,double,double *,int,int);
+	static void     sbout2(FILE *,int,int,const char *,const char *,double *);
 	static void     shift(int,int,int *);
 	double
 		slope(int,int,int,int,int,struct _objective *,double *,double *,

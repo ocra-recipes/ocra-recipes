@@ -3160,7 +3160,7 @@ L9000:
   /***********************************************************/
 
 
-  void OFSQP::error(char string[],int *inform)
+  void OFSQP::error(const char string[],int *inform)
   {
     if (glob_prnt.iprint>0)
       fprintf(stderr,"%s\n",string);
@@ -3399,7 +3399,7 @@ L9000:
 
 
   void
-    OFSQP::sbout1(FILE *io,int n,char *s1,double z,double *z1,int job,int level)
+    OFSQP::sbout1(FILE *io,int n,const char *s1,double z,double *z1,int job,int level)
     {
       int j;
 
@@ -3424,7 +3424,7 @@ L9000:
 
 
   void
-    OFSQP::sbout2(FILE *io,int n,int i,char *s1,char *s2,double *z)
+    OFSQP::sbout2(FILE *io,int n,int i,const char *s1,const char *s2,double *z)
     {
       int j;
 
