@@ -1,9 +1,0 @@
-@PACKAGE_INIT@
-
-# - Config file for the EigenLgsm package
-# It defines the following variables
-#  EigenLgsm_INCLUDE_DIRS - include directories for EigenLgsm
- 
-
-set_and_check(@CMAKE_PROJECT_NAME@_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
-set(@CMAKE_PROJECT_NAME@_INCLUDE_DIRS ${@CMAKE_PROJECT_NAME@_INCLUDE_DIR})
