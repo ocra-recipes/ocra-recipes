@@ -22,7 +22,7 @@ install(DIRECTORY include
 install(TARGETS ocra_control ocra_optim
         EXPORT OCRATargets
         DESTINATION lib)
-        
+       
         
 # Default CMake package generator
 configure_cmake_package(OCRATargets ocra_control ocra_optim)
