@@ -9,7 +9,7 @@ function(configure_cmake_package export_targets libraries)
 
     export(PACKAGE ${CMAKE_PROJECT_NAME})
     
-    cmake_policy(SET CMP0053 NEW)
+    #cmake_policy(SET CMP0053 NEW)
     
     include(CMakePackageConfigHelpers)
         
