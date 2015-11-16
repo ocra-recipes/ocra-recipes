@@ -21,8 +21,8 @@ install(DIRECTORY include
 
 install(TARGETS ocra_control ocra_optim
         DESTINATION lib)
-        
-        
+
+
 ##########################################################################
 ###### Cmake package config ##############################################
 
@@ -32,7 +32,7 @@ set(CMAKE_CONFIG_DEST "share/cmake/${PROJECT_NAME}/")
 set(INCLUDE_INSTALL_DIR "include/${PROJECT_NAME}")
 string(TOUPPER ${PROJECT_NAME} CMAKE_PROJECT_NAME)
 
-configure_package_config_file(                         
+configure_package_config_file(
        ${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_PROJECT_NAME}Config.cmake.in
        ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake
        INSTALL_DESTINATION ${CMAKE_CONFIG_DEST}
