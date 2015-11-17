@@ -1,4 +1,4 @@
-project(quadprog)
+project(quadprog CXX)
 
 set(lib_name "quadprog")
 
@@ -17,6 +17,6 @@ install(DIRECTORY include
 install(TARGETS ${lib_name}
         EXPORT QUADPROGTargets
         DESTINATION lib)
-        
+
 # Default CMake package generator
 configure_cmake_package(QUADPROGTargets ${lib_name})
