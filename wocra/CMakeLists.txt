@@ -4,14 +4,26 @@ LIST(APPEND CMAKE_CXX_FLAGS "-fPIC")
 
 set(lib_name "wocra")
 
+
 include_directories(include
                     ${OCRA_CORE_INCLUDE_DIRS}
                     ${YARP_INCLUDE_DIRS}
                     )
 file(GLOB_RECURSE wocra_srcs src/*.cpp)
 
+# Check for SMLT
+find_package(SMLT)
+IF(SMLT_FOUND)
+    message("-- SMLT lib found. Compiling gaussian process trajectory.")
+    include_directories(SMLT_INCLUDE_DIRS)
+ELSE()
+    message("-- SMLT lib NOT found. Removing gaussian process trajectory from source list.")
+    list(REMOVE_ITEM wocra_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/Trajectory/wOcraGaussianProcessTrajectory.cpp)
+ENDIF()
+
+
 add_library(${lib_name} ${wocra_srcs})
-# 
+#
 # target_link_libraries(  ${lib_name}
 #                         ocra_optim
 #                         ocra_control
