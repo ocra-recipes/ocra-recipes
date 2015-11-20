@@ -34,7 +34,6 @@ void wOcraGaussianProcessTrajectory::initializeTrajectory()
     numberOfOptimizationWaypoints = 1; // by default only one waypoint is used in optimization.
     boptVariablesSet = false; // must set all starting bopt values to get the other optimization parameters
 
-
     timeline = Eigen::VectorXd::Zero(waypoints.cols());
     for(int i=0; i<waypoints.cols()-1; i++){
         timeline(i+1) = timeline(i) + pointToPointDurationVector(i);
@@ -123,6 +122,7 @@ bool wOcraGaussianProcessTrajectory::setVarianceWaypoints(boolVector& bVarVec)
             isVarWaypoint[i] = true;
         }
     }
+
     else if (bVarVec.size()==waypoints.cols()) {
         isVarWaypoint = bVarVec;
         retval = true;
@@ -207,6 +207,7 @@ void wOcraGaussianProcessTrajectory::calculateGaussianProcessParameters()
              varCounter++;
         }
     }
+
     meanKernelCenters.resize(meanCounter);
     meanKernelTrainingData.resize(nDoF, meanCounter);
     varKernelCenters.resize(varCounter);
@@ -223,6 +224,7 @@ void wOcraGaussianProcessTrajectory::calculateGaussianProcessParameters()
             meanKernelTrainingData.col(meanTDColCounter) << waypoints.col(i);
             meanTDColCounter++;
         }
+
 
         if (isVarWaypoint[i])
         {
@@ -268,7 +270,7 @@ void wOcraGaussianProcessTrajectory::calculateGaussianProcessParameters()
     }
 
     // Calculate the max covariance vector for the movement.
-    maxCovariance = ( waypoints - waypoints.rowwise().mean().replicate(1, nWaypoints-1) ).array().square().rowwise().sum() / (waypoints.cols() - 1) ;
+    maxCovariance = ( waypoints - waypoints.rowwise().mean().replicate(1, waypoints.cols()) ).array().square().rowwise().sum() / (waypoints.cols() - 1) ;
 
     // Get the length param to be used on the movement.
     varLengthParameter = pointToPointDurationVector.mean() * VAR_LENGTH_FACTOR;
@@ -294,6 +296,7 @@ void wOcraGaussianProcessTrajectory::calculateGaussianProcessParameters()
     varianceGP->calculateParameters();
     startTrigger = true;
     varianceStartTrigger = true;
+
 }
 
 
@@ -630,7 +633,7 @@ Eigen::VectorXd wOcraGaussianProcessTrajectory::getBoptSearchSpaceMaxBound()
 }
 
 
-Eigen::VectorXd wOcraGaussianProcessTrajectory::getBoptVariables(const int extraPointsToAdd)//, const bool useForMean, const bool useForVar)
+Eigen::VectorXd wOcraGaussianProcessTrajectory::getBoptVariables(const int extraPointsToAdd, std::vector<Eigen::VectorXi> dofToOptVec)
 {
     int nP;
     int nW = originalWaypoints.cols();
@@ -640,7 +643,7 @@ Eigen::VectorXd wOcraGaussianProcessTrajectory::getBoptVariables(const int extra
         optimizeExistingWaypoints = optimizeExistingWaypoints || isOptWaypoint[i];
     }
 
-    if (extraPointsToAdd<0 && !optimizeExistingWaypoints) {
+    if (extraPointsToAdd<=0 && !optimizeExistingWaypoints) {
         if (nW<3) {nP = 1;}
         else{nP = 2;}
     }else{nP = extraPointsToAdd;}
@@ -660,8 +663,13 @@ Eigen::VectorXd wOcraGaussianProcessTrajectory::getBoptVariables(const int extra
             Eigen::VectorXd tVec = Eigen::VectorXd::Constant(1, tmpTime);
             Eigen::VectorXd tmpWaypt;
             meanGP->calculateMean(tVec, tmpWaypt);
+            if (nP==dofToOptVec.size()) {
+                addWaypoint(tmpWaypt, tmpTime, dofToOptVec[i]);
+            }
+            else {
+                addWaypoint(tmpWaypt, tmpTime);
+            }
 
-            addWaypoint(tmpWaypt, tmpTime);
         }
     }
 

@@ -40,7 +40,7 @@ class wOcraGaussianProcessTrajectory : public wocra::wOcraTrajectory {
         Eigen::MatrixXd getVarGPData();
 
 
-        Eigen::VectorXd getBoptVariables(const int extraPointsToAdd=-1);
+        Eigen::VectorXd getBoptVariables(const int extraPointsToAdd=0, std::vector<Eigen::VectorXi> dofToOptVec = std::vector<Eigen::VectorXi>() );
         Eigen::MatrixXd getBoptCovarianceMatrix();
         Eigen::VectorXd getBoptSearchSpaceMinBound();
         Eigen::VectorXd getBoptSearchSpaceMaxBound();
