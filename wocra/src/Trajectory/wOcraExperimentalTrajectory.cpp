@@ -13,7 +13,7 @@ void wOcraExperimentalTrajectory::calculateVarianceParameters()
 {
     numberOfKernels = nWaypoints;
 
-    maxCovariance = ( waypoints - waypoints.rowwise().mean().replicate(1, nWaypoints-1) ).array().square().rowwise().sum() / (waypoints.cols() - 1) ;
+    maxCovariance = ( waypoints - waypoints.rowwise().mean().replicate(1, waypoints.cols()) ).array().square().rowwise().sum() / (waypoints.cols() - 1) ;
 
 
     kernelCenters = Eigen::VectorXd::Zero(numberOfKernels);

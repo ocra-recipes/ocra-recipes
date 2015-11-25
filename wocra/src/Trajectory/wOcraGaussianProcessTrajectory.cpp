@@ -344,6 +344,7 @@ Eigen::MatrixXd wOcraGaussianProcessTrajectory::getDesiredValues(double _time)
             int maxTimeIndex; meanKernelCenters.maxCoeff(&maxTimeIndex);
 
             desiredValue.col(POS_INDEX) = meanKernelTrainingData.col(maxTimeIndex);
+            trajectoryFinished = true;
         }
 
         double delta_t = t-t_old;
@@ -377,6 +378,8 @@ Eigen::VectorXd wOcraGaussianProcessTrajectory::getVariance(double _time)
     }
     else{
         variance = Eigen::VectorXd::Zero(maxCovariance.rows());
+        trajectoryFinished = true;
+
     }
 
     return variance;
@@ -565,7 +568,7 @@ Eigen::VectorXd wOcraGaussianProcessTrajectory::getBoptSearchSpaceMinBound()
                     }
                     else if (dofToOptimize[i](j)>0 && dofToOptimize[i](j)<=nDoF)
                     {
-                        minBound(indexCounter) = minDofCoord(j-1);
+                        minBound(indexCounter) = minDofCoord(dofToOptimize[i](j)-1);
                     }
                     else
                     {
@@ -613,7 +616,7 @@ Eigen::VectorXd wOcraGaussianProcessTrajectory::getBoptSearchSpaceMaxBound()
                     }
                     else if (dofToOptimize[i](j)>0 && dofToOptimize[i](j)<=nDoF)
                     {
-                        maxBound(indexCounter) = maxDofCoord(j-1);
+                        maxBound(indexCounter) = maxDofCoord(dofToOptimize[i](j)-1);
                     }
                     else
                     {
@@ -688,7 +691,7 @@ Eigen::VectorXd wOcraGaussianProcessTrajectory::getBoptVariables(const int extra
                 if (dofToOptimize[i](j)==0) {
                     optVector(indexCounter) = timeline(i);
                 }else if (dofToOptimize[i](j)>0 && dofToOptimize[i](j)<=nDoF) {
-                    optVector(indexCounter) = waypoints(j-1, i);
+                    optVector(indexCounter) = waypoints(dofToOptimize[i](j)-1, i);
                 }
                 else{
                     std::cout << "[ERROR] (wOcraGaussianProcessTrajectory::getBoptVariables): You are trying to optimize an index which doesn't exist! Ignoring and setting to zero." << std::endl;
@@ -729,7 +732,7 @@ bool wOcraGaussianProcessTrajectory::setBoptVariables(const Eigen::VectorXd& new
                     }
                     else if (dofToOptimize[i](j)>0 && dofToOptimize[i](j)<=nDoF)
                     {
-                        waypoints(j-1, i) = newOptVariables(indexCounter);
+                        waypoints(dofToOptimize[i](j)-1, i) = newOptVariables(indexCounter);
                     }
                     else
                     {
@@ -771,6 +774,93 @@ bool wOcraGaussianProcessTrajectory::setBoptVariables(const Eigen::VectorXd& new
 //
 //     return bopt_params;
 // }
+
+
+void wOcraGaussianProcessTrajectory::precalculateTrajectory(Eigen::MatrixXd& _traj, Eigen::MatrixXd& _variance, Eigen::VectorXd& _timeline, const double DT)
+{
+    double currentTime = 0.0;
+
+    int numberOfDataPoints = ceil((pointToPointDurationVector.sum() / DT)*2);
+
+    Eigen::MatrixXd traj(numberOfDataPoints, nDoF*3);
+    Eigen::MatrixXd variance(numberOfDataPoints, nDoF);
+    Eigen::VectorXd timeline(numberOfDataPoints);
+
+
+    int index = 0;
+    startTrigger = true;
+    trajectoryFinished = false;
+
+    while (!trajectoryFinished)
+    {
+        Eigen::MatrixXd desValsMat;
+        Eigen::VectorXd desVarianceVec;
+
+        getDesiredValues(currentTime, desValsMat, desVarianceVec);
+
+        traj.row(index) <<  desValsMat.col(POS_INDEX).transpose(),
+                            desValsMat.col(VEL_INDEX).transpose(),
+                            desValsMat.col(ACC_INDEX).transpose();
+
+        variance.row(index) << desVarianceVec.transpose();
+
+        timeline(index) = currentTime;
+        currentTime += DT;
+        index++;
+    }
+    //  reset values to their original state
+    startTrigger = true;
+    trajectoryFinished = false;
+
+    _traj = traj.topRows(index);
+    _variance = variance.topRows(index);
+    _timeline = timeline.head(index);
+
+
+}
+
+void wOcraGaussianProcessTrajectory::saveTrajectoryToFile(const std::string dirPath)
+{
+    smlt::checkAndCreateDirectory(dirPath);
+    std::string filePath = dirPath + "/trajectory.txt";
+
+    std::ofstream trajFile;
+    trajFile.open(filePath.c_str());
+    if (trajFile.is_open()) {
+        Eigen::VectorXd timeVec;
+        Eigen::MatrixXd trajMat;
+        Eigen::MatrixXd varianceMat;
+        precalculateTrajectory(trajMat, varianceMat, timeVec);
+        for(int i=0; i<trajMat.rows(); i++)
+        {
+            trajFile << timeVec(i) << " " << trajMat.row(i) << " " << varianceMat.row(i) << std::endl;
+        }
+        trajFile.close();
+    }
+    else
+    {
+        std::cout << "[ERROR](line: "<< __LINE__ <<") -> Could not write the trajectory to file, " << filePath << std::endl;
+    }
+
+}
+
+
+void wOcraGaussianProcessTrajectory::saveWaypointDataToFile(const std::string dirPath)
+{
+    smlt::checkAndCreateDirectory(dirPath);
+    std::string filePath = dirPath + "/waypoints.txt";
+
+    std::ofstream waypointFile;
+    waypointFile.open(filePath.c_str());
+    if (waypointFile.is_open()) {
+        waypointFile << getWaypointData();
+        waypointFile.close();
+    }
+    else
+    {
+        std::cout << "[ERROR](line: "<< __LINE__ <<") -> Could not write the trajectory to file, " << filePath << std::endl;
+    }
+}
 
 
 } //namespace wocra

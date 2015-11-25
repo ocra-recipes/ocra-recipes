@@ -291,9 +291,49 @@ Eigen::VectorXd wOcraVariableWeightsTaskManager::getTaskError()
     return errors;
 }
 
+Eigen::Displacementd wOcraVariableWeightsTaskManager::getTaskFrameDisplacement()
+{
+    return featFrame->getPosition();
+}
+
+Eigen::Twistd wOcraVariableWeightsTaskManager::getTaskFrameVelocity()
+{
+    return featFrame->getVelocity();
+}
+
+Eigen::Twistd wOcraVariableWeightsTaskManager::getTaskFrameAcceleration()
+{
+    return featFrame->getAcceleration();
+}
+
 Eigen::Vector3d wOcraVariableWeightsTaskManager::getTaskFramePosition()
 {
-    return featFrame->getPosition().getTranslation();
+    return getTaskFrameDisplacement().getTranslation();
+}
+
+Eigen::Rotation3d wOcraVariableWeightsTaskManager::getTaskFrameOrientation()
+{
+    return getTaskFrameDisplacement().getRotation();
+}
+
+Eigen::Vector3d wOcraVariableWeightsTaskManager::getTaskFrameLinearVelocity()
+{
+    return getTaskFrameVelocity().getLinearVelocity();
+}
+
+Eigen::Vector3d wOcraVariableWeightsTaskManager::getTaskFrameAngularVelocity()
+{
+    return getTaskFrameVelocity().getAngularVelocity();
+}
+
+Eigen::Vector3d wOcraVariableWeightsTaskManager::getTaskFrameLinearAcceleration()
+{
+    return getTaskFrameAcceleration().getLinearVelocity();
+}
+
+Eigen::Vector3d wOcraVariableWeightsTaskManager::getTaskFrameAngularAcceleration()
+{
+    return getTaskFrameAcceleration().getAngularVelocity();
 }
 
 

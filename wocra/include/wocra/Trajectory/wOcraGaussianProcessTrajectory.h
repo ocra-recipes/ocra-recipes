@@ -49,7 +49,8 @@ class wOcraGaussianProcessTrajectory : public wocra::wOcraTrajectory {
         bool setBoptVariables(const Eigen::VectorXd& newOptVariables);
 
 
-
+        void saveTrajectoryToFile(const std::string dirPath = "./");
+        void saveWaypointDataToFile(const std::string dirPath = "./");
 
         // Simple getters/setters
         double getMaxVariance(){return maxCovariance.maxCoeff();}
@@ -81,6 +82,10 @@ class wOcraGaussianProcessTrajectory : public wocra::wOcraTrajectory {
 
         bool gpParametersAreSet();
         void calculateGaussianProcessParameters();
+
+        void precalculateTrajectory(Eigen::MatrixXd& traj, Eigen::MatrixXd& variance, Eigen::VectorXd& timeline, const double DT=0.01);
+
+
         Eigen::VectorXd maxCovariance;
         double meanLengthParameter;
         double varLengthParameter;

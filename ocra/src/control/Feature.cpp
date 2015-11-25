@@ -42,7 +42,7 @@ namespace ocra
       : controlFrame(cf), axes(a)
     {
       int dim = utils::computeDimensionFor(axes, NONE);
-      
+
       u.resize(3, dim);
       int k = 0;
       if(axes & X)
@@ -64,7 +64,7 @@ namespace ocra
     : Feature(name)
     , pimpl(new Pimpl(frame, axes))
   {
-    
+
   }
 
   const MatrixXd& PositionFeature::getSpaceTransform() const
@@ -91,7 +91,7 @@ namespace ocra
 
 //    // then project it on the controlled axes
 //    pimpl->effort = getSpaceTransform() * eff;
-    
+
     pimpl->effort = pimpl->u.transpose() * (pimpl->controlFrame.getWrench().getForce() - sdes.pimpl->controlFrame.getWrench().getForce());
 
     return pimpl->effort;
@@ -104,7 +104,7 @@ namespace ocra
 
 //    // then project it on the controlled axes
 //    pimpl->effort = getSpaceTransform() * eff;
-    
+
     pimpl->effort = pimpl->u.transpose() * pimpl->controlFrame.getWrench().getForce();
     return pimpl->effort;
   }
@@ -189,7 +189,7 @@ namespace ocra
 
 //    // then project it on the controlled axes
 //    pimpl->errorDot = getSpaceTransform() * errDot;
-    
+
     pimpl->errorDot = pimpl->u.transpose() * pimpl->controlFrame.getVelocity().getLinearVelocity();
 
     return pimpl->errorDot;
@@ -320,7 +320,7 @@ namespace ocra
 
   const VectorXd& PointContactFeature::computeEffort() const
   {
-    pimpl->effort = pimpl->controlFrame.getWrench().getForce(); 
+    pimpl->effort = pimpl->controlFrame.getWrench().getForce();
     return pimpl->effort;
   }
 
@@ -356,7 +356,7 @@ namespace ocra
 
   const VectorXd& PointContactFeature::computeErrorDot() const
   {
-    pimpl->errorDot = pimpl->controlFrame.getVelocity().getLinearVelocity(); 
+    pimpl->errorDot = pimpl->controlFrame.getVelocity().getLinearVelocity();
     return pimpl->errorDot;
   }
 
