@@ -10,6 +10,7 @@ install:
     - sudo sh -c 'echo "deb http://www.icub.org/ubuntu trusty contrib/science" > /etc/apt/sources.list.d/icub.list'
     - sudo apt-get update
     - sudo apt-get install -qq -y yarp --force-yes
+    - sudo apt-get install -qq -y libeigen3-dev
     - mkdir build ; cd build
     - mkdir ~/ocra-install
     - cmake .. -DCMAKE_INSTALL_PREFIX=~/ocra-install
