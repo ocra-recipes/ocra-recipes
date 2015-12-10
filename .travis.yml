@@ -11,7 +11,7 @@ install:
     - sudo sh -c 'echo "deb http://www.icub.org/ubuntu trusty contrib/science" > /etc/apt/sources.list.d/icub.list'
     - sudo apt-get update
     - sudo apt-get install -qq -y yarp --force-yes
-    - sudo apt-get install -qq -y libeigen3-dev
+    - sudo apt-get install -qq -y libeigen3-dev libboost-all-dev
     - git clone https://github.com/ocra-recipes/eigen_lgsm.git
     - cd eigen_lgsm ; mkdir build ; cd build ; cmake ..
     - sudo make install
