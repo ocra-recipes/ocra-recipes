@@ -52,7 +52,7 @@ namespace ocra
     const Eigen::MatrixXd& getDesiredMassInverse() const;
     const Eigen::MatrixXd& getDamping() const;
     const Eigen::MatrixXd& getStiffness() const;
-    
+
     void activateContactMode();
     void deactivateContactMode();
     bool isContactModeActive() const;

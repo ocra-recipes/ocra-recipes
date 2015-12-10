@@ -55,6 +55,17 @@ class wOcraTaskManagerBase
         };
         /************** DataProcessor *************/
 
+        virtual void setStiffness(double stiffness){ std::cout << "setStiffness() Not implemented" << std::endl; }
+        virtual double getStiffness(){return 0.0;}
+        virtual void setDamping(double damping){ std::cout << "setDamping() Not implemented" << std::endl; }
+        virtual double getDamping(){return 0.0;}
+        virtual void setWeight(double weight){ std::cout << "setWeight() Not implemented" << std::endl; }
+        virtual void setWeight(Eigen::VectorXd& weight){ std::cout << "setWeight() Not implemented" << std::endl; }
+        virtual Eigen::VectorXd getWeight(){}
+        virtual void setDesiredState(){ std::cout << "setDesiredState() Not implemented" << std::endl; }
+
+        virtual void setWeights(Eigen::Vector3d weight){};
+        virtual Eigen::VectorXd getWeights(){};
 
     protected:
         wocra::wOcraTask*              task;
@@ -80,17 +91,7 @@ class wOcraTaskManagerBase
 
         int waypointSelector;
 
-        virtual void setStiffness(double stiffness){ std::cout << "setStiffness() Not implemented" << std::endl; }
-        virtual double getStiffness(){return 0.0;}
-        virtual void setDamping(double damping){ std::cout << "setDamping() Not implemented" << std::endl; }
-        virtual double getDamping(){return 0.0;}
-        virtual void setWeight(double weight){ std::cout << "setWeight() Not implemented" << std::endl; }
-        virtual void setWeight(Eigen::VectorXd& weight){ std::cout << "setWeight() Not implemented" << std::endl; }
-        virtual Eigen::VectorXd getWeight(){}
-        virtual void setDesiredState(){ std::cout << "setDesiredState() Not implemented" << std::endl; }
 
-        virtual void setWeights(Eigen::Vector3d weight){};
-        virtual Eigen::VectorXd getWeights(){};
 
 
         virtual const double* getCurrentState();

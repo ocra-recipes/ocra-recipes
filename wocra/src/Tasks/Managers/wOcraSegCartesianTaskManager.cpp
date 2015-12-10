@@ -373,9 +373,52 @@ bool wOcraSegCartesianTaskManager::checkIfActivated()
     return task->isActiveAsObjective();
 }
 
+
+
+
+Eigen::Displacementd wOcraSegCartesianTaskManager::getTaskFrameDisplacement()
+{
+    return featFrame->getPosition();
+}
+
+Eigen::Twistd wOcraSegCartesianTaskManager::getTaskFrameVelocity()
+{
+    return featFrame->getVelocity();
+}
+
+Eigen::Twistd wOcraSegCartesianTaskManager::getTaskFrameAcceleration()
+{
+    return featFrame->getAcceleration();
+}
+
 Eigen::Vector3d wOcraSegCartesianTaskManager::getTaskFramePosition()
 {
-    return featFrame->getPosition().getTranslation();
+    return getTaskFrameDisplacement().getTranslation();
+}
+
+Eigen::Rotation3d wOcraSegCartesianTaskManager::getTaskFrameOrientation()
+{
+    return getTaskFrameDisplacement().getRotation();
+}
+
+Eigen::Vector3d wOcraSegCartesianTaskManager::getTaskFrameLinearVelocity()
+{
+    return getTaskFrameVelocity().getLinearVelocity();
+}
+
+Eigen::Vector3d wOcraSegCartesianTaskManager::getTaskFrameAngularVelocity()
+{
+    return getTaskFrameVelocity().getAngularVelocity();
+}
+
+Eigen::Vector3d wOcraSegCartesianTaskManager::getTaskFrameLinearAcceleration()
+{
+    return getTaskFrameAcceleration().getLinearVelocity();
+}
+
+Eigen::Vector3d wOcraSegCartesianTaskManager::getTaskFrameAngularAcceleration()
+{
+    return getTaskFrameAcceleration().getAngularVelocity();
 }
 
 }
