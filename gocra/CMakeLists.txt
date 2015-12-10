@@ -12,8 +12,6 @@ file(GLOB_RECURSE gocra_srcs src/*.cpp)
 add_library(${lib_name} ${gocra_srcs})
 
 target_link_libraries(  ${lib_name}
-                        ocra_optim
-                        ocra_control
                         ${Boost_LIBRARIES}
                      )
 
