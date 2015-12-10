@@ -7,6 +7,7 @@ set(QUADPROG_INCLUDE_DIRS ${SOLVERS_DIR}/quadprog/include)
 include_directories(include
                     ${OCRA_CORE_INCLUDE_DIRS}
                     ${YARP_INCLUDE_DIRS}
+                    ${QUADPROG_INCLUDE_DIRS}
                     )
 file(GLOB_RECURSE wocra_srcs src/*.cpp)
 
