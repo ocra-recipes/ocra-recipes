@@ -2,7 +2,6 @@ project(wocra CXX)
 
 set(lib_name "wocra")
 
-set(QUADPROG_INCLUDE_DIRS ${SOLVERS_DIR}/quadprog/include)
 
 include_directories(include
                     ${OCRA_CORE_INCLUDE_DIRS}
@@ -14,10 +13,10 @@ file(GLOB_RECURSE wocra_srcs src/*.cpp)
 # Check for SMLT
 find_package(SMLT)
 IF(SMLT_FOUND)
-    message(STATUS "-- SMLT lib found. Compiling gaussian process trajectory.")
+    message("-- SMLT lib found. Compiling gaussian process trajectory.")
     include_directories(SMLT_INCLUDE_DIRS)
 ELSE()
-    message(WARNING "-- SMLT lib NOT found. Removing gaussian process trajectory from source list.")
+    message("-- SMLT lib NOT found. Removing gaussian process trajectory from source list.")
     list(REMOVE_ITEM wocra_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/Trajectory/wOcraGaussianProcessTrajectory.cpp)
 ENDIF()
 
