@@ -112,7 +112,7 @@ namespace ocra
     const size_t n3 = _nonLinearEq.size() + n2;
     const size_t n4 = _linearEq.size() + n3;
     const size_t n = n4+1;
-    
+
     // 1. Resize the vector if needed
     if (n<_mappings.size())
       _mappings.resize(n);
@@ -156,7 +156,7 @@ namespace ocra
     size_t j = it->index;
     if (j<_nonLinearIneq.size())
       return std::make_pair(_nonLinearIneq[j], i-it->length);
-    
+
     j -= _nonLinearIneq.size();
     if (j<_linearIneq.size())
       return std::make_pair(_linearIneq[j], i-it->length);
@@ -172,7 +172,7 @@ namespace ocra
   double FSQPConstraintManager::getValue(int i) const
   {
     std::pair<const GenericConstraint*, int> p = (*this)[i];
-    
+
     switch (p.first->getType())
     {
       case CSTR_EQUAL_ZERO:         return  p.first->getValue(p.second);
@@ -189,7 +189,7 @@ namespace ocra
           const int n = p.second - p.first->getDimension();
           return p.first->getValue(n) - p.first->getU()[n];
         }
-      default: 
+      default:
         ocra_assert(false && "this should never happen");
     }
 
@@ -206,7 +206,7 @@ namespace ocra
   {
     ocra_assert(p.first->canCompute<PARTIAL_X>());
     ocra_assert(p.second < p.first->getDimension() || (p.first->getType() == CSTR_LOWER_AND_GREATER && p.second < 2*p.first->getDimension()));
-    
+
     switch (p.first->getType())
     {
       case CSTR_EQUAL_ZERO:         return  1.*p.first->getJacobian(p.second);

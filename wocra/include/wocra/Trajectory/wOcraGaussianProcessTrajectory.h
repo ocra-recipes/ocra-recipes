@@ -57,6 +57,7 @@ class wOcraGaussianProcessTrajectory : public wocra::wOcraTrajectory {
         Eigen::VectorXd getMaxCovarianceVector(){return maxCovariance;}
         double getVarianceLengthParameter(){return varLengthParameter;}
         double getMeanTime(){return meanKernelCenters.mean();}
+        double getDuration(){return meanKernelCenters.maxCoeff();}
 
 
     protected:

@@ -2,7 +2,7 @@
 
 namespace ocra
 {
-  DoubleDiagonalLinearFunction::DoubleDiagonalLinearFunction(Variable& x, 
+  DoubleDiagonalLinearFunction::DoubleDiagonalLinearFunction(Variable& x,
                             const double diagonalElementValue1, const double diagonalElementValue2, const double vectorElementValue,
                             const bool useDefaultValue)
     :NamedInstance("double diagonal linear function")
@@ -61,7 +61,7 @@ namespace ocra
     _defaultDiagonalValue1 = v;
   }
 
-  void DoubleDiagonalLinearFunction::changeDefaultDiagonalValue2(const double v) 
+  void DoubleDiagonalLinearFunction::changeDefaultDiagonalValue2(const double v)
   {
     _defaultDiagonalValue2 = v;
   }
@@ -76,7 +76,7 @@ namespace ocra
     //test if A is double diagonal
     ocra_assert(A.block(0,0,_dim,_dim).isDiagonal());
     ocra_assert(A.block(0,_dim,_dim,_dim).isDiagonal());
-    
+
     LinearFunction::changeA(A);
   }
 

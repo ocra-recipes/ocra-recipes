@@ -31,7 +31,7 @@ namespace ocra
   {
     return _continuityProperty;
   }
-    
+
   void IFunctionProperties::changeType(eFunctionLinearity newType)
   {
     _type = newType;

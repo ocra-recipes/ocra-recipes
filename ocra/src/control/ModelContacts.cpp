@@ -38,9 +38,9 @@ namespace ocra
 
   ModelContacts& ModelContacts::addContactPoint(Variable& f, const Feature& contactFeature)
   {
-    ocra_assert(std::find(pimpl->contactFeatures.begin(), pimpl->contactFeatures.end(), &contactFeature) == pimpl->contactFeatures.end() 
+    ocra_assert(std::find(pimpl->contactFeatures.begin(), pimpl->contactFeatures.end(), &contactFeature) == pimpl->contactFeatures.end()
       && "This contact point was already added");
-    ocra_assert(std::find(pimpl->forceVariables.begin(), pimpl->forceVariables.end(), &f) == pimpl->forceVariables.end() 
+    ocra_assert(std::find(pimpl->forceVariables.begin(), pimpl->forceVariables.end(), &f) == pimpl->forceVariables.end()
       && "This force variable was already added");
     ocra_assert(contactFeature.getDimension()==3 && "Only 3D features can be used for contact points");
 
@@ -60,7 +60,7 @@ namespace ocra
   ModelContacts& ModelContacts::removeContactPoint(Variable& f)
   {
     std::vector<Variable*>::iterator it = std::find(pimpl->forceVariables.begin(), pimpl->forceVariables.end(), &f);
-    
+
     if (it != pimpl->forceVariables.end())
     {
       size_t i = std::distance(pimpl->forceVariables.begin(), it);

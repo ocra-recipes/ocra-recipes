@@ -33,13 +33,13 @@ protected:
   /** Compute the jacobian: \f$J(x,y,z) = \begin{array}[l,c,r] 6xy-2\frac{\sqrt{z}}{x^2} & 3x^2 & \frac{1}{x \sqrt{z}} \end{array} \f$*/
   void updateJacobian() const
   {
-    _jacobian(0,0) = 6*x[0]*x[1] - 2*sqrt(x[2])/(x[0]*x[0]); 
+    _jacobian(0,0) = 6*x[0]*x[1] - 2*sqrt(x[2])/(x[0]*x[0]);
     _jacobian(0,1) = 3*x[0]*x[0];
     _jacobian(0,2) = 1/(x[0]*sqrt(x[2]));
   }
 
   /** Compute the Hessian:
-    * \f$ H(x,y,z) = \left(\begin{array}[l,c,r] 
+    * \f$ H(x,y,z) = \left(\begin{array}[l,c,r]
     * 6y + 4\frac{\sqrt{z}}{x^3} & 6x & -\frac{1}{x^2 \sqrt{z}} \\
     * 6x & 0 & 0 \\
     * -\frac{1}{x^2 \sqrt{z}} & 0 & -\frac{1}{2xz \sqrt{z}}
@@ -84,7 +84,7 @@ void examplef1()
   std::cout << "d2f/dx2(0.324,0.12,0.06) = " << std::endl << f1.get<PARTIAL_XX>(0) << std::endl << std::endl;
 
   //xyz.resize(4); //this will trigger an exception
-  
+
   if (f1.canCompute<PARTIAL_T>())
     std::cout << f1.get<PARTIAL_T>() << std::endl;
   else
@@ -108,7 +108,7 @@ void examplef1()
 
 /** Another real-valued function with some additional properties and abilities:
   * the geometric mean function \f$ f: R^n \rightarrow R \f$ with \f$ f(x) = \left(\prod_{i=1}^n x_i\right)^(1/n) \f$.
-  * This function is concave and we consider x as a function of the time. It demonstrates a more generic use of 
+  * This function is concave and we consider x as a function of the time. It demonstrates a more generic use of
   * Function with a variable of generic size.
   */
 class Function2: public Function
@@ -160,7 +160,7 @@ protected:
     VectorXd tmp = getJacobian()*static_cast<VectorXd>(x_dot);
     double v = getValue(0);
     MatrixXd q = static_cast<VectorXd>(x).array().inverse().transpose();
-    Jdot = tmp[0]*q; 
+    Jdot = tmp[0]*q;
     Jdot.array() -= v*(static_cast<VectorXd>(x_dot)).transpose().array()*q.array()*q.array();
     Jdot *= 1./x.getSize();
   }
@@ -219,17 +219,17 @@ void examplef2()
    *  0
    */
   std::cout << "df/dt(x) = " << std::endl << f2.get<PARTIAL_T>() << std::endl << std::endl;
-  
+
   /* Return value for dot{f}(x)
    *  0.2814173015622613
    */
   std::cout << "dot{f}(x) = " << std::endl << f2.get<FUN_DOT>() << std::endl << std::endl;
-  
+
   /* Return value for dot{df/dx}(x)
    *  -0.06013081008007012 -0.8919620161985622 0.009030064772053717 -0.01517677697627763 -0.3511718846463573 -1.514017217677467 0.05006476001110882 0.1036875651602921
    */
   std::cout << "dot{df/dx}(x) = " << std::endl << f2.get<PARTIAL_X_DOT>() << std::endl << std::endl;
-  
+
   /* Return value for d2f/dx2(x)
    *  -0.03369657687596465  -0.03775819772931621  0.007828187787638039 -0.00777634901063332  -0.02824241857342339  0.1192865228818791  0.01603699109748235 -0.006063387016996397
    *  -0.03775819772931621  -2.073159939945413   -0.06140231525745318   0.06099570506687612   0.221526352704108   -0.9356531655417172 -0.125790081927211    0.04755966658509294
@@ -241,7 +241,7 @@ void examplef2()
    *  -0.006063387016996397  0.04755966658509294 -0.009860269386123156  0.009794974030444426  0.03557373210813412 -0.1502515373489986 -0.0201999564463369  -0.05346146732967134
    */
   std::cout << "d2f/dx2(x) = " << std::endl << f2.get<PARTIAL_XX>(0) << std::endl << std::endl;
-  
+
   /* Return value for ddot{f}(x)
    *  -0.4791048960947238
    */
@@ -381,7 +381,7 @@ private:
   Vector3d  _stateX;
   Vector3d  _stateY;
   Vector3d  _stateZ;
-  
+
 };
 
 

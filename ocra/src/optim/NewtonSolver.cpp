@@ -173,7 +173,7 @@ namespace ocra
   {
     if (_adaptativeAlpha)
     {
-      double ri = _alpha*_alpha*_p.squaredNorm();  
+      double ri = _alpha*_alpha*_p.squaredNorm();
       if (ri >= _info.residual)
       {
         _alpha /=2;
@@ -268,7 +268,7 @@ namespace ocra
     VectorXd b2 = 100*VectorXd::Random(n2);
     LinearFunction* fx = new LinearFunction(x, A1, b1);
     LinearFunction* fy = new LinearFunction(y, A2, b2);
-    
+
     ObjectivePtr<LinearFunction> obj_x(fx);
     ObjectivePtr<LinearFunction> obj_y(fy);
 
@@ -309,7 +309,7 @@ namespace ocra
     VectorXd b2 = 100*VectorXd::Random(n2);
     LinearFunction* fx = new LinearFunction(x, A1, b1);
     LinearFunction* fy = new LinearFunction(y, A2, b2);
-    
+
     ObjectivePtr<LinearFunction> obj_x(fx);
     ObjectivePtr<LinearFunction> obj_y(fy);
 

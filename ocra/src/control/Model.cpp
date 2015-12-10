@@ -4,7 +4,7 @@
 namespace ocra
 {
   Model::Model(const std::string& name, int ndofs, bool freeRoot, const std::string& jointTorqueVariableName,
-               const std::string& forceVariableName, const std::string& configurationVariableName, 
+               const std::string& forceVariableName, const std::string& configurationVariableName,
                const std::string& internalDofsSuffix, const std::string& externalDofsSuffix)
     : NamedInstance(name)
     , _dofs(ndofs)
@@ -216,8 +216,8 @@ namespace ocra
     throw std::runtime_error("[Model::doGetSegmentName] This function was not overriden for a specific model");
   }
 
-  void Model::invalidate(int timestamp) 
-  { 
+  void Model::invalidate(int timestamp)
+  {
     doInvalidate();
     doSetJointPositions(getInternalConfigurationVariable().getValue());
     doSetJointVelocities(getInternalVelocityVariable().getValue());

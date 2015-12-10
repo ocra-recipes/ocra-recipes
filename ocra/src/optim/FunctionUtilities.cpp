@@ -9,7 +9,7 @@ namespace ocra
   {
     int getAddType(const Function& f1, const Function& f2)
     {
-      int i = f1.getType(); 
+      int i = f1.getType();
       int j = f2.getType();
 
       if (i==j)
@@ -79,7 +79,7 @@ namespace ocra
         case CONVEXITY_CONVEX :
           return CONVEXITY_CONCAVE;
 
-        case CONVEXITY_STRICTLY_CONVEX :    
+        case CONVEXITY_STRICTLY_CONVEX :
           return CONVEXITY_STRICTLY_CONCAVE;
 
         case CONVEXITY_CONCAVE :

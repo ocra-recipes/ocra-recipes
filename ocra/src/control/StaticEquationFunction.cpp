@@ -32,7 +32,7 @@ namespace ocra
     static int cpt = 0;
     std::stringstream name;
     name << robot->getName() << "_se" << cpt++;
-    CompositeVariable* var = new CompositeVariable(name.str(), 
+    CompositeVariable* var = new CompositeVariable(name.str(),
                                                    *robot->getVariableJointPosition()->getTimeDerivative());
 
     var->add(*robot->getVariableJointEffort());

@@ -1,6 +1,6 @@
 #if 0
 
-#include "CoMTrackingFunction.h"
+#include "ocra/control/CoMTrackingFunction.h"
 
 //#define DUMP_COM_TRACKING
 
@@ -53,7 +53,7 @@ namespace ocra
 #endif
     for (int i=0; i<3; ++i)
     {
-      if (_fixedPosition & (1 << i))  //if coordinate i is used 
+      if (_fixedPosition & (1 << i))  //if coordinate i is used
         _value[r++] = mass*(com[i] - _target.frame.getTranslation()[i]);         //copy the corresponding value
     }
     //std::cout << "deltaCoM = " << _value[0]/mass << ", " << _value[1]/mass << ", " <<_value[2]/mass << std::endl;
@@ -93,7 +93,7 @@ namespace ocra
     int r=0;
     for (int i=0; i<3; ++i)
     {
-      if (_fixedPosition & (1 << i))  //if coordinate i is used 
+      if (_fixedPosition & (1 << i))  //if coordinate i is used
         _JXdot[r++] = v[i];           //copy the corresponding value
     }
     //std::cout << "deltaV = " << _JXdot << std::endl;

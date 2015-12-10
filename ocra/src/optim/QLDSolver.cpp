@@ -42,7 +42,7 @@ namespace ocra
 
   const std::string& QLDSolver::getMoreInfo() const
   {
-    static const std::string info = ""; 
+    static const std::string info = "";
     return info;
   }
 
@@ -152,7 +152,7 @@ namespace ocra
     new (&_C) MatrixMap(_buffer.allocate(_n*_n), _n, _n);
     new (&_d) VectorMap(_buffer.allocate(_n), _n);
     new (&_A) MatrixMap(_buffer.allocate(_n*mp), mp, _n);
-    new (&_b) VectorMap(_buffer.allocate(mp), mp); 
+    new (&_b) VectorMap(_buffer.allocate(mp), mp);
     new (&_xl) VectorMap(_buffer.allocate(_n), _n);
     new (&_xu) VectorMap(_buffer.allocate(_n), _n);
 
@@ -172,7 +172,7 @@ namespace ocra
     {
       LinearConstraint* cstr = _equalityConstraints[i];
       int dim = cstr->getDimension();
-      
+
       // XXX http://eigen.tuxfamily.org/api/TopicFunctionTakingEigenTypes.html#TopicPlainFunctionsFailing
       Eigen::Block<MatrixMap> _A_block = _A.block(m, 0, dim, n());
       Eigen::DenseBase<VectorMap>::SegmentReturnType _b_segment = _b.segment(m, dim);
@@ -220,7 +220,7 @@ namespace ocra
     {
       DiagonalLinearConstraint* cstr = _bounds[i];
       const std::vector<int>& mapping = findMapping(cstr->getVariable());
-      
+
       utils::intersectBounds(*cstr, mapping, _xl, _xu);
     }
   }
@@ -235,9 +235,9 @@ namespace ocra
       case 2: ocraInfo = RETURN_NUMERICAL_ERROR;   return;
       case 5: ocraInfo = RETURN_MEMORY_ERROR;      return;
       default:
-        if (qldInfo >10) 
+        if (qldInfo >10)
           {ocraInfo = RETURN_INFEASIBLE_PROBLEM; return;}
-        else 
+        else
           throw std::runtime_error("[QLDSolver::translateReturnInfo] invalid info number.");
     }
   }
@@ -279,7 +279,7 @@ namespace ocra
       //std::cout << sC << std::endl;
 
       int k = transferSimpleInequalityToBounds(sC, sd);
-      
+
       p+=dim-k;
       _pt += k;
     }
@@ -305,7 +305,7 @@ namespace ocra
 
       //sP.setToZero();
       //sP.copyValuesFrom(_objectives[i]->getPi());
-      
+
       //sq.copyValuesFrom(_objectives[i]->getqi());
       workingMapping.resize(v.getSize());
       addCompressedMatrix(*_variable, v, _objectives[i].objective->getPi(), _C, workingMapping, _objectives[i].weight);
@@ -397,7 +397,7 @@ namespace ocra
 
     QuadraticFunction objFunc(T, Matrix3d::Identity(), Vector3d::Zero(), 0);
     QuadraticObjective obj(&objFunc);
-    
+
     QLDSolver solver;
     solver.addConstraint(c1);
     solver.addConstraint(c2);

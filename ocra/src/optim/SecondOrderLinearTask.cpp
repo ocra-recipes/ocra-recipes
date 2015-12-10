@@ -22,7 +22,7 @@ namespace ocra
       throw std::runtime_error("[ocra::LinearTask::LinearTask] Input size of L doesn't match with dimension of f");
     if (f.getDimension() != L.getDimension())
       throw std::runtime_error("[ocra::LinearTask::LinearTask] Dimension of L doesn't match with dimension of f");
-    
+
     //dependencies
     f.connect<EVT_CHANGE_VALUE>(*this, &LinearFunction::invalidateb);
     f.connect<EVT_CHANGE_VALUE>(*this, &Function::invalidateAll);

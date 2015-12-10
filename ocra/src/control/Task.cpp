@@ -56,7 +56,7 @@ namespace ocra
       : feature(s)
       , featureDes(sdes)
       , mode(TASK_DEACTIVATED)
-      , gainsWorkspace(s.getDimension()) 
+      , gainsWorkspace(s.getDimension())
       , M( MatrixXd::Identity(s.getDimension(), s.getDimension()) )
       , M_inverse( MatrixXd::Identity(s.getDimension(), s.getDimension()) )
       , B( MatrixXd::Zero(s.getDimension(), s.getDimension()) )
@@ -118,12 +118,12 @@ namespace ocra
   {
     if(pimpl->mode == TASK_DEACTIVATED)
       return;
-    
+
     if(pimpl->mode == TASK_AS_OBJECTIVE)
       doDeactivateAsObjective();
     else if(pimpl->mode == TASK_AS_CONSTRAINT)
       doDeactivateAsConstraint();
-    
+
     if(pimpl->contactActive)
       doDeactivateContactMode();
 

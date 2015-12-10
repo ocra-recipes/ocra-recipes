@@ -79,4 +79,3 @@ namespace ocra
 }
 
 // cmake:sourcegroup=Function
-

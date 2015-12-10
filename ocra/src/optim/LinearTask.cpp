@@ -5,7 +5,7 @@
 
 //using namespace xde;        //TODO: we comment that, we should not!!!!
 
-namespace ocra 
+namespace ocra
 {
   LinearTask::LinearTask(Function& f, Function& L)
     :NamedInstance("linear task")
@@ -35,7 +35,7 @@ namespace ocra
     _f->disconnect<EVT_RESIZE>(*this, &LinearTask::updateDimension);
     _L->disconnect<EVT_CHANGE_VALUE>(*this, &LinearFunction::invalidateb);
   }
- 
+
   void LinearTask::updateb() const
   {
     inhibitPropagationFromb();
@@ -53,7 +53,7 @@ namespace ocra
     return createEqualityTaskWithLinearLaw(f, w);
   }
 
-  
+
   LinearTask* LinearTask::createEqualityTaskWithLinearLaw(Function* f, const VectorXd& weight)
   {
     Variable* v = utils::createOutputVariable(*f);
@@ -92,7 +92,7 @@ namespace ocra
     return createInequalityTaskWithLinearLaw(f, w);
   }
 
-  
+
   LinearTask* LinearTask::createInequalityTaskWithLinearLaw(Function* f, const VectorXd& weight, double fi)
   {
     int n = f->getDimension();
@@ -202,4 +202,3 @@ namespace ocra
 }
 
 // cmake:sourcegroup=Function
-

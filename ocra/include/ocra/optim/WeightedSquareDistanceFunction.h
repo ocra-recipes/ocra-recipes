@@ -17,16 +17,16 @@
 #include "ocra/optim/QuadraticFunction.h"
 
 /** @namespace ocra
-  * @brief Optimization-based Robot Controller namespace. 
+  * @brief Optimization-based Robot Controller namespace.
   *  a library of classes to write and solve optimization problems dedicated to
-  *  the control of multi-body systems. 
+  *  the control of multi-body systems.
   */
 namespace ocra
 {
   /** @class WeightedSquareDistanceFunction
     *	@brief %WeightedSquareDistanceFunction class.
     *	@warning None
-    *  
+    *
     * Quadratic function of the form \f& 1/2 \left\|x - x_{ref} \right\|^2_W \f& where W is a diagonal matrix.
     */
   class WeightedSquareDistanceFunction : public QuadraticFunction
@@ -89,7 +89,7 @@ namespace ocra
   inline WeightedSquareDistanceFunction::WeightedSquareDistanceFunction(Variable& x, double weight, const VectorBase& reference)
     :NamedInstance("weighted square distance function")
     ,AbilitySet(PARTIAL_X, PARTIAL_XX)
-    ,CoupledInputOutputSize(false) 
+    ,CoupledInputOutputSize(false)
     ,QuadraticFunction(x), _defaultWeight(weight), _reference(reference)
   {
     OCRA_STATIC_ASSERT_VECTOR_OR_DYNAMIC_MATRIX(VectorBase);
@@ -116,7 +116,7 @@ namespace ocra
   inline WeightedSquareDistanceFunction::WeightedSquareDistanceFunction(Variable& x, const VectorBase1& weight, const VectorBase2& reference)
     :NamedInstance("weighted square distance function")
     ,AbilitySet(PARTIAL_X, PARTIAL_XX)
-    ,CoupledInputOutputSize(false) 
+    ,CoupledInputOutputSize(false)
     ,QuadraticFunction(x), _weight(weight), _reference(reference)
   {
     OCRA_STATIC_ASSERT_VECTOR_OR_DYNAMIC_MATRIX(VectorBase1);
@@ -181,4 +181,3 @@ namespace ocra
 #endif	//_OCRA_WEIGHTED_SQUARE_DISTANCE_FUNCTION_H_
 
 // cmake:sourcegroup=Function
-

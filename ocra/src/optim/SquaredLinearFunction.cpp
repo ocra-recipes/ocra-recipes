@@ -74,7 +74,7 @@ namespace ocra
     _r[0] = 0.5 * _f->getb().transpose() * _weight.asDiagonal() *_f->getb();
   }
 
-  
+
   void SquaredLinearFunction::doUpdateInputSizeBegin()
   {
     // Do nothing. This overload is just here to enable input resizing (default implementation throw an exception).

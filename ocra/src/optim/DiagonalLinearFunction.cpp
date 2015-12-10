@@ -4,7 +4,7 @@
 
 namespace ocra
 {
-  DiagonalLinearFunction::DiagonalLinearFunction(Variable& x, const double diagonalElementValue, 
+  DiagonalLinearFunction::DiagonalLinearFunction(Variable& x, const double diagonalElementValue,
                                                  const double vectorElementValue,
                                                  const bool useDefaultValue)
     : NamedInstance("diagonal linear function")
@@ -60,7 +60,7 @@ namespace ocra
     doChangeDefaultbValue(v);
   }
 
-  
+
   void DiagonalLinearFunction::doChangeDiagonal(const VectorXd& d)
   {
     _d = d;
@@ -177,4 +177,3 @@ namespace ocra
 }
 
 // cmake:sourcegroup=Function
-

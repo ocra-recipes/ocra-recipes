@@ -11,10 +11,10 @@ namespace ocra
 {
     //TODO [todo]
 /*  DotProductFunction::DotProductFunction(Function *f1, Function *f2)
-    :Function(*FunctionProperties::getConcatenatedVariable(*f1, *f2), 1, 
+    :Function(*FunctionProperties::getConcatenatedVariable(*f1, *f2), 1,
     L_UNDEFINED, C_UNDEFINED,
-    FunctionProperties::getAddContinuityProperty(*f1,*f2), 
-    FunctionProperties::computeHessian(*f1,*f2), FunctionProperties::computeGradient(*f1,*f2)), 
+    FunctionProperties::getAddContinuityProperty(*f1,*f2),
+    FunctionProperties::computeHessian(*f1,*f2), FunctionProperties::computeGradient(*f1,*f2)),
     _f1(f1), _f2(f2), _twoFunctions(true), _tmp(f->getVariable().getSize())
   {
     //TODO [todo] : check size
@@ -120,7 +120,6 @@ namespace ocra
   }
 }
 
-#endif 
+#endif
 
 // cmake:sourcegroup=toBeUpdated
-

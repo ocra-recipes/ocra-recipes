@@ -60,7 +60,7 @@ namespace ocra
     _invalidatedMP = true;
   }
 
-  
+
   void QuadraticSolver::addBounds(BoundConstraint& constraint)
   {
     addBounds_(constraint);
@@ -100,7 +100,7 @@ namespace ocra
     if (_boundsAsConstraints)
       removeConstraint(constraint);
     else
-    { 
+    {
       internalRemoveConstraint(constraint);
       _bounds.erase(std::find(_bounds.begin(), _bounds.end(), &constraint));
     }

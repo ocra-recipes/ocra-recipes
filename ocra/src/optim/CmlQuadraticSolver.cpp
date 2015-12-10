@@ -66,7 +66,7 @@ namespace ocra
 
   const std::string& CmlQuadraticSolver::getMoreInfo(void) const
   {
-    //TODO [todo] 
+    //TODO [todo]
     return "";
   }
 
@@ -86,7 +86,7 @@ namespace ocra
   {
     if (constraint->isEquality())
       throw std::runtime_error("[CmlQuadraticSolver::addLinearEqualityConstraint] added Constraint is not an inequality" );
-    
+
     _inequalityConstraints.push_back(constraint);
     _p += constraint->getDimension();
     constraint->attach(*this);
@@ -405,7 +405,7 @@ namespace ocra
   {
     //updateSize(); //TODO [???]: should not be needed
     //std::vector<cfl_size_t> workingMapping(_n);
-   
+
     updateEqualityEquations(_workingMapping);
     updateInequalityEquations(_workingMapping);
     updateObjectiveEquations(_workingMapping);
@@ -583,7 +583,7 @@ namespace ocra
         for (cfl_size_t j=0; j<dim; ++j)
           sC(j, workingMapping[j]) = 1;
       }
-      
+
       m+=dim;
     }
   }
@@ -621,7 +621,7 @@ namespace ocra
 #include "ocra/optim/BaseVariable.h"
 #include "ocra/optim/CompositeVariable.h"
 
-namespace ocra 
+namespace ocra
 {
   void testSolveCmlQP(void)
   {

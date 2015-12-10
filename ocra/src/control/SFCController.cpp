@@ -159,7 +159,7 @@ namespace ocra
 			pimpl->rootStateDes.set_tau(pimpl->model.getGravityTerms().head(nfree));
 			pimpl->gravityTask.update();
 		}
-    
+
     const std::vector<Task*>& tasks = getActiveTasks();
 
     if(tasks.size()==0)

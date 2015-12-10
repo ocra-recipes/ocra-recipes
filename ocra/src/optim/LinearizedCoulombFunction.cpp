@@ -8,7 +8,7 @@ namespace ocra
 {
   const double LinearizedCoulombFunction::ANGLE_OFFSET = 0;
 
-  LinearizedCoulombFunction::LinearizedCoulombFunction(Variable& f, double frictionCoeff, 
+  LinearizedCoulombFunction::LinearizedCoulombFunction(Variable& f, double frictionCoeff,
                                                         int numberOfFaces, double margin)
     :NamedInstance("linearized coulomb function")
     ,AbilitySet(PARTIAL_X)
@@ -27,14 +27,14 @@ namespace ocra
 
     if (numberOfFaces < 3)
       throw std::runtime_error("[ocra::LinearizedCoulombFunction::LinearizedCoulombFunction] Number of faces is less than 3");
-    
+
     checkCoeff(frictionCoeff);
 
     buildA();
     buildb();
   }
 
-  
+
   real LinearizedCoulombFunction::getFrictionCoeff() const
   {
     return _mu;
@@ -100,7 +100,7 @@ namespace ocra
 
   void LinearizedCoulombFunction::buildb()
   {
-    _b.setConstant(_margin);     
+    _b.setConstant(_margin);
   }
 
   void LinearizedCoulombFunction::checkCoeff(real mu)
@@ -137,4 +137,3 @@ namespace ocra
 }
 
 // cmake:sourcegroup=Function
-

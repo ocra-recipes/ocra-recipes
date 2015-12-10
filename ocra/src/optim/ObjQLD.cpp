@@ -462,7 +462,7 @@ L45:
         /* Computing MIN */
         d__1 = w[id], d__2 = g[j + j * g_dim1];
         ga = -min(d__1,d__2);
-        gb = (d__1 = w[id] - g[j + j * g_dim1], abs(d__1)) + (d__2 = g[i 
+        gb = (d__1 = w[id] - g[j + j * g_dim1], abs(d__1)) + (d__2 = g[i
           + j * g_dim1], abs(d__2));
         if (gb > zero) {
           /* Computing 2nd power */

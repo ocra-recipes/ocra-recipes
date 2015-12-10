@@ -16,7 +16,7 @@ namespace ocra
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //                                           get More Info                                     //
 /////////////////////////////////////////////////////////////////////////////////////////////////
-  
+
   const std::string& CascadeQPSolver::getMoreInfo(void) const
   {
     return "";
@@ -109,7 +109,7 @@ namespace ocra
     const FinalSolution& sol = _qp.solveCascadeQP();
     _result.inform = sol.r;
     memcpy(_result.solution.getDataArray(), sol.yf.getDataArray(), _result.solution.getSize()*sizeof(double));
-    //memmove(_result.solution.getDataArray(), sol.yf.getDataArray(), _result.solution.getSize()*sizeof(double)); 
+    //memmove(_result.solution.getDataArray(), sol.yf.getDataArray(), _result.solution.getSize()*sizeof(double));
     //printSolution(sol.yf, *_variable, 10);
     return _result;
   }
@@ -117,7 +117,7 @@ namespace ocra
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //                                           do Prepare                                        //
 /////////////////////////////////////////////////////////////////////////////////////////////////
-  
+
   void CascadeQPSolver::doPrepare(void)
   {
     updateMatrixSize();
@@ -132,11 +132,11 @@ namespace ocra
     _variable->clear();
 
     for (unsigned int i=0; i<_hierarchyLevels.size(); ++i)
-    { 
+    {
       for (unsigned int k=0; k<_hierarchyLevels[i]->_equalities.size(); ++k)
       {
         addVariable(_hierarchyLevels[i]->_equalities[k]->getVariable());
-      } 
+      }
       for (unsigned int j=0; j<_hierarchyLevels[i]->_inequalities.size(); ++j)
       {
         addVariable(_hierarchyLevels[i]->_inequalities[j]->getVariable());
@@ -229,7 +229,7 @@ namespace ocra
         sd.copyValuesFrom(cstr->getFunction()->getb());
         CML_scal(-1, sd);
         //sC.scalarMultInPlace(-1);
-      
+
         p+=dim;
       }
       //writeInFile(_hierarchyInput[i]->C, "C_CASCADE_QP.txt", true);

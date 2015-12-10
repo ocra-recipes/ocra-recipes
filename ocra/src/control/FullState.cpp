@@ -69,7 +69,7 @@ namespace ocra
   }
 
 
-  
+
   struct FullModelState::Pimpl
   {
     MatrixXd M;
@@ -173,7 +173,7 @@ namespace ocra
     {
     }
   };
-  
+
   FullTargetState::FullTargetState(const std::string& name, const Model& model, int whichPart)
     : FullState(name, model, whichPart)
     , pimpl( new Pimpl(model) )

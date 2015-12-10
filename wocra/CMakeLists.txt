@@ -1,7 +1,5 @@
 project(wocra CXX)
 
-LIST(APPEND CMAKE_CXX_FLAGS "-fPIC")
-
 set(lib_name "wocra")
 
 
@@ -23,20 +21,26 @@ ENDIF()
 
 
 add_library(${lib_name} ${wocra_srcs})
-#
-# target_link_libraries(  ${lib_name}
-#                         ocra_optim
-#                         ocra_control
-#                         ${Boost_LIBRARIES}
-#                         ${TinyXML_LIBRARIES}
-#                         ${YARP_LIBRARIES}
-#                      )
+
+
+LIST(APPEND link_libs   #ocra_optim
+                        #ocra_control
+                        ${Boost_LIBRARIES}
+                        ${TinyXML_LIBRARIES}
+                        ${YARP_LIBRARIES}
+                        )
+
+IF(SMLT_FOUND)
+ LIST(APPEND link_libs ${SMLT_LIBRARIES})
+ENDIF()
+
+TARGET_LINK_LIBRARIES(${lib_name} ${link_libs})
 
 install(DIRECTORY include
         DESTINATION ${CMAKE_INSTALL_PREFIX}
         FILES_MATCHING PATTERN *.h)
 
-install(TARGETS ${lib_name}
+install(TARGETS ${lib_name}# ocra_optim ocra_control
         EXPORT WOCRATargets
         DESTINATION lib)
 

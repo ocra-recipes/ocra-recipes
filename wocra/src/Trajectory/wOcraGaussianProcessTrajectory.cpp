@@ -12,7 +12,7 @@
 
 
 #ifndef MEAN_LENGTH_FACTOR
-#define MEAN_LENGTH_FACTOR 10.0//20.0
+#define MEAN_LENGTH_FACTOR 20.0//10.0
 #endif
 
 namespace wocra
@@ -598,7 +598,7 @@ Eigen::VectorXd wOcraGaussianProcessTrajectory::getBoptSearchSpaceMaxBound()
 
     if (boptVariablesSet)
     {
-        double timeMin = timeline.maxCoeff() - (extraWpDt*4.0);
+        double timeMax = timeline.maxCoeff() - (extraWpDt*10.0);
         Eigen::VectorXd maxDofCoord(waypoints.rows());
         maxDofCoord << waypoints.rowwise().maxCoeff();
 
@@ -612,7 +612,7 @@ Eigen::VectorXd wOcraGaussianProcessTrajectory::getBoptSearchSpaceMaxBound()
 
                     if (dofToOptimize[i](j)==0)
                     {
-                        maxBound(indexCounter) = timeMin;
+                        maxBound(indexCounter) = timeMax;
                     }
                     else if (dofToOptimize[i](j)>0 && dofToOptimize[i](j)<=nDoF)
                     {

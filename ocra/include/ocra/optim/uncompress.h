@@ -88,15 +88,15 @@ namespace ocra
     template<class T, class U>
     struct min_functor
     {
-      static void run(T& out, const U& in) { out = out.array().min(in.array());/*specialized_min<T,U>::run(out, in);*/ }
-      static void run(T& out, double alpha, const U& in) { out = out.array().min(alpha*in.array());/*specialized_min<T,U>::run(out, alpha, in);*/ }
+      static void run(T& out, const U& in) { out = specialized_min<T,U>::run(out, in); }
+      static void run(T& out, double alpha, const U& in) { out = specialized_min<T,U>::run(out, alpha, in); }
     };
 
     template<class T, class U>
     struct max_functor
     {
-      static void run(T& out, const U& in) { out = out.array().max(in.array()); /*specialized_max<T,U>::run(out, in);*/ }
-      static void run(T& out, double alpha, const U& in) { out = out.array().max(alpha*in.array()); /*specialized_max<T,U>::run(out, alpha, in);*/ }
+      static void run(T& out, const U& in) { out = specialized_max<T,U>::run(out, in); }
+      static void run(T& out, double alpha, const U& in) { out = specialized_max<T,U>::run(out, alpha, in); }
     };
 
 

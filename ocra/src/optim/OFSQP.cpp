@@ -94,7 +94,7 @@ namespace ocra
   }
 
 
-  OFSQP::OFSQP(void) 
+  OFSQP::OFSQP(void)
     : cfsqp_version("CFSQP 2.5d")
   {
     //this variables needs to be initialized for optimized version
@@ -3160,7 +3160,7 @@ L9000:
   /***********************************************************/
 
 
-  void OFSQP::error(const char string[],int *inform)
+  void OFSQP::error(char string[],int *inform)
   {
     if (glob_prnt.iprint>0)
       fprintf(stderr,"%s\n",string);
@@ -3399,7 +3399,7 @@ L9000:
 
 
   void
-    OFSQP::sbout1(FILE *io,int n,const char *s1,double z,double *z1,int job,int level)
+    OFSQP::sbout1(FILE *io,int n,char *s1,double z,double *z1,int job,int level)
     {
       int j;
 
@@ -3424,7 +3424,7 @@ L9000:
 
 
   void
-    OFSQP::sbout2(FILE *io,int n,int i,const char *s1,const char *s2,double *z)
+    OFSQP::sbout2(FILE *io,int n,int i,char *s1,char *s2,double *z)
     {
       int j;
 
@@ -3784,13 +3784,13 @@ L9000:
       for (i=0; i<=5; i++)
         *fj=*fj+cos(2.e0*pi*x[i]*sin(theta));
       *fj=2.e0*(*fj+cos(2.e0*pi*3.5e0*sin(theta)))/15.e0+1.e0/15.e0;
-      return; 
+      return;
     }
 
     void constr(int nparam, int j, double* x, double* gj, void* cd)
     {
       double ss=0.425e0;
-      switch (j) 
+      switch (j)
       {
         case 1: *gj=ss-x[0];        break;
         case 2: *gj=ss+x[0]-x[1];   break;
@@ -4046,28 +4046,28 @@ L9000:
 
       r=100;
       s1=s2=0.e0;
-      if (j<=r) 
+      if (j<=r)
         t=3.14159265358979312e0*(j-1)*0.025e0;
-      else 
+      else
       {
-        if (j<=2*r) 
+        if (j<=2*r)
           t=3.14159265358979312e0*(j-1-r)*0.025e0;
-        else 
+        else
           t=3.14159265358979312e0*(1.2e0+(j-1-2*r)*0.2e0)*0.25e0;
       }
-      for (k=1; k<=9; k++) 
+      for (k=1; k<=9; k++)
       {
         s1=s1+x[k-1]*cos(k*t);
         s2=s2+x[k-1]*sin(k*t);
       }
       z=s1*s1 + s2*s2;
-      if (j<=r) 
+      if (j<=r)
         *gj=(1.e0-x[9])*(1.e0-x[9])-z;
-      else 
+      else
       {
-        if (j<=2*r) 
+        if (j<=2*r)
           *gj=z-(1.e0+x[9])*(1.e0+x[9]);
-        else 
+        else
           *gj=z-x[9]*x[9];
       }
       return;
@@ -4097,7 +4097,7 @@ L9000:
     neqn = 0;
     nineqn = nineq = ncsrn = 3;
     ncsrl = 0;
-    mesh_pts[0] = mesh_pts[1] = r; 
+    mesh_pts[0] = mesh_pts[1] = r;
     mesh_pts[2] = 3*r/2;
     neq = nfsr = 0;
     numc = (int)3.5*r;

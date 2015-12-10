@@ -20,7 +20,7 @@ namespace ocra
   /** @class WeightedSquaredSumOfControlEquationsFunction
     *	@brief %WeightedSquaredSumOfControlEquationsFunction class.
     *	@warning None
-    *  
+    *
     * This class implements the function \f& \sum_i{\left|f_i \right|^2_{W_i}} \f& where the \f& f_i \f& are
     * ControlEquationFunction instances and the \f& W_i \f& are diagonal matrices weighting the norms.
     * Computation are optimized so as to avoid performing several times the same matrix-matrix multiplications.

@@ -57,7 +57,7 @@ namespace ocra
   - Leaf.
 
   See the wikipedia article about the Composite design pattern for more information.
-  
+
   This class represents the bond between a parent and a child node in the tree. It contains:
   - the parent and the child,
   - the position of the child among the parent's children
@@ -320,8 +320,8 @@ namespace ocra
     // and decreaseRankOfParent, which are private and only accessible in ocra::detach. All other methods
     // will preserve the state of the class.
 
-    /*mutable*/ parent_t& parent_;
-    /*mutable*/ component_t& child_;
+    mutable parent_t& parent_;
+    mutable component_t& child_;
     size_t rankOfParent_;
     size_t rankOfChild_;
     mutable ParenthoodInfo info_;
@@ -340,7 +340,7 @@ namespace ocra
 
     typedef boost::is_base_of<component_base_t_, ComponentDerived>
       component_base_t_must_be_base_of_ComponentDerived;
-    
+
     typedef boost::is_convertible<ComponentDerived*, component_base_t_*>
       ComponentDerived_must_publicly_derive_component_base_t_;
 
@@ -348,7 +348,7 @@ namespace ocra
 
     typedef boost::is_base_of<composite_base_t_, CompositeDerived>
       composite_base_t_must_be_base_of_CompositeDerived;
-    
+
     typedef boost::is_convertible<CompositeDerived*, composite_base_t_*>
       CompositeDerived_must_publicly_derive_composite_base_t_;
 
@@ -374,7 +374,7 @@ namespace ocra
   - Leaf.
 
   See the wikipedia article about the Composite design pattern for more information.
-  
+
   This class can be used as a base class to implement a Composite pattern. To use it,
   you have to take the following steps:
   1. Create an interface or a base class for your component. This interface will

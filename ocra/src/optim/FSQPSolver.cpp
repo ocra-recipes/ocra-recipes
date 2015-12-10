@@ -20,7 +20,7 @@ namespace ocra
     , f(new double,1)
     , g(0x0,0)
     , lambda(0x0,0)
-    , mesh_pts(new int, 1) 
+    , mesh_pts(new int, 1)
     , _buffer(100)
     , _allObjectivesProvideAGradient(true)
   {
@@ -170,11 +170,11 @@ namespace ocra
   {
     ocra_assert(x0.size()==ref.getSize());
     const Variable& pbVar = getProblemVariable(); //this line force the evaluation of the problem variable
-    if (pbVar.getSize() != ref.getSize()) 
+    if (pbVar.getSize() != ref.getSize())
       throw std::runtime_error("[FSQPSolver::set_x0] problem variable and reference variable don't have the same size");
     std::vector<int> mapping;
     pbVar.getRelativeMappingOf(ref, mapping);
-    if (mapping.size()<pbVar.getSize()) 
+    if (mapping.size()<pbVar.getSize())
       throw std::runtime_error("[FSQPSolver::set_x0] problem variable and reference variable don't have the same children");
 
     this->x0.resize(x0.size());
@@ -385,12 +385,12 @@ namespace ocra
 
   void FSQPSolver::doSolve()
   {
-    solver.cfsqp(n(), 
-                 nf, 
-                 nfsr, 
-                 nineqn, 
-                 nineq, 
-                 neqn, 
+    solver.cfsqp(n(),
+                 nf,
+                 nfsr,
+                 nineqn,
+                 nineq,
+                 neqn,
                  neq,
                  ncsrl,
                  ncsrn,
@@ -441,7 +441,7 @@ namespace ocra
 
     _buffer.resize(2*nparam+sg+sl);
     new (&g) VectorMap(_buffer.allocate(sg), sg);
-    new (&lambda) VectorMap(_buffer.allocate(sl), sl); 
+    new (&lambda) VectorMap(_buffer.allocate(sl), sl);
     new (&bl) VectorMap(_buffer.allocate(nparam), nparam);
     new (&bu) VectorMap(_buffer.allocate(nparam), nparam);
 
@@ -455,7 +455,7 @@ namespace ocra
     {
       DiagonalLinearConstraint* cstr = _bounds[i];
       const std::vector<int>& mapping = findMapping(cstr->getVariable());
-      
+
       utils::intersectBounds(*cstr, mapping, bl, bu);
     }
   }
@@ -513,7 +513,7 @@ namespace ocra
 
     QuadraticFunction objFunc(T, Matrix3d::Identity(), Vector3d::Zero(), 0);
     QuadraticObjective obj(&objFunc);
-    
+
     FSQPSolver solver;
     solver.addConstraint(c1);
     solver.addConstraint(c2);
@@ -571,14 +571,14 @@ namespace ocra
     typedef Function  functionType_t;
 
   protected:
-    void updateValue() const 
+    void updateValue() const
     {
       _value[0] = s*(1.12*x[0] + .13167*x[0]*x[2] - 0.00667*x[0]*x[2]*x[2]) + a*x[1] ;
     }
-    void updateJacobian() const 
+    void updateJacobian() const
     {
-      _jacobian(0,0) = s*(1.12+.13167*x[2]-0.00667*x[2]*x[2]); 
-      _jacobian(0,1) = a;  
+      _jacobian(0,0) = s*(1.12+.13167*x[2]-0.00667*x[2]*x[2]);
+      _jacobian(0,1) = a;
       _jacobian(0,2) = s*(.13167*x[0]-2*0.00667*x[0]*x[2]);
     }
 
@@ -601,17 +601,17 @@ namespace ocra
     typedef Function  functionType_t;
 
   protected:
-    void updateValue() const 
+    void updateValue() const
     {
       _value[0] = 98000*x[0]/(x[1]*x[3]+1000*x[0])-x[2];
     }
-    void updateJacobian() const 
+    void updateJacobian() const
     {
       double v = x[1]*x[3]+1000*x[0];
       double v2=v*v;
-      _jacobian(0,0) = 98000*(v-1000*x[0])/v2; 
+      _jacobian(0,0) = 98000*(v-1000*x[0])/v2;
       _jacobian(0,1) = -98000*x[0]*x[3]/v2;
-      _jacobian(0,2) = -1;  
+      _jacobian(0,2) = -1;
       _jacobian(0,3) = -98000*x[0]*x[1]/v2;
     }
   };
@@ -631,15 +631,15 @@ namespace ocra
     typedef Function  functionType_t;
 
   protected:
-    void updateValue() const 
+    void updateValue() const
     {
       _value[0] = (x[1]+x[2])/x[0]-x[3];
     }
-    void updateJacobian() const 
+    void updateJacobian() const
     {
       double x2=x[0]*x[0];
-      _jacobian(0,0) = -(x[1]+x[2])/x2; 
-      _jacobian(0,1) = _jacobian(0,2) = 1/x[0];  
+      _jacobian(0,0) = -(x[1]+x[2])/x2;
+      _jacobian(0,1) = _jacobian(0,2) = 1/x[0];
       _jacobian(0,3) = -1;
     }
   };

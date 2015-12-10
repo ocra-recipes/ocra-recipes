@@ -134,7 +134,7 @@ namespace ocra
 
     if(isBodyContactConstraint())
       return;
-    
+
     if(!isPointContactTask())
       pimpl->ffSolver->addObjective(pimpl->ffTaskAsObjective);
 
@@ -148,7 +148,7 @@ namespace ocra
 
     if(isBodyContactConstraint())
       return;
-    
+
     if(!isPointContactTask())
       pimpl->ffSolver->addConstraint(pimpl->ffTaskAsConstraint);
 

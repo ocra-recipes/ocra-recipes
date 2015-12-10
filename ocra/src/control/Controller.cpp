@@ -46,11 +46,6 @@ namespace
     {
       return data;
     }
-    
-    void erase(const std::string& name)
-    {
-        this->data.erase(name);
-    }
 
     template<class P>
     void getIf(P predicate, std::vector<T*>& result) const
@@ -188,9 +183,9 @@ namespace ocra
       addTask(*tasks[i]);
   }
 
-  void Controller::removeTask(const std::string& taskName)
+  void Controller::removeTask(const std::string taskName)
   {
-    pimpl->tasks.erase(taskName);
+    pimpl->tasks.getData().erase(taskName);
   }
 
   void Controller::removeTasks(const std::vector<std::string> tasks)

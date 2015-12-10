@@ -18,8 +18,8 @@ namespace ocra
     J_body_scene_p_body_r_body.resize(6, _x->getSize());
   }
 
-/*  Function(Variable& x, cfl_size_t dimension,  int linearity = L_UNDEFINED, 
-              int convexity = C_UNDEFINED, int continuity = UNKNOWN, 
+/*  Function(Variable& x, cfl_size_t dimension,  int linearity = L_UNDEFINED,
+              int convexity = C_UNDEFINED, int continuity = UNKNOWN,
               bool useHessian = true, bool useGrad = true);*/
 
 
@@ -108,14 +108,14 @@ namespace ocra
 //      writeInFile(ad_H_inv, "JH.txt", true);
 //      writeInFile(sub_J, "JH.txt", true);
     }
-    
+
     CML_gemm<'n','n'>(1., ad_H_inv_trans, sub_J, 0, _gradient);
 //    writeInFile(_gradient, "gJ0.txt", true);
     #endif
     static int cpt = 0;
     //if ((++cpt)%100 == 0)
       //checkGradient(1e-6, 1e-6);
-    
+
   }
 
 

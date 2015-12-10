@@ -8,11 +8,11 @@
 
 namespace ocra
 {
-  // TODO [todo] : 
+  // TODO [todo] :
 /*  SubtractionFunction::SubtractionFunction(Function* f1, Function* f2)
     : Function(*FunctionProperties::getConcatenatedVariable(*f1, *f2), f1->getDimension(),
     FunctionProperties::getAddType(*f1,*f2), C_UNDEFINED,
-    FunctionProperties::getAddContinuityProperty(*f1,*f2), 
+    FunctionProperties::getAddContinuityProperty(*f1,*f2),
     FunctionProperties::computeHessian(*f1,*f2), FunctionProperties::computeGradient(*f1,*f2))
     , _f1(f1), _f2(f2), _case(0)
   {
@@ -43,7 +43,7 @@ namespace ocra
     //TODO [todo] : delete if no other function use _x
 /*    if (_f1 == NULL || _f2 == NULL)
       delete _x;
-*/      
+*/
     switch (_case)
     {
       case 0:
@@ -212,4 +212,3 @@ namespace ocra
 #endif
 
 // cmake:sourcegroup=toBeUpdated
-

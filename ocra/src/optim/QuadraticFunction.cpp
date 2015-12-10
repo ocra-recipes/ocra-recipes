@@ -30,7 +30,7 @@ namespace ocra
 
     doChangePi(Pi, index);
 
-    ocra_assert(IFunction<PARTIAL_XX>::_val[index]->cols() == x.getSize() 
+    ocra_assert(IFunction<PARTIAL_XX>::_val[index]->cols() == x.getSize()
             && IFunction<PARTIAL_XX>::_val[index]->rows() == x.getSize()
             && "Pi does not have the good dimensions");
 
@@ -40,7 +40,7 @@ namespace ocra
   void QuadraticFunction::changeqi(const VectorXd& qi, int index)
   {
     ocra_assert(index <_dim);
-    
+
     doChangeqi(qi, index);
 
     ocra_assert(_q[index]->size() == x.getSize());
@@ -51,7 +51,7 @@ namespace ocra
   void QuadraticFunction::changeri(real ri, int index)
   {
     ocra_assert(index <_dim);
-    
+
     doChangeri(ri, index);
 
     propagate<EVT_CHANGE_VALUE>();
