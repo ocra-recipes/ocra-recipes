@@ -6,7 +6,6 @@ set(lib_name "wocra")
 include_directories(include
                     ${OCRA_CORE_INCLUDE_DIRS}
                     ${YARP_INCLUDE_DIRS}
-                    ${QUADPROG_INCLUDE_DIRS}
                     )
 file(GLOB_RECURSE wocra_srcs src/*.cpp)
 
