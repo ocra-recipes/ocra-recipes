@@ -22,6 +22,7 @@ include_directories(
 add_subdirectory(ocra)
 
 set(OCRA_CORE_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/ocra/include CACHE PATH "")
+set(SOLVERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/solvers)
 
 add_subdirectory(solvers)
 add_subdirectory(wocra)
