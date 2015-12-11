@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg)](https://travis-ci.org/ocra-recipes/ocra-recipes)
 # ocra-recipes
 
 Badass shit...
