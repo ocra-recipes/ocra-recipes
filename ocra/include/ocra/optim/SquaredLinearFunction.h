@@ -17,18 +17,19 @@
 // includes
 #include "ocra/optim/LinearFunction.h"
 #include "ocra/optim/QuadraticFunction.h"
+#include <sstream>
 
 /** @namespace ocra
-  * @brief Optimization-based Robot Controller namespace. 
+  * @brief Optimization-based Robot Controller namespace.
   *  a library of classes to write and solve optimization problems dedicated to
-  *  the control of multi-body systems. 
+  *  the control of multi-body systems.
   */
 namespace ocra
 {
   /** @class SquaredLinearFunction
     *	@brief %SquaredLinearFunction class.
     *	@warning None
-    *  
+    *
     * Quadratic function of the form \f& 1/2 \left\|f(x)\right\|^2 \f& with f(x) = Ax+b
     * If A and b are constant, better use QuadraticFunction directly.
     *
@@ -79,4 +80,3 @@ namespace ocra
 #endif	//_OCRABASE_SQUARED_LINEAR_FUNCTION_H_
 
 // cmake:sourcegroup=Function
-

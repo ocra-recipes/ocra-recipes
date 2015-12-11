@@ -31,8 +31,12 @@ namespace ocra
 
   void SquaredLinearFunction::changeWeight(const VectorXd& weight)
   {
-    if(weight.size() != _f->getDimension())
-      throw std::runtime_error("[SquaredLinearFunction::changeWeight] weight has not the appropriate size");
+    if(weight.size() != _f->getDimension()){
+      std::stringstream errorStream;
+      errorStream << "[SquaredLinearFunction::changeWeight] weight has dimension: " << weight.size() << " and should be: " << _f->getDimension()<<".\n";
+      std::string errorString = errorStream.str();
+      throw std::runtime_error(errorString);
+    }
     _weight = weight;
   }
 
@@ -74,7 +78,7 @@ namespace ocra
     _r[0] = 0.5 * _f->getb().transpose() * _weight.asDiagonal() *_f->getb();
   }
 
-  
+
   void SquaredLinearFunction::doUpdateInputSizeBegin()
   {
     // Do nothing. This overload is just here to enable input resizing (default implementation throw an exception).

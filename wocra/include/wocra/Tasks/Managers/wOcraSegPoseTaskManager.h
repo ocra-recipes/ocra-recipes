@@ -56,6 +56,17 @@ class wOcraSegPoseTaskManager : public wOcraTaskManagerBase
         // Task error
         Eigen::VectorXd getTaskError();
 
+        Eigen::Displacementd getTaskFrameDisplacement();
+        Eigen::Twistd getTaskFrameVelocity();
+        Eigen::Twistd getTaskFrameAcceleration();
+        Eigen::Vector3d getTaskFramePosition();
+        Eigen::Rotation3d getTaskFrameOrientation();
+        Eigen::Vector3d getTaskFrameLinearVelocity();
+        Eigen::Vector3d getTaskFrameAngularVelocity();
+        Eigen::Vector3d getTaskFrameLinearAcceleration();
+        Eigen::Vector3d getTaskFrameAngularAcceleration();
+
+
         // Yarp related:
         virtual const double * getCurrentState();
         virtual std::string getTaskManagerType();
