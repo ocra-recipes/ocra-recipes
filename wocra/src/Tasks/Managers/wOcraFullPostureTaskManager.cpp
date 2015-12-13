@@ -24,6 +24,9 @@ wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts)
 {
     _init(_fullStateType, _stiffness, _damping, _weight);
+    Eigen::VectorXd _init_q = _model.getJointPositions();
+    setPosture(_init_q);
+
 }
 
 /** Base constructor
@@ -47,6 +50,9 @@ wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts)
 {
     _init(_fullStateType, _stiffness, _damping, _weight);
+    Eigen::VectorXd _init_q = _model.getJointPositions();
+    setPosture(_init_q);
+
 }
 /** Constructor with desired joint space posture
  *
@@ -101,7 +107,7 @@ wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
 
 wOcraFullPostureTaskManager::~wOcraFullPostureTaskManager()
 {
-    
+
 }
 
 

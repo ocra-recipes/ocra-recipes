@@ -53,6 +53,9 @@ namespace wocra
                             if (taskElem->QueryDoubleAttribute("kd", &currentTmArgs.kd)==TIXML_NO_ATTRIBUTE){currentTmArgs.kd=0.0;}
                             if (taskElem->QueryDoubleAttribute("weight", &currentTmArgs.weight)==TIXML_NO_ATTRIBUTE){currentTmArgs.weight=0.0; currentTmArgs.useWeightVectorConstructor=false;}else{currentTmArgs.useWeightVectorConstructor=false;}
                             if (taskElem->QueryIntAttribute("axes", &currentTmArgs.axes)==TIXML_NO_ATTRIBUTE){currentTmArgs.axes=ocra::XYZ;}
+                            if (taskElem->QueryIntAttribute("mu", &currentTmArgs.mu)==TIXML_NO_ATTRIBUTE){currentTmArgs.mu=1.0;}
+                            if (taskElem->QueryIntAttribute("margin", &currentTmArgs.margin)==TIXML_NO_ATTRIBUTE){currentTmArgs.margin=0.05;}
+                            if (taskElem->QueryIntAttribute("axes", &currentTmArgs.axes)==TIXML_NO_ATTRIBUTE){currentTmArgs.axes=ocra::XYZ;}
                             if (taskElem->Attribute("usesYarp") != NULL){
                                 bool yarpBool;
                                 std::string yarpString = std::string(taskElem->Attribute("usesYarp"));
@@ -99,25 +102,61 @@ namespace wocra
 
 
                         else if( currentElem == "joints" ){
-                            std::string jointIndexString, desiredValueString;
+                            std::string jointIndexString, indexDesiredValueString, nameDesiredValueString, indexWeightString, nameWeightString;
                             for(TiXmlElement* jointElem = taskElem->FirstChildElement("joint"); jointElem != NULL; jointElem = jointElem->NextSiblingElement("joint"))
                             {
-                                if (jointElem->Attribute("id") != NULL)
+                                if ( (jointElem->Attribute("name") != NULL) || (jointElem->Attribute("index") != NULL) )
                                 {
-                                    jointIndexString += jointElem->Attribute("id");
-                                    jointIndexString += " ";
-
-                                    if (jointElem->Attribute("des") != NULL)
+                                    if(jointElem->Attribute("index") != NULL)
                                     {
-                                        desiredValueString += jointElem->Attribute("des");
-                                        desiredValueString += " ";
-                                    }else{
-                                        desiredValueString += "0.0 ";
+                                        jointIndexString += jointElem->Attribute("index");
+                                        jointIndexString += " ";
+                                        if (jointElem->Attribute("des") != NULL)
+                                        {
+                                            indexDesiredValueString += jointElem->Attribute("des");
+                                            indexDesiredValueString += " ";
+                                        }else{
+                                            indexDesiredValueString += "-1000.0 ";
+                                        }
+                                        if (jointElem->Attribute("weight") != NULL)
+                                        {
+                                            indexWeightString += jointElem->Attribute("weight");
+                                            indexWeightString += " ";
+                                            currentTmArgs.useWeightVectorConstructor = true;
+
+                                        }else{
+                                            indexWeightString += "-1.0 ";
+                                        }
                                     }
+
+                                    else if(jointElem->Attribute("name") != NULL)
+                                    {
+                                        currentTmArgs.jointNames.push_back(jointElem->Attribute("name"));
+                                        if (jointElem->Attribute("des") != NULL)
+                                        {
+                                            nameDesiredValueString += jointElem->Attribute("des");
+                                            nameDesiredValueString += " ";
+                                        }else{
+                                            nameDesiredValueString += "-1000.0 ";
+                                        }
+                                        if (jointElem->Attribute("weight") != NULL)
+                                        {
+                                            nameWeightString += jointElem->Attribute("weight");
+                                            nameWeightString += " ";
+                                            currentTmArgs.useWeightVectorConstructor = true;
+
+                                        }else{
+                                            nameWeightString += "-1.0 ";
+                                        }
+                                    }
+
                                 }
 
                                 currentTmArgs.jointIndexes = stringToVectorXi(jointIndexString.c_str());
-                                currentTmArgs.desired = stringToVectorXd(desiredValueString.c_str());
+                                currentTmArgs.indexDesired = stringToVectorXd(indexDesiredValueString.c_str());
+                                currentTmArgs.nameDesired = stringToVectorXd(nameDesiredValueString.c_str());
+                                currentTmArgs.indexWeightVector = stringToVectorXd(indexWeightString.c_str());
+                                currentTmArgs.nameWeightVector = stringToVectorXd(nameWeightString.c_str());
                             }
 
                         }
@@ -255,19 +294,19 @@ namespace wocra
         int nTasks = tmArgsVector.size();
         for (int i=0; i<nTasks; i++)
         {
-            std::cout << "\n=== Task " << i+1 << " of " << nTasks << " ===" << std::endl;
-            std::cout << "Task name: " << tmArgsVector[i].taskName << std::endl;
-            std::cout << "Task type: " << tmArgsVector[i].taskType << std::endl;
-            std::cout << "Segment: " << tmArgsVector[i].segment << std::endl;
-            std::cout << "kp: " << tmArgsVector[i].kp << std::endl;
-            std::cout << "kd: " << tmArgsVector[i].kd << std::endl;
-            std::cout << "weight: " << tmArgsVector[i].weight << std::endl;
-            std::cout << "weights: " << tmArgsVector[i].weightVector << std::endl;
-            std::cout << "axes: " << tmArgsVector[i].axes << std::endl;
-            std::cout << "offset: " << std::endl;
-            for(int j=0; j<tmArgsVector[i].offset.size(); j++){std::cout << tmArgsVector[i].offset[j].transpose() << std::endl;}
-            std::cout << "jointIndexes: " << tmArgsVector[i].jointIndexes.transpose() << std::endl;
-            std::cout << "desired: " << tmArgsVector[i].desired.transpose() << std::endl;
+            std::cout << "\n=== Task " << i+1 << " of " << nTasks << " ===" << std::endl << std::endl;
+            std::cout << "Task name:\n" << tmArgsVector[i].taskName << std::endl << std::endl;
+            std::cout << "Task type:\n" << tmArgsVector[i].taskType << std::endl << std::endl;
+            std::cout << "Segment:\n" << tmArgsVector[i].segment << std::endl << std::endl;
+            std::cout << "kp:\n" << tmArgsVector[i].kp << std::endl << std::endl;
+            std::cout << "kd:\n" << tmArgsVector[i].kd << std::endl << std::endl;
+            std::cout << "weight:\n" << tmArgsVector[i].weight << std::endl << std::endl;
+            std::cout << "weights:\n" << tmArgsVector[i].weightVector.transpose() << std::endl << std::endl;
+            std::cout << "axes:\n" << tmArgsVector[i].axes << std::endl << std::endl;
+            std::cout << "offset:\n";
+            for(int j=0; j<tmArgsVector[i].offset.size(); j++){std::cout << tmArgsVector[i].offset[j].transpose() << std::endl;}std::cout << std::endl;
+            std::cout << "jointIndexes:\n" << tmArgsVector[i].jointIndexes.transpose() << std::endl << std::endl;
+            std::cout << "desired:\n" << tmArgsVector[i].desired.transpose() << std::endl << std::endl;
 
 
         }
@@ -323,7 +362,161 @@ namespace wocra
 
 
 
+    void wOcraTaskParser::prepareTaskManagerArguments(const wOcraModel& model, std::vector<taskManagerArgs>::iterator argStructPtr)
+    {
+        int sizeDof = model.nbInternalDofs();
+        if (argStructPtr->offset.empty()) {
+            argStructPtr->offset.push_back(Eigen::VectorXd::Zero(3));
+        }
+        int sizeDesired = argStructPtr->desired.rows();
+        int sizeIndexDesired = argStructPtr->indexDesired.rows();
+        int sizeNameDesired = argStructPtr->nameDesired.rows();
+        int sizeWeightVector = argStructPtr->weightVector.rows();
+        int sizeIndexWeightVector = argStructPtr->indexWeightVector.rows();
+        int sizeNameWeightVector = argStructPtr->nameWeightVector.rows();
+        int sizeJointIndexes = argStructPtr->jointIndexes.rows();
+        int sizeJointNames = argStructPtr->jointNames.size();
 
+
+        if ((argStructPtr->taskType == "wOcraFullPostureTaskManager") || (argStructPtr->taskType == "wOcraPartialPostureTaskManager"))
+        {
+            int sizeDofConcerned;
+            if(argStructPtr->taskType == "wOcraFullPostureTaskManager")
+            {
+                sizeDofConcerned = sizeDof;
+            }else if(argStructPtr->taskType == "wOcraPartialPostureTaskManager"){
+                sizeDofConcerned = sizeIndexDesired+sizeNameDesired;
+            }
+
+            if (sizeDesired == 0)
+            {
+                if(argStructPtr->taskType == "wOcraFullPostureTaskManager")
+                {
+                    argStructPtr->desired = model.getJointPositions();
+                }else if(argStructPtr->taskType == "wOcraPartialPostureTaskManager"){
+                    argStructPtr->desired = Eigen::VectorXd::Zero(sizeDofConcerned);
+                }
+            }
+            else
+            {
+                if (sizeDesired == 1)
+                {
+                    argStructPtr->desired = Eigen::VectorXd::Constant(sizeDofConcerned, argStructPtr->desired[0]);
+                }
+                else if (sizeDesired != sizeDofConcerned)
+                {
+                    if(argStructPtr->taskType == "wOcraFullPostureTaskManager")
+                    {
+                        argStructPtr->desired = model.getJointPositions();
+                    }else if(argStructPtr->taskType == "wOcraPartialPostureTaskManager"){
+                        argStructPtr->desired = Eigen::VectorXd::Zero(sizeDofConcerned);
+                    }
+                }
+            }
+            if (argStructPtr->useWeightVectorConstructor)
+            {
+                if (sizeWeightVector != sizeDofConcerned)
+                {
+                    argStructPtr->weightVector = Eigen::VectorXd::Constant(sizeDofConcerned, argStructPtr->weight);
+                }
+            }
+
+
+            if(argStructPtr->taskType == "wOcraFullPostureTaskManager")
+            {
+                if (sizeJointIndexes>0 && sizeJointIndexes == sizeIndexDesired)
+                {
+                    for(int i=0; i<sizeJointIndexes; i++)
+                    {
+                        if(argStructPtr->indexDesired(i) != -1000.0)
+                        {
+                            argStructPtr->desired(argStructPtr->jointIndexes(i)) = argStructPtr->indexDesired(i);
+                        }
+                        if (argStructPtr->useWeightVectorConstructor)
+                        {
+                            if (argStructPtr->indexWeightVector(i) >= 0.0)
+                            {
+                                argStructPtr->weightVector(argStructPtr->jointIndexes(i)) = argStructPtr->indexWeightVector(i);
+                            }
+                        }
+                    }
+                }
+                if (sizeJointNames>0 && sizeJointNames == sizeNameDesired)
+                {
+                    for(int i=0; i<sizeJointNames; i++)
+                    {
+                        if(argStructPtr->nameDesired(i) != -1000.0)
+                        {
+                        argStructPtr->desired(model.getDofIndex(argStructPtr->jointNames[i])) = argStructPtr->nameDesired(i);
+                        }
+                        if (argStructPtr->useWeightVectorConstructor)
+                        {
+                            if (argStructPtr->nameWeightVector(i) >= 0.0)
+                            {
+                                argStructPtr->weightVector(model.getDofIndex(argStructPtr->jointNames[i])) = argStructPtr->nameWeightVector(i);
+                            }
+                        }
+                    }
+                }
+            }
+            else if(argStructPtr->taskType == "wOcraPartialPostureTaskManager")
+            {
+                Eigen::VectorXi jointIndexesTemp(sizeDofConcerned);
+                int indexCounter = 0;
+
+                if (sizeJointIndexes>0 && sizeJointIndexes == sizeIndexDesired)
+                {
+                    for(int i=0; i<sizeJointIndexes; i++)
+                    {
+                        jointIndexesTemp(indexCounter) = argStructPtr->jointIndexes(i);
+                        if(argStructPtr->indexDesired(i) != -1000.0)
+                        {
+                            argStructPtr->desired(indexCounter) = argStructPtr->indexDesired(i);
+                        }
+                        if (argStructPtr->useWeightVectorConstructor)
+                        {
+                            if (argStructPtr->indexWeightVector(i) >= 0.0)
+                            {
+                                argStructPtr->weightVector(indexCounter) = argStructPtr->indexWeightVector(i);
+                            }
+                        }
+                        indexCounter++;
+                    }
+                }
+                if (sizeJointNames>0 && sizeJointNames == sizeNameDesired)
+                {
+                    for(int i=0; i<sizeJointNames; i++)
+                    {
+                        jointIndexesTemp(indexCounter) = model.getDofIndex(argStructPtr->jointNames[i]);
+                        if(argStructPtr->nameDesired(i) == -1000.0)
+                        {
+                            argStructPtr->desired(indexCounter) = model.getJointPositions()(model.getDofIndex(argStructPtr->jointNames[i]));
+                        }
+                        else{
+                            argStructPtr->desired(indexCounter) = argStructPtr->nameDesired(i);
+                        }
+                        if (argStructPtr->useWeightVectorConstructor)
+                        {
+                            if (argStructPtr->nameWeightVector(i) >= 0.0)
+                            {
+                                argStructPtr->weightVector(indexCounter) = argStructPtr->nameWeightVector(i);
+                            }
+                        }
+                        indexCounter++;
+                    }
+                }
+                argStructPtr->jointIndexes.resize(sizeDofConcerned);
+                argStructPtr->jointIndexes = jointIndexesTemp;
+
+            }
+
+        }
+
+
+
+
+
+    }
 
 
 
@@ -331,36 +524,63 @@ namespace wocra
     wOcraTaskManagerBase* wOcraTaskParser::constructTaskManager(wOcraController& ctrl, const wOcraModel& model, std::vector<taskManagerArgs>::iterator argStructPtr)
     {
 
+
+
+
+        prepareTaskManagerArguments(model, argStructPtr);
+
         int sizeDof = model.nbInternalDofs();
-        int sizeDesired = argStructPtr->desired.rows();
-        if (argStructPtr->offset.empty()) {
-            argStructPtr->offset.push_back(Eigen::VectorXd::Zero(3));
-        }
         int sizeOffset = argStructPtr->offset[0].rows();
         int sizeJointIndexes = argStructPtr->jointIndexes.rows();
+        int sizeDesired = argStructPtr->desired.rows();
+
+
 
         wOcraTaskManagerBase* newTaskManager;
 
         if(argStructPtr->taskType == "wOcraCoMTaskManager")
         {
-            if (argStructPtr->useWeightVectorConstructor) {
-                newTaskManager = new wOcraCoMTaskManager(ctrl, model,
-                                                        argStructPtr->taskName,
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weightVector,
-                                                        argStructPtr->desired,
-                                                        argStructPtr->usesYarp);            }
-            else {
-                newTaskManager = new wOcraCoMTaskManager(ctrl, model,
-                                                        argStructPtr->taskName,
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weight,
-                                                        argStructPtr->desired,
-                                                        argStructPtr->usesYarp);            }
+            if (sizeDesired == 0)
+            {
+                if (argStructPtr->useWeightVectorConstructor) {
+                    newTaskManager = new wOcraCoMTaskManager(ctrl, model,
+                                                            argStructPtr->taskName,
+                                                            ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
+                                                            argStructPtr->kp,
+                                                            argStructPtr->kd,
+                                                            argStructPtr->weightVector,
+                                                            argStructPtr->usesYarp);            }
+                else {
+                    newTaskManager = new wOcraCoMTaskManager(ctrl, model,
+                                                            argStructPtr->taskName,
+                                                            ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
+                                                            argStructPtr->kp,
+                                                            argStructPtr->kd,
+                                                            argStructPtr->weight,
+                                                            argStructPtr->usesYarp);            }
+            }
+            else
+            {
+                if (argStructPtr->useWeightVectorConstructor) {
+                    newTaskManager = new wOcraCoMTaskManager(ctrl, model,
+                                                            argStructPtr->taskName,
+                                                            ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
+                                                            argStructPtr->kp,
+                                                            argStructPtr->kd,
+                                                            argStructPtr->weightVector,
+                                                            argStructPtr->desired,
+                                                            argStructPtr->usesYarp);            }
+                else {
+                    newTaskManager = new wOcraCoMTaskManager(ctrl, model,
+                                                            argStructPtr->taskName,
+                                                            ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
+                                                            argStructPtr->kp,
+                                                            argStructPtr->kd,
+                                                            argStructPtr->weight,
+                                                            argStructPtr->desired,
+                                                            argStructPtr->usesYarp);            }
+            }
+
 
             return newTaskManager;
         }
@@ -393,40 +613,52 @@ namespace wocra
 
         else if(argStructPtr->taskType == "wOcraFullPostureTaskManager")
         {
-            if (
-                (sizeDesired == 0)  ||
-                ((sizeDesired > 1) && (sizeDesired < sizeDof)) ||
-                (sizeDesired > sizeDof)
-               )
+            if (sizeDesired == 0)
             {
-                argStructPtr->desired = Eigen::VectorXd::Zero(sizeDof);
+                if (argStructPtr->useWeightVectorConstructor) {
+                    newTaskManager = new wOcraFullPostureTaskManager(ctrl, model,
+                                                            argStructPtr->taskName,
+                                                            ocra::FullState::INTERNAL,
+                                                            argStructPtr->kp,
+                                                            argStructPtr->kd,
+                                                            argStructPtr->weightVector,
+                                                            argStructPtr->usesYarp);
+                }
+                else {
+                    newTaskManager = new wOcraFullPostureTaskManager(ctrl, model,
+                                                            argStructPtr->taskName,
+                                                            ocra::FullState::INTERNAL,
+                                                            argStructPtr->kp,
+                                                            argStructPtr->kd,
+                                                            argStructPtr->weight,
+                                                            argStructPtr->usesYarp);
+                }
             }
-            else if (sizeDesired == 1)
+            else
             {
-
-                argStructPtr->desired = Eigen::VectorXd::Constant(sizeDof, argStructPtr->desired[0]);
+                if (argStructPtr->useWeightVectorConstructor) {
+                    newTaskManager = new wOcraFullPostureTaskManager(ctrl, model,
+                                                            argStructPtr->taskName,
+                                                            ocra::FullState::INTERNAL,
+                                                            argStructPtr->kp,
+                                                            argStructPtr->kd,
+                                                            argStructPtr->weightVector,
+                                                            argStructPtr->desired,
+                                                            argStructPtr->usesYarp);
+                }
+                else {
+                    newTaskManager = new wOcraFullPostureTaskManager(ctrl, model,
+                                                            argStructPtr->taskName,
+                                                            ocra::FullState::INTERNAL,
+                                                            argStructPtr->kp,
+                                                            argStructPtr->kd,
+                                                            argStructPtr->weight,
+                                                            argStructPtr->desired,
+                                                            argStructPtr->usesYarp);
+                }
             }
 
-            if (argStructPtr->useWeightVectorConstructor) {
-                newTaskManager = new wOcraFullPostureTaskManager(ctrl, model,
-                                                        argStructPtr->taskName,
-                                                        ocra::FullState::INTERNAL,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weightVector,
-                                                        argStructPtr->desired,
-                                                        argStructPtr->usesYarp);
-            }
-            else {
-                newTaskManager = new wOcraFullPostureTaskManager(ctrl, model,
-                                                        argStructPtr->taskName,
-                                                        ocra::FullState::INTERNAL,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weight,
-                                                        argStructPtr->desired,
-                                                        argStructPtr->usesYarp);
-            }
+
 
 
             return newTaskManager;
@@ -436,41 +668,55 @@ namespace wocra
         {
             if (sizeJointIndexes>0 && sizeJointIndexes<=sizeDof)
             {
-                if (
-                    (sizeDesired == 0)  ||
-                    ((sizeDesired > 1) && (sizeDesired < sizeJointIndexes)) ||
-                    (sizeDesired > sizeJointIndexes)
-                   )
+                if (sizeDesired==0)
                 {
-                    argStructPtr->desired = Eigen::VectorXd::Zero(sizeJointIndexes);
+                    if (argStructPtr->useWeightVectorConstructor) {
+                        newTaskManager = new wOcraPartialPostureTaskManager(ctrl, model,
+                                                                argStructPtr->taskName,
+                                                                ocra::FullState::INTERNAL,
+                                                                argStructPtr->jointIndexes,
+                                                                argStructPtr->kp,
+                                                                argStructPtr->kd,
+                                                                argStructPtr->weightVector,
+                                                                argStructPtr->usesYarp);
+                    }
+                    else {
+                        newTaskManager = new wOcraPartialPostureTaskManager(ctrl, model,
+                                                                argStructPtr->taskName,
+                                                                ocra::FullState::INTERNAL,
+                                                                argStructPtr->jointIndexes,
+                                                                argStructPtr->kp,
+                                                                argStructPtr->kd,
+                                                                argStructPtr->weight,
+                                                                argStructPtr->usesYarp);
+                    }
                 }
-                else if (sizeDesired == 1)
+                else
                 {
-                    argStructPtr->desired = Eigen::VectorXd::Constant(sizeJointIndexes, argStructPtr->desired[0]);
+                    if (argStructPtr->useWeightVectorConstructor) {
+                        newTaskManager = new wOcraPartialPostureTaskManager(ctrl, model,
+                                                                argStructPtr->taskName,
+                                                                ocra::FullState::INTERNAL,
+                                                                argStructPtr->jointIndexes,
+                                                                argStructPtr->kp,
+                                                                argStructPtr->kd,
+                                                                argStructPtr->weightVector,
+                                                                argStructPtr->desired,
+                                                                argStructPtr->usesYarp);
+                    }
+                    else {
+                        newTaskManager = new wOcraPartialPostureTaskManager(ctrl, model,
+                                                                argStructPtr->taskName,
+                                                                ocra::FullState::INTERNAL,
+                                                                argStructPtr->jointIndexes,
+                                                                argStructPtr->kp,
+                                                                argStructPtr->kd,
+                                                                argStructPtr->weight,
+                                                                argStructPtr->desired,
+                                                                argStructPtr->usesYarp);
+                    }
                 }
 
-                if (argStructPtr->useWeightVectorConstructor) {
-                    newTaskManager = new wOcraPartialPostureTaskManager(ctrl, model,
-                                                            argStructPtr->taskName,
-                                                            ocra::FullState::INTERNAL,
-                                                            argStructPtr->jointIndexes,
-                                                            argStructPtr->kp,
-                                                            argStructPtr->kd,
-                                                            argStructPtr->weightVector,
-                                                            argStructPtr->desired,
-                                                            argStructPtr->usesYarp);
-                }
-                else {
-                    newTaskManager = new wOcraPartialPostureTaskManager(ctrl, model,
-                                                            argStructPtr->taskName,
-                                                            ocra::FullState::INTERNAL,
-                                                            argStructPtr->jointIndexes,
-                                                            argStructPtr->kp,
-                                                            argStructPtr->kd,
-                                                            argStructPtr->weight,
-                                                            argStructPtr->desired,
-                                                            argStructPtr->usesYarp);
-                }
 
                 return newTaskManager;
             }
@@ -480,7 +726,6 @@ namespace wocra
 
         else if(argStructPtr->taskType == "wOcraSegCartesianTaskManager")
         {
-            //TODO: convert string axes to ocra::axes
 
             if(sizeOffset!=3)
             {
@@ -581,7 +826,7 @@ namespace wocra
             {
                 // We have to reorganize the quaternion vector when we use this constructor because it stores the coeffs in reverse order.
                 double tmpW = argStructPtr->desired(0);
-                argStructPtr->desired.head(3) = argStructPtr->desired.tail(3);
+                argStructPtr->desired.head(3) = argStructPtr->desired.tail(3).eval();
                 argStructPtr->desired(3) = tmpW;
 
                 if (argStructPtr->useWeightVectorConstructor) {
@@ -673,17 +918,7 @@ namespace wocra
             }
         }
 
-        // else if(argStructPtr->taskType == "wOcraVariableWeightsTaskManager")
-        // {
-        //  newTaskManager = new wOcraVariableWeightsTaskManager(ctrl, model,
-        //                                          argStructPtr->taskName,
-        //                                          argStructPtr->kp,
-        //                                          argStructPtr->kd,
-        //                                          argStructPtr->weight,
-        //                                          argStructPtr->desired,
-        //                                          argStructPtr->usesYarp);
-        //  return newTaskManager;
-        // }
+
 
         else
         {

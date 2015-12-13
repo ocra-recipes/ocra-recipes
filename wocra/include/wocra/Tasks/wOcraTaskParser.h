@@ -26,9 +26,15 @@ namespace wocra
         bool usesYarp, useWeightVectorConstructor;
         int axes;
         Eigen::VectorXd desired;
+        Eigen::VectorXd indexDesired;
+        Eigen::VectorXd nameDesired;
         Eigen::VectorXd weightVector;
+        Eigen::VectorXd indexWeightVector;
+        Eigen::VectorXd nameWeightVector;
         Eigen::VectorXi jointIndexes;
+        std::vector<std::string> jointNames;
         std::vector<Eigen::VectorXd> offset;
+
 
     }taskManagerArgs;
 
@@ -63,6 +69,9 @@ namespace wocra
             Eigen::Displacementd eigenVectorToDisplacementd(Eigen::VectorXd& eigenVector);
 
             std::vector<Eigen::Displacementd> eigenVectorToDisplacementd(std::vector<Eigen::VectorXd>& eigenVector);
+
+            void prepareTaskManagerArguments(const wOcraModel& model, std::vector<taskManagerArgs>::iterator argStructPtr);
+
 
     };
 
