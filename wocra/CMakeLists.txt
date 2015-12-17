@@ -11,7 +11,7 @@ include_directories(include
 file(GLOB_RECURSE wocra_srcs src/*.cpp)
 
 # Check for SMLT
-find_package(SMLT)
+find_package(SMLT QUIET)
 IF(SMLT_FOUND)
     message("-- SMLT lib found. Compiling gaussian process trajectory.")
     include_directories(SMLT_INCLUDE_DIRS)

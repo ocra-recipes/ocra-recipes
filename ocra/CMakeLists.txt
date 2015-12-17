@@ -17,7 +17,7 @@ target_link_libraries(ocra_optim
 
 install(DIRECTORY include
         DESTINATION ${CMAKE_INSTALL_PREFIX}
-        FILES_MATCHING PATTERN *.h)
+    FILES_MATCHING PATTERN *.h*)
 
 install(TARGETS ocra_control ocra_optim
         EXPORT OCRATargets
