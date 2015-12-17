@@ -53,8 +53,8 @@ namespace wocra
                             if (taskElem->QueryDoubleAttribute("kd", &currentTmArgs.kd)==TIXML_NO_ATTRIBUTE){currentTmArgs.kd=0.0;}
                             if (taskElem->QueryDoubleAttribute("weight", &currentTmArgs.weight)==TIXML_NO_ATTRIBUTE){currentTmArgs.weight=0.0; currentTmArgs.useWeightVectorConstructor=false;}else{currentTmArgs.useWeightVectorConstructor=false;}
                             if (taskElem->QueryIntAttribute("axes", &currentTmArgs.axes)==TIXML_NO_ATTRIBUTE){currentTmArgs.axes=ocra::XYZ;}
-                            if (taskElem->QueryIntAttribute("mu", &currentTmArgs.mu)==TIXML_NO_ATTRIBUTE){currentTmArgs.mu=1.0;}
-                            if (taskElem->QueryIntAttribute("margin", &currentTmArgs.margin)==TIXML_NO_ATTRIBUTE){currentTmArgs.margin=0.05;}
+                            if (taskElem->QueryDoubleAttribute("mu", &currentTmArgs.mu)==TIXML_NO_ATTRIBUTE){currentTmArgs.mu=1.0;}
+                            if (taskElem->QueryDoubleAttribute("margin", &currentTmArgs.margin)==TIXML_NO_ATTRIBUTE){currentTmArgs.margin=0.05;}
                             if (taskElem->QueryIntAttribute("axes", &currentTmArgs.axes)==TIXML_NO_ATTRIBUTE){currentTmArgs.axes=ocra::XYZ;}
                             if (taskElem->Attribute("usesYarp") != NULL){
                                 bool yarpBool;
