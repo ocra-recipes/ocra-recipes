@@ -42,16 +42,16 @@ namespace ocra
     const Variable&     getVariable() const                     {return GET_FUNCTION_CONST(X).getVariable();}
     Variable&           getVariable()                           {return GET_FUNCTION(X).getVariable();}
     template<eFunctionAbility Ability>
-    void                invalidate()                            {GET_FUNCTION(X).invalidate<Ability>();}
+    void                invalidate()                            {GET_FUNCTION(X).template invalidate<Ability>();}
     void                invalidateAll()                         {GET_FUNCTION(X).invalidateAll();}
     template<eFunctionAbility Ability>
-    bool                isValid() const                         {return GET_FUNCTION_CONST(X).isValid<Ability>();}
+    bool                isValid() const                         {return GET_FUNCTION_CONST(X).template isValid<Ability>();}
     template<eFunctionAbility Ability>
-    bool                canCompute() const                      {return GET_FUNCTION_CONST(X).canCompute<Ability>();}
+    bool                canCompute() const                      {return GET_FUNCTION_CONST(X).template canCompute<Ability>();}
     template<eFunctionAbility Ability> const typename IFunction<Ability>::return_type&
-                        get() const                             {return GET_FUNCTION_CONST(X).get<Ability>();} //index
+                        get() const                             {return GET_FUNCTION_CONST(X).template get<Ability>();} //index
     template<eFunctionAbility Ability> typename IFunction<Ability>::return_sub_type
-                        get(int index) const                    {return GET_FUNCTION_CONST(X).get<Ability>(index);}
+                        get(int index) const                    {return GET_FUNCTION_CONST(X).template get<Ability>(index);}
     const VectorXd&     getValue() const                        {return GET_FUNCTION_CONST(X).getValue();}
     double              getValue(int index) const               {return GET_FUNCTION_CONST(X).getValue(index);}
     const MatrixXd&     getJacobian() const                     {return GET_FUNCTION_CONST(X).getJacobian();}
