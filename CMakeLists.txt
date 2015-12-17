@@ -17,6 +17,7 @@ find_package(YARP REQUIRED)
 include_directories(
     ${Eigen_INCLUDE_DIRS}
     ${EigenLgsm_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
 )
 
 add_subdirectory(ocra)
