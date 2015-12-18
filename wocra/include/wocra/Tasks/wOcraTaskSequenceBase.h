@@ -1,6 +1,8 @@
 #ifndef wOcraTASKSEQUENCEBASE_H
 #define wOcraTASKSEQUENCEBASE_H
 
+#include <cmath>
+
 // Includes the set of all possible task managers to make it easier to reference
 #include "wocra/Tasks/wOcraTaskManagerBase.h"
 #include "wocra/Tasks/Managers/wOcraCoMTaskManager.h"
