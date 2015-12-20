@@ -30,11 +30,21 @@ Give a description...
 
 ### solvers
 
+Ultimately our goal is to implement the most recent convex solvers so we can mix and match control problem formulations with different solver algorithms. Right now we have only implemented a slightly modified version of QuadProg.
+
 #### quadprog
+
+This library is a QP (Quadratic Program) based on the QuadProg++ project (http://quadprog.sourceforge.net/) which has been slightly modified. In this version, vector and matrix classes are replaced by Eigen classes, in order to use the same definitions as the ocra libraries.
+
+
+
 #### qpoases
 
+This is on our wish list.
+
+
 ## Dependencies
-- Boost
+- Boost (`filesystem`)
 - Eigen 3.2.0 (*note:* We have issues with later versions of eigen so please do not use the current build - install via apt-get.)
 - [EigenLgsm](https://github.com/ocra-recipes/eigen_lgsm)
 - TinyXML
@@ -114,3 +124,17 @@ Want to contribute? Maybe build a plugin or two? Read the [Contributing  section
 ### Contributing
 
 Give a description...
+
+### Generating the documentation
+
+To build the documentation for `orca-recipes` you will need [`doxygen`](http://www.stack.nl/~dimitri/doxygen/index.html). To install `doxygen` on linux run `sudo apt-get install doxygen`.
+
+In your `build/` directory (if you have already run `cmake ..` simply run:
+```
+make doc
+```
+**
+If you run this right now you must ignore the latex errors due to the missing `.sty` files by just holding down `enter` until they are past.
+**
+
+HTML and LaTeX files will be generated in the `build/docs/` directory. Open the file, `index.html`.
