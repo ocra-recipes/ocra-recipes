@@ -5,6 +5,7 @@ language: cpp
 
 compiler:
   - gcc
+  - clang
 
 install:
     - CI_DIR=$PWD
