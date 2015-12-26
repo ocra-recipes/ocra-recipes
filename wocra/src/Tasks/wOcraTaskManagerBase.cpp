@@ -284,6 +284,39 @@ void wOcraTaskManagerBase::parseIncomingMessage(yarp::os::Bottle *input, yarp::o
             i++;
         }
 
+        // Open high speed control ports
+        else if (msgTag == "openControlPorts")
+        {
+            if(openControlPorts()){
+                reply->addInt(1);
+            }
+            else{
+                reply->addInt(0);
+            }
+            i++;
+        }
+        // Close high speed control ports
+        else if (msgTag == "closeControlPorts")
+        {
+            if(closeControlPorts()){
+                reply->addInt(1);
+            }
+            else{
+                reply->addInt(0);
+            }
+            i++;
+        }
+
+        // Get control port names
+        else if (msgTag == "getControlPortNames")
+        {
+            reply->addString("Control port names:");
+            reply->addString(inputControlPortName);
+            reply->addString(outputControlPortName);
+
+            i++;
+        }
+
         // Fallback
         else
         {
@@ -314,6 +347,9 @@ std::string wOcraTaskManagerBase::printValidMessageTags()
     helpString += "getType: Retrieve the Type of the task. No arguments expected.\n";
     helpString += "getName: Retrieve the Name of the task. No arguments expected.\n";
     helpString += "useTrajectory: Automatically generate a trajectory to follow for new desired states. You can optionally specify the type of trajectory: MinJerk, LinInterp, Experimental.\n";
+    helpString += "openControlPorts: Open up high speed yarp control ports.\n";
+    helpString += "closeControlPorts: Close high speed yarp control ports.\n";
+    helpString += "getControlPortNames: Get the names of the high speed yarp control ports.\n";
     helpString += "help: Prints all the valid commands. No arguments expected.\n";
 
     helpString += "\nTypical usage: [message tag] [message value(s)]\ne.g.  >> stiffness 20 damping 10 desired_state 1.0 2.0 2.0\n";
@@ -321,7 +357,24 @@ std::string wOcraTaskManagerBase::printValidMessageTags()
     return helpString;
 }
 
+bool wOcraTaskManagerBase::openControlPorts()
+{
+    bool res = true;
+    inputControlPortName = "/TM/"+stableName+":i";
+    outputControlPortName = "/TM/"+stableName+":o";
 
+    res = res && inputControlPort.open(inputControlPortName.c_str());
+    res = res && outputControlPort.open(outputControlPortName.c_str());
+    return res;
+}
+
+bool wOcraTaskManagerBase::closeControlPorts()
+{
+    inputControlPort.close();
+    outputControlPort.close();
+    bool res = !inputControlPort.isOpen() && !outputControlPort.isOpen();
+    return res;
+}
 
 std::string wOcraTaskManagerBase::getTaskManagerType()
 {

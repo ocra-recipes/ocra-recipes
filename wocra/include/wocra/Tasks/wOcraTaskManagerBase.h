@@ -11,6 +11,8 @@
 #include <yarp/os/PortReader.h>
 #include <yarp/os/RpcServer.h>
 #include <yarp/os/ConnectionReader.h>
+#include <yarp/os/Port.h>
+
 
 #include "wocra/Trajectory/wOcraTrajectory.h"
 
@@ -118,6 +120,11 @@ class wOcraTaskManagerBase
         int stateDimension;
 
         void setTrajectoryType(std::string trajType="MinJerk");
+        bool openControlPorts();
+        bool closeControlPorts();
+
+        std::string inputControlPortName, outputControlPortName;
+        yarp::os::Port inputControlPort, outputControlPort;
 
 
 };
