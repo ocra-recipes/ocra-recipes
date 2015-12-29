@@ -13,8 +13,11 @@ namespace wocra
  * \param model                 ocra model to setup the task
  * \param taskName              Name of the task
  */
-wOcraTaskManagerBase::wOcraTaskManagerBase(wOcraController& _ctrl, const wOcraModel& _model, const std::string& _taskName, bool _usesYarpPorts)
-    : ctrl(_ctrl), model(_model), name(_taskName), usesYARP(_usesYarpPorts), processor(*this)
+wOcraTaskManagerBase::wOcraTaskManagerBase(wOcraController& _ctrl, const wOcraModel& _model, const std::string& _taskName, bool _usesYarpPorts):
+ctrl(_ctrl),
+model(_model),
+name(_taskName),
+usesYARP(_usesYarpPorts)
 {
     stableName = name;
 
@@ -27,55 +30,30 @@ wOcraTaskManagerBase::wOcraTaskManagerBase(wOcraController& _ctrl, const wOcraMo
     if (usesYARP) {
         portName = "/TM/"+name+"/rpc:i";
 
+        processor = new rpcMessageCallback(*this);
         rpcPort.open(portName.c_str());
-        rpcPort.setReader(processor);
+        rpcPort.setReader(*processor);
 
         std::cout << "\n";
     }
     stateDimension = 0; // should be overwritten by derived classes who have implemented the necessary functions.
     task = NULL;
+
+    controlPortsOpen = false;
 }
 
 
 wOcraTaskManagerBase::~wOcraTaskManagerBase()
 {
-    std::cout << "\t--> Closing ports" << std::endl;
-    rpcPort.close();
+    if (usesYARP) {
+        std::cout << "\t--> Closing ports" << std::endl;
+        rpcPort.close();
+    }
     if(task!=NULL){
         task->disconnectFromController();
     }
     std::cout << "\t--> Destroying " << stableName << std::endl;
 }
-
-/**************************************************************************************************
-                                    Nested PortReader Class
-**************************************************************************************************/
-wOcraTaskManagerBase::DataProcessor::DataProcessor(wOcraTaskManagerBase& tmBaseRef):tmBase(tmBaseRef)
-{
-    //do nothing
-}
-
-bool wOcraTaskManagerBase::DataProcessor::read(yarp::os::ConnectionReader& connection)
-{
-    yarp::os::Bottle input, reply;
-    bool ok = input.read(connection);
-    if (!ok)
-        return false;
-
-    else{
-        tmBase.parseIncomingMessage(&input, &reply);
-        yarp::os::ConnectionWriter *returnToSender = connection.getWriter();
-        if (returnToSender!=NULL) {
-            reply.write(*returnToSender);
-        }
-        return true;
-    }
-}
-/**************************************************************************************************
-**************************************************************************************************/
-
-
-
 
 /** Returns the error vector of the task
  *
@@ -310,10 +288,13 @@ void wOcraTaskManagerBase::parseIncomingMessage(yarp::os::Bottle *input, yarp::o
         // Get control port names
         else if (msgTag == "getControlPortNames")
         {
-            reply->addString("Control port names:");
-            reply->addString(inputControlPortName);
-            reply->addString(outputControlPortName);
-
+            if (controlPortsOpen) {
+                reply->addString("Control port names:");
+                reply->addString(inputControlPortName);
+                reply->addString(outputControlPortName);
+            }else{
+                reply->addString("[ERROR] Control ports haven't been opened. Use command: openControlPorts");
+            }
             i++;
         }
 
@@ -360,20 +341,54 @@ std::string wOcraTaskManagerBase::printValidMessageTags()
 bool wOcraTaskManagerBase::openControlPorts()
 {
     bool res = true;
-    inputControlPortName = "/TM/"+stableName+":i";
-    outputControlPortName = "/TM/"+stableName+":o";
+    inputControlPortName = "/TM/"+stableName+"/state:i";
+    outputControlPortName = "/TM/"+stableName+"/state:o";
 
     res = res && inputControlPort.open(inputControlPortName.c_str());
     res = res && outputControlPort.open(outputControlPortName.c_str());
+
+    controlCallback = new controlInputCallback(*this);
+    inputControlPort.setReader(*controlCallback);
+
+    // stateCallback = new controlOutputCallback(*this);
+    // outputControlPort.setReader(*stateCallback);
+
+    stateThread = new stateUpdateThread(10, *this);
+    stateThread->start();
+
+    controlPortsOpen = res;
+
     return res;
 }
 
 bool wOcraTaskManagerBase::closeControlPorts()
 {
-    inputControlPort.close();
-    outputControlPort.close();
+    if (controlPortsOpen) {
+        stateThread->stop();
+
+        inputControlPort.close();
+        outputControlPort.close();
+    }
+
     bool res = !inputControlPort.isOpen() && !outputControlPort.isOpen();
+
+    controlPortsOpen = !res;
+
     return res;
+}
+
+bool wOcraTaskManagerBase::parseControlInput(yarp::os::Bottle *input)
+{
+    if (input->size() == stateDimension)
+    {
+        for(int i=0; i<stateDimension; i++)
+        {
+            newDesiredStateVector[i] = input->get(i).asDouble(); //make sure there are no NULL entries
+        }
+        setDesiredState(); // constructs the appropropriate state inputs
+        return true;
+    }
+    else{return false;}
 }
 
 std::string wOcraTaskManagerBase::getTaskManagerType()
@@ -399,10 +414,13 @@ void wOcraTaskManagerBase::setStateDimension(int taskDimension, int waypointDime
 
 void wOcraTaskManagerBase::updateCurrentStateVector(const double* ptrToFirstIndex)
 {
+    if (controlPortsOpen){stateOutBottle.clear();}
     for(int i=0; i<stateDimension; i++){
         currentStateVector[i] = *ptrToFirstIndex;
+        if (controlPortsOpen){stateOutBottle.addDouble(*ptrToFirstIndex);}
         ptrToFirstIndex++;
     }
+    if (controlPortsOpen){outputControlPort.write(stateOutBottle);}
 }
 
 void wOcraTaskManagerBase::updateDesiredStateVector(const double* ptrToFirstIndex)
@@ -453,5 +471,81 @@ void wOcraTaskManagerBase::updateTrajectory(double time)
     setDesiredState();
     followingTrajectory = !taskTrajectory->isFinished();
 }
+
+
+/**************************************************************************************************
+                                    Nested PortReader Class
+**************************************************************************************************/
+wOcraTaskManagerBase::rpcMessageCallback::rpcMessageCallback(wOcraTaskManagerBase& tmBaseRef):tmBase(tmBaseRef)
+{
+    //do nothing
+}
+
+bool wOcraTaskManagerBase::rpcMessageCallback::read(yarp::os::ConnectionReader& connection)
+{
+    yarp::os::Bottle input, reply;
+    bool ok = input.read(connection);
+    if (!ok)
+        return false;
+
+    else{
+        tmBase.parseIncomingMessage(&input, &reply);
+        yarp::os::ConnectionWriter *returnToSender = connection.getWriter();
+        if (returnToSender!=NULL) {
+            reply.write(*returnToSender);
+        }
+        return true;
+    }
+}
+/**************************************************************************************************
+**************************************************************************************************/
+
+
+
+/**************************************************************************************************
+                                    Nested PortReader Class
+**************************************************************************************************/
+wOcraTaskManagerBase::controlInputCallback::controlInputCallback(wOcraTaskManagerBase& tmBaseRef):tmBase(tmBaseRef)
+{
+    //do nothing
+}
+
+bool wOcraTaskManagerBase::controlInputCallback::read(yarp::os::ConnectionReader& connection)
+{
+    yarp::os::Bottle input;
+    if (input.read(connection)){
+        return tmBase.parseControlInput(&input);
+    }
+    else{
+        return false;
+    }
+}
+/**************************************************************************************************
+**************************************************************************************************/
+
+
+/**************************************************************************************************
+                                    stateUpdateThread Class
+**************************************************************************************************/
+wOcraTaskManagerBase::stateUpdateThread::stateUpdateThread(int period, wOcraTaskManagerBase& tmBaseRef):
+RateThread(period),
+tmBase(tmBaseRef)
+{
+    // Do nothing
+}
+bool wOcraTaskManagerBase::stateUpdateThread::threadInit()
+{
+    return true;
+}
+void wOcraTaskManagerBase::stateUpdateThread::run()
+{
+    tmBase.updateCurrentStateVector(tmBase.getCurrentState());
+}
+void wOcraTaskManagerBase::stateUpdateThread::threadRelease()
+{
+    std::cout << "stateUpdateThread: Closing.\n";
+}
+/**************************************************************************************************
+**************************************************************************************************/
 
 }

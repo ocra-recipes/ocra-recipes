@@ -4,6 +4,7 @@
 #include "wocra/Models/wOcraModel.h"
 #include "wocra/wOcraController.h"
 #include "wocra/Tasks/wOcraTask.h"
+#include "wocra/Trajectory/wOcraTrajectory.h"
 
 #include <Eigen/Dense>
 
@@ -12,13 +13,11 @@
 #include <yarp/os/RpcServer.h>
 #include <yarp/os/ConnectionReader.h>
 #include <yarp/os/Port.h>
-
-
-#include "wocra/Trajectory/wOcraTrajectory.h"
-
+#include <yarp/os/RateThread.h>
 
 namespace wocra
 {
+
 
 /** \brief Task Manager for the Center of Mass (CoM) task with the wOcra Controller
  *
@@ -44,18 +43,49 @@ class wOcraTaskManagerBase
         virtual VectorXd getTaskError();
         double getTaskErrorNorm();
 
+        /*****************************************************************************************/
+        /** \brief rpcMessageCallback
+        *
+        */
+        class rpcMessageCallback : public yarp::os::PortReader {
+        private:
+            wOcraTaskManagerBase& tmBase;
 
-        /************** DataProcessor *************/
-        class DataProcessor : public yarp::os::PortReader {
-            private:
-                wOcraTaskManagerBase& tmBase;
+        public:
+            rpcMessageCallback(wOcraTaskManagerBase& tmBaseRef);
 
-            public:
-                DataProcessor(wOcraTaskManagerBase& tmBaseRef);
-
-                virtual bool read(yarp::os::ConnectionReader& connection);
+            virtual bool read(yarp::os::ConnectionReader& connection);
         };
-        /************** DataProcessor *************/
+
+        /** \brief controlInputCallback
+        *
+        */
+        class controlInputCallback : public yarp::os::PortReader {
+        private:
+            wOcraTaskManagerBase& tmBase;
+
+        public:
+            controlInputCallback(wOcraTaskManagerBase& tmBaseRef);
+
+            virtual bool read(yarp::os::ConnectionReader& connection);
+        };
+
+        /** \brief stateUpdateThread
+        *
+        */
+        class stateUpdateThread : public yarp::os::RateThread
+        {
+        private:
+            wOcraTaskManagerBase& tmBase;
+
+        public:
+            stateUpdateThread(int period, wOcraTaskManagerBase& tmBaseRef);
+            bool threadInit();
+            void run();
+            void threadRelease();
+        };
+        /*****************************************************************************************/
+
 
         virtual void setStiffness(double stiffness){ std::cout << "setStiffness() Not implemented" << std::endl; }
         virtual double getStiffness(){return 0.0;}
@@ -115,7 +145,7 @@ class wOcraTaskManagerBase
         yarp::os::Network yarp;
         yarp::os::RpcServer rpcPort;
         std::string portName;
-        DataProcessor processor;
+        rpcMessageCallback* processor;
 
         int stateDimension;
 
@@ -123,8 +153,17 @@ class wOcraTaskManagerBase
         bool openControlPorts();
         bool closeControlPorts();
 
+
+        bool controlPortsOpen;
+        yarp::os::Bottle stateInBottle, stateOutBottle;
         std::string inputControlPortName, outputControlPortName;
         yarp::os::Port inputControlPort, outputControlPort;
+
+        controlInputCallback* controlCallback;
+        // controlOutputCallback* stateCallback;
+
+        bool parseControlInput(yarp::os::Bottle *input);
+        stateUpdateThread* stateThread;
 
 
 };

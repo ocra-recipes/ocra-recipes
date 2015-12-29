@@ -15,7 +15,7 @@ function(configure_cmake_package export_targets libraries)
     include(CMakePackageConfigHelpers)
 
     set(CMAKE_CONFIG_DEST "share/cmake/${PROJECT_NAME}/")
-    set(INCLUDE_INSTALL_DIR "include/${PROJECT_NAME}")
+    set(INCLUDE_INSTALL_DIR "include/")
 
 
 
