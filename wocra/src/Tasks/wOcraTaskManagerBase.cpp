@@ -17,7 +17,11 @@ wOcraTaskManagerBase::wOcraTaskManagerBase(wOcraController& _ctrl, const wOcraMo
 ctrl(_ctrl),
 model(_model),
 name(_taskName),
-usesYARP(_usesYarpPorts)
+usesYARP(_usesYarpPorts),
+processor(NULL),
+controlCallback(NULL),
+stateThread(NULL),
+taskTrajectory(NULL)
 {
     stableName = name;
 
@@ -52,6 +56,13 @@ wOcraTaskManagerBase::~wOcraTaskManagerBase()
     if(task!=NULL){
         task->disconnectFromController();
     }
+    if(processor!=NULL){delete processor; processor = NULL;}
+    if(controlCallback!=NULL){delete controlCallback; controlCallback = NULL;}
+    if(stateThread!=NULL){delete stateThread; stateThread = NULL;}
+    if(taskTrajectory!=NULL){delete taskTrajectory; taskTrajectory = NULL;}
+
+
+
     std::cout << "\t--> Destroying " << stableName << std::endl;
 }
 
@@ -125,21 +136,34 @@ void wOcraTaskManagerBase::parseIncomingMessage(yarp::os::Bottle *input, yarp::o
             i++;
         }
 
-//        // Weight
-//        else if (msgTag == "setWeight")
-//        {
-//            i++;
-//            setWeight(input->get(i).asDouble());
-//            reply->addString("Weight:");
-//            reply->addDouble(getWeight());
-//            i++;
-//        }
-//        else if(msgTag == "getWeight")
-//        {
-//            reply->addString("Weight:");
-//            reply->addDouble(getWeight());
-//            i++;
-//        }
+       // Weight
+       else if (msgTag == "setWeight")
+       {
+           i++;
+           Eigen::VectorXd currentWeights = getWeight();
+           for(int j=0; j<currentWeights.size(); j++)
+           {
+               currentWeights(j) = input->get(i).asDouble();
+               i++;
+           }
+           setWeight(currentWeights);
+           reply->addString("Weight:");
+           currentWeights = getWeight();
+           for(int j=0; j<currentWeights.size(); j++)
+           {
+               reply->addDouble(currentWeights(j));
+           }
+       }
+       else if(msgTag == "getWeight")
+       {
+           reply->addString("Weight:");
+           Eigen::VectorXd currentWeights = getWeight();
+           for(int j=0; j<currentWeights.size(); j++)
+           {
+               reply->addDouble(currentWeights(j));
+           }
+           i++;
+       }
 
         else if (msgTag == "useTrajectory")
         {
@@ -379,12 +403,23 @@ bool wOcraTaskManagerBase::closeControlPorts()
 
 bool wOcraTaskManagerBase::parseControlInput(yarp::os::Bottle *input)
 {
-    if (input->size() == stateDimension)
+    if (input->size() >= stateDimension)
     {
         for(int i=0; i<stateDimension; i++)
         {
             newDesiredStateVector[i] = input->get(i).asDouble(); //make sure there are no NULL entries
         }
+        if (input->size()==(stateDimension + getWeight().size())) {
+            Eigen::VectorXd newWeights = getWeight();
+            int j = 0;
+            for(int i = stateDimension; i<(stateDimension + newWeights.size()); i++)
+            {
+                newWeights(j) = input->get(i).asDouble(); //make sure there are no NULL entries
+                j++;
+            }
+            setWeight(newWeights);
+        }
+
         setDesiredState(); // constructs the appropropriate state inputs
         return true;
     }

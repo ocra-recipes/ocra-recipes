@@ -56,7 +56,7 @@ class wOcraTrajectory {
         virtual void getDesiredValues(double time, Eigen::MatrixXd& desiredValues, Eigen::VectorXd& variance)
         {
             desiredValues = Eigen::MatrixXd::Zero(nDoF, TRAJ_DIM);
-            variance = Eigen::MatrixXd::Zero(nDoF, TRAJ_DIM);
+            variance = Eigen::VectorXd::Zero(nDoF);
         };
 
 

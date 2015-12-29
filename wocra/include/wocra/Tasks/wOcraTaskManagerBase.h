@@ -91,13 +91,12 @@ class wOcraTaskManagerBase
         virtual double getStiffness(){return 0.0;}
         virtual void setDamping(double damping){ std::cout << "setDamping() Not implemented" << std::endl; }
         virtual double getDamping(){return 0.0;}
-        virtual void setWeight(double weight){ std::cout << "setWeight() Not implemented" << std::endl; }
-        virtual void setWeight(Eigen::VectorXd& weight){ std::cout << "setWeight() Not implemented" << std::endl; }
+        virtual void setWeight(double weight){task->setWeight(weight);}
+        virtual void setWeight(Eigen::VectorXd& weight){task->setWeight(weight);}
         virtual Eigen::VectorXd getWeight(){}
         virtual void setDesiredState(){ std::cout << "setDesiredState() Not implemented" << std::endl; }
 
         virtual void setWeights(Eigen::Vector3d weight){};
-        virtual Eigen::VectorXd getWeights(){};
 
     protected:
         wocra::wOcraTask*              task;
