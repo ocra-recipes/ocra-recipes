@@ -4,31 +4,6 @@
 
 namespace wocra
 {
-
-// wOcraLinearInterpolationTrajectory::wOcraLinearInterpolationTrajectory(Eigen::MatrixXd& _waypoints, bool _endsWithQuaternion):
-//     wOcraTrajectory(_waypoints, _endsWithQuaternion){};
-//
-// wOcraLinearInterpolationTrajectory::wOcraLinearInterpolationTrajectory(const Eigen::VectorXd& _startingVector, const Eigen::VectorXd& _endingVector, bool _endsWithQuaternion):
-//     wOcraTrajectory(_startingVector, _endingVector, _endsWithQuaternion){};
-//
-// wOcraLinearInterpolationTrajectory::wOcraLinearInterpolationTrajectory(Eigen::Displacementd& _startingDisplacement, Eigen::Displacementd& _endingDisplacement, bool _endsWithQuaternion):
-//     wOcraTrajectory(_startingDisplacement, _endingDisplacement, _endsWithQuaternion){};
-//
-// wOcraLinearInterpolationTrajectory::wOcraLinearInterpolationTrajectory(Eigen::Rotation3d& _startingOrientation, Eigen::Rotation3d& _endingOrientation, bool _endsWithQuaternion):
-//     wOcraTrajectory(_startingOrientation, _endingOrientation, _endsWithQuaternion){};
-
-
-
-
-
-// void wOcraLinearInterpolationTrajectory::getDesiredValues()
-// {
-//     std::cout << "\n--> Warning, empty method. Please call one of the following:\n" << std::endl;
-//     std::cout << "----> Eigen::VectorXd wOcraLinearInterpolationTrajectory::getDesiredValues(double _time)" << std::endl;
-//     std::cout << "----> Eigen::Displacementd wOcraLinearInterpolationTrajectory::getDesiredValues(double _time, bool _asDisplacement)" << std::endl;
-// }
-
-
 Eigen::MatrixXd wOcraLinearInterpolationTrajectory::getDesiredValues(double _time)
 {
     if (startTrigger)
@@ -78,26 +53,5 @@ Eigen::MatrixXd wOcraLinearInterpolationTrajectory::getDesiredValues(double _tim
 
     return desiredValue;
 }
-
-// void wOcraLinearInterpolationTrajectory::getDesiredValues(double _time, Eigen::Displacementd& _desiredDisplacement)
-// {
-//     Eigen::MatrixXd desVals = wOcraLinearInterpolationTrajectory::getDesiredValues(_time);
-
-//     eigenVectorToDisplacement(desVals.col(POS_INDEX), _desiredDisplacement);
-// }
-
-// void wOcraLinearInterpolationTrajectory::getDesiredValues(double _time, Eigen::Rotation3d& _desiredOrientation)
-// {
-//     Eigen::MatrixXd desVals = wOcraLinearInterpolationTrajectory::getDesiredValues(_time);
-
-//     eigenVectorToQuaternion(desVals.col(POS_INDEX), _desiredOrientation);
-// }
-
-
-
-
-
-
-
 
 } //namespace wocra

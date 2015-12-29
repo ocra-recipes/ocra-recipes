@@ -52,6 +52,14 @@ class wOcraTrajectory {
         //virtual Eigen::VectorXd getDesiredValues(double time){return Eigen::VectorXd::Zero(nDim)};
         virtual Eigen::MatrixXd getDesiredValues(double time){return Eigen::MatrixXd::Zero(nDoF, TRAJ_DIM);};
 
+        // Note: only valid for "stochastic" trajectories, which for the moment means just GaussianProcess Trajectories.
+        virtual void getDesiredValues(double time, Eigen::MatrixXd& desiredValues, Eigen::VectorXd& variance)
+        {
+            desiredValues = Eigen::MatrixXd::Zero(nDoF, TRAJ_DIM);
+            variance = Eigen::MatrixXd::Zero(nDoF, TRAJ_DIM);
+        };
+
+
         void getDesiredValues(double time, std::vector<double>& doubleVec);
         void getDesiredValues(double time, Eigen::Displacementd& disp);
         void getDesiredValues(double time, Eigen::Rotation3d& orient);

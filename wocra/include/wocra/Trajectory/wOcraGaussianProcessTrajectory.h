@@ -21,7 +21,6 @@ class wOcraGaussianProcessTrajectory : public wocra::wOcraTrajectory {
         Eigen::MatrixXd getDesiredValues(double time);
         Eigen::VectorXd getVariance(double time);
         void getDesiredValues(double time, Eigen::MatrixXd& desiredValues, Eigen::VectorXd& variance);
-        void getDesiredValues(double time, Eigen::Displacementd& position, Eigen::Twistd& velocity, Eigen::Twistd& acceleration);
 
         void addWaypoint(const Eigen::VectorXd newWaypoint, const double waypointTime);
 

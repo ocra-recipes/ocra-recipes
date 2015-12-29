@@ -72,10 +72,5 @@ class wOcraExperimentalTrajectory : public wocra::wOcraTrajectory {
 
 };
 
-
-
-
-
-
 } // end of namespace wocra
 #endif // wOcraEXPERIMENTALTRAJECTORY_H

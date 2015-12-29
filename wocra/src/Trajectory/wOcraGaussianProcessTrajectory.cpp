@@ -1,4 +1,3 @@
-
 #include "wocra/Trajectory/wOcraGaussianProcessTrajectory.h"
 
 #ifndef ALPHA_L
@@ -8,8 +7,6 @@
 #ifndef VAR_LENGTH_FACTOR
 #define VAR_LENGTH_FACTOR 0.1
 #endif
-
-
 
 #ifndef MEAN_LENGTH_FACTOR
 #define MEAN_LENGTH_FACTOR 10.0//20.0
@@ -389,10 +386,6 @@ void wOcraGaussianProcessTrajectory::getDesiredValues(double _time, Eigen::Matri
 {
     desiredValues = getDesiredValues(_time);
     variance = getVariance(_time);
-}
-
-void wOcraGaussianProcessTrajectory::getDesiredValues(double _time, Eigen::Displacementd& _position, Eigen::Twistd& _velocity, Eigen::Twistd& _acceleration)
-{
 }
 
 

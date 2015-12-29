@@ -1,12 +1,8 @@
-
 #include "wocra/Trajectory/wOcraMinimumJerkTrajectory.h"
 #include <math.h>
 
-
-
 namespace wocra
 {
-
 
 Eigen::MatrixXd wOcraMinimumJerkTrajectory::getDesiredValues(double _time)
 {
@@ -47,11 +43,6 @@ Eigen::MatrixXd wOcraMinimumJerkTrajectory::getDesiredValues(double _time)
             Eigen::VectorXd interpolatedQuatVector = quaternionToEigenVector(interpolatedQuat);
             desiredValue.block((nDoF-QUATERNION_DIM),POS_INDEX,QUATERNION_DIM,1) = interpolatedQuatVector;
         }
-        // Eigen::VectorXd alpha = waypoints.col(currentWaypointIndex+1) - waypoints.col(currentWaypointIndex);
-
-        // desiredValue.col(POS_INDEX) = waypoints.col(currentWaypointIndex) + alpha * ( 10*pow(tau,3.0) - 15*pow(tau,4.0)  + 6*pow(tau,5.0)   );
-        // desiredValue.col(VEL_INDEX) = waypoints.col(currentWaypointIndex) + alpha * ( 30*pow(tau,2.0) - 60*pow(tau,3.0)  + 30*pow(tau,4.0)  );
-        // desiredValue.col(ACC_INDEX) = waypoints.col(currentWaypointIndex) + alpha * ( 60*pow(tau,1.0) - 180*pow(tau,2.0) + 120*pow(tau,3.0) );
     }
     else if ((tau > TAU_MAX) && (currentWaypointIndex<(nWaypoints-1)))
     {
@@ -67,23 +58,7 @@ Eigen::MatrixXd wOcraMinimumJerkTrajectory::getDesiredValues(double _time)
         trajectoryFinished = true;
     }
 
-    // std::cout<<"Test";
-    // dumpToFile(desiredValue);
     return desiredValue;
 }
-
-// void wOcraMinimumJerkTrajectory::getDesiredValues(double _time, Eigen::Displacementd& _position, Eigen::Twistd& _velocity, Eigen::Twistd& _acceleration)
-// {
-
-
-// }
-
-
-
-
-
-
-
-
 
 } //namespace wocra
