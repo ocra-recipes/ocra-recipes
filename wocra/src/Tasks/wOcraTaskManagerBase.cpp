@@ -21,7 +21,8 @@ usesYARP(_usesYarpPorts),
 processor(NULL),
 controlCallback(NULL),
 stateThread(NULL),
-taskTrajectory(NULL)
+taskTrajectory(NULL),
+task(NULL)
 {
     stableName = name;
 
@@ -41,7 +42,6 @@ taskTrajectory(NULL)
         std::cout << "\n";
     }
     stateDimension = 0; // should be overwritten by derived classes who have implemented the necessary functions.
-    task = NULL;
 
     controlPortsOpen = false;
 }
@@ -389,7 +389,8 @@ bool wOcraTaskManagerBase::closeControlPorts()
 {
     if (controlPortsOpen) {
         stateThread->stop();
-
+        delete stateThread;
+        stateThread = NULL;
         inputControlPort.close();
         outputControlPort.close();
     }
@@ -409,8 +410,8 @@ bool wOcraTaskManagerBase::parseControlInput(yarp::os::Bottle *input)
         {
             newDesiredStateVector[i] = input->get(i).asDouble(); //make sure there are no NULL entries
         }
-        if (input->size()==(stateDimension + getWeight().size())) {
-            Eigen::VectorXd newWeights = getWeight();
+        Eigen::VectorXd newWeights = getWeight();
+        if (input->size()==(stateDimension + newWeights.size())) {
             int j = 0;
             for(int i = stateDimension; i<(stateDimension + newWeights.size()); i++)
             {
