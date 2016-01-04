@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <cmath>
 #include <boost/filesystem.hpp>
 
 #include "wocra/Models/wOcraModel.h"
