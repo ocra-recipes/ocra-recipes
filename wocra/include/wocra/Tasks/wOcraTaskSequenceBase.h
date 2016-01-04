@@ -39,6 +39,7 @@ namespace wocra
             std::vector<std::string> getTaskList();
             std::vector<std::string> getTaskPorts();
 
+            wOcraTaskManagerBase* getTaskManagerPointer(std::string taskName);
 
 
 

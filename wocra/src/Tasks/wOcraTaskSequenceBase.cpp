@@ -102,4 +102,15 @@ namespace wocra
         return strVector;
     }
 
+    wOcraTaskManagerBase* wOcraTaskSequenceBase::getTaskManagerPointer(std::string taskName)
+    {
+        if (taskManagers.find(taskName) != taskManagers.end()) {
+            return taskManagers[taskName];
+        }
+        else{
+            std::cout << "[WARNING] (wOcraTaskSequenceBase::getTaskManagerPointer): Could not find, " << taskName << ", in the list of tasks." << std::endl;
+            return NULL;
+        }
+    }
+
 }
