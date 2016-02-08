@@ -1,5 +1,13 @@
+cmake_minimum_required(VERSION 2.8.11)
+
 project(ocra-recipes)
-cmake_minimum_required(VERSION 2.8)
+
+set(VARS_PREFIX "ocra-recipes")
+
+set(${VARS_PREFIX}_MAJOR_VERSION 1)
+set(${VARS_PREFIX}_MINOR_VERSION 0)
+set(${VARS_PREFIX}_PATCH_VERSION 0)
+set(${VARS_PREFIX}_VERSION ${${VARS_PREFIX}_MAJOR_VERSION}.${${VARS_PREFIX}_MINOR_VERSION}.${${VARS_PREFIX}_PATCH_VERSION})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
@@ -28,14 +36,21 @@ add_subdirectory(solvers)
 add_subdirectory(wocra)
 add_subdirectory(gocra)
 
-
 # add a target to generate API documentation with Doxygen
-find_package(Doxygen)
+find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-add_custom_target(doc
-${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-COMMENT "Generating API documentation with Doxygen" VERBATIM
-)
-endif(DOXYGEN_FOUND)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in
+                   ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    add_custom_target(doc
+        ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen" VERBATIM)
+endif()
+
+include(InstallBasicPackageFiles)
+install_basic_package_files(OcraRecipes VARS_PREFIX ${VARS_PREFIX}
+                                        VERSION ${${VARS_PREFIX}_VERSION}
+                                        COMPATIBILITY SameMajorVersion
+                                        TARGETS_PROPERTY ${VARS_PREFIX}_TARGETS
+                                        NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+include(AddUninstallTarget)

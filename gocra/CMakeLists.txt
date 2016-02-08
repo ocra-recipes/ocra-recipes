@@ -1,7 +1,5 @@
 project(gocra CXX)
 
-set(lib_name "gocra")
-
 include_directories(include
                     ${OCRA_CORE_INCLUDE_DIRS}
                     ${QUADPROG_INCLUDE_DIRS}
@@ -9,22 +7,17 @@ include_directories(include
 
 file(GLOB_RECURSE gocra_srcs src/*.cpp)
 
-add_library(${lib_name} ${gocra_srcs})
+add_library(gocra ${gocra_srcs})
 
-target_link_libraries(  ${lib_name}
-                        ${Boost_LIBRARIES}
-                     )
-
+target_link_libraries(gocra ${Boost_LIBRARIES} )
 
 # add_subdirectory(examples)
-
 install(DIRECTORY include
         DESTINATION ${CMAKE_INSTALL_PREFIX}
-        FILES_MATCHING PATTERN *.h)
+        FILES_MATCHING PATTERN *.h*)
 
-install(TARGETS ${lib_name}
-        EXPORT GOCRATargets
+install(TARGETS gocra
+        EXPORT OcraRecipes
         DESTINATION lib)
 
-# Default CMake package generator
-configure_cmake_package(GOCRATargets ${lib_name})
+set_property(GLOBAL APPEND PROPERTY ${VARS_PREFIX}_TARGETS gocra)
