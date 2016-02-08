@@ -22,7 +22,6 @@
 #                              [NAMESPACE <namespace>] # (default = "<name>::")
 #                              [EXTRA_PATH_VARS_SUFFIX path1 [path2 ...]]
 #                              [UPPERCASE_FILENAMES | LOWERCASE_FILENAMES]
-#                              [APPEND_TO_CMAKE_CONFIG_FILE <string>]
 #                             )
 #
 # Depending on UPPERCASE_FILENAMES and LOWERCASE_FILENAMES, this
@@ -274,7 +273,16 @@ function(INSTALL_BASIC_PACKAGE_FILES _Name)
     set(_config_cmake_in ${CMAKE_SOURCE_DIR}/${_config_filename}.in)
     if(NOT EXISTS ${_config_cmake_in})
         set(_config_cmake_in ${CMAKE_BINARY_DIR}/${_config_filename}.in)
-        set(_config_start_in
+        message("
+
+
+PACKAGE_${_IBPF_VARS_PREFIX}_INCLUDEDIR : ${PACKAGE_${_IBPF_VARS_PREFIX}_INCLUDEDIR}
+
+
+
+
+        ")
+        file(WRITE ${_config_cmake_in}
 "set(${_IBPF_VARS_PREFIX}_VERSION \@${_IBPF_VARS_PREFIX}_VERSION\@)
 
 @PACKAGE_INIT@
@@ -284,17 +292,11 @@ set_and_check(${_IBPF_VARS_PREFIX}_INCLUDEDIR \"@PACKAGE_${_IBPF_VARS_PREFIX}_IN
 if(NOT TARGET ${_target})
   include(\"\${CMAKE_CURRENT_LIST_DIR}/${_targets_filename}\")
 endif()
-")
 
-        set(_config_cmake_end_in
-"# Compatibility
+# Compatibility
 set(${_Name}_LIBRARIES ${${_IBPF_VARS_PREFIX}_TARGETS})
 set(${_Name}_INCLUDE_DIRS \${${_IBPF_VARS_PREFIX}_INCLUDEDIR})
 ")
-        set(_config_cmake_out ${_config_start_in}
-                          ${APPEND_TO_CMAKE_CONFIG_FILE}
-                          ${_config_cmake_end_in})
-        file(WRITE ${_config_cmake_in} ${_config_cmake_out})
     endif()
 
     # <name>Config.cmake (build tree)

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(ocra-recipes)
 
-set(VARS_PREFIX "ocra-recipes")
+set(VARS_PREFIX "OcraRecipes")
 
 set(${VARS_PREFIX}_MAJOR_VERSION 1)
 set(${VARS_PREFIX}_MINOR_VERSION 0)
@@ -14,9 +14,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 set(CMAKE_BUILD_TYPE Release)
 SET(BUILD_SHARED_LIBS ON)
 
-include(ConfigureCMakePackage)
-
-find_package(Eigen REQUIRED)
+#find_package(Eigen REQUIRED)
 find_package(EigenLgsm REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 find_package(TinyXML REQUIRED)
@@ -29,8 +27,6 @@ include_directories(
 )
 
 add_subdirectory(ocra)
-
-set(OCRA_CORE_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/ocra/include CACHE PATH "")
 
 add_subdirectory(solvers)
 add_subdirectory(wocra)
@@ -48,6 +44,7 @@ if(DOXYGEN_FOUND)
 endif()
 
 include(InstallBasicPackageFiles)
+get_property(PACKAGE_${VARS_PREFIX}_INCLUDEDIR GLOBAL PROPERTY PACKAGE_${VARS_PREFIX}_INCLUDEDIR)
 install_basic_package_files(OcraRecipes VARS_PREFIX ${VARS_PREFIX}
                                         VERSION ${${VARS_PREFIX}_VERSION}
                                         COMPATIBILITY SameMajorVersion
