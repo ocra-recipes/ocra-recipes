@@ -255,6 +255,10 @@ function(INSTALL_BASIC_PACKAGE_FILES _Name)
     get_property(_targets GLOBAL PROPERTY ${_IBPF_TARGETS_PROPERTY})
     foreach(_target ${_targets})
         list(APPEND ${_IBPF_VARS_PREFIX}_TARGETS ${_Name}::${_target})
+        list(APPEND ${_IBPF_VARS_PREFIX}_IF_CASES
+"
+if(${_Name}::${_target})
+")
     endforeach()
     list(GET ${_IBPF_VARS_PREFIX}_TARGETS 0 _target)
 
@@ -273,15 +277,6 @@ function(INSTALL_BASIC_PACKAGE_FILES _Name)
     set(_config_cmake_in ${CMAKE_SOURCE_DIR}/${_config_filename}.in)
     if(NOT EXISTS ${_config_cmake_in})
         set(_config_cmake_in ${CMAKE_BINARY_DIR}/${_config_filename}.in)
-        message("
-
-
-PACKAGE_${_IBPF_VARS_PREFIX}_INCLUDEDIR : ${PACKAGE_${_IBPF_VARS_PREFIX}_INCLUDEDIR}
-
-
-
-
-        ")
         file(WRITE ${_config_cmake_in}
 "set(${_IBPF_VARS_PREFIX}_VERSION \@${_IBPF_VARS_PREFIX}_VERSION\@)
 

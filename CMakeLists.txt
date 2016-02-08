@@ -49,5 +49,6 @@ install_basic_package_files(OcraRecipes VARS_PREFIX ${VARS_PREFIX}
                                         VERSION ${${VARS_PREFIX}_VERSION}
                                         COMPATIBILITY SameMajorVersion
                                         TARGETS_PROPERTY ${VARS_PREFIX}_TARGETS
-                                        NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+                                        NO_CHECK_REQUIRED_COMPONENTS_MACRO
+                                    )
 include(AddUninstallTarget)

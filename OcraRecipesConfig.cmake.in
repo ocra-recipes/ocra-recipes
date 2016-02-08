@@ -1,0 +1,15 @@
+set(OcraRecipes_VERSION @OcraRecipes_VERSION@)
+
+@PACKAGE_INIT@
+
+if(NOT TARGET OcraRecipes::ocra-control)
+  include("${CMAKE_CURRENT_LIST_DIR}/OcraRecipesTargets.cmake")
+endif()
+
+find_package(EigenLgsm REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system filesystem)
+find_package(TinyXML REQUIRED)
+find_package(YARP REQUIRED)
+
+set(OcraRecipes_LIBRARIES "@OcraRecipes_TARGETS@")
+set(OcraRecipes_INCLUDE_DIRS "@PACKAGE_OcraRecipes_INCLUDEDIR@")
