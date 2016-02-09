@@ -4,25 +4,25 @@ include_directories(include)
 file(GLOB control_srcs src/control/*.cpp)
 file(GLOB optim_srcs src/optim/*.cpp)
 
+set(OCRA_CORE_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")
 
-add_library(ocra_control ${control_srcs})
-add_library(ocra_optim ${optim_srcs})
+add_library(ocra-control ${control_srcs})
+add_library(ocra-optim ${optim_srcs})
 
-target_link_libraries(ocra_control
+target_link_libraries(ocra-control
     ${Boost_LIBRARIES}
     )
-target_link_libraries(ocra_optim
+target_link_libraries(ocra-optim
     ${Boost_LIBRARIES}
     )
 
 install(DIRECTORY include
         DESTINATION ${CMAKE_INSTALL_PREFIX}
-    FILES_MATCHING PATTERN *.h*)
+        FILES_MATCHING PATTERN *.h*)
 
-install(TARGETS ocra_control ocra_optim
-        EXPORT OCRATargets
+install(TARGETS ocra-control ocra-optim
+        EXPORT OcraRecipes
         DESTINATION lib)
 
-
-# Default CMake package generator
-configure_cmake_package(OCRATargets ocra_control ocra_optim)
+set_property(GLOBAL APPEND PROPERTY ${VARS_PREFIX}_TARGETS ocra-control ocra-optim)
+set_property(GLOBAL APPEND PROPERTY PACKAGE_${VARS_PREFIX}_INCLUDEDIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
