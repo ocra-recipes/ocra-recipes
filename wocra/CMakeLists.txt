@@ -24,6 +24,8 @@ LIST(APPEND link_libs   ${Boost_LIBRARIES}
                         ${TinyXML_LIBRARIES}
                         ${YARP_LIBRARIES}
                         ${QUADPROG_LIBRARIES}
+			ocra-control
+			ocra-optim
                         )
 
 IF(SMLT_FOUND)

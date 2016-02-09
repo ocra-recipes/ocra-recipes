@@ -11,5 +11,5 @@ find_package(Boost REQUIRED COMPONENTS system filesystem)
 find_package(TinyXML REQUIRED)
 find_package(YARP REQUIRED)
 
-set(OcraRecipes_LIBRARIES "@OcraRecipes_TARGETS@")
-set(OcraRecipes_INCLUDE_DIRS "@PACKAGE_OcraRecipes_INCLUDEDIR@")
+set(OcraRecipes_LIBRARIES "@OcraRecipes_TARGETS@" "${Boost_LIBRARIES};${TinyXML_LIBRARIES};${YARP_LIBRARIES}")
+set(OcraRecipes_INCLUDE_DIRS "@PACKAGE_OcraRecipes_INCLUDEDIR@" "${Boost_INCLUDE_DIRS};${TinyXML_INCLUDE_DIRS};${YARP_INCLUDE_DIRS};${Eigen_INCLUDE_DIRS};${EigenLgsm_INCLUDE_DIRS}")
