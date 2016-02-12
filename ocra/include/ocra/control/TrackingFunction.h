@@ -27,16 +27,16 @@ namespace ocra
 }
 
 /** @namespace ocra
-  * @brief Optimization-based Robot Controller namespace. 
+  * @brief Optimization-based Robot Controller namespace.
   *  a library of classes to write and solve optimization problems dedicated to
-  *  the control of multi-body systems. 
+  *  the control of multi-body systems.
   */
 namespace ocra
 {
   /** @class TrackingFunction
     *	@brief %TrackingFunction class.
     *	@warning None
-    *  
+    *
     * Description
     */
   class TrackingFunction : public Function
@@ -58,7 +58,7 @@ namespace ocra
   public:
     TrackingFunction(const SegmentFrame& segmentFrame, ECartesianDof fixedPosition = XYZ, ECartesianDof fixedOrientation = XYZ);
     TrackingFunction(const CoMFrame& comFrame, ECartesianDof fixedPosition = XYZ);
-    ~TrackingFunction();
+    virtual ~TrackingFunction();
 
     // ------------------------ public interface --------------------------------
   public:

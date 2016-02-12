@@ -354,7 +354,7 @@ namespace ocra
 
     BOOST_STATIC_ASSERT( ComponentDerived_must_be_base_of_CompositeDerived          ::value );
     BOOST_STATIC_ASSERT( CompositeDerived_must_publicly_derive_ComponentDerived     ::value );
-    BOOST_STATIC_ASSERT( ParenthoodInfo_must_have_default_nothrow_constructor       ::value );
+   // BOOST_STATIC_ASSERT( ParenthoodInfo_must_have_default_nothrow_constructor       ::value );
     BOOST_STATIC_ASSERT( component_base_t_must_be_base_of_ComponentDerived          ::value );
     BOOST_STATIC_ASSERT( ComponentDerived_must_publicly_derive_component_base_t_    ::value );
     BOOST_STATIC_ASSERT( composite_base_t_must_be_base_of_CompositeDerived          ::value );

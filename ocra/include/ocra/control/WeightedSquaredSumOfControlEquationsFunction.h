@@ -20,7 +20,7 @@ namespace ocra
   /** @class WeightedSquaredSumOfControlEquationsFunction
     *	@brief %WeightedSquaredSumOfControlEquationsFunction class.
     *	@warning None
-    *  
+    *
     * This class implements the function \f& \sum_i{\left|f_i \right|^2_{W_i}} \f& where the \f& f_i \f& are
     * ControlEquationFunction instances and the \f& W_i \f& are diagonal matrices weighting the norms.
     * Computation are optimized so as to avoid performing several times the same matrix-matrix multiplications.
@@ -43,6 +43,7 @@ namespace ocra
       const VectorXd&                getWeight()   const {return _weight;}
       void  changeWeight(const VectorXd& weight) {_weight = weight;}
       bool  functionEquals(const ControlEquationFunction& f) const {return &f==_function;}
+      virtual ~WeightAndFunction(){};
     private:
       VectorXd _weight;
       ControlEquationFunction* _function;
@@ -65,7 +66,11 @@ namespace ocra
     WeightedSquaredSumOfControlEquationsFunction(const ControlEquationFunction& f1, const VectorXd& weight1,
                                                  const ControlEquationFunction& f2, const VectorXd& weight2);
 
-    ~WeightedSquaredSumOfControlEquationsFunction();
+    virtual ~WeightedSquaredSumOfControlEquationsFunction()
+      {
+        while (_functions.size())
+          remove(_functions.back().getFunction());
+      }
 
     // ------------------------ public interface --------------------------------
   public:

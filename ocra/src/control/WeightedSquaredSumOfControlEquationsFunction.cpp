@@ -54,12 +54,6 @@ namespace ocra
     add(f2, weight2);
   }
 
-  WeightedSquaredSumOfControlEquationsFunction::~WeightedSquaredSumOfControlEquationsFunction()
-  {
-    while (_functions.size())
-      remove(_functions.back().getFunction());
-  }
-
   WeightedSquaredSumOfControlEquationsFunction& WeightedSquaredSumOfControlEquationsFunction::add(const ControlEquationFunction& f, const VectorXd& weight)
   {
     ocra_assert(&f.getModel() == &_model && "the function to be added is not a control equation on the same model as the others.");
@@ -97,7 +91,7 @@ namespace ocra
     it->changeWeight(weight);
     _W += weight;
     invalidateTmp(0);
-  } 
+  }
 
   const Model& WeightedSquaredSumOfControlEquationsFunction::getModel() const
   {
@@ -146,7 +140,7 @@ namespace ocra
 
 
     // ------------------------ private methods ---------------------------------
-  WeightedSquaredSumOfControlEquationsFunction::fun_iterator 
+  WeightedSquaredSumOfControlEquationsFunction::fun_iterator
     WeightedSquaredSumOfControlEquationsFunction::find(const ControlEquationFunction& f)
   {
     fun_iterator it;
@@ -158,7 +152,7 @@ namespace ocra
     return it;
   }
 
-  WeightedSquaredSumOfControlEquationsFunction::const_fun_iterator 
+  WeightedSquaredSumOfControlEquationsFunction::const_fun_iterator
     WeightedSquaredSumOfControlEquationsFunction::find(const ControlEquationFunction& f) const
   {
     const_fun_iterator it;

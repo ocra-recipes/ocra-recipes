@@ -19,13 +19,6 @@ namespace ocra
     model.connect<EVT_CHANGE_VALUE>(*this, &DynamicEquationFunction::invalidateb);
   }
 
-  DynamicEquationFunction::~DynamicEquationFunction()
-  {
-    _model.disconnect<EVT_CHANGE_VALUE>(*this, &DynamicEquationFunction::invalidateAll);
-    _model.disconnect<EVT_CHANGE_VALUE>(*this, &DynamicEquationFunction::invalidateb);
-    delete &getVariable();
-  }
-
   Variable& DynamicEquationFunction::createDEVariable(const Model& model)
   {
     static int cpt = 0;

@@ -19,9 +19,9 @@
 //#define LINEAR_FUNCTION_PROVIDES_HESSIANS
 
 /** @namespace ocra
-  * @brief Optimization-based Robot Controller namespace. 
+  * @brief Optimization-based Robot Controller namespace.
   *  a library of classes to write and solve optimization problems dedicated to
-  *  the control of multi-body systems. 
+  *  the control of multi-body systems.
   */
 namespace ocra
 {
@@ -29,7 +29,7 @@ namespace ocra
     *	@brief %LinearFunction class.
     *	@author Escande Adrien
     *	@warning None
-    * 
+    *
     * A linear function Ax+b. The class is implemented for A et b are constant, but can be overloaded for A and b being
     * functions of other parameters. The updateValue ensure to take A and b up-to-date (provided the methods to update
     * are correct).
@@ -55,7 +55,7 @@ namespace ocra
     /** Constructor for A and b constant*/
     template<class Derived, class VectorBase>
     LinearFunction(Variable& x, const MatrixBase<Derived>& A, const VectorBase& b);
-    ~LinearFunction();
+    virtual ~LinearFunction(){};
 
     // ------------------------ public interface---------------------------------
   public:
@@ -94,8 +94,8 @@ namespace ocra
       */
     virtual void doUpdateInputSizeEnd();
 
-    /** Inhibit/Desinhibit the fact that a call to invalidateb triggers a EVT_CHANGE_VALUE event, which is done by 
-      * default. This is meant to prevent multiple propagation of EVT_CHANGE_VALUE in case of complex update 
+    /** Inhibit/Desinhibit the fact that a call to invalidateb triggers a EVT_CHANGE_VALUE event, which is done by
+      * default. This is meant to prevent multiple propagation of EVT_CHANGE_VALUE in case of complex update
       * dependencies.
       */
     //@{

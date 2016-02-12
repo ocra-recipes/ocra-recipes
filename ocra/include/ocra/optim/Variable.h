@@ -311,6 +311,7 @@ namespace ocra
     \internal initializes Variable::memoryMap_.
     */
     BaseVariable(const std::string& name, size_t size);
+    virtual ~BaseVariable(){};
 
     /** Return true if this variable is a base variable, false otherwise. */
     bool isBaseVariable() const;

@@ -30,9 +30,9 @@
 
 
 /** @namespace ocra
-  * @brief Optimization-based Robot Controller namespace. 
+  * @brief Optimization-based Robot Controller namespace.
   *  a library of classes to write and solve optimization problems dedicated to
-  *  the control of multi-body systems. 
+  *  the control of multi-body systems.
   */
 namespace ocra
 {
@@ -40,9 +40,9 @@ namespace ocra
     *	@brief %Function class.
     *	@author Escande Adrien
     *	@warning None
-    *  
+    *
     * Base class for a function \f$ f_A \f$ defined as follows:
-    * \f$x\f$ is time-dependant n-dimensional variable living in \f$R^n\f$, A is a set of (possibly changing) 
+    * \f$x\f$ is time-dependant n-dimensional variable living in \f$R^n\f$, A is a set of (possibly changing)
     * parameters. \f$ f_A \f$ is a function of \f$x\f$ with a possible explicit time dependency. Thus we have
     * \f$ f_A : R^n \times R \rightarrow R^m \f$, with \f$ f_A(x,t) = (f_{1_A}(x,t), \cdots, f_{m_A}(x,t))^T \f$
     * The set of parameters is considered to be constant with respect to the time on a mathematical point of view, yet
@@ -55,16 +55,16 @@ namespace ocra
     * IFunction.h. For the most usual abilities, some shortcuts are implemented to ease both programming and reading.
     *
     *  Ability           return type             virtual update method       buffer alias      getter alias
-    * FUN_VALUE           VectorXd                updateValue                 _value            getValue 
-    * PARTIAL_X           MatrixXd                updateJacobian              _jacobian         getJacobian 
-    * PARTIAL_T           VectorXd                updatePartialT 
-    * FUN_DOT             VectorXd                updateFdot 
-    * PARTIAL_X_DOT       MatrixXd                updateJdot 
-    * PARTIAL_XX          std::vector<MatrixXd*>  updateHessian 
-    * FUN_DDOT            VectorXd                updateFddot 
-    * PARTIAL_TT          VectorXd                updatePartialTT 
-    * PARTIAL_TX          MatrixXd                updatePartialTX 
-    * PARTIAL_XT          MatrixXd                updatePartialXT 
+    * FUN_VALUE           VectorXd                updateValue                 _value            getValue
+    * PARTIAL_X           MatrixXd                updateJacobian              _jacobian         getJacobian
+    * PARTIAL_T           VectorXd                updatePartialT
+    * FUN_DOT             VectorXd                updateFdot
+    * PARTIAL_X_DOT       MatrixXd                updateJdot
+    * PARTIAL_XX          std::vector<MatrixXd*>  updateHessian
+    * FUN_DDOT            VectorXd                updateFddot
+    * PARTIAL_TT          VectorXd                updatePartialTT
+    * PARTIAL_TX          MatrixXd                updatePartialTX
+    * PARTIAL_XT          MatrixXd                updatePartialXT
     * PARTIAL_T_DOT       VectorXd                updatePartialTdot
     * PARTIAL_X_DOT_X_DOT VectorXd                updateJdotXdot
     *
@@ -74,7 +74,7 @@ namespace ocra
     * which don't appear here.
     * \sa IFunctionProperty
     */
-  class Function 
+  class Function
     : public ObserverSubject
     , public IFunctionProperties
     , OCRA_FUNCTION_INTERFACE_INHERITANCE(public)
@@ -87,10 +87,10 @@ namespace ocra
     /**
     * \brief Function Constructor.
     *
-    * \param[in] x  The time-dependant variable on which f is defined. 
-    * \param[in] dimension  The dimension of the output space, \a m in the description of the class. 
-    * \param[in] linearity  Linearity property of the function. 
-    * \param[in] convexity  Convexity property of the function. 
+    * \param[in] x  The time-dependant variable on which f is defined.
+    * \param[in] dimension  The dimension of the output space, \a m in the description of the class.
+    * \param[in] linearity  Linearity property of the function.
+    * \param[in] convexity  Convexity property of the function.
     * \param[in] continuity  Continuity property of the function.
     * \param[in] explicitlyTimeDependant
     * \param[in] separableTimeDependancy
@@ -99,12 +99,12 @@ namespace ocra
     *
     * \pre (continuity==CONTINUITY_UNKNOWN) || (continuity>0 && continuity<=CONTINUITY_CINF)
     **/
-    Function(Variable& x, int dimension,  eFunctionLinearity linearity = LINEARITY_UNDEFINED, 
-             eFunctionConvexity convexity = CONVEXITY_UNDEFINED, int continuity = CONTINUITY_UNKNOWN, 
+    Function(Variable& x, int dimension,  eFunctionLinearity linearity = LINEARITY_UNDEFINED,
+             eFunctionConvexity convexity = CONVEXITY_UNDEFINED, int continuity = CONTINUITY_UNKNOWN,
              bool explicitlyTimeDependant=false, bool separableTimeDependancy = true);
 
   public:
-    virtual ~Function();
+    virtual ~Function(){};
 
   protected:
     /**
@@ -147,17 +147,17 @@ namespace ocra
     template<eFunctionAbility Ability>
     bool canCompute() const;
 
-    /** Get the value of the quantity corresponding to the function ability specified by \a Ability. 
+    /** Get the value of the quantity corresponding to the function ability specified by \a Ability.
       * This value is recomputed if needed in a transparent way for the user.
       *
       * \tparam Ability The label of the ability
       *
-      * \pre IFunction<Ability>::canBeComputed()==true. If this is not the case, no physical memory is allocated for 
-      * the corresponding memory buffer and computation will fail or worse result in a buffer overflow. 
+      * \pre IFunction<Ability>::canBeComputed()==true. If this is not the case, no physical memory is allocated for
+      * the corresponding memory buffer and computation will fail or worse result in a buffer overflow.
       *
       * Throws std::runtime_error if the virtual update method has not been overloaded for this ability.
       *
-      * \Warning For performance reasons, no exceptions are thrown when this method is called for an ability which is not 
+      * \Warning For performance reasons, no exceptions are thrown when this method is called for an ability which is not
       * used. A high-level usage should make its own check by calling first \c IFunction<Ability>::canBeComputed.
       *
       * For example, get<PARTIAL_TX>() returns \f$ \frac{\partial^2 f}{\partial t \partial x}\f$ computed at the
@@ -170,7 +170,7 @@ namespace ocra
     const typename IFunction<Ability>::return_type& get() const;
 
 
-    /** Get a subpart of the value of the quantity corresponding to the function ability specified by \a Ability. 
+    /** Get a subpart of the value of the quantity corresponding to the function ability specified by \a Ability.
       * This value is recomputed if needed in a transparent way for the user.
       *
       * \tparam Ability The label of the ability.
@@ -188,16 +188,16 @@ namespace ocra
     /** return the value of the function at the current (x,t). Synonym for get<FUN_VALUE>() */
     const VectorXd& getValue() const;
 
-    /** return the ith component of the value of the function at the current (x,t). 
-      * Synonym for get<FUN_VALUE>(index) 
+    /** return the ith component of the value of the function at the current (x,t).
+      * Synonym for get<FUN_VALUE>(index)
       */
     double          getValue(int index) const;
 
     /** return the jacobian of the function at the current (x,t). Synonym for get<PARTIAL_X>() */
     const MatrixXd& getJacobian() const;
 
-    /** return the ith component of the jacobian of the function at the current (x,t). 
-      * Synonym for get<PARTIAL_X>(index) 
+    /** return the ith component of the jacobian of the function at the current (x,t).
+      * Synonym for get<PARTIAL_X>(index)
       */
     MatrixXdRow     getJacobian(int index) const;
     //@}
@@ -238,7 +238,7 @@ namespace ocra
   protected:
     /** Changes the dimension of the function to \a newDimension.
       * This changes the value of _dimension by performing the following actions:
-      * - calls changeFunctionDimensionImpl which 
+      * - calls changeFunctionDimensionImpl which
       *     (i)   invokes doUpdateDimensionBegin(),
       *     (ii)  set _dimension to its new value
       *     (iii) calls resize(),
@@ -252,11 +252,11 @@ namespace ocra
       * function supports function resizing.
       *
       * \post Each IFunction<Ability>::_validated must be false.
-      */ 
+      */
     void changeFunctionDimension(int newDimension);
 
     /** Update the size of the memory buffers according to the size of the input variable and the current dimension
-      * \a m of the function. Only the buffers corresponding to used abilities are resized. This implies that their 
+      * \a m of the function. Only the buffers corresponding to used abilities are resized. This implies that their
       * values are invalidated. This method is automaticaly invoked when the function variable \c x is resized.
       *
       * This method calls \c doUpdateSizeBegin before executing its core and doUpdateSizeEnd after.
@@ -268,7 +268,7 @@ namespace ocra
       */
     void updateInputSize(int timestamp);
 
-    /** Core of \c updateInputSize() and 
+    /** Core of \c updateInputSize() and
       * Update the size of the memory buffers according to the size of the input variable and the dimension \a m of
       * the function. Only the buffers corresponding to used ability are resized. This implies that their values are
       * invalidated.
@@ -278,7 +278,7 @@ namespace ocra
     /** Methods for pre and post update in case the variable size has changed.
       * Default implementation of doUpdateInputSizeEnd does nothing, doUpdateInputSizeBegin throws an exception.
       * These methods might throw exceptions when overloaded.
-      * Furthermore, \c doUpdateInputSizeEnd() must comply with the post condition of \c updateInputSize(), i.e. let 
+      * Furthermore, \c doUpdateInputSizeEnd() must comply with the post condition of \c updateInputSize(), i.e. let
       * the values of each ability invalidated.
       */
     //@{
@@ -289,7 +289,7 @@ namespace ocra
     /** Methods for pre and post update in case the dimension of the function has changed.
       * Default implementation of doUpdateDimensionEnd does nothing, doUpdateDimensionBegin throws an exception.
       * These methods might throw exceptions  when overloaded.
-      * Furthermore, \c doUpdateDimensionEnd() must comply with the post condition of \c updateDimension(), i.e. let 
+      * Furthermore, \c doUpdateDimensionEnd() must comply with the post condition of \c updateDimension(), i.e. let
       * the values of each ability invalidated.
       */
     //@{
@@ -314,7 +314,7 @@ namespace ocra
 
   private:
     int           _dimension;                   //< the dimension of the image space (m in the class description)
-    bool          _hasDisconnected;             //< see error prone design(tm) method disconnectVariable 
+    bool          _hasDisconnected;             //< see error prone design(tm) method disconnectVariable
 
   protected:
     const int&    _dim;                         //< alias on the dimension for easy (read-only) acces by derived class

@@ -28,14 +28,14 @@ namespace ocra
   /** \brief A class to manage the relative mapping of a variable with respect to another one.
     *
     * The role of VariableMapping is to provide the relative mapping of one variable v1 wrt. another v2 as it could be
-    * directly obtained by invoking v2.getRelativeMappingOf(v1, returnVector). The mapping is updated whenever it is 
+    * directly obtained by invoking v2.getRelativeMappingOf(v1, returnVector). The mapping is updated whenever it is
     * needed (i.e. after an event EVT_RESIZE or EVT_CHANGE_DEPENDENCIES was triggered by one of the two variable).
     */
   class VariableMapping
   {
   public:
     VariableMapping(const Variable& relative, const Variable& base);
-    ~VariableMapping();
+    virtual ~VariableMapping();
 
   private:
     VariableMapping(const VariableMapping&);

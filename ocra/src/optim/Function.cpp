@@ -23,14 +23,9 @@ namespace ocra
     resize();
   }
 
-
-  Function::~Function()
+  void Function::disconnectVariable()
   {
-  }
-
-  void Function::disconnectVariable() 
-  {
-    if(! _hasDisconnected) 
+    if(! _hasDisconnected)
     {
       _hasDisconnected = true;
       x.disconnect<EVT_RESIZE>(*this, &Function::updateInputSize);
@@ -126,7 +121,7 @@ namespace ocra
     if (isExplicitlyTimeDependant())
       IFunction<FUN_DOT>::_val += get<PARTIAL_T>();
   }
-  
+
   void Function::updateFddot() const
   {
     ocra_assert(x.hasTimeDerivative());
@@ -136,7 +131,7 @@ namespace ocra
     ocra_assert(!isExplicitlyTimeDependant() || IFunction<PARTIAL_XT>::canBeComputed());
     ocra_assert(!isExplicitlyTimeDependant() || IFunction<PARTIAL_TT>::canBeComputed());
     Variable& x_dot = x.getTimeDerivative();
-    IFunction<FUN_DDOT>::_val = getJacobian()*static_cast<VectorXd>(x_dot.getTimeDerivative()) 
+    IFunction<FUN_DDOT>::_val = getJacobian()*static_cast<VectorXd>(x_dot.getTimeDerivative())
                                 + get<PARTIAL_X_DOT>()*static_cast<VectorXd>(x_dot);
     if (isExplicitlyTimeDependant())
       IFunction<FUN_DDOT>::_val += get<PARTIAL_XT>()*static_cast<VectorXd>(x_dot) + get<PARTIAL_TT>();
@@ -155,7 +150,7 @@ namespace ocra
 //test
 class MyFunction : public ocra::Function
 {
-  public: 
+  public:
     MyFunction(ocra::Variable& x, int dimension)
       : NamedInstance("myFunction")
       , AbilitySet(ocra::PARTIAL_X, ocra::FUN_DOT)
@@ -192,4 +187,3 @@ void testFunction()
 }
 
 // cmake:sourcegroup=Function
-

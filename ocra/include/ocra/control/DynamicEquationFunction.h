@@ -22,16 +22,16 @@ namespace ocra
 }
 
 /** @namespace ocra
-  * @brief Optimization-based Robot Controller namespace. 
+  * @brief Optimization-based Robot Controller namespace.
   *  a library of classes to write and solve optimization problems dedicated to
-  *  the control of multi-body systems. 
+  *  the control of multi-body systems.
   */
 namespace ocra
 {
   /** @class DynamicEquationFunction
     *	@brief %DynamicEquationFunction class.
     *	@warning None
-    *  
+    *
     * M Tdot + N T + G - L tau + Jt f, where f is the force applied by the model on the environment.
     * The variable is the concatenation of Tdot, tau and f.
     */
@@ -47,7 +47,11 @@ namespace ocra
 
   public:
     DynamicEquationFunction(const Model& model);
-    ~DynamicEquationFunction();
+    virtual ~DynamicEquationFunction(){
+        _model.disconnect<EVT_CHANGE_VALUE>(*this, &DynamicEquationFunction::invalidateAll);
+        _model.disconnect<EVT_CHANGE_VALUE>(*this, &DynamicEquationFunction::invalidateb);
+        delete &getVariable();
+    }
 
   protected:
     void updateJacobian() const;

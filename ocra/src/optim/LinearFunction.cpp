@@ -19,10 +19,6 @@ namespace ocra
     _b.resize(_dim);
   }
 
-  LinearFunction::~LinearFunction()
-  {
-  }
-
   const MatrixXd& LinearFunction::getA() const
   {
     return getJacobian();

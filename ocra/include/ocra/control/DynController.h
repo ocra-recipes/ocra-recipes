@@ -10,7 +10,7 @@ namespace ocra
   {
   public:
     DynController(const std::string& name, Model& model);
-	~DynController();
+	virtual ~DynController();
 
     void setStateDamping(double val);
     void setTauDamping(double val);

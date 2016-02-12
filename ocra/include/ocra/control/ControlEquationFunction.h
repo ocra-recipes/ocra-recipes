@@ -23,9 +23,9 @@ namespace ocra
   /** @class ControlEquationFunction
     *	@brief %ControlEquationFunction class.
     *	@warning None
-    *  
+    *
     * For a given robot model with generalized speed T, inertia matrix M and non-linear terms N, and a given function
-    * f, the ControlEquationFunction g is the linear function of T_dot g(T_dot) = MT_dot + N - f(x) with f(x) the value 
+    * f, the ControlEquationFunction g is the linear function of T_dot g(T_dot) = MT_dot + N - f(x) with f(x) the value
     * of f at the instant g is evaluated. (x is not considered as a variable of g).
     * N can be ignored by disabling its use.
     */
@@ -34,7 +34,7 @@ namespace ocra
     // ------------------------ structures --------------------------------------
   public:
     typedef LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
-  
+
     // ------------------------ constructors ------------------------------------
   private:
     /** copy of ControlEquationFunction instances is forbidden*/
@@ -45,7 +45,7 @@ namespace ocra
 
   public:
     ControlEquationFunction(Model& model, const Function& f, bool useNLTerms=true);
-    ~ControlEquationFunction();
+    virtual ~ControlEquationFunction();
 
     // ------------------------ public interface --------------------------------
   public:
