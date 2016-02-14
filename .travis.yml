@@ -6,13 +6,17 @@ language: cpp
 compiler:
   - gcc
   - clang
+os:
+  - linux
+  - osx
 
 install:
     - CI_DIR=$PWD
-    - sudo sh -c 'echo "deb http://www.icub.org/ubuntu trusty contrib/science" > /etc/apt/sources.list.d/icub.list'
-    - sudo apt-get update
-    - sudo apt-get install -qq -y yarp --force-yes
-    - sudo apt-get install -qq -y libeigen3-dev libboost-all-dev
+    - if [ "$TRAVIS_OS_NAME" = linux -o -z "$TRAVIS_OS_NAME" ]; then sudo sh -c 'echo "deb http://www.icub.org/ubuntu trusty contrib/science" > /etc/apt/sources.list.d/icub.list' ; fi
+    - if [ "$TRAVIS_OS_NAME" = linux -o -z "$TRAVIS_OS_NAME" ]; then sudo apt-get update ; fi
+    - if [ "$TRAVIS_OS_NAME" = linux -o -z "$TRAVIS_OS_NAME" ]; then sudo apt-get install -qq -y yarp --force-yes ; fi
+    - if [ "$TRAVIS_OS_NAME" = linux -o -z "$TRAVIS_OS_NAME" ]; then sudo apt-get install -qq -y libeigen3-dev libboost-all-dev ; fi
+    - if [ "$TRAVIS_OS_NAME" = osx -o -z "$TRAVIS_OS_NAME" ]; then brew install boost eigen ; fi
     - git clone https://github.com/ocra-recipes/eigen_lgsm.git
     - cd eigen_lgsm ; mkdir build ; cd build ; cmake ..
     - sudo make install
