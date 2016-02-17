@@ -1,6 +1,16 @@
 sudo: required
 dist: trusty
 
+# blacklist
+branches:
+  except:
+    - reorganization
+​
+# whitelist
+branches:
+  only:
+    - master
+
 language: cpp
 
 compiler:
