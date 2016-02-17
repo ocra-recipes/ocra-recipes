@@ -13,13 +13,13 @@ namespace wocra
  * \param _damping              Damping constant for task
  * \param _weight               Weight constant for task
  */
-wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const wOcraModel& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, double _weight, bool _usesYarpPorts)
+wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, double _weight, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_stiffness, _damping, _weight);
 }
 
-wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const wOcraModel& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::VectorXd& _weight, bool _usesYarpPorts)
+wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::VectorXd& _weight, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_stiffness, _damping, _weight);
@@ -37,14 +37,14 @@ wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const wOcraMode
  * \param _weight               Weight constant for task
  * \param _posDes               Vector for desired position
  */
-wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const wOcraModel& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, double _weight, Eigen::Vector3d _posDes, bool _usesYarpPorts)
+wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, double _weight, Eigen::Vector3d _posDes, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_stiffness, _damping, _weight);
     setState(_posDes);
 }
 
-wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const wOcraModel& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::VectorXd& _weight, Eigen::Vector3d _posDes, bool _usesYarpPorts)
+wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::VectorXd& _weight, Eigen::Vector3d _posDes, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_stiffness, _damping, _weight);

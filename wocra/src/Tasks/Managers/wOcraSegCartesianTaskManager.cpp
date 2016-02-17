@@ -15,7 +15,7 @@ namespace wocra
  * \param _weight               Weight constant for task
  */
 wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctrl,
-                                                            const wOcraModel& _model,
+                                                            const ocra::Model& _model,
                                                             const std::string& _taskName,
                                                             const std::string& _segmentName,
                                                             ocra::ECartesianDof _axes,
@@ -30,7 +30,7 @@ wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctr
 }
 
 wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctrl,
-                                                            const wOcraModel& _model,
+                                                            const ocra::Model& _model,
                                                             const std::string& _taskName,
                                                             const std::string& _segmentName,
                                                             ocra::ECartesianDof _axes,
@@ -57,7 +57,7 @@ wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctr
  * \param _weight               Weight constant for task
  */
 wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctrl,
-                                                            const wOcraModel& _model,
+                                                            const ocra::Model& _model,
                                                             const std::string& _taskName,
                                                             const std::string& _segmentName,
                                                             const Eigen::Vector3d& _segPoint_Local,
@@ -73,7 +73,7 @@ wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctr
 }
 
 wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctrl,
-                                                            const wOcraModel& _model,
+                                                            const ocra::Model& _model,
                                                             const std::string& _taskName,
                                                             const std::string& _segmentName,
                                                             const Eigen::Vector3d& _segPoint_Local,
@@ -100,7 +100,7 @@ wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctr
  * \param _poseDes              Initial pose (cartesian) for task
  */
 wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctrl,
-                                                            const wOcraModel& _model,
+                                                            const ocra::Model& _model,
                                                             const std::string& _taskName,
                                                             const std::string& _segmentName,
                                                             ocra::ECartesianDof _axes,
@@ -118,7 +118,7 @@ wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctr
 }
 
 wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctrl,
-                                                            const wOcraModel& _model,
+                                                            const ocra::Model& _model,
                                                             const std::string& _taskName,
                                                             const std::string& _segmentName,
                                                             ocra::ECartesianDof _axes,
@@ -148,7 +148,7 @@ wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctr
  * \param _poseDes              Initial pose (cartesian) for task
  */
 wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctrl,
-                                                            const wOcraModel& _model,
+                                                            const ocra::Model& _model,
                                                             const std::string& _taskName,
                                                             const std::string& _segmentName,
                                                             const Vector3d& _segPoint_Local,
@@ -166,7 +166,7 @@ wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctr
 }
 
 wOcraSegCartesianTaskManager::wOcraSegCartesianTaskManager(wOcraController& _ctrl,
-                                                            const wOcraModel& _model,
+                                                            const ocra::Model& _model,
                                                             const std::string& _taskName,
                                                             const std::string& _segmentName,
                                                             const Vector3d& _segPoint_Local,

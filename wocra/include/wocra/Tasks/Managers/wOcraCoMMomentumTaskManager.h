@@ -17,9 +17,9 @@ namespace wocra
 class wOcraCoMMomentumTaskManager: public wOcraTaskManagerBase
 {
     public:
-        wOcraCoMMomentumTaskManager(wOcraController& ctrl, const wOcraModel& model, const std::string& taskName, ocra::ECartesianDof axes, double damping, double weight, bool usesYarpPorts = true);
+        wOcraCoMMomentumTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double damping, double weight, bool usesYarpPorts = true);
 
-        wOcraCoMMomentumTaskManager(wOcraController& ctrl, const wOcraModel& model, const std::string& taskName, ocra::ECartesianDof axes, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = false);
+        wOcraCoMMomentumTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = false);
 
 
         ~wOcraCoMMomentumTaskManager();

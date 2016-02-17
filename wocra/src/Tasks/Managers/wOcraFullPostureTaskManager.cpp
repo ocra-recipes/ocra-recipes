@@ -14,7 +14,7 @@ namespace wocra
  * \param _weight               Weight constant for task
  */
 wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
-                                                        const wOcraModel& _model,
+                                                        const ocra::Model& _model,
                                                         const std::string& _taskName,
                                                         int _fullStateType,
                                                         double _stiffness,
@@ -40,7 +40,7 @@ wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
  * \param _weight               Weight vector for task
  */
 wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
-                                                        const wOcraModel& _model,
+                                                        const ocra::Model& _model,
                                                         const std::string& _taskName,
                                                         int _fullStateType,
                                                         double _stiffness,
@@ -66,7 +66,7 @@ wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
  * \param _init_q               Initial posture
  */
 wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
-                                                        const wOcraModel& _model,
+                                                        const ocra::Model& _model,
                                                         const std::string& _taskName,
                                                         int _fullStateType,
                                                         double _stiffness,
@@ -91,7 +91,7 @@ wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
  * \param _init_q               Initial posture
  */
 wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
-                                                        const wOcraModel& _model,
+                                                        const ocra::Model& _model,
                                                         const std::string& _taskName,
                                                         int _fullStateType,
                                                         double _stiffness,

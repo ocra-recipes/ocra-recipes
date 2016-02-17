@@ -13,7 +13,7 @@ namespace gocra
  * \param _stiffness            Stiffness constant for task
  * \param _damping              Damping constant for task
  */
-gOcraSegCartesianTaskManager::gOcraSegCartesianTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, const std::string& _segmentName, ocra::ECartesianDof _axes, double _stiffness, double _damping)
+gOcraSegCartesianTaskManager::gOcraSegCartesianTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, ocra::ECartesianDof _axes, double _stiffness, double _damping)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName), segmentName(_segmentName), axes(_axes)
 {
     _init(Eigen::Vector3d::Zero(), _stiffness, _damping);
@@ -30,7 +30,7 @@ gOcraSegCartesianTaskManager::gOcraSegCartesianTaskManager(GHCJTController& _ctr
  * \param _stiffness            Stiffness constant for task
  * \param _damping              Damping constant for task
  */
-gOcraSegCartesianTaskManager::gOcraSegCartesianTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, const std::string& _segmentName, const Eigen::Vector3d& _segPoint_Local, ocra::ECartesianDof _axes, double _stiffness, double _damping)
+gOcraSegCartesianTaskManager::gOcraSegCartesianTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, const Eigen::Vector3d& _segPoint_Local, ocra::ECartesianDof _axes, double _stiffness, double _damping)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName), segmentName(_segmentName), axes(_axes)
 {
     _init(_segPoint_Local, _stiffness, _damping);
@@ -47,7 +47,7 @@ gOcraSegCartesianTaskManager::gOcraSegCartesianTaskManager(GHCJTController& _ctr
  * \param _damping              Damping constant for task
  * \param _poseDes              Initial pose (cartesian) for task
  */
-gOcraSegCartesianTaskManager::gOcraSegCartesianTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, const std::string& _segmentName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::Vector3d& _poseDes)
+gOcraSegCartesianTaskManager::gOcraSegCartesianTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::Vector3d& _poseDes)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName), segmentName(_segmentName), axes(_axes)
 {
     _init(Eigen::Vector3d::Zero(), _stiffness, _damping);
@@ -67,7 +67,7 @@ gOcraSegCartesianTaskManager::gOcraSegCartesianTaskManager(GHCJTController& _ctr
  * \param _damping              Damping constant for task
  * \param _poseDes              Initial pose (cartesian) for task
  */
-gOcraSegCartesianTaskManager::gOcraSegCartesianTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, const std::string& _segmentName, const Vector3d& _segPoint_Local, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::Vector3d& _poseDes)
+gOcraSegCartesianTaskManager::gOcraSegCartesianTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, const Vector3d& _segPoint_Local, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::Vector3d& _poseDes)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName), segmentName(_segmentName), axes(_axes)
 {
     _init(_segPoint_Local, _stiffness, _damping);

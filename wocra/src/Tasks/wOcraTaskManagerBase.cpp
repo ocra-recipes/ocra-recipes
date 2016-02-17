@@ -13,7 +13,7 @@ namespace wocra
  * \param model                 ocra model to setup the task
  * \param taskName              Name of the task
  */
-wOcraTaskManagerBase::wOcraTaskManagerBase(wOcraController& _ctrl, const wOcraModel& _model, const std::string& _taskName, bool _usesYarpPorts):
+wOcraTaskManagerBase::wOcraTaskManagerBase(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, bool _usesYarpPorts):
 ctrl(_ctrl),
 model(_model),
 name(_taskName),

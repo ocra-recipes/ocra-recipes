@@ -9,7 +9,7 @@
 #include <cmath>
 #include <boost/filesystem.hpp>
 
-#include "wocra/Models/wOcraModel.h"
+#include "ocra/control/Model.h"
 #include "wocra/wOcraController.h"
 #include "wocra/Tasks/wOcraTaskManagerBase.h"
 #include "wocra/Tasks/wOcraTaskSequenceBase.h"
@@ -50,7 +50,7 @@ namespace wocra
             bool parseTasksXML(TiXmlDocument* newTasksFile);
             void printTaskArguments();
 
-            bool addTaskManagersToSequence(wOcraController& ctrl, const wOcraModel& model, wOcraTaskSequenceBase* sequence);
+            bool addTaskManagersToSequence(wOcraController& ctrl, const ocra::Model& model, wOcraTaskSequenceBase* sequence);
 
             // bool parseTasksYarp(yarp::os::Bottle* yarpMessage);
             // bool xmlToYarp(const char* filePath, yarp::os::Bottle* yarpMessage);
@@ -65,13 +65,13 @@ namespace wocra
 
             const char * getDisplacementArgs(TiXmlElement* xmlElem);
 
-            wOcraTaskManagerBase* constructTaskManager(wOcraController& ctrl, const wOcraModel& model, std::vector<taskManagerArgs>::iterator argStructPtr);
+            wOcraTaskManagerBase* constructTaskManager(wOcraController& ctrl, const ocra::Model& model, std::vector<taskManagerArgs>::iterator argStructPtr);
 
             Eigen::Displacementd eigenVectorToDisplacementd(Eigen::VectorXd& eigenVector);
 
             std::vector<Eigen::Displacementd> eigenVectorToDisplacementd(std::vector<Eigen::VectorXd>& eigenVector);
 
-            void prepareTaskManagerArguments(const wOcraModel& model, std::vector<taskManagerArgs>::iterator argStructPtr);
+            void prepareTaskManagerArguments(const ocra::Model& model, std::vector<taskManagerArgs>::iterator argStructPtr);
 
 
     };

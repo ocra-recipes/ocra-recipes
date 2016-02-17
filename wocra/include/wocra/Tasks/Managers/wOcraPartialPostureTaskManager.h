@@ -18,14 +18,14 @@ namespace wocra
 class wOcraPartialPostureTaskManager : public wOcraTaskManagerBase
 {
     public:
-        wOcraPartialPostureTaskManager(wOcraController& ctrl, const wOcraModel& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight, bool usesYarpPorts = true);
+        wOcraPartialPostureTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight, bool usesYarpPorts = true);
 
-        wOcraPartialPostureTaskManager(wOcraController& ctrl, const wOcraModel& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = false);
+        wOcraPartialPostureTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = false);
 
-        wOcraPartialPostureTaskManager(wOcraController& ctrl, const wOcraModel& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight,
+        wOcraPartialPostureTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight,
             Eigen::VectorXd& init_q, bool usesYarpPorts = true);
 
-        wOcraPartialPostureTaskManager(wOcraController& ctrl, const wOcraModel& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight,
+        wOcraPartialPostureTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight,
             Eigen::VectorXd& init_q, bool usesYarpPorts = false);
 
         ~wOcraPartialPostureTaskManager();

@@ -14,7 +14,7 @@ namespace wocra
  * \param _weight               Weight constant for task
  */
 wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& _ctrl,
-                                                                const wOcraModel& _model,
+                                                                const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
                                                                 double _stiffness,
@@ -27,7 +27,7 @@ wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& 
 }
 
 wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& _ctrl,
-                                                                const wOcraModel& _model,
+                                                                const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
                                                                 double _stiffness,
@@ -51,7 +51,7 @@ wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& 
  * \param _orientationDes       Initial orientation for task
  */
 wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& _ctrl,
-                                                                const wOcraModel& _model,
+                                                                const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
                                                                 double _stiffness,
@@ -66,7 +66,7 @@ wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& 
 }
 
 wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& _ctrl,
-                                                                const wOcraModel& _model,
+                                                                const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
                                                                 double _stiffness,

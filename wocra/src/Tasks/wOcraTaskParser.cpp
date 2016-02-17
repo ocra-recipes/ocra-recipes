@@ -189,7 +189,7 @@ namespace wocra
     }
 
 
-    bool wOcraTaskParser::addTaskManagersToSequence(wOcraController& ctrl, const wOcraModel& model, wOcraTaskSequenceBase* sequence)
+    bool wOcraTaskParser::addTaskManagersToSequence(wOcraController& ctrl, const ocra::Model& model, wOcraTaskSequenceBase* sequence)
     {
         if (tmArgsVector.size() > 0)
         {
@@ -367,7 +367,7 @@ namespace wocra
 
 
 
-    void wOcraTaskParser::prepareTaskManagerArguments(const wOcraModel& model, std::vector<taskManagerArgs>::iterator argStructPtr)
+    void wOcraTaskParser::prepareTaskManagerArguments(const ocra::Model& model, std::vector<taskManagerArgs>::iterator argStructPtr)
     {
         int sizeDof = model.nbInternalDofs();
         if (argStructPtr->offset.empty()) {
@@ -526,7 +526,7 @@ namespace wocra
 
 
 
-    wOcraTaskManagerBase* wOcraTaskParser::constructTaskManager(wOcraController& ctrl, const wOcraModel& model, std::vector<taskManagerArgs>::iterator argStructPtr)
+    wOcraTaskManagerBase* wOcraTaskParser::constructTaskManager(wOcraController& ctrl, const ocra::Model& model, std::vector<taskManagerArgs>::iterator argStructPtr)
     {
 
 

@@ -18,7 +18,7 @@ class wOcraVariableWeightsTaskManager : public wOcraTaskManagerBase
 {
     public:
         wOcraVariableWeightsTaskManager(wOcraController& ctrl,
-                                        const wOcraModel& model,
+                                        const ocra::Model& model,
                                         const std::string& taskName,
                                         const std::string& segmentName,
                                         double stiffness,
@@ -27,7 +27,7 @@ class wOcraVariableWeightsTaskManager : public wOcraTaskManagerBase
                                         bool usesYarpPorts = false);
 
         wOcraVariableWeightsTaskManager(wOcraController& ctrl,
-                                        const wOcraModel& model,
+                                        const ocra::Model& model,
                                         const std::string& taskName,
                                         const std::string& segmentName,
                                         const Eigen::Vector3d& segPoint_Local,
@@ -37,7 +37,7 @@ class wOcraVariableWeightsTaskManager : public wOcraTaskManagerBase
                                         bool usesYarpPorts = false);
 
         wOcraVariableWeightsTaskManager(wOcraController& ctrl,
-                                        const wOcraModel& model,
+                                        const ocra::Model& model,
                                         const std::string& taskName,
                                         const std::string& segmentName,
                                         double stiffness,
@@ -47,7 +47,7 @@ class wOcraVariableWeightsTaskManager : public wOcraTaskManagerBase
                                         bool usesYarpPorts = false);
 
         wOcraVariableWeightsTaskManager(wOcraController& ctrl,
-                                        const wOcraModel& model,
+                                        const ocra::Model& model,
                                         const std::string& taskName,
                                         const std::string& segmentName,
                                         const Eigen::Vector3d& segPoint_Local,

@@ -12,7 +12,7 @@ namespace gocra
  * \param _stiffness            Stiffness constant for task
  * \param _damping              Damping constant for task
  */
-gOcraSegOrientationTaskManager::gOcraSegOrientationTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, const std::string& _segmentName, double _stiffness, double _damping)
+gOcraSegOrientationTaskManager::gOcraSegOrientationTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, double _stiffness, double _damping)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName), segmentName(_segmentName)
 {
     _init(Eigen::Rotation3d::Identity(), _stiffness, _damping);
@@ -28,7 +28,7 @@ gOcraSegOrientationTaskManager::gOcraSegOrientationTaskManager(GHCJTController& 
  * \param _damping              Damping constant for task
  * \param _orientationDes       Initial orientation for task
  */
-gOcraSegOrientationTaskManager::gOcraSegOrientationTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, const std::string& _segmentName, double _stiffness, double _damping, const Eigen::Rotation3d& _orientationDes)
+gOcraSegOrientationTaskManager::gOcraSegOrientationTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, double _stiffness, double _damping, const Eigen::Rotation3d& _orientationDes)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName), segmentName(_segmentName)
 {
     _init(Eigen::Rotation3d::Identity(), _stiffness, _damping);

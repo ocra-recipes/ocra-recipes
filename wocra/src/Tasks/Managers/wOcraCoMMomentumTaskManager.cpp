@@ -13,13 +13,13 @@ namespace wocra
  * \param _damping              Damping constant for task
  * \param _weight               Weight constant for task
  */
-wOcraCoMMomentumTaskManager::wOcraCoMMomentumTaskManager(wOcraController& _ctrl, const wOcraModel& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _damping, double _weight, bool _usesYarpPorts)
+wOcraCoMMomentumTaskManager::wOcraCoMMomentumTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _damping, double _weight, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_damping, _weight);
 }
 
-wOcraCoMMomentumTaskManager::wOcraCoMMomentumTaskManager(wOcraController& _ctrl, const wOcraModel& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _damping, const Eigen::VectorXd& _weight, bool _usesYarpPorts)
+wOcraCoMMomentumTaskManager::wOcraCoMMomentumTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _damping, const Eigen::VectorXd& _weight, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_damping, _weight);

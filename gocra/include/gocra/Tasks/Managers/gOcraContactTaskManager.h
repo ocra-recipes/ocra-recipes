@@ -18,7 +18,7 @@ namespace gocra
 class gOcraContactTaskManager : public gOcraTaskManagerBase
 {
     public:
-        gOcraContactTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, const std::string& segmentName, Eigen::Displacementd H_segment_frame, double mu, double margin);
+        gOcraContactTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, Eigen::Displacementd H_segment_frame, double mu, double margin);
 
         ~gOcraContactTaskManager();
 

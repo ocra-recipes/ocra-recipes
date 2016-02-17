@@ -13,7 +13,7 @@ namespace wocra
  * \param _mu                   Coefficient of friction
  * \param _margin               Margin inside the friction cone
  */
-wOcraContactTaskManager::wOcraContactTaskManager(wOcraController& _ctrl, const wOcraModel& _model, const std::string& _taskName, const std::string& _segmentName, Eigen::Displacementd _H_segment_frame, double _mu, double _margin, bool _usesYarpPorts)
+wOcraContactTaskManager::wOcraContactTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, Eigen::Displacementd _H_segment_frame, double _mu, double _margin, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName)
 {
     featFrame = new ocra::SegmentFrame(name + ".SegmentFrame", model, model.SegmentName(segmentName), _H_segment_frame);

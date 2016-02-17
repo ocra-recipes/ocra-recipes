@@ -10,12 +10,12 @@ namespace wocra
     {
     }
 
-    void wOcraTaskSequenceBase::init(wOcraController& ctrl, wocra::wOcraModel& model)
+    void wOcraTaskSequenceBase::init(wOcraController& ctrl, ocra::Model& model)
     {
         doInit(ctrl, model);
     }
 
-    void wOcraTaskSequenceBase::update(double time, wocra::wOcraModel& state, void** args)
+    void wOcraTaskSequenceBase::update(double time, ocra::Model& state, void** args)
     {
         for (tmIterator it = taskManagers.begin(); it != taskManagers.end(); it++)
         {

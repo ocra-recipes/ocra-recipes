@@ -15,7 +15,7 @@ namespace wocra
  * \param _weight               Weight constant for task
  */
 wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController& _ctrl,
-                                                                const wOcraModel& _model,
+                                                                const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
                                                                 double _stiffness,
@@ -41,7 +41,7 @@ wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController
  * \param _weight               Weight constant for task
  */
 wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController& _ctrl,
-                                                                const wOcraModel& _model,
+                                                                const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
                                                                 const Eigen::Vector3d& _segPoint_Local,
@@ -68,7 +68,7 @@ wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController
  * \param _poseDes              Initial pose (cartesian) for task
  */
 wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController& _ctrl,
-                                                                const wOcraModel& _model,
+                                                                const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
                                                                 double _stiffness,
@@ -97,7 +97,7 @@ wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController
  * \param _poseDes              Initial pose (cartesian) for task
  */
 wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController& _ctrl,
-                                                                const wOcraModel& _model,
+                                                                const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
                                                                 const Vector3d& _segPoint_Local,

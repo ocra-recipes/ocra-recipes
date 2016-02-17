@@ -11,7 +11,7 @@ namespace gocra
  * \param _stiffness            Stiffness constant for task
  * \param _damping              Damping constant for task
  */
-gOcraCoMTaskManager::gOcraCoMTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping)
+gOcraCoMTaskManager::gOcraCoMTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName), axes(_axes)
 {
     _init(_stiffness, _damping);
@@ -26,7 +26,7 @@ gOcraCoMTaskManager::gOcraCoMTaskManager(GHCJTController& _ctrl, const gOcraMode
  * \param _damping              Damping constant for task
  * \param _posDes               Vector for desired position
  */
-gOcraCoMTaskManager::gOcraCoMTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, Eigen::Vector3d _posDes)
+gOcraCoMTaskManager::gOcraCoMTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, Eigen::Vector3d _posDes)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName), axes(_axes)
 {
     _init(_stiffness, _damping);

@@ -15,7 +15,7 @@ namespace wocra
  * \param _weight                Weight constant for task
  */
 wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
-                                                    const wOcraModel& _model,
+                                                    const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
                                                     ocra::ECartesianDof _axes,
@@ -29,7 +29,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
 }
 
 wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
-                                                    const wOcraModel& _model,
+                                                    const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
                                                     ocra::ECartesianDof _axes,
@@ -55,7 +55,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
  * \param _weight                Weight constant for task
  */
 wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
-                                                    const wOcraModel& _model,
+                                                    const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
                                                     const Eigen::Displacementd& _segFrame_Local,
@@ -70,7 +70,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
 }
 
 wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
-                                                    const wOcraModel& _model,
+                                                    const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
                                                     const Eigen::Displacementd& _segFrame_Local,
@@ -97,7 +97,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
  * \param _poseDes              Initial pose for task
  */
 wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
-                                                    const wOcraModel& _model,
+                                                    const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
                                                     ocra::ECartesianDof _axes,
@@ -113,7 +113,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
 }
 
 wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
-                                                    const wOcraModel& _model,
+                                                    const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
                                                     ocra::ECartesianDof _axes,
@@ -142,7 +142,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
  * \param _poseDes              Initial pose for task
  */
 wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
-                                                    const wOcraModel& _model,
+                                                    const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
                                                     const Eigen::Displacementd& _segFrame_Local,
@@ -159,7 +159,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
 }
 
 wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
-                                                    const wOcraModel& _model,
+                                                    const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
                                                     const Eigen::Displacementd& _segFrame_Local,

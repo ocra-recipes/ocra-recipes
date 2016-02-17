@@ -15,7 +15,7 @@ namespace wocra
  * \param weight                Weight constant for task
  */
 wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& _ctrl,
-                                                                const wOcraModel& _model,
+                                                                const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 int _fullStateType,
                                                                 Eigen::VectorXi& _dofIndices,
@@ -29,7 +29,7 @@ wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& 
 }
 
 wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& _ctrl,
-                                                                const wOcraModel& _model,
+                                                                const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 int _fullStateType,
                                                                 Eigen::VectorXi& _dofIndices,
@@ -56,7 +56,7 @@ wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& 
  * \param init_q                Initial posture
  */
 wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& _ctrl,
-                                                                const wOcraModel& _model,
+                                                                const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 int _fullStateType,
                                                                 Eigen::VectorXi& _dofIndices,
@@ -72,7 +72,7 @@ wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& 
 }
 
 wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& _ctrl,
-                                                                const wOcraModel& _model,
+                                                                const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 int _fullStateType,
                                                                 Eigen::VectorXi& _dofIndices,

@@ -1,7 +1,7 @@
 #ifndef wOcraTASKMANAGERBASE_H
 #define wOcraTASKMANAGERBASE_H
 
-#include "wocra/Models/wOcraModel.h"
+#include "ocra/control/Model.h"
 #include "wocra/wOcraController.h"
 #include "wocra/Tasks/wOcraTask.h"
 #include "wocra/Trajectory/wOcraTrajectory.h"
@@ -25,7 +25,7 @@ namespace wocra
 class wOcraTaskManagerBase
 {
     public:
-        wOcraTaskManagerBase(wocra::wOcraController& ctrl, const wocra::wOcraModel& model, const std::string& name, bool usesYarpPorts=false);
+        wOcraTaskManagerBase(wocra::wOcraController& ctrl, const ocra::Model& model, const std::string& name, bool usesYarpPorts=false);
         virtual ~wOcraTaskManagerBase();
 
 
@@ -103,7 +103,7 @@ class wOcraTaskManagerBase
 
 
         wocra::wOcraController&        ctrl;
-        const wocra::wOcraModel&       model;
+        const ocra::Model&       model;
         const std::string&              name;
         std::string                     stableName; //hack to avoid using name in compileOutgoingMessage()
 

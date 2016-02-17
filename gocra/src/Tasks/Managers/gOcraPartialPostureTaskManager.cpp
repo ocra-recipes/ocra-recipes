@@ -13,7 +13,7 @@ namespace gocra
  * \param stiffness             Stiffness constant for task
  * \param damping               Damping constant for task
  */
-gOcraPartialPostureTaskManager::gOcraPartialPostureTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, int _fullStateType, Eigen::VectorXi& _dofIndices, double _stiffness, double _damping)
+gOcraPartialPostureTaskManager::gOcraPartialPostureTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, int _fullStateType, Eigen::VectorXi& _dofIndices, double _stiffness, double _damping)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName)
 {
     _init(_fullStateType, _dofIndices, _stiffness, _damping);
@@ -30,7 +30,7 @@ gOcraPartialPostureTaskManager::gOcraPartialPostureTaskManager(GHCJTController& 
  * \param damping               Damping constant for task
  * \param init_q                Initial posture
  */
-gOcraPartialPostureTaskManager::gOcraPartialPostureTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, int _fullStateType, Eigen::VectorXi& _dofIndices, double _stiffness, double _damping, Eigen::VectorXd& _init_q)
+gOcraPartialPostureTaskManager::gOcraPartialPostureTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, int _fullStateType, Eigen::VectorXi& _dofIndices, double _stiffness, double _damping, Eigen::VectorXd& _init_q)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName)
 {
     _init(_fullStateType, _dofIndices, _stiffness, _damping);
