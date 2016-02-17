@@ -28,7 +28,7 @@ struct GHCJTTask::Pimpl
     const std::string&          name;
     const Model&                innerModel;
     bool                        isFreeFloating;
-    gOcraSolver*                 solver;
+    ocra::OneLevelSolver*                 solver;
     SumOfLinearFunctions*  seConstraint;
     boost::shared_ptr<LinearFunction> taskSEConstraintFunction;
     bool                        useGSHC;
@@ -168,7 +168,7 @@ GHCJTTask::~GHCJTTask()
 }
 
 
-void GHCJTTask::connectToController(gOcraSolver& solver, SumOfLinearFunctions& seConstraint)
+void GHCJTTask::connectToController(ocra::OneLevelSolver& solver, SumOfLinearFunctions& seConstraint)
 {
     pimpl->solver            = &solver;
     pimpl->seConstraint = &seConstraint;

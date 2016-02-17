@@ -18,8 +18,8 @@
 #include "ocra/control/Task.h"
 #include "ocra/control/Feature.h"
 #include "ocra/control/ControlFrame.h"
+#include "ocra/optim/OneLevelSolver.h"
 
-#include "gocra/Solvers/gOcraSolver.h"
 //#include "gocra/Constraints/gOcraConstraint.h"
 
 
@@ -69,7 +69,7 @@ public:
     //------------------------ friendship ------------------------//
 protected:
     friend class GHCJTController;    //Only the GHCJTController should know about the following functions
-    void connectToController(gOcraSolver& _solver, SumOfLinearFunctions& seConstraint);
+    void connectToController(ocra::OneLevelSolver& _solver, SumOfLinearFunctions& seConstraint);
     void disconnectFromController();
     void update();
 

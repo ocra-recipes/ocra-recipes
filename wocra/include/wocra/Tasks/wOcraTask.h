@@ -21,16 +21,10 @@
 #include "ocra/optim/FunctionHelpers.h"
 #include "ocra/optim/SquaredLinearFunction.h"
 #include "ocra/optim/WeightedSquareDistanceFunction.h"
-
-
-
 #include "ocra/control/Task.h"
-
 #include "ocra/control/Feature.h"
 #include "ocra/control/ControlFrame.h"
-
-
-#include "wocra/Solvers/wOcraSolver.h"
+#include "ocra/optim/OneLevelSolver.h"
 
 #include "wocra/Constraints/wOcraConstraint.h"
 
@@ -88,7 +82,7 @@ public:
     //------------------------ friendship ------------------------//
 protected:
     friend class wOcraController;    //Only the wOcraController should know about the following functions
-    void connectToController(wOcraSolver& _solver, const wOcraDynamicFunction& dynamicEquation, bool useReducedProblem);
+    void connectToController(ocra::OneLevelSolver& _solver, const wOcraDynamicFunction& dynamicEquation, bool useReducedProblem);
     // void disconnectFromController();
     void update();
 

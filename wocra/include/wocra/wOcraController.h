@@ -11,21 +11,15 @@
 #ifndef __wOcraCTRL_H__
 #define __wOcraCTRL_H__
 
-#include <string>
-#include <vector>
+#include <string>#include <vector>
 #include <iostream>
-
-// OCRA INCLUDES
-#include "ocra/control/Controller.h"
-#include "ocra/control/Model.h"
-
+// OCRA INCLUDES#include "ocra/control/Controller.h"
+#include "ocra/control/Model.h"
+#include "ocra/optim/OneLevelSolver.h"
+// WOCRA INCLUDES
+#include "wocra/Tasks/wOcraTask.h"#include "wocra/Constraints/wOcraConstraint.h"
 
-// WOCRA INCLUDES
-#include "wocra/Tasks/wOcraTask.h"
-#include "wocra/Solvers/wOcraSolver.h"
-#include "wocra/Constraints/wOcraConstraint.h"
-
-using namespace ocra;
+using namespace ocra;
 
 
 namespace wocra
@@ -42,12 +36,12 @@ class wOcraController: public Controller
 {
 public:
 
-    wOcraController(const std::string& ctrlName, Model& innerModel, wOcraSolver& innerSolver, bool useReducedProblem);
+    wOcraController(const std::string& ctrlName, Model& innerModel, ocra::OneLevelSolver& innerSolver, bool useReducedProblem);
     virtual ~wOcraController();
 
     //getter
     Model&      getModel();
-    wOcraSolver& getSolver();
+    ocra::OneLevelSolver& getSolver();
     bool        isUsingReducedProblem();
 
     //setter

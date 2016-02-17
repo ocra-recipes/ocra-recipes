@@ -1,6 +1,8 @@
 project(ocra CXX)
 
-include_directories(include)
+include_directories(include
+                    ${QUADPROG_INCLUDE_DIRS}
+                    )
 file(GLOB control_srcs src/control/*.cpp)
 file(GLOB optim_srcs src/optim/*.cpp)
 
@@ -11,9 +13,11 @@ add_library(ocra-optim ${optim_srcs})
 
 target_link_libraries(ocra-control
     ${Boost_LIBRARIES}
+    ${QUADPROG_LIBRARIES}
     )
 target_link_libraries(ocra-optim
     ${Boost_LIBRARIES}
+    ${QUADPROG_LIBRARIES}
     )
 
 install(DIRECTORY include

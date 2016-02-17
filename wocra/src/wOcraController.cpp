@@ -10,9 +10,7 @@
 #include <iostream>
 
 #include "ocra/optim/QuadraticFunction.h"
-
-#include "wocra/Solvers/wOcraSolver.h"
-#include "wocra/Tasks/wOcraTask.h"
+#include "wocra/Tasks/wOcraTask.h"
 
 #include "wocra/Performances.h"
 
@@ -65,7 +63,7 @@ public:
 struct wOcraController::Pimpl
 {
     Model&       innerModel;
-    wOcraSolver&  innerSolver;
+    ocra::OneLevelSolver&  innerSolver;
     bool         reducedProblem;
 
     // EQUALITY CONSTRAINT OF THE DYNAMIC EQUATION
@@ -86,7 +84,7 @@ struct wOcraController::Pimpl
     PerformanceRecorder updateTasksRecorder;
     PerformanceRecorder solveProblemRecorder;
 
-    Pimpl(Model& m, wOcraSolver&  s, bool useReducedProblem)
+    Pimpl(Model& m, ocra::OneLevelSolver&  s, bool useReducedProblem)
         : innerModel(m)
         , innerSolver(s)
         , reducedProblem(useReducedProblem)
@@ -115,7 +113,7 @@ struct wOcraController::Pimpl
  * \param useReducedProblem  Tell if the redundant problem is considered (unknown variable is \f$ [ \ddq \; \torque \; \force_c ] \f$),
  *                           or is the reduced problem (non-redundant) is considred (unknown variable is \f$ [ \torque \; \force_c ] \f$)
  */
-wOcraController::wOcraController(const std::string& ctrlName, Model& innerModel, wOcraSolver& innerSolver, bool useReducedProblem)
+wOcraController::wOcraController(const std::string& ctrlName, Model& innerModel, ocra::OneLevelSolver& innerSolver, bool useReducedProblem)
     : Controller(ctrlName, innerModel)
     , pimpl( new Pimpl(innerModel, innerSolver, useReducedProblem) )
 {
@@ -174,7 +172,7 @@ Model& wOcraController::getModel()
 /** return the inner solver
  * \return the inner solver used to construct this controller instance
  */
-wOcraSolver& wOcraController::getSolver()
+ocra::OneLevelSolver& wOcraController::getSolver()
 {
     return pimpl->innerSolver;
 }
@@ -438,7 +436,7 @@ void wOcraController::writePerformanceInStream(std::ostream& outstream, bool add
  *  - solver_prepare
  *  - solver_solve
  *
- * See wocra::wOcraController::writePerformanceInStream(std::ostream&, bool) const and wocra::wOcraSolver::writePerformanceInStream(std::ostream&, bool).
+ * See wocra::wOcraController::writePerformanceInStream(std::ostream&, bool) const and wocra::OneLevelSolver::writePerformanceInStream(std::ostream&, bool).
  */
 std::string wOcraController::getPerformances() const
 {
