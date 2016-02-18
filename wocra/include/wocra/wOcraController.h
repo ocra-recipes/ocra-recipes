@@ -17,7 +17,7 @@
 #include "ocra/control/Model.h"
 #include "ocra/optim/OneLevelSolver.h"
 // WOCRA INCLUDES
-#include "wocra/Tasks/wOcraTask.h"#include "wocra/Constraints/wOcraConstraint.h"
+#include "wocra/Tasks/wOcraTask.h"#include "ocra/control/ControlConstraint.h"
 
 using namespace ocra;
 
@@ -53,8 +53,8 @@ public:
 
     void addConstraint(ocra::LinearConstraint& constraint) const;
     void removeConstraint(ocra::LinearConstraint& constraint) const;
-    void addConstraint(wOcraConstraint& constraint) const;
-    void removeConstraint(wOcraConstraint& constraint) const;
+    void addConstraint(ocra::ControlConstraint& constraint) const;
+    void removeConstraint(ocra::ControlConstraint& constraint) const;
 
     wOcraTask& createwOcraTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
     wOcraTask& createwOcraTask(const std::string& name, const Feature& feature) const;

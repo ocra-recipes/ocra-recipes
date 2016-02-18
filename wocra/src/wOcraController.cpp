@@ -230,9 +230,9 @@ void wOcraController::removeConstraint(ocra::LinearConstraint& constraint) const
 /** add a Linear constraint that has different expressions, depending on the problem type.
  *
  * In this case, the constraint needs to be connected to the controller to get the matrices for the problem reduction.
- * See wocra::wOcraConstraint for more info.
+ * See wocra::ControlConstraint for more info.
  */
-void wOcraController::addConstraint(wOcraConstraint& constraint) const
+void wOcraController::addConstraint(ocra::ControlConstraint& constraint) const
 {
     constraint.connectToController(pimpl->dynamicEquation, pimpl->reducedProblem);
     pimpl->innerSolver.addConstraint(constraint.getConstraint());
@@ -241,9 +241,9 @@ void wOcraController::addConstraint(wOcraConstraint& constraint) const
 /** add a Linear constraint that has different expressions, depending on the problem type.
  *
  * In this case, the constraint needs to be disconnected from the controller.
- * See wocra::wOcraConstraint for more info.
+ * See wocra::ControlConstraint for more info.
  */
-void wOcraController::removeConstraint(wOcraConstraint& constraint) const
+void wOcraController::removeConstraint(ocra::ControlConstraint& constraint) const
 {
     pimpl->innerSolver.removeConstraint(constraint.getConstraint());
     constraint.disconnectFromController();

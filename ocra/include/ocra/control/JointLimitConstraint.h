@@ -9,10 +9,10 @@
 #define __JOINTLIMITCONSTRAINT_H__
 
 
-#include "wocra/Constraints/wOcraConstraint.h"
+#include "ocra/control/ControlConstraint.h"
 
 
-namespace wocra
+namespace ocra
 {
 
 /** \addtogroup constraint
@@ -69,12 +69,12 @@ namespace wocra
  * \image html joint_limit_inflexion_explaination.svg "Explaination of the inflexion point in the joint limit constraint"
  *
  */
-class JointLimitFunction: public ocra::LinearFunction
+class JointLimitFunction: public LinearFunction
 {
     public:
-        typedef ocra::LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
+        typedef LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
 
-        JointLimitFunction(const ocra::Model& m, ocra::Variable& var);
+        JointLimitFunction(const Model& m, Variable& var);
         ~JointLimitFunction();
 
         // get/set horizon of prediction
@@ -115,14 +115,14 @@ class JointLimitFunction: public ocra::LinearFunction
 
 /** \brief Create a linear function that represents the joint limit function for the full formalism.
  *
- * See \ref wocra::JointLimitFunction ofr more information.
+ * See \ref wJointLimitFunction ofr more information.
  */
 class FullJointLimitFunction: public JointLimitFunction
 {
     public:
         typedef LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
 
-        FullJointLimitFunction(const ocra::Model& model);
+        FullJointLimitFunction(const Model& model);
         ~FullJointLimitFunction();
 
     protected:
@@ -139,14 +139,14 @@ class FullJointLimitFunction: public JointLimitFunction
 
 /** \brief Create a linear function that represents the joint limit function for the reduced formalism.
  *
- * See \ref wocra::JointLimitFunction ofr more information.
+ * See \ref wJointLimitFunction ofr more information.
  */
 class ReducedJointLimitFunction: public JointLimitFunction
 {
     public:
         typedef LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
 
-        ReducedJointLimitFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation);
+        ReducedJointLimitFunction(const Model& model, const FullDynamicEquationFunction& dynamicEquation);
         ~ReducedJointLimitFunction();
 
     protected:
@@ -173,11 +173,11 @@ class ReducedJointLimitFunction: public JointLimitFunction
 
 
 
-class JointLimitConstraint: public wOcraConstraint
+class JointLimitConstraint: public ControlConstraint
 {
 public:
-    JointLimitConstraint(const ocra::Model& model, double hpos=.2);
-    JointLimitConstraint(const ocra::Model& model, const Eigen::VectorXd& lowerLimits, const Eigen::VectorXd& upperLimits, double hpos=.2);
+    JointLimitConstraint(const Model& model, double hpos=.2);
+    JointLimitConstraint(const Model& model, const Eigen::VectorXd& lowerLimits, const Eigen::VectorXd& upperLimits, double hpos=.2);
     virtual ~JointLimitConstraint() {};
 
     double getHorizonOfPrediction() const;
@@ -198,16 +198,16 @@ public:
     double getJointUpperLimit(int i) const;
 
 protected:
-    virtual void connectToController(const ocra::FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
+    virtual void connectToController(const FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
     virtual void disconnectFromController();
 
 
 private:
-    JointLimitFunction* createFullJointLimitFunction(const ocra::Model& model);
-    JointLimitFunction* createReducedJointLimitFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation);
+    JointLimitFunction* createFullJointLimitFunction(const Model& model);
+    JointLimitFunction* createReducedJointLimitFunction(const Model& model, const FullDynamicEquationFunction& dynamicEquation);
 
     JointLimitFunction* _jointLimitFunction;
-    const ocra::Model&   _model;
+    const Model&   _model;
     bool                _is_connected;
 
     double              _hpos;

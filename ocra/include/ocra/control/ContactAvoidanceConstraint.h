@@ -9,9 +9,9 @@
 #define __CONTACTAVOIDANCECONSTRAINT_H__
 
 
-#include "wocra/Constraints/wOcraConstraint.h"
+#include "ocra/control/ControlConstraint.h"
 
-namespace wocra
+namespace ocra
 {
 
 /** \addtogroup constraint
@@ -28,7 +28,7 @@ namespace wocra
  *
  * \image html obstacle_avoidance.svg
  *
- * To relate this constraint with the dynamic variables, we constrain the estimated future distances to remain positive, as explained in wocra::JointLimitFunction .
+ * To relate this constraint with the dynamic variables, we constrain the estimated future distances to remain positive, as explained in wJointLimitFunction .
  *
  * In this case, the constraint is expressed as follows:
  *
@@ -46,7 +46,7 @@ namespace wocra
  *      & \begin{bmatrix} - \J_{oa} \end{bmatrix} \ddq + \begin{bmatrix} - \dJ_{oa} \dq + 2 \left( \vec{d}_{oa} - \vec{m} - \dot{\vec{d}}_{oa} h \right) / h^2  \end{bmatrix}  & > \vec{0}
  * \f}
  *
- * There is some similarity with the wocra::JointLimitFunction because we constrain an estimated future state. The same issues arise (it only constrain the final point, no middle points),
+ * There is some similarity with the wJointLimitFunction because we constrain an estimated future state. The same issues arise (it only constrain the final point, no middle points),
  * so it is interesting to look at the inflexion point. In the same manner, the time of inflexion for a constant acceleration such as the inflexion point is on 0 is computed as follows:
  *
  * \f{align*}{
@@ -64,12 +64,12 @@ namespace wocra
  * When all these constraints have been defined, we select the tightest ones for each dof.
  *
  */
-class ContactAvoidanceFunction: public ocra::LinearFunction
+class ContactAvoidanceFunction: public LinearFunction
 {
     public:
-        typedef ocra::LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
+        typedef LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
 
-        ContactAvoidanceFunction(const ocra::Model& m, ocra::Variable& var);
+        ContactAvoidanceFunction(const Model& m, Variable& var);
         ~ContactAvoidanceFunction();
 
         // get/set horizon of prediction
@@ -96,8 +96,8 @@ class ContactAvoidanceFunction: public ocra::LinearFunction
         virtual void doUpdateDimensionEnd(int oldDimension);
 
     protected:
-//        const ocra::Model&   _model;
-//        ocra::Variable&      _q_ddot;
+//        const Model&   _model;
+//        Variable&      _q_ddot;
 
         double hpos; // the horizon of prediction for the future joint position;
         double margin;
@@ -119,14 +119,14 @@ class ContactAvoidanceFunction: public ocra::LinearFunction
 
 /** \brief Create a linear function that represents the contact avoidance function for the full formalism.
  *
- * See \ref wocra::ContactAvoidanceFunction for more information.
+ * See \ref wContactAvoidanceFunction for more information.
  */
 class FullContactAvoidanceFunction: public ContactAvoidanceFunction
 {
     public:
         typedef LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
 
-        FullContactAvoidanceFunction(const ocra::Model& model);
+        FullContactAvoidanceFunction(const Model& model);
         ~FullContactAvoidanceFunction();
 
     protected:
@@ -140,14 +140,14 @@ class FullContactAvoidanceFunction: public ContactAvoidanceFunction
 
 /** \brief Create a linear function that represents the contact avoidance function for the reduced formalism.
  *
- * See \ref wocra::ContactAvoidanceFunction for more information.
+ * See \ref wContactAvoidanceFunction for more information.
  */
 class ReducedContactAvoidanceFunction: public ContactAvoidanceFunction
 {
     public:
         typedef LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
 
-        ReducedContactAvoidanceFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation);
+        ReducedContactAvoidanceFunction(const Model& model, const FullDynamicEquationFunction& dynamicEquation);
         ~ReducedContactAvoidanceFunction();
 
     protected:
@@ -168,10 +168,10 @@ class ReducedContactAvoidanceFunction: public ContactAvoidanceFunction
 
 
 
-class ContactAvoidanceConstraint: public wOcraConstraint
+class ContactAvoidanceConstraint: public ControlConstraint
 {
 public:
-    ContactAvoidanceConstraint(const ocra::Model& model, double hpos, double margin);
+    ContactAvoidanceConstraint(const Model& model, double hpos, double margin);
     virtual ~ContactAvoidanceConstraint() {};
 
     double getHorizonOfPrediction() const;
@@ -183,16 +183,16 @@ public:
     void updateContactInformation(const Eigen::MatrixXd& _JObst, const Eigen::VectorXd& _dJdqOst, const Eigen::VectorXd& _distObst, const Eigen::VectorXd& _velObst);
 
 protected:
-    virtual void connectToController(const ocra::FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
+    virtual void connectToController(const FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
     virtual void disconnectFromController();
 
 
 private:
-    ContactAvoidanceFunction* createFullContactAvoidanceFunction(const ocra::Model& model);
-    ContactAvoidanceFunction* createReducedContactAvoidanceFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation);
+    ContactAvoidanceFunction* createFullContactAvoidanceFunction(const Model& model);
+    ContactAvoidanceFunction* createReducedContactAvoidanceFunction(const Model& model, const FullDynamicEquationFunction& dynamicEquation);
 
     ContactAvoidanceFunction* _contactAvoidanceFunction;
-    const ocra::Model&   _model;
+    const Model&   _model;
     bool                _is_connected;
 
     double              _hpos;

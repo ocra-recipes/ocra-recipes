@@ -5,25 +5,25 @@
  * \brief Implement joint limit constraint for wOcra controller.
  */
 
-#include "wocra/Constraints/JointLimitConstraint.h"
+#include "ocra/control/JointLimitConstraint.h"
 
 
-using namespace wocra;
+using namespace ocra;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /** Initialize the joint limit constraint function.
  *
- * \param model  The ocra::Model on which we will get the dynamic parameters
+ * \param model  The Model on which we will get the dynamic parameters
  * \param var    The problem variable that will be used to write this constraint
  *
  * This class is a generic class to compute matrices for the joint limit function, but <b>it should not be used</b>.
  * You would rather choose one of the following derivative classes, depending on the choosen formalism,
  * either full \f$ \x = [ \ddq \; \torque \; \force_c ] \f$ or reduced \f$ \x = [ \torque \; \force_c ] \f$:
  *
- *      - wocra::FullJointLimitFunction
- *      - wocra::ReducedJointLimitFunction
+ *      - wFullJointLimitFunction
+ *      - wReducedJointLimitFunction
  *
  * The function is on the form:
  *      | O -I |         |  ddqmax |
@@ -35,9 +35,9 @@ using namespace wocra;
  *      A ddq + b >= 0
  */
 
-JointLimitFunction::JointLimitFunction(const ocra::Model& model, ocra::Variable& var)
-    : ocra::NamedInstance("Joint Limit Equation Function")
-    , ocra::CoupledInputOutputSize(false)
+JointLimitFunction::JointLimitFunction(const Model& model, Variable& var)
+    : NamedInstance("Joint Limit Equation Function")
+    , CoupledInputOutputSize(false)
     , LinearFunction(var, 2*model.nbInternalDofs())
     , hpos(.2)
 {
@@ -180,7 +180,7 @@ double JointLimitFunction::getJointUpperLimit(int i) const
  * This function compute matrix \f$ \A \f$ for the full formalism. When using the reduced one, this matrix is first computed,
  * and then transformed (see \ref sec_transform_formalism) to fit the new variable.
  *
- * The computation of \f$ \A \f$ is explained in wocra::JointLimitFunction
+ * The computation of \f$ \A \f$ is explained in wJointLimitFunction
  */
 void JointLimitFunction::computeFullJacobian(int varDofs, int nIDofs, Eigen::MatrixXd& fullJacobian) const
 {
@@ -200,7 +200,7 @@ void JointLimitFunction::computeFullJacobian(int varDofs, int nIDofs, Eigen::Mat
  * This function compute vector \f$ \b \f$ for the full formalism. When using the reduced one, this vector is first computed,
  * and then transformed (see \ref sec_transform_formalism) to fit the new variable.
  *
- * The computation of \f$ \b \f$ is explained in wocra::JointLimitFunction
+ * The computation of \f$ \b \f$ is explained in wJointLimitFunction
  */
 void JointLimitFunction::computeFullb(const Eigen::VectorXd& gpos, const Eigen::VectorXd& gvel, Eigen::VectorXd& fullb) const
 {
@@ -277,9 +277,9 @@ void JointLimitFunction::computeFullb(const Eigen::VectorXd& gpos, const Eigen::
 
 struct FullJointLimitFunction::Pimpl
 {
-    const ocra::Model&   _model;
+    const Model&   _model;
 
-    Pimpl(const ocra::Model& model)
+    Pimpl(const Model& model)
         : _model(model)
     {
 
@@ -289,20 +289,20 @@ struct FullJointLimitFunction::Pimpl
 
 /** Initialize a joint limits function designed for the full formalism.
  *
- * \param model The ocra::Model on which we will update the dynamic parameters
+ * \param model The Model on which we will update the dynamic parameters
  *
- * It is connected with the model and invalidates \f$ \b \f$ when ocra::EVT_CHANGE_VALUE is raised.
+ * It is connected with the model and invalidates \f$ \b \f$ when EVT_CHANGE_VALUE is raised.
  * Furthermore, it computes the Jacobian matrix \f$ \A \f$ which is constant.
  */
-FullJointLimitFunction::FullJointLimitFunction(const ocra::Model& model)
-    : ocra::NamedInstance("Full Joint Limit Equation Function")
-    , ocra::AbilitySet(ocra::PARTIAL_X)
-    , ocra::CoupledInputOutputSize(false)
+FullJointLimitFunction::FullJointLimitFunction(const Model& model)
+    : NamedInstance("Full Joint Limit Equation Function")
+    , AbilitySet(PARTIAL_X)
+    , CoupledInputOutputSize(false)
     , JointLimitFunction(model, model.getAccelerationVariable())
     , pimpl(new Pimpl(model))
 {
     //_model.connect<EVT_CHANGE_VALUE>(*this, &FullJointLimitFunction::invalidateAll); // not necessary  because A (jacobian) is constant
-    pimpl->_model.connect<ocra::EVT_CHANGE_VALUE>(*this, &FullJointLimitFunction::invalidateb); //to update b at each time step
+    pimpl->_model.connect<EVT_CHANGE_VALUE>(*this, &FullJointLimitFunction::invalidateb); //to update b at each time step
 
     int varDofs = model.getAccelerationVariable().getSize();
 
@@ -317,7 +317,7 @@ FullJointLimitFunction::FullJointLimitFunction(const ocra::Model& model)
 FullJointLimitFunction::~FullJointLimitFunction()
 {
     //_model.disconnect<EVT_CHANGE_VALUE>(*this, &FullJointLimitFunction::invalidateAll);
-    pimpl->_model.disconnect<ocra::EVT_CHANGE_VALUE>(*this, &FullJointLimitFunction::invalidateb);
+    pimpl->_model.disconnect<EVT_CHANGE_VALUE>(*this, &FullJointLimitFunction::invalidateb);
 }
 
 /** Update the vector \f$ \b \f$ for the full formalism.
@@ -347,12 +347,12 @@ void FullJointLimitFunction::updateb() const
 
 struct ReducedJointLimitFunction::Pimpl
 {
-    const ocra::Model&          _model;
-    const ocra::FullDynamicEquationFunction& _dynamicEquation;
+    const Model&          _model;
+    const FullDynamicEquationFunction& _dynamicEquation;
 
     Eigen::MatrixXd            _fullJacobian;
 
-    Pimpl(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation)
+    Pimpl(const Model& model, const FullDynamicEquationFunction& dynamicEquation)
         : _model(model)
         , _dynamicEquation(dynamicEquation)
     {
@@ -363,21 +363,21 @@ struct ReducedJointLimitFunction::Pimpl
 
 /** Initialize a joint limits function designed for the reduced formalism.
  *
- * \param model            The ocra::Model on which we will update the dynamic parameters
+ * \param model            The Model on which we will update the dynamic parameters
  * \param dynamicEquation  The dynamic equation of motion that can compute matrices for the reduced problem
  *
- * It is connected with the model and invalidates all when ocra::EVT_CHANGE_VALUE is raised.
+ * It is connected with the model and invalidates all when EVT_CHANGE_VALUE is raised.
  * Furthermore, it computes the Jacobian matrix \f$ \A \f$ for the full formalism which is constant. It will be transformed to fit the reduced formalism.
  */
-ReducedJointLimitFunction::ReducedJointLimitFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation)
-    : ocra::NamedInstance("Reduced Joint Limit Equation Function")
-    , ocra::AbilitySet(ocra::PARTIAL_X)
-    , ocra::CoupledInputOutputSize(false)
+ReducedJointLimitFunction::ReducedJointLimitFunction(const Model& model, const FullDynamicEquationFunction& dynamicEquation)
+    : NamedInstance("Reduced Joint Limit Equation Function")
+    , AbilitySet(PARTIAL_X)
+    , CoupledInputOutputSize(false)
     , JointLimitFunction(model, dynamicEquation.getActionVariable())
     , pimpl(new Pimpl(model, dynamicEquation))
 {
-    pimpl->_model.connect<ocra::EVT_CHANGE_VALUE>(*this, &ReducedJointLimitFunction::invalidateAll);
-    pimpl->_model.connect<ocra::EVT_CHANGE_VALUE>(*this, &ReducedJointLimitFunction::invalidateb); //to update b at each time step
+    pimpl->_model.connect<EVT_CHANGE_VALUE>(*this, &ReducedJointLimitFunction::invalidateAll);
+    pimpl->_model.connect<EVT_CHANGE_VALUE>(*this, &ReducedJointLimitFunction::invalidateb); //to update b at each time step
 
     computeFullJacobian(pimpl->_model.nbDofs(), pimpl->_model.nbInternalDofs(), pimpl->_fullJacobian);
 }
@@ -388,8 +388,8 @@ ReducedJointLimitFunction::ReducedJointLimitFunction(const ocra::Model& model, c
  */
 ReducedJointLimitFunction::~ReducedJointLimitFunction()
 {
-    pimpl->_model.disconnect<ocra::EVT_CHANGE_VALUE>(*this, &ReducedJointLimitFunction::invalidateAll);
-    pimpl->_model.disconnect<ocra::EVT_CHANGE_VALUE>(*this, &ReducedJointLimitFunction::invalidateb);
+    pimpl->_model.disconnect<EVT_CHANGE_VALUE>(*this, &ReducedJointLimitFunction::invalidateAll);
+    pimpl->_model.disconnect<EVT_CHANGE_VALUE>(*this, &ReducedJointLimitFunction::invalidateb);
 }
 
 
@@ -450,19 +450,19 @@ void ReducedJointLimitFunction::doUpdateInputSizeEnd()
 
 
 
-JointLimitConstraint::JointLimitConstraint(const ocra::Model& model, double hpos)
+JointLimitConstraint::JointLimitConstraint(const Model& model, double hpos)
     : _model(model)
     , _is_connected(false)
-    , wOcraConstraint()
+    , ControlConstraint()
 {
     setHorizonOfPrediction(hpos);
     setJointLimits(model.getJointLowerLimits(), model.getJointUpperLimits() );
 }
 
-JointLimitConstraint::JointLimitConstraint(const ocra::Model& model, const Eigen::VectorXd& lowerLimits, const Eigen::VectorXd& upperLimits, double hpos)
+JointLimitConstraint::JointLimitConstraint(const Model& model, const Eigen::VectorXd& lowerLimits, const Eigen::VectorXd& upperLimits, double hpos)
     : _model(model)
     , _is_connected(false)
-    , wOcraConstraint()
+    , ControlConstraint()
 {
     setHorizonOfPrediction(hpos);
     setJointLimits(lowerLimits, upperLimits);
@@ -545,15 +545,15 @@ void  JointLimitConstraint::setJointUpperLimit(int i, double newUpperLimit)
 }
 
 
-void JointLimitConstraint::connectToController(const ocra::FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem)
+void JointLimitConstraint::connectToController(const FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem)
 {
-    ocra::LinearFunction* f = NULL;
+    LinearFunction* f = NULL;
     if (useReducedProblem)
         f = createReducedJointLimitFunction(_model, dynamicEquation);
     else
         f = createFullJointLimitFunction(_model);
 
-    _constraint.reset(new ocra::LinearConstraint(f));
+    _constraint.reset(new LinearConstraint(f));
     _is_connected = true;
 
     setHorizonOfPrediction(_hpos);
@@ -567,13 +567,13 @@ void JointLimitConstraint::disconnectFromController()
 }
 
 
-JointLimitFunction* JointLimitConstraint::createFullJointLimitFunction(const ocra::Model& model)
+JointLimitFunction* JointLimitConstraint::createFullJointLimitFunction(const Model& model)
 {
     _jointLimitFunction = new FullJointLimitFunction(model);
     return _jointLimitFunction;
 }
 
-JointLimitFunction* JointLimitConstraint::createReducedJointLimitFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation)
+JointLimitFunction* JointLimitConstraint::createReducedJointLimitFunction(const Model& model, const FullDynamicEquationFunction& dynamicEquation)
 {
     _jointLimitFunction = new ReducedJointLimitFunction(model, dynamicEquation);
     return _jointLimitFunction;
