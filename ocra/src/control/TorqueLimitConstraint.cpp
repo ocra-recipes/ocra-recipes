@@ -5,11 +5,11 @@
  * \brief Implement torque limit constraint for wOcra controller.
  */
 
-#include "wocra/Constraints/TorqueLimitConstraint.h"
+#include "ocra/control/TorqueLimitConstraint.h"
 
 
 
-namespace wocra
+namespace ocra
 {
 
 
@@ -17,19 +17,19 @@ namespace wocra
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /** Initialize a torque limit inequality function.
  *
- * \param model The ocra::Model on which we will get the dynamic parameters
+ * \param model The Model on which we will get the dynamic parameters
  *
  * It initializes the Jacobian of the linear function, \f$ \A \f$ which is constant.
  */
-TorqueLimitFunction::TorqueLimitFunction(const ocra::Model& model)
-    : ocra::NamedInstance("Torque Limit Equation Function")
-    , ocra::AbilitySet(ocra::PARTIAL_X)
-    , ocra::CoupledInputOutputSize(false)
+TorqueLimitFunction::TorqueLimitFunction(const Model& model)
+    : NamedInstance("Torque Limit Equation Function")
+    , AbilitySet(PARTIAL_X)
+    , CoupledInputOutputSize(false)
     , _torqueDim(model.getJointTorqueVariable().getSize())
     , LinearFunction(model.getJointTorqueVariable(), 2*model.getJointTorqueVariable().getSize())
 {
     //_model.connect<EVT_CHANGE_VALUE>(*this, &DynamicEquationFunction::invalidateAll); // not necessary  because A (jacobian) is constant
-    //_model.connect<ocra::EVT_CHANGE_VALUE>(*this, &JointLimitFunction::invalidateb);   // b is constant, unless someone changes it by calling setTorqueLimits
+    //_model.connect<EVT_CHANGE_VALUE>(*this, &JointLimitFunction::invalidateb);   // b is constant, unless someone changes it by calling setTorqueLimits
 
     /* The function is on the form:
      *      | O -I |         |  taumax |
@@ -102,6 +102,4 @@ const Eigen::VectorXd& TorqueLimitFunction::getTorqueLimits() const
 
 
 
-} // end namespace wocra
-
-
+} // end namespace ocra

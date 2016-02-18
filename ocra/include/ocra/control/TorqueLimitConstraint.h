@@ -9,10 +9,12 @@
 #define __TORQUELIMITCONSTRAINT_H__
 
 
-#include "wocra/Constraints/wOcraConstraint.h"
+#include "ocra/optim/LinearFunction.h"
+#include "ocra/control/Model.h"
+#include "ocra/optim/Constraint.h"
 
 
-namespace wocra
+namespace ocra
 {
 
 /** \addtogroup constraint
@@ -34,12 +36,12 @@ namespace wocra
  *      \A \x + \b &> \vec{0} & &\Leftrightarrow & \begin{bmatrix} - \Id{} \\ \Id{} \end{bmatrix} .  \torque  + \begin{bmatrix} \torque_{max} \\ \torque_{max} \end{bmatrix} &> \vec{0}
  * \f}
  */
-class TorqueLimitFunction: public ocra::LinearFunction
+class TorqueLimitFunction: public LinearFunction
 {
 public:
-    typedef ocra::LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
+    typedef LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
 
-    TorqueLimitFunction(const ocra::Model& model);
+    TorqueLimitFunction(const Model& model);
     ~TorqueLimitFunction();
 
     void  setTorqueLimits(const Eigen::VectorXd& torqueLimits);
@@ -62,14 +64,14 @@ private: // Forbid copy
 
 
 
-class TorqueLimitConstraint: public ocra::LinearConstraint
+class TorqueLimitConstraint: public LinearConstraint
 {
 public:
-    TorqueLimitConstraint(const ocra::Model& model)
-        : ocra::LinearConstraint(createTorqueLimiFunction(model)) {}; //GREATER_THAN_ZERO
+    TorqueLimitConstraint(const Model& model)
+        : LinearConstraint(createTorqueLimiFunction(model)) {}; //GREATER_THAN_ZERO
 
-    TorqueLimitConstraint(const ocra::Model& model, const Eigen::VectorXd& torqueLimits)
-        : ocra::LinearConstraint(createTorqueLimiFunction(model)) //GREATER_THAN_ZERO
+    TorqueLimitConstraint(const Model& model, const Eigen::VectorXd& torqueLimits)
+        : LinearConstraint(createTorqueLimiFunction(model)) //GREATER_THAN_ZERO
     {
         _torqueLimitFunction->setTorqueLimits(torqueLimits);
     };
@@ -83,7 +85,7 @@ public:
     const Eigen::VectorXd& getTorqueLimits() const {return _torqueLimitFunction->getTorqueLimits();};
 
 private:
-    TorqueLimitFunction* createTorqueLimiFunction(const ocra::Model& model)
+    TorqueLimitFunction* createTorqueLimiFunction(const Model& model)
     {
         _torqueLimitFunction = new TorqueLimitFunction(model);
         return _torqueLimitFunction;
@@ -98,6 +100,3 @@ private:
 
 
 #endif
-
-
-
