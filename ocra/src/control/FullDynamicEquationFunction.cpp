@@ -1,26 +1,26 @@
 /**
- * \file wOcraConstraint.cpp
+ * \file FullDynamicEquationFunction.cpp
  * \author Joseph Salini
  *
  * \brief Implement base class that can be used as constraints in wOcra controller.
  */
 
-#include "wocra/Constraints/wOcraConstraint.h"
+#include "ocra/control/FullDynamicEquationFunction.h"
 
 
-namespace wocra
-{
+using namespace ocra;
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-struct wOcraDynamicFunction::Pimpl
+struct FullDynamicEquationFunction::Pimpl
 {
-    const ocra::Model&  _model;
-    ocra::Variable&     _tau;
-    ocra::Variable&     _fc;
+    const Model&  _model;
+    Variable&     _tau;
+    Variable&     _fc;
 
     // ADD ACTION VARIABLE
-    ocra::CompositeVariable _chi;
+    CompositeVariable _chi;
     bool _reducedProblemDataAreUpToDate;
 
     Eigen::MatrixXd  _InertiaMatrixInverseJchiT;
@@ -28,7 +28,7 @@ struct wOcraDynamicFunction::Pimpl
     bool             _useGrav;
 
 
-    Pimpl(const ocra::Model& model)
+    Pimpl(const Model& model)
         : _model(model)
         , _tau(model.getJointTorqueVariable())
         , _fc(model.getModelContacts().getContactForcesVariable())
@@ -55,37 +55,37 @@ struct wOcraDynamicFunction::Pimpl
 
 /** Initialize a dynamic equation of motion function.
  *
- * \param model The ocra::Model on which we will update the dynamic parameters
+ * \param model The Model on which we will update the dynamic parameters
  *
- * It is connected with the model on "ocra::EVT_CHANGE_VALUE", meaning that a,y modification in the model will invalidate this linear function.
+ * It is connected with the model on "EVT_CHANGE_VALUE", meaning that a,y modification in the model will invalidate this linear function.
  */
-wOcraDynamicFunction::wOcraDynamicFunction(const ocra::Model& model)
-    : ocra::NamedInstance("wOcra Dynamic Equation Function")
-    , ocra::AbilitySet(ocra::PARTIAL_X)
-    , ocra::CoupledInputOutputSize(false)
+ FullDynamicEquationFunction::FullDynamicEquationFunction(const Model& model)
+    : NamedInstance("Full Dynamic Equation Function")
+    , AbilitySet(PARTIAL_X)
+    , CoupledInputOutputSize(false)
     , LinearFunction(createDEVariable(model), model.nbDofs())
     , pimpl( new Pimpl(model))
 {
     buildA();
 
-    pimpl->_model.connect<ocra::EVT_CHANGE_VALUE>(*this, &wOcraDynamicFunction::invalidateAll);
-    pimpl->_model.connect<ocra::EVT_CHANGE_VALUE>(*this, &wOcraDynamicFunction::invalidateb);
-    pimpl->_model.connect<ocra::EVT_CHANGE_VALUE>(*this, &wOcraDynamicFunction::invalidateReducedProblemData);
+    pimpl->_model.connect<EVT_CHANGE_VALUE>(*this, &FullDynamicEquationFunction::invalidateAll);
+    pimpl->_model.connect<EVT_CHANGE_VALUE>(*this, &FullDynamicEquationFunction::invalidateb);
+    pimpl->_model.connect<EVT_CHANGE_VALUE>(*this, &FullDynamicEquationFunction::invalidateReducedProblemData);
 }
 
 /** Destructor
  *
  */
-wOcraDynamicFunction::~wOcraDynamicFunction()
+ FullDynamicEquationFunction::~FullDynamicEquationFunction()
 {
-    pimpl->_model.disconnect<ocra::EVT_CHANGE_VALUE>(*this, &wOcraDynamicFunction::invalidateAll);
-    pimpl->_model.disconnect<ocra::EVT_CHANGE_VALUE>(*this, &wOcraDynamicFunction::invalidateb);
-    pimpl->_model.disconnect<ocra::EVT_CHANGE_VALUE>(*this, &wOcraDynamicFunction::invalidateReducedProblemData);
+    pimpl->_model.disconnect<EVT_CHANGE_VALUE>(*this, &FullDynamicEquationFunction::invalidateAll);
+    pimpl->_model.disconnect<EVT_CHANGE_VALUE>(*this, &FullDynamicEquationFunction::invalidateb);
+    pimpl->_model.disconnect<EVT_CHANGE_VALUE>(*this, &FullDynamicEquationFunction::invalidateReducedProblemData);
     delete &getVariable();
 }
 
 
-void wOcraDynamicFunction::takeIntoAccountGravity(bool useGrav)
+void FullDynamicEquationFunction::takeIntoAccountGravity(bool useGrav)
 {
     pimpl->_useGrav = useGrav;
 }
@@ -97,7 +97,7 @@ void wOcraDynamicFunction::takeIntoAccountGravity(bool useGrav)
  * Actually, it computes \f$ \A = \begin{bmatrix} \M  &  -S  & \J_c\tp \end{bmatrix} \f$ by updating \f$ \M \f$ and \f$ \J_c \f$.
  * \f$ S \f$ is constant and has been initialized in the constructor which calls #buildA()
  */
-void wOcraDynamicFunction::updateJacobian() const
+void FullDynamicEquationFunction::updateJacobian() const
 {
     _jacobian.leftCols(_dim)                  =  pimpl->_model.getInertiaMatrix(); // we update the M part
     _jacobian.rightCols(pimpl->_fc.getSize()) =  pimpl->_model.getModelContacts().getJct(); // we update the Jc.T part
@@ -107,7 +107,7 @@ void wOcraDynamicFunction::updateJacobian() const
  *
  * It computes \f$ \b = \n + \g \f$ .
  */
-void wOcraDynamicFunction::updateb() const
+void FullDynamicEquationFunction::updateb() const
 {
     if (pimpl->_useGrav)
         _b = pimpl->_model.getLinearTerms() + pimpl->_model.getNonLinearTerms() + pimpl->_model.getGravityTerms();
@@ -120,7 +120,7 @@ void wOcraDynamicFunction::updateb() const
  * It sets \f$ \A \f$ to 0 and computes \f$ S \f$ that is a constant matrix, So we obtain \f$ \A = \begin{bmatrix} 0  &  -S  & 0 \end{bmatrix} \f$.
  * \f$ \M \f$ and \f$ \J_c \f$ are updated in #updateJacobian() const .
  */
-void wOcraDynamicFunction::buildA()
+void FullDynamicEquationFunction::buildA()
 {
     /* the dynamic equation is of the form:
      *
@@ -147,18 +147,18 @@ void wOcraDynamicFunction::buildA()
 
 /** Create the function variable \f$ \x = \begin{bmatrix}  \ddq\tp & \torque\tp & \force_c\tp\end{bmatrix}\tp \f$ .
  *
- * \param model The ocra::Model that contains the dynamic variables:
+ * \param model The Model that contains the dynamic variables:
  *
  *      - \f$ \ddq \f$ -> model.getAccelerationVariable()
  *      - \f$ \torque \f$ -> model.getJointTorqueVariable()
  *      - \f$ \force_c \f$ -> model.getModelContacts().getContactForcesVariable()
  */
-ocra::Variable& wOcraDynamicFunction::createDEVariable(const ocra::Model& model)
+Variable& FullDynamicEquationFunction::createDEVariable(const Model& model)
 {
     static int cpt = 0;
     std::stringstream name;
     name << "dyn_eq" << cpt++;
-    ocra::CompositeVariable* var = new ocra::CompositeVariable(name.str(), model.getAccelerationVariable());
+    CompositeVariable* var = new CompositeVariable(name.str(), model.getAccelerationVariable());
     var->add(model.getJointTorqueVariable());                       //
     var->add(model.getModelContacts().getContactForcesVariable());  // [tau, fc] should be the same order as that of _chi in pimpl
     return *var;
@@ -170,7 +170,7 @@ ocra::Variable& wOcraDynamicFunction::createDEVariable(const ocra::Model& model)
  * By overloading this function, it allows linear function modification when input size changes.
  * It does nothing actually.
  */
-void wOcraDynamicFunction::doUpdateInputSizeBegin()
+void FullDynamicEquationFunction::doUpdateInputSizeBegin()
 {
     //do nothing : this overload allows to resize
 }
@@ -180,43 +180,32 @@ void wOcraDynamicFunction::doUpdateInputSizeBegin()
  * By overloading this function, it allows linear function modification when input size changes.
  * It does nothing actually.
  */
-void wOcraDynamicFunction::doUpdateInputSizeEnd()
+void FullDynamicEquationFunction::doUpdateInputSizeEnd()
 {
     buildA();
 }
 
-void wOcraDynamicFunction::invalidateReducedProblemData(int timestamp)
+void FullDynamicEquationFunction::invalidateReducedProblemData(int timestamp)
 {
     pimpl->_reducedProblemDataAreUpToDate = false;
 }
 
 
-const Eigen::MatrixXd& wOcraDynamicFunction::getInertiaMatrixInverseJchiT() const
+const Eigen::MatrixXd& FullDynamicEquationFunction::getInertiaMatrixInverseJchiT() const
 {
     if (!pimpl->_reducedProblemDataAreUpToDate)
         pimpl->updateReduceProblemData( getJacobian(), getb() );
     return pimpl->_InertiaMatrixInverseJchiT;
 }
 
-const Eigen::VectorXd& wOcraDynamicFunction::getInertiaMatrixInverseLinNonLinGrav() const
+const Eigen::VectorXd& FullDynamicEquationFunction::getInertiaMatrixInverseLinNonLinGrav() const
 {
     if (!pimpl->_reducedProblemDataAreUpToDate)
         pimpl->updateReduceProblemData( getJacobian(), getb() );
     return pimpl->_InertiaMatrixInverseLinNonLinGrav;
 }
 
-ocra::Variable& wOcraDynamicFunction::getActionVariable() const
+Variable& FullDynamicEquationFunction::getActionVariable() const
 {
     return pimpl->_chi;
 }
-
-
-
-
-
-
-} // end namespace wocra
-
-
-
-

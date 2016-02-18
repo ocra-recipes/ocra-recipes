@@ -246,12 +246,12 @@ void FullContactAvoidanceFunction::updateb() const
 struct ReducedContactAvoidanceFunction::Pimpl
 {
     const ocra::Model&           _model;
-    const wOcraDynamicFunction&  _dynamicEquation;
+    const ocra::FullDynamicEquationFunction&  _dynamicEquation;
 
     Eigen::MatrixXd             _fullJacobian;
     Eigen::VectorXd             _fullb;
 
-    Pimpl(const ocra::Model& model, const wOcraDynamicFunction& dynamicEquation)
+    Pimpl(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation)
         : _model(model)
         , _dynamicEquation(dynamicEquation)
     {
@@ -264,7 +264,7 @@ struct ReducedContactAvoidanceFunction::Pimpl
  * \param model            The ocra::Model on which we will update the dynamic parameters
  * \param dynamicEquation  The dynamic equation of motion that can compute matrices for the reduced problem
  */
-ReducedContactAvoidanceFunction::ReducedContactAvoidanceFunction(const ocra::Model& model, const wOcraDynamicFunction& dynamicEquation)
+ReducedContactAvoidanceFunction::ReducedContactAvoidanceFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation)
     : ocra::NamedInstance("Reduced Contact Avoidance Function")
     , ocra::AbilitySet(ocra::PARTIAL_X)
     , ocra::CoupledInputOutputSize(false)
@@ -370,7 +370,7 @@ void ContactAvoidanceConstraint::updateContactInformation(const Eigen::MatrixXd&
 }
 
 
-void ContactAvoidanceConstraint::connectToController(const wOcraDynamicFunction& dynamicEquation, bool useReducedProblem)
+void ContactAvoidanceConstraint::connectToController(const ocra::FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem)
 {
     ocra::LinearFunction* f = NULL;
     if (useReducedProblem)
@@ -396,11 +396,8 @@ ContactAvoidanceFunction* ContactAvoidanceConstraint::createFullContactAvoidance
     return _contactAvoidanceFunction;
 }
 
-ContactAvoidanceFunction* ContactAvoidanceConstraint::createReducedContactAvoidanceFunction(const ocra::Model& model, const wOcraDynamicFunction& dynamicEquation)
+ContactAvoidanceFunction* ContactAvoidanceConstraint::createReducedContactAvoidanceFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation)
 {
     _contactAvoidanceFunction = new ReducedContactAvoidanceFunction(model, dynamicEquation);
     return _contactAvoidanceFunction;
 }
-
-
-

@@ -348,11 +348,11 @@ void FullJointLimitFunction::updateb() const
 struct ReducedJointLimitFunction::Pimpl
 {
     const ocra::Model&          _model;
-    const wOcraDynamicFunction& _dynamicEquation;
+    const ocra::FullDynamicEquationFunction& _dynamicEquation;
 
     Eigen::MatrixXd            _fullJacobian;
 
-    Pimpl(const ocra::Model& model, const wOcraDynamicFunction& dynamicEquation)
+    Pimpl(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation)
         : _model(model)
         , _dynamicEquation(dynamicEquation)
     {
@@ -369,7 +369,7 @@ struct ReducedJointLimitFunction::Pimpl
  * It is connected with the model and invalidates all when ocra::EVT_CHANGE_VALUE is raised.
  * Furthermore, it computes the Jacobian matrix \f$ \A \f$ for the full formalism which is constant. It will be transformed to fit the reduced formalism.
  */
-ReducedJointLimitFunction::ReducedJointLimitFunction(const ocra::Model& model, const wOcraDynamicFunction& dynamicEquation)
+ReducedJointLimitFunction::ReducedJointLimitFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation)
     : ocra::NamedInstance("Reduced Joint Limit Equation Function")
     , ocra::AbilitySet(ocra::PARTIAL_X)
     , ocra::CoupledInputOutputSize(false)
@@ -545,7 +545,7 @@ void  JointLimitConstraint::setJointUpperLimit(int i, double newUpperLimit)
 }
 
 
-void JointLimitConstraint::connectToController(const wOcraDynamicFunction& dynamicEquation, bool useReducedProblem)
+void JointLimitConstraint::connectToController(const ocra::FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem)
 {
     ocra::LinearFunction* f = NULL;
     if (useReducedProblem)
@@ -573,10 +573,8 @@ JointLimitFunction* JointLimitConstraint::createFullJointLimitFunction(const ocr
     return _jointLimitFunction;
 }
 
-JointLimitFunction* JointLimitConstraint::createReducedJointLimitFunction(const ocra::Model& model, const wOcraDynamicFunction& dynamicEquation)
+JointLimitFunction* JointLimitConstraint::createReducedJointLimitFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation)
 {
     _jointLimitFunction = new ReducedJointLimitFunction(model, dynamicEquation);
     return _jointLimitFunction;
 }
-
-

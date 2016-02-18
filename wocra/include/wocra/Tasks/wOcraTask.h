@@ -82,7 +82,7 @@ public:
     //------------------------ friendship ------------------------//
 protected:
     friend class wOcraController;    //Only the wOcraController should know about the following functions
-    void connectToController(ocra::OneLevelSolver& _solver, const wOcraDynamicFunction& dynamicEquation, bool useReducedProblem);
+    void connectToController(ocra::OneLevelSolver& _solver, const ocra::FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
     // void disconnectFromController();
     void update();
 
@@ -95,19 +95,13 @@ protected:
     void removeContactPointInModel();
 
     virtual void doActivateContactMode();
-
     virtual void doDeactivateContactMode();
     virtual void doSetFrictionCoeff();
-
     virtual void doSetMargin();
-
     virtual void doSetWeight();
-
     virtual void doActivateAsObjective();
     virtual void doDeactivateAsObjective();
-
     virtual void doActivateAsConstraint();
-
     virtual void doDeactivateAsConstraint();
 
     void doUpdateAccelerationTask();

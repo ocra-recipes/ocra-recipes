@@ -147,7 +147,7 @@ class ReducedContactAvoidanceFunction: public ContactAvoidanceFunction
     public:
         typedef LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
 
-        ReducedContactAvoidanceFunction(const ocra::Model& model, const wOcraDynamicFunction& dynamicEquation);
+        ReducedContactAvoidanceFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation);
         ~ReducedContactAvoidanceFunction();
 
     protected:
@@ -183,13 +183,13 @@ public:
     void updateContactInformation(const Eigen::MatrixXd& _JObst, const Eigen::VectorXd& _dJdqOst, const Eigen::VectorXd& _distObst, const Eigen::VectorXd& _velObst);
 
 protected:
-    virtual void connectToController(const wOcraDynamicFunction& dynamicEquation, bool useReducedProblem);
+    virtual void connectToController(const ocra::FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
     virtual void disconnectFromController();
 
 
 private:
     ContactAvoidanceFunction* createFullContactAvoidanceFunction(const ocra::Model& model);
-    ContactAvoidanceFunction* createReducedContactAvoidanceFunction(const ocra::Model& model, const wOcraDynamicFunction& dynamicEquation);
+    ContactAvoidanceFunction* createReducedContactAvoidanceFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation);
 
     ContactAvoidanceFunction* _contactAvoidanceFunction;
     const ocra::Model&   _model;

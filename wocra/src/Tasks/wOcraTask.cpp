@@ -43,7 +43,7 @@ struct wOcraTask::Pimpl
 {
     const Model&                innerModel;
     ocra::OneLevelSolver*                 solver;
-    const wOcraDynamicFunction*  dynamicEquation;
+    const ocra::FullDynamicEquationFunction*  dynamicEquation;
     bool                        useReducedProblem;
     ocra::BaseVariable           fcVar;
 
@@ -183,7 +183,7 @@ wOcraTask::~wOcraTask()
 }
 
 
-void wOcraTask::connectToController(ocra::OneLevelSolver& solver, const wOcraDynamicFunction& dynamicEquation, bool useReducedProblem)
+void wOcraTask::connectToController(ocra::OneLevelSolver& solver, const ocra::FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem)
 {
     pimpl->solver            = &solver;
     pimpl->dynamicEquation   = &dynamicEquation;

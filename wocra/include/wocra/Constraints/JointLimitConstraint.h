@@ -146,7 +146,7 @@ class ReducedJointLimitFunction: public JointLimitFunction
     public:
         typedef LinearFunction  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.
 
-        ReducedJointLimitFunction(const ocra::Model& model, const wOcraDynamicFunction& dynamicEquation);
+        ReducedJointLimitFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation);
         ~ReducedJointLimitFunction();
 
     protected:
@@ -198,13 +198,13 @@ public:
     double getJointUpperLimit(int i) const;
 
 protected:
-    virtual void connectToController(const wOcraDynamicFunction& dynamicEquation, bool useReducedProblem);
+    virtual void connectToController(const ocra::FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
     virtual void disconnectFromController();
 
 
 private:
     JointLimitFunction* createFullJointLimitFunction(const ocra::Model& model);
-    JointLimitFunction* createReducedJointLimitFunction(const ocra::Model& model, const wOcraDynamicFunction& dynamicEquation);
+    JointLimitFunction* createReducedJointLimitFunction(const ocra::Model& model, const ocra::FullDynamicEquationFunction& dynamicEquation);
 
     JointLimitFunction* _jointLimitFunction;
     const ocra::Model&   _model;

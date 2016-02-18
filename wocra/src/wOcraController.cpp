@@ -67,7 +67,7 @@ struct wOcraController::Pimpl
     bool         reducedProblem;
 
     // EQUALITY CONSTRAINT OF THE DYNAMIC EQUATION
-    ocra::EqualZeroConstraintPtr< wOcraDynamicFunction >      dynamicEquation;
+    ocra::EqualZeroConstraintPtr< ocra::FullDynamicEquationFunction >      dynamicEquation;
 
     // MINIMIZATION TASK FOR WHOLE VARIABLE MINIMIZATION
     ocra::QuadraticFunction*     minDdqFunction;
@@ -88,7 +88,7 @@ struct wOcraController::Pimpl
         : innerModel(m)
         , innerSolver(s)
         , reducedProblem(useReducedProblem)
-        , dynamicEquation( new wOcraDynamicFunction(m) )
+        , dynamicEquation( new ocra::FullDynamicEquationFunction(m) )
         , minDdqFunction(  new ocra::QuadraticFunction(m.getAccelerationVariable(), Eigen::MatrixXd::Identity(m.nbDofs(), m.nbDofs()), Eigen::VectorXd::Zero(m.nbDofs()), 0) )
         , minTauFunction(  new ocra::QuadraticFunction(m.getJointTorqueVariable(), Eigen::MatrixXd::Identity(m.getJointTorqueVariable().getSize(),m.getJointTorqueVariable().getSize()), Eigen::VectorXd::Zero(m.getJointTorqueVariable().getSize()), 0) )
         , minFcFunction(   new FcQuadraticFunction(m.getModelContacts().getContactForcesVariable()) )
