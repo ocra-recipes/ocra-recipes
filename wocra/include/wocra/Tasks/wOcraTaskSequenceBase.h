@@ -17,6 +17,7 @@
 #include "wocra/Tasks/Managers/wOcraVariableWeightsTaskManager.h"
 
 #include "ocra/control/Model.h"
+#include "ocra/control/Controller.h"
 
 
 namespace wocra
@@ -30,7 +31,7 @@ namespace wocra
             virtual ~wOcraTaskSequenceBase();
 
 
-            void init(wocra::wOcraController& ctrl, ocra::Model& model);
+            void init(ocra::Controller& ctrl, ocra::Model& model);
             void update(double time, ocra::Model& state, void** args);
 
             bool addTaskManager(std::string keyValue, wOcraTaskManagerBase* newTaskManager);
@@ -44,7 +45,7 @@ namespace wocra
 
 
         protected:
-            virtual void doInit(wocra::wOcraController& ctrl, ocra::Model& model) = 0;
+            virtual void doInit(ocra::Controller& ctrl, ocra::Model& model) = 0;
             virtual void doUpdate(double time, ocra::Model& state, void** args) = 0;
 
             TaskManagerDict taskManagers;

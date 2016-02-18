@@ -5,7 +5,7 @@ namespace wocra
 
 /** Base constructor
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the tasks (prefix for the set of tasks)
  * \param _segmentName          Name of segment that the contacts are attached to
@@ -13,13 +13,13 @@ namespace wocra
  * \param _mu                   Coefficient of friction
  * \param _margin               Margin inside the friction cone
  */
-wOcraContactTaskManager::wOcraContactTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, Eigen::Displacementd _H_segment_frame, double _mu, double _margin, bool _usesYarpPorts)
+wOcraContactTaskManager::wOcraContactTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, Eigen::Displacementd _H_segment_frame, double _mu, double _margin, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName)
 {
     featFrame = new ocra::SegmentFrame(name + ".SegmentFrame", model, model.SegmentName(segmentName), _H_segment_frame);
     feat = new ocra::PointContactFeature(name + ".PointContactFeature", *featFrame);
 
-    task = &(ctrl.createwOcraContactTask(name, *feat, _mu, _margin));
+    task = &dynamic_cast<ocra::OneLevelTask&>(ctrl.createContactTask(name, *feat, _mu, _margin));
     // Control the acceleration of the contact point
     task->initAsAccelerationTask();
     ctrl.addTask(*task);
@@ -29,7 +29,7 @@ wOcraContactTaskManager::wOcraContactTaskManager(wOcraController& _ctrl, const o
 
 wOcraContactTaskManager::~wOcraContactTaskManager()
 {
-    
+
 }
 
 /** Activate function

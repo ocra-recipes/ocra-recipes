@@ -9,11 +9,11 @@ namespace wocra
 
 /** base constructor
  *
- * \param ctrl                  wOcraController to connect to
+ * \param ctrl                  ocra::Controller to connect to
  * \param model                 ocra model to setup the task
  * \param taskName              Name of the task
  */
-wOcraTaskManagerBase::wOcraTaskManagerBase(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, bool _usesYarpPorts):
+wOcraTaskManagerBase::wOcraTaskManagerBase(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, bool _usesYarpPorts):
 ctrl(_ctrl),
 model(_model),
 name(_taskName),
@@ -53,9 +53,9 @@ wOcraTaskManagerBase::~wOcraTaskManagerBase()
         std::cout << "\t--> Closing ports" << std::endl;
         rpcPort.close();
     }
-    if(task!=NULL){
-        task->disconnectFromController();
-    }
+    // if(task!=NULL){
+    //     task->disconnectFromController();
+    // }
     if(processor!=NULL){delete processor; processor = NULL;}
     if(controlCallback!=NULL){delete controlCallback; controlCallback = NULL;}
     if(stateThread!=NULL){delete stateThread; stateThread = NULL;}

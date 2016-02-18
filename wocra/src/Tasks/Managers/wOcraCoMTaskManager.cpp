@@ -5,7 +5,7 @@ namespace wocra
 
 /** Base constructor
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _axes                 The axes used for the task
@@ -13,13 +13,13 @@ namespace wocra
  * \param _damping              Damping constant for task
  * \param _weight               Weight constant for task
  */
-wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, double _weight, bool _usesYarpPorts)
+wOcraCoMTaskManager::wOcraCoMTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, double _weight, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_stiffness, _damping, _weight);
 }
 
-wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::VectorXd& _weight, bool _usesYarpPorts)
+wOcraCoMTaskManager::wOcraCoMTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::VectorXd& _weight, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_stiffness, _damping, _weight);
@@ -28,7 +28,7 @@ wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const ocra::Mod
 
 /** Constructor with initial desired position (in 3D cartesian space)
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _axes                 The axes used for the task
@@ -37,14 +37,14 @@ wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const ocra::Mod
  * \param _weight               Weight constant for task
  * \param _posDes               Vector for desired position
  */
-wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, double _weight, Eigen::Vector3d _posDes, bool _usesYarpPorts)
+wOcraCoMTaskManager::wOcraCoMTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, double _weight, Eigen::Vector3d _posDes, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_stiffness, _damping, _weight);
     setState(_posDes);
 }
 
-wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::VectorXd& _weight, Eigen::Vector3d _posDes, bool _usesYarpPorts)
+wOcraCoMTaskManager::wOcraCoMTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::VectorXd& _weight, Eigen::Vector3d _posDes, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_stiffness, _damping, _weight);
@@ -53,7 +53,7 @@ wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const ocra::Mod
 
 /** Constructor with initial desired position, velocity and acceleration
  *
- * \param ctrl                  wOcraController to connect to
+ * \param ctrl                  ocra::Controller to connect to
  * \param model                 ocra model to setup the task
  * \param taskName              Name of the task
  * \param axes                 The axes used for the task
@@ -65,7 +65,7 @@ wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& _ctrl, const ocra::Mod
  * \param accDes                Vector for desired acceleration
  */
 /*
-wOcraCoMTaskManager::wOcraCoMTaskManager(wOcraController& ctrl, const Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, double weight, Eigen::Vector3d posDes, Eigen::Vector3d velDes, Eigen::Vector3d accDes)
+wOcraCoMTaskManager::wOcraCoMTaskManager(ocra::Controller& ctrl, const Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, double weight, Eigen::Vector3d posDes, Eigen::Vector3d velDes, Eigen::Vector3d accDes)
     : _ctrl(ctrl), _model(model), _name(taskName)
 {
     _init(stiffness, damping, weight);
@@ -87,7 +87,7 @@ void wOcraCoMTaskManager::_init(double stiffness, double damping, double weight)
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = &(ctrl.createwOcraTask(name, *feat, *featDes));
+    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
     task->initAsAccelerationTask();
     ctrl.addTask(*task);
 
@@ -109,7 +109,7 @@ void wOcraCoMTaskManager::_init(double stiffness, double damping, const Eigen::V
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = &(ctrl.createwOcraTask(name, *feat, *featDes));
+    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
     task->initAsAccelerationTask();
     ctrl.addTask(*task);
 

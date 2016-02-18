@@ -5,7 +5,7 @@ namespace wocra
 
 /** Base constructor
  *
- * \param _ctrl                  wOcraController to connect to
+ * \param _ctrl                  ocra::Controller to connect to
  * \param _model                 ocra model to setup the task
  * \param _taskName              Name of the task
  * \param _segmentName           Name of the segment for the task
@@ -14,7 +14,7 @@ namespace wocra
  * \param _damping               Damping constant for task
  * \param _weight                Weight constant for task
  */
-wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
+wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(ocra::Controller& _ctrl,
                                                     const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
@@ -28,7 +28,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
     _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight);
 }
 
-wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
+wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(ocra::Controller& _ctrl,
                                                     const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
@@ -44,7 +44,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
 
 /** Constructor with offset frame
  *
- * \param _ctrl                  wOcraController to connect to
+ * \param _ctrl                  ocra::Controller to connect to
  * \param _model                 ocra model to setup the task
  * \param _taskName              Name of the task
  * \param _segmentName           Name of the segment for the task
@@ -54,7 +54,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
  * \param _damping               Damping constant for task
  * \param _weight                Weight constant for task
  */
-wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
+wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(ocra::Controller& _ctrl,
                                                     const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
@@ -69,7 +69,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
     _init(_segFrame_Local, _stiffness, _damping, _weight);
 }
 
-wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
+wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(ocra::Controller& _ctrl,
                                                     const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
@@ -86,7 +86,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
 
 /** Constructor with desired pose
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _segmentName          Name of the segment for the task
@@ -96,7 +96,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
  * \param _weight               Weight constant for task
  * \param _poseDes              Initial pose for task
  */
-wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
+wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(ocra::Controller& _ctrl,
                                                     const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
@@ -112,7 +112,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
     setState(_poseDes);
 }
 
-wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
+wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(ocra::Controller& _ctrl,
                                                     const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
@@ -130,7 +130,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
 
 /** Constructor with desired pose
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _segmentName          Name of the segment for the task
@@ -141,7 +141,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
  * \param _weight               Weight constant for task
  * \param _poseDes              Initial pose for task
  */
-wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
+wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(ocra::Controller& _ctrl,
                                                     const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
@@ -158,7 +158,7 @@ wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
     setState(_poseDes);
 }
 
-wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(wOcraController& _ctrl,
+wOcraSegPoseTaskManager::wOcraSegPoseTaskManager(ocra::Controller& _ctrl,
                                                     const ocra::Model& _model,
                                                     const std::string& _taskName,
                                                     const std::string& _segmentName,
@@ -192,7 +192,7 @@ void wOcraSegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame,
     feat = new ocra::DisplacementFeature(name + ".DisplacementFeature", *featFrame, axes);
     featDes = new ocra::DisplacementFeature(name + ".DisplacementFeature_Des", *featDesFrame, axes);
 
-    task = &(ctrl.createwOcraTask(name, *feat, *featDes));
+    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
     task->initAsAccelerationTask();
     ctrl.addTask(*task);
 
@@ -218,7 +218,7 @@ void wOcraSegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame,
     feat = new ocra::DisplacementFeature(name + ".DisplacementFeature", *featFrame, axes);
     featDes = new ocra::DisplacementFeature(name + ".DisplacementFeature_Des", *featDesFrame, axes);
 
-    task = &(ctrl.createwOcraTask(name, *feat, *featDes));
+    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
     task->initAsAccelerationTask();
     ctrl.addTask(*task);
 

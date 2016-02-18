@@ -1,11 +1,11 @@
 /**
- * \file wOcraTask.cpp
+ * \file OneLevelTask.cpp
  * \author Joseph Salini
  *
  * \brief Implement \b task class for wOcra controller. It inherits from the task class defined in the ocra framework.
  */
 
-#include "wocra/Tasks/wOcraTask.h"
+#include "ocra/control/OneLevelTask.h"
 
 // OCRA INCLUDES
 #include "ocra/control/Model.h"
@@ -14,19 +14,18 @@
 #include "ocra/optim/WeightedSquareDistanceFunction.h"
 
 // WOCRA INCLUDES
-#include "wocra/wOcraDebug.h"
 
 
-namespace wocra
+namespace ocra
 {
 
 
-class VariableChiFunction : public ocra::LinearFunction
+class VariableChiFunction : public LinearFunction
 {
 public:
-    VariableChiFunction(ocra::Variable& x, int dimension)
+    VariableChiFunction(Variable& x, int dimension)
     : NamedInstance("Variable Chi Linear Function")
-    , ocra::AbilitySet(ocra::PARTIAL_X)
+    , AbilitySet(PARTIAL_X)
     , CoupledInputOutputSize(false)
     , LinearFunction(x, dimension)
     {
@@ -39,13 +38,13 @@ public:
 };
 
 
-struct wOcraTask::Pimpl
+struct OneLevelTask::Pimpl
 {
     const Model&                                innerModel;
-    ocra::OneLevelSolver*                       solver;
-    const ocra::FullDynamicEquationFunction*    dynamicEquation;
+    OneLevelSolver*                       solver;
+    const FullDynamicEquationFunction*    dynamicEquation;
     bool                                        useReducedProblem;
-    ocra::BaseVariable                          fcVar;
+    BaseVariable                          fcVar;
 
 //    double                weight;
     const Feature&        feature;
@@ -153,11 +152,11 @@ struct wOcraTask::Pimpl
 /** Initialize a new wOcra Task.
  *
  * \param taskName    The name of the task
- * \param innerModel  The ocra::Model on which we will update the dynamic parameters
+ * \param innerModel  The Model on which we will update the dynamic parameters
  * \param feature     The task feature, meaning what we want to control
  * \param featureDes  The desired task feature, meaning the goal we want to reach with the \a feature
  */
-wOcraTask::wOcraTask(const std::string& taskName, const Model& innerModel, const Feature& feature, const Feature& featureDes)
+ OneLevelTask::OneLevelTask(const std::string& taskName, const Model& innerModel, const Feature& feature, const Feature& featureDes)
     : Task(taskName, innerModel, feature, featureDes)
     , pimpl(new Pimpl(taskName, innerModel, feature))
 {
@@ -167,10 +166,10 @@ wOcraTask::wOcraTask(const std::string& taskName, const Model& innerModel, const
 /** Initialize a new wOcra Task.
  *
  * \param taskName    The name of the task
- * \param innerModel  The ocra::Model on which we will update the dynamic parameters
+ * \param innerModel  The Model on which we will update the dynamic parameters
  * \param feature     The task feature, meaning what we want to control
  */
-wOcraTask::wOcraTask(const std::string& taskName, const Model& innerModel, const Feature& feature)
+ OneLevelTask::OneLevelTask(const std::string& taskName, const Model& innerModel, const Feature& feature)
     : Task(taskName, innerModel, feature)
     , pimpl(new Pimpl(taskName, innerModel, feature))
 {
@@ -178,12 +177,12 @@ wOcraTask::wOcraTask(const std::string& taskName, const Model& innerModel, const
 }
 
 
-wOcraTask::~wOcraTask()
+OneLevelTask::~OneLevelTask()
 {
 }
 
 
-void wOcraTask::connectToController(ocra::OneLevelSolver& solver, const ocra::FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem)
+void OneLevelTask::connectToController(OneLevelSolver& solver, const FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem)
 {
     pimpl->solver            = &solver;
     pimpl->dynamicEquation   = &dynamicEquation;
@@ -215,20 +214,20 @@ void wOcraTask::connectToController(ocra::OneLevelSolver& solver, const ocra::Fu
         }
         case(UNKNOWNTASK):
         {
-            std::string errmsg = std::string("[wOcraTask::connectToController]: The task type of '") + getName() + std::string("' has not been set during creation.\nCall prior that 'initAsAccelerationTask', 'initAsTorqueTask' or 'initAsForceTask'\n"); //
+            std::string errmsg = std::string("[OneLevelTask::connectToController]: The task type of '") + getName() + std::string("' has not been set during creation.\nCall prior that 'initAsAccelerationTask', 'initAsTorqueTask' or 'initAsForceTask'\n"); //
             throw std::runtime_error(std::string(errmsg));
             break;
         }
         default:
         {
-            throw std::runtime_error(std::string("[wOcraTask::connectToController]: Unhandle case of TYPETASK for task ")+getName() );
+            throw std::runtime_error(std::string("[OneLevelTask::connectToController]: Unhandle case of TYPETASK for task ")+getName() );
             break;
         }
     }
 }
 
 
-void wOcraTask::disconnectFromController()
+void OneLevelTask::disconnectFromController()
 {
     if (pimpl->isRegisteredAsObjective)
     {
@@ -252,36 +251,36 @@ void wOcraTask::disconnectFromController()
 
 
 
-void wOcraTask::initAsAccelerationTask()
+void OneLevelTask::initAsAccelerationTask()
 {
     pimpl->innerTaskType = ACCELERATIONTASK;
 }
 
 
-void wOcraTask::initAsTorqueTask()
+void OneLevelTask::initAsTorqueTask()
 {
     pimpl->innerTaskType = TORQUETASK;
 }
 
 
-void wOcraTask::initAsForceTask()
+void OneLevelTask::initAsForceTask()
 {
     pimpl->innerTaskType = FORCETASK;
 }
 
 
-void wOcraTask::initAsCoMMomentumTask()
+void OneLevelTask::initAsCoMMomentumTask()
 {
     pimpl->innerTaskType = COMMOMENTUMTASK;
 }
 
-wOcraTask::TYPETASK wOcraTask::getTaskType() const
+OneLevelTask::TYPETASK OneLevelTask::getTaskType() const
 {
     return pimpl->innerTaskType;
 }
 
 
-const Eigen::VectorXd& wOcraTask::getComputedForce() const
+const Eigen::VectorXd& OneLevelTask::getComputedForce() const
 {
     return pimpl->fcVar.getValue();
 }
@@ -297,14 +296,14 @@ const Eigen::VectorXd& wOcraTask::getComputedForce() const
  *
  * This output is set to zero.
  */
-void wOcraTask::doGetOutput(Eigen::VectorXd& output) const
+void OneLevelTask::doGetOutput(Eigen::VectorXd& output) const
 {
     output = Eigen::VectorXd::Zero(getDimension());
 }
 
 
 
-void wOcraTask::addContactPointInModel()
+void OneLevelTask::addContactPointInModel()
 {
     //THIS SHOULD BE DONE ONLY ONCE!!!
     if ( ! pimpl->contactPointHasBeenSavedInModel )
@@ -320,7 +319,7 @@ void wOcraTask::addContactPointInModel()
     }
 }
 
-void wOcraTask::removeContactPointInModel()
+void OneLevelTask::removeContactPointInModel()
 {
     //    if ( pimpl->contactPointHasBeenSavedInModel )
 //    {
@@ -338,10 +337,10 @@ void wOcraTask::removeContactPointInModel()
 
 /** Do task activation when it is a contact task.
  *
- * When this function is called, it adds a contact point in the model of contact contained in the ocra::Model instance,
+ * When this function is called, it adds a contact point in the model of contact contained in the Model instance,
  * and it adds in the solver an inequality constraint that represents the limitation of the contact force that must remain inside the cone of friction.
  */
-void wOcraTask::doActivateContactMode()
+void OneLevelTask::doActivateContactMode()
 {
     checkIfConnectedToController();
 
@@ -358,7 +357,7 @@ void wOcraTask::doActivateContactMode()
  * When this function is called, it removes the contact point in the model of contact,
  * and it removes from the solver the friction cone inequality constraint.
  */
-void wOcraTask::doDeactivateContactMode()
+void OneLevelTask::doDeactivateContactMode()
 {
     checkIfConnectedToController();
 
@@ -374,7 +373,7 @@ void wOcraTask::doDeactivateContactMode()
  *
  * The cone of friction constraint is modified to represent a cone with this new coefficient of friction.
  */
-void wOcraTask::doSetFrictionCoeff()
+void OneLevelTask::doSetFrictionCoeff()
 {
     pimpl->frictionConstraint.getFunction().setFrictionCoeff(getFrictionCoeff());
 }
@@ -383,7 +382,7 @@ void wOcraTask::doSetFrictionCoeff()
  *
  * The cone of friction constraint is modified to represent a friction cone with this new margin.
  */
-void wOcraTask::doSetMargin()
+void OneLevelTask::doSetMargin()
 {
     pimpl->frictionConstraint.getFunction().setMargin(getMargin());
 }
@@ -400,7 +399,7 @@ void wOcraTask::doSetMargin()
  *
  * It means that the task is not fully completed and a little error may occur.
  */
-void wOcraTask::doActivateAsObjective()
+void OneLevelTask::doActivateAsObjective()
 {
     checkIfConnectedToController();
     pimpl->solver->addObjective(*pimpl->innerTaskAsObjective);
@@ -416,7 +415,7 @@ void wOcraTask::doActivateAsObjective()
  *
  * objective is no more considered.
  */
-void wOcraTask::doDeactivateAsObjective()
+void OneLevelTask::doDeactivateAsObjective()
 {
     checkIfConnectedToController();
     pimpl->solver->removeObjective(*pimpl->innerTaskAsObjective);
@@ -433,7 +432,7 @@ void wOcraTask::doDeactivateAsObjective()
  * It means that the task should be full completed and no error may occur.
  * Be aware that stong constraints may lead to system instability (very "sharp" solution that requires lot of energy).
  */
-void wOcraTask::doActivateAsConstraint()
+void OneLevelTask::doActivateAsConstraint()
 {
     checkIfConnectedToController();
     pimpl->solver->addConstraint(pimpl->innerTaskAsConstraint);
@@ -449,7 +448,7 @@ void wOcraTask::doActivateAsConstraint()
  *
  * objective is no more considered.
  */
-void wOcraTask::doDeactivateAsConstraint()
+void OneLevelTask::doDeactivateAsConstraint()
 {
     checkIfConnectedToController();
     pimpl->solver->removeConstraint(pimpl->innerTaskAsConstraint);
@@ -468,7 +467,7 @@ void wOcraTask::doDeactivateAsConstraint()
  * The weight in the objective function is modified.
  *
  */
-void wOcraTask::doSetWeight()
+void OneLevelTask::doSetWeight()
 {
     if (pimpl->innerTaskAsObjective)
     {
@@ -483,7 +482,7 @@ void wOcraTask::doSetWeight()
 
 
 //--------------------------------------------------------------------------------------------------------------------//
-void wOcraTask::update()
+void OneLevelTask::update()
 {
     switch(pimpl->innerTaskType)
     {
@@ -510,12 +509,12 @@ void wOcraTask::update()
         }
         case(UNKNOWNTASK):
         {
-            throw std::runtime_error(std::string("[wOcraTask::update]: The task type has not been set during creation."));
+            throw std::runtime_error(std::string("[OneLevelTask::update]: The task type has not been set during creation."));
             break;
         }
         default:
         {
-            throw std::runtime_error(std::string("[wOcraTask::update]: Unhandle case of TYPETASK."));
+            throw std::runtime_error(std::string("[OneLevelTask::update]: Unhandle case of TYPETASK."));
             break;
         }
     }
@@ -543,7 +542,7 @@ void wOcraTask::update()
  *     & \b &= \vec{a}^{des}
  * \f}
  */
-void wOcraTask::doUpdateAccelerationTask()
+void OneLevelTask::doUpdateAccelerationTask()
 {
     const MatrixXd& J  = getJacobian();
     const MatrixXd& Kp = getStiffness();
@@ -573,7 +572,7 @@ void wOcraTask::doUpdateAccelerationTask()
 
 
 
-void wOcraTask::doUpdateTorqueTask()
+void OneLevelTask::doUpdateTorqueTask()
 {
     const MatrixXd& J    =   getJacobian();
     const VectorXd  eff  = - getEffort();
@@ -583,7 +582,7 @@ void wOcraTask::doUpdateTorqueTask()
 }
 
 
-void wOcraTask::doUpdateForceTask()
+void OneLevelTask::doUpdateForceTask()
 {
     //innerObjectiveFunction->changeA(); //already set in initForceTask
 
@@ -593,7 +592,7 @@ void wOcraTask::doUpdateForceTask()
 
 }
 
-void wOcraTask::doUpdateCoMMomentumTask()
+void OneLevelTask::doUpdateCoMMomentumTask()
 {
     const MatrixXd& J  = pimpl->innerModel.getCoMAngularJacobian();
     const MatrixXd& Kd = getDamping();
@@ -617,11 +616,11 @@ void wOcraTask::doUpdateCoMMomentumTask()
 }
 
 
-void wOcraTask::checkIfConnectedToController() const
+void OneLevelTask::checkIfConnectedToController() const
 {
     if (!pimpl->solver)
     {
-        std::string errmsg = std::string("[wOcraTask::doActivateAsObjective]: task '") + getName() + std::string("' not connected to any solver; Call prior that 'wOcraController::addTask' to connect to the solver inside the controller.\n"); //
+        std::string errmsg = std::string("[OneLevelTask::doActivateAsObjective]: task '") + getName() + std::string("' not connected to any solver; Call prior that 'wOcraController::addTask' to connect to the solver inside the controller.\n"); //
         throw std::runtime_error(std::string(errmsg));
     }
 }

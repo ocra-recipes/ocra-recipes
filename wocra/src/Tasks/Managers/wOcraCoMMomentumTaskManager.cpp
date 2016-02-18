@@ -5,7 +5,7 @@ namespace wocra
 
 /** Base constructor
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _axes                 The axes used for the task
@@ -13,13 +13,13 @@ namespace wocra
  * \param _damping              Damping constant for task
  * \param _weight               Weight constant for task
  */
-wOcraCoMMomentumTaskManager::wOcraCoMMomentumTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _damping, double _weight, bool _usesYarpPorts)
+wOcraCoMMomentumTaskManager::wOcraCoMMomentumTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _damping, double _weight, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_damping, _weight);
 }
 
-wOcraCoMMomentumTaskManager::wOcraCoMMomentumTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _damping, const Eigen::VectorXd& _weight, bool _usesYarpPorts)
+wOcraCoMMomentumTaskManager::wOcraCoMMomentumTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _damping, const Eigen::VectorXd& _weight, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_damping, _weight);
@@ -43,7 +43,7 @@ void wOcraCoMMomentumTaskManager::_init(double damping, double weight)
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = &(ctrl.createwOcraTask(name, *feat, *featDes));
+    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
     task->initAsCoMMomentumTask();
     ctrl.addTask(*task);
 
@@ -65,7 +65,7 @@ void wOcraCoMMomentumTaskManager::_init(double damping, const Eigen::VectorXd& w
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = &(ctrl.createwOcraTask(name, *feat, *featDes));
+    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
     task->initAsCoMMomentumTask();
     ctrl.addTask(*task);
 

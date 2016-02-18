@@ -5,7 +5,7 @@ namespace wocra
 
 /** Base constructor
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _fullStateType        ocra::FullState enum specifying between (ocra::FullState::FULL_STATE, ocra::FullState::FREE_FLYER, ocra::FullState::INTERNAL)
@@ -13,7 +13,7 @@ namespace wocra
  * \param _damping              Damping constant for task
  * \param _weight               Weight constant for task
  */
-wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
+wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(ocra::Controller& _ctrl,
                                                         const ocra::Model& _model,
                                                         const std::string& _taskName,
                                                         int _fullStateType,
@@ -31,7 +31,7 @@ wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
 
 /** Base constructor
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _fullStateType        ocra::FullState enum specifying between (ocra::FullState::FULL_STATE, ocra::FullState::FREE_FLYER, ocra::FullState::INTERNAL)
@@ -39,7 +39,7 @@ wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
  * \param _damping              Damping constant for task
  * \param _weight               Weight vector for task
  */
-wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
+wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(ocra::Controller& _ctrl,
                                                         const ocra::Model& _model,
                                                         const std::string& _taskName,
                                                         int _fullStateType,
@@ -56,7 +56,7 @@ wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
 }
 /** Constructor with desired joint space posture
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _fullStateType        ocra::FullState enum specifying between (ocra::FullState::FULL_STATE, ocra::FullState::FREE_FLYER, ocra::FullState::INTERNAL)
@@ -65,7 +65,7 @@ wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
  * \param _weight               Weight constant for task
  * \param _init_q               Initial posture
  */
-wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
+wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(ocra::Controller& _ctrl,
                                                         const ocra::Model& _model,
                                                         const std::string& _taskName,
                                                         int _fullStateType,
@@ -81,7 +81,7 @@ wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
 }
 /** Constructor with desired joint space posture
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _fullStateType        ocra::FullState enum specifying between (ocra::FullState::FULL_STATE, ocra::FullState::FREE_FLYER, ocra::FullState::INTERNAL)
@@ -90,7 +90,7 @@ wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
  * \param _weight               Weight vector for task
  * \param _init_q               Initial posture
  */
-wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(wOcraController& _ctrl,
+wOcraFullPostureTaskManager::wOcraFullPostureTaskManager(ocra::Controller& _ctrl,
                                                         const ocra::Model& _model,
                                                         const std::string& _taskName,
                                                         int _fullStateType,
@@ -123,7 +123,7 @@ void wOcraFullPostureTaskManager::_init(int fullStateType, double stiffness, dou
     featDes = new ocra::FullStateFeature(name + ".FullStateFeature_Des", *featDesState);
 
     // The feature initializes as Zero for posture
-    task = &(ctrl.createwOcraTask(name, *feat, *featDes));
+    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
     task->initAsAccelerationTask();
     ctrl.addTask(*task);
 
@@ -145,7 +145,7 @@ void wOcraFullPostureTaskManager::_init(int fullStateType, double stiffness, dou
     featDes = new ocra::FullStateFeature(name + ".FullStateFeature_Des", *featDesState);
 
     // The feature initializes as Zero for posture
-    task = &(ctrl.createwOcraTask(name, *feat, *featDes));
+    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
     task->initAsAccelerationTask();
     ctrl.addTask(*task);
 

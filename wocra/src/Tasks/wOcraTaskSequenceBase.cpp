@@ -1,6 +1,6 @@
 #include "wocra/Tasks/wOcraTaskSequenceBase.h"
-#include "wocra/wOcraController.h"
-#include "wocra/Model.h"
+// #include "wocra/wOcraController.h"
+// #include "wocra/Model.h"
 
 #include <iterator>
 
@@ -10,7 +10,7 @@ namespace wocra
     {
     }
 
-    void wOcraTaskSequenceBase::init(wOcraController& ctrl, ocra::Model& model)
+    void wOcraTaskSequenceBase::init(ocra::Controller& ctrl, ocra::Model& model)
     {
         doInit(ctrl, model);
     }

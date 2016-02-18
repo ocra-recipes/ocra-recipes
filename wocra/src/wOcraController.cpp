@@ -10,7 +10,7 @@
 #include <iostream>
 
 #include "ocra/optim/QuadraticFunction.h"
-#include "wocra/Tasks/wOcraTask.h"
+#include "ocra/control/OneLevelTask.h"
 
 #include "wocra/Performances.h"
 
@@ -78,7 +78,7 @@ struct wOcraController::Pimpl
     ObjectivePtr<ocra::QuadraticFunction>     minTauObjective;
     ObjectivePtr<ocra::QuadraticFunction>     minFcObjective;
 
-    std::vector< wOcraTask* >                    createdTask;
+    std::vector< ocra::OneLevelTask* >                    createdTask;
 
     // PERFORMANCE RECORDERS
     PerformanceRecorder updateTasksRecorder;
@@ -258,7 +258,7 @@ void wOcraController::removeConstraint(ocra::ControlConstraint& constraint) cons
 void wOcraController::doAddTask(Task& task)
 {
     try {
-        wOcraTask& ctask = dynamic_cast<wOcraTask&>(task);
+        ocra::OneLevelTask& ctask = dynamic_cast<ocra::OneLevelTask&>(task);
         ctask.connectToController(pimpl->innerSolver, pimpl->dynamicEquation, pimpl->reducedProblem);
     }
     catch(const std::exception & e) {
@@ -277,34 +277,34 @@ void wOcraController::doAddContactSet(const ContactSet& contacts)
     throw std::runtime_error("[wOcraController::doAddTask] not implemented");
 };
 
-
-
-/** Create an wOcraTask.
- *
- * \return an wOcraTask instance that is a dynamic_cast of the task returned by ocra::Controller::createTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
- */
-wOcraTask& wOcraController::createwOcraTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
-{
-    return dynamic_cast<wOcraTask&>(createTask(name, feature, featureDes));
-}
-
-/** Create an wOcraTask.
- *
- * \return an wOcraTask instance that is a dynamic_cast of the task returned by ocra::Controller::createTask(const std::string& name, const Feature& feature) const
- */
-wOcraTask& wOcraController::createwOcraTask(const std::string& name, const Feature& feature) const
-{
-    return dynamic_cast<wOcraTask&>(createTask(name, feature));
-}
-
-/** Create an wOcraContactTask.
- *
- * \return an wOcraTask instance that is a dynamic_cast of the task returned by ocra::Controller::createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
- */
-wOcraTask& wOcraController::createwOcraContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
-{
-    return dynamic_cast<wOcraTask&>(createContactTask(name, feature, mu, margin));
-}
+//
+//
+// /** Create an wOcraTask.
+//  *
+//  * \return an wOcraTask instance that is a dynamic_cast of the task returned by ocra::Controller::createTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+//  */
+// wOcraTask& wOcraController::createwOcraTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+// {
+//     return dynamic_cast<wOcraTask&>(createTask(name, feature, featureDes));
+// }
+//
+// /** Create an wOcraTask.
+//  *
+//  * \return an wOcraTask instance that is a dynamic_cast of the task returned by ocra::Controller::createTask(const std::string& name, const Feature& feature) const
+//  */
+// wOcraTask& wOcraController::createwOcraTask(const std::string& name, const Feature& feature) const
+// {
+//     return dynamic_cast<wOcraTask&>(createTask(name, feature));
+// }
+//
+// /** Create an wOcraContactTask.
+//  *
+//  * \return an wOcraTask instance that is a dynamic_cast of the task returned by ocra::Controller::createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+//  */
+// wOcraTask& wOcraController::createwOcraContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+// {
+//     return dynamic_cast<wOcraTask&>(createContactTask(name, feature, mu, margin));
+// }
 
 
 
@@ -322,7 +322,7 @@ wOcraTask& wOcraController::createwOcraContactTask(const std::string& name, cons
  */
 Task* wOcraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
 {
-    wOcraTask* nTask = new wOcraTask(name, pimpl->innerModel, feature, featureDes);
+    ocra::OneLevelTask* nTask = new ocra::OneLevelTask(name, pimpl->innerModel, feature, featureDes);
     pimpl->createdTask.push_back(nTask);
     return nTask;
 };
@@ -338,7 +338,7 @@ Task* wOcraController::doCreateTask(const std::string& name, const Feature& feat
  */
 Task* wOcraController::doCreateTask(const std::string& name, const Feature& feature) const
 {
-    wOcraTask* nTask = new wOcraTask(name, pimpl->innerModel, feature);
+    ocra::OneLevelTask* nTask = new ocra::OneLevelTask(name, pimpl->innerModel, feature);
     pimpl->createdTask.push_back(nTask);
     return nTask;
 };
@@ -356,7 +356,7 @@ Task* wOcraController::doCreateTask(const std::string& name, const Feature& feat
  */
 Task* wOcraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
 {
-    wOcraTask* nTask = new wOcraTask(name, pimpl->innerModel, feature);
+    ocra::OneLevelTask* nTask = new ocra::OneLevelTask(name, pimpl->innerModel, feature);
     pimpl->createdTask.push_back(nTask);
     return nTask;
 };
@@ -378,7 +378,7 @@ void wOcraController::doComputeOutput(Eigen::VectorXd& tau)
     const std::vector<Task*>& tasks = getActiveTasks();
     for(int i=0; i< tasks.size(); i++)
     {
-        wOcraTask* cTask = static_cast<wOcraTask*>(tasks[i]); // addTask throws if this cast is not possible
+        ocra::OneLevelTask* cTask = static_cast<ocra::OneLevelTask*>(tasks[i]); // addTask throws if this cast is not possible
         cTask->update();
     }
     pimpl->updateTasksRecorder.saveRelativeTime();

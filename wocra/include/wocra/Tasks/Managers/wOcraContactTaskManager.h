@@ -2,9 +2,9 @@
 #define wOcraCONTACTTASKMANAGER_H
 
 #include "ocra/control/Model.h"
-#include "wocra/Tasks/wOcraTask.h"
+
 #include "wocra/Tasks/wOcraTaskManagerBase.h"
-#include "wocra/wOcraController.h"
+
 // #include "wocra/Features/wOcraFeature.h"
 #include "ocra/control/Feature.h"
 
@@ -19,7 +19,7 @@ namespace wocra
 class wOcraContactTaskManager : public wOcraTaskManagerBase
 {
     public:
-        wOcraContactTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, Eigen::Displacementd H_segment_frame, double mu, double margin, bool usesYarpPorts = true);
+        wOcraContactTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, Eigen::Displacementd H_segment_frame, double mu, double margin, bool usesYarpPorts = true);
 
         ~wOcraContactTaskManager();
 
@@ -30,7 +30,7 @@ class wOcraContactTaskManager : public wOcraTaskManagerBase
         VectorXd getTaskError(); // Overrides base class function in this context
         double getTaskErrorNorm(); // Overrides base class function in this context
     private:
-        // wocra::wOcraTask*          task;
+        
         const std::string&          segmentName;
 
         ocra::PointContactFeature*   feat;

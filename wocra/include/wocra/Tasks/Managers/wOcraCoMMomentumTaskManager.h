@@ -3,8 +3,8 @@
 
 #include "wocra/Tasks/wOcraTaskManagerBase.h"
 #include "ocra/control/Model.h"
-#include "wocra/Tasks/wOcraTask.h"
-#include "wocra/wOcraController.h"
+
+
 
 #include <Eigen/Dense>
 
@@ -17,9 +17,9 @@ namespace wocra
 class wOcraCoMMomentumTaskManager: public wOcraTaskManagerBase
 {
     public:
-        wOcraCoMMomentumTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double damping, double weight, bool usesYarpPorts = true);
+        wOcraCoMMomentumTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double damping, double weight, bool usesYarpPorts = true);
 
-        wOcraCoMMomentumTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = false);
+        wOcraCoMMomentumTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = false);
 
 
         ~wOcraCoMMomentumTaskManager();
@@ -54,7 +54,7 @@ class wOcraCoMMomentumTaskManager: public wOcraTaskManagerBase
 //        Eigen::VectorXd getTaskError();
 
     private:
-        // wocra::wOcraTask*          task;
+        
         ocra::ECartesianDof              axes;
         ocra::PositionFeature*           feat;
         ocra::CoMFrame*                  featFrame;

@@ -3,8 +3,8 @@
 
 #include "wocra/Tasks/wOcraTaskManagerBase.h"
 #include "ocra/control/Model.h"
-#include "wocra/Tasks/wOcraTask.h"
-#include "wocra/wOcraController.h"
+
+
 
 #include <Eigen/Dense>
 
@@ -17,7 +17,7 @@ namespace wocra
 class wOcraVariableWeightsTaskManager : public wOcraTaskManagerBase
 {
     public:
-        wOcraVariableWeightsTaskManager(wOcraController& ctrl,
+        wOcraVariableWeightsTaskManager(ocra::Controller& ctrl,
                                         const ocra::Model& model,
                                         const std::string& taskName,
                                         const std::string& segmentName,
@@ -26,7 +26,7 @@ class wOcraVariableWeightsTaskManager : public wOcraTaskManagerBase
                                         Eigen::Vector3d weight,
                                         bool usesYarpPorts = false);
 
-        wOcraVariableWeightsTaskManager(wOcraController& ctrl,
+        wOcraVariableWeightsTaskManager(ocra::Controller& ctrl,
                                         const ocra::Model& model,
                                         const std::string& taskName,
                                         const std::string& segmentName,
@@ -36,7 +36,7 @@ class wOcraVariableWeightsTaskManager : public wOcraTaskManagerBase
                                         Eigen::Vector3d weight,
                                         bool usesYarpPorts = false);
 
-        wOcraVariableWeightsTaskManager(wOcraController& ctrl,
+        wOcraVariableWeightsTaskManager(ocra::Controller& ctrl,
                                         const ocra::Model& model,
                                         const std::string& taskName,
                                         const std::string& segmentName,
@@ -46,7 +46,7 @@ class wOcraVariableWeightsTaskManager : public wOcraTaskManagerBase
                                         const Eigen::Vector3d& targetPose,
                                         bool usesYarpPorts = false);
 
-        wOcraVariableWeightsTaskManager(wOcraController& ctrl,
+        wOcraVariableWeightsTaskManager(ocra::Controller& ctrl,
                                         const ocra::Model& model,
                                         const std::string& taskName,
                                         const std::string& segmentName,
@@ -96,7 +96,7 @@ class wOcraVariableWeightsTaskManager : public wOcraTaskManagerBase
         std::vector<ocra::ECartesianDof>     axes;
         std::vector<std::string>             axesLabels;
         int                                  nDoF;
-        std::vector<wocra::wOcraTask*>       tasks;
+        std::vector<ocra::OneLevelTask*>       tasks;
 
         const std::string&              segmentName;
 

@@ -5,7 +5,7 @@ namespace wocra
 
 /** Base constructor
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _segmentName          Name of the segment for the task
@@ -14,7 +14,7 @@ namespace wocra
  * \param _damping              Damping constant for task
  * \param _weight               Weight constant for task
  */
-wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController& _ctrl,
+wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(ocra::Controller& _ctrl,
                                                                 const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
@@ -30,7 +30,7 @@ wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController
 
 /** Constructor with the specifying the point of reference on the segment to track
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _segmentName          Name of the segment for the task
@@ -40,7 +40,7 @@ wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController
  * \param _damping              Damping constant for task
  * \param _weight               Weight constant for task
  */
-wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController& _ctrl,
+wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(ocra::Controller& _ctrl,
                                                                 const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
@@ -57,7 +57,7 @@ wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController
 
 /** Constructor with desired pose
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _segmentName          Name of the segment for the task
@@ -67,7 +67,7 @@ wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController
  * \param _weight               Weight constant for task
  * \param _poseDes              Initial pose (cartesian) for task
  */
-wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController& _ctrl,
+wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(ocra::Controller& _ctrl,
                                                                 const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
@@ -86,7 +86,7 @@ wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController
 /**
  * Constructor with both point on segment and desired pose
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _segmentName          Name of the segment for the task
@@ -96,11 +96,11 @@ wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController
  * \param _weight               Weight constant for task
  * \param _poseDes              Initial pose (cartesian) for task
  */
-wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(wOcraController& _ctrl,
+wOcraVariableWeightsTaskManager::wOcraVariableWeightsTaskManager(ocra::Controller& _ctrl,
                                                                 const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
-                                                                const Vector3d& _segPoint_Local,
+                                                                const Eigen::Vector3d& _segPoint_Local,
                                                                 double _stiffness,
                                                                 double _damping,
                                                                 Eigen::Vector3d _weight,
@@ -148,7 +148,7 @@ void wOcraVariableWeightsTaskManager::_init(const Eigen::Vector3d& _taskPoint_Lo
         ocra::PositionFeature* feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes[i]);
         ocra::PositionFeature* featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes[i]);
 
-        tasks[i] = &(ctrl.createwOcraTask(name+axesLabels[i], *feat, *featDes));
+        tasks[i] = new ocra::OneLevelTask(name+axesLabels[i], model, *feat, *featDes);
         tasks[i]->initAsAccelerationTask();
         ctrl.addTask(*tasks[i]);
 

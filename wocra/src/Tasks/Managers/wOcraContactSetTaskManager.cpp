@@ -6,7 +6,7 @@ namespace wocra
 
 /** Base constructor
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the tasks (prefix for the set of tasks)
  * \param _segmentName          Name of segment that the contacts are attached to
@@ -15,10 +15,10 @@ namespace wocra
  * \param _mu                   Coefficient of friction
  * \param _margin               Margin inside the friction cone
  */
-wOcraContactSetTaskManager::wOcraContactSetTaskManager(wOcraController& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, std::vector<Eigen::Displacementd> _H_segment_frames, double _mu, double _margin, bool _usesYarpPorts)
+wOcraContactSetTaskManager::wOcraContactSetTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, std::vector<Eigen::Displacementd> _H_segment_frames, double _mu, double _margin, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), numContacts(_H_segment_frames.size())
 {
-    tasks = new wocra::wOcraTask*[numContacts];
+    tasks = new ocra::OneLevelTask*[numContacts];
     feats = new ocra::PointContactFeature*[numContacts];
     featFrames = new ocra::SegmentFrame*[numContacts];
     names = new std::string[numContacts];
@@ -31,7 +31,7 @@ wOcraContactSetTaskManager::wOcraContactSetTaskManager(wOcraController& _ctrl, c
 
         featFrames[i] = new ocra::SegmentFrame(names[i] + ".SegmentFrame", model, model.SegmentName(segmentName), _H_segment_frames[i]);
         feats[i] = new ocra::PointContactFeature(names[i] + ".PointContactFeature", *featFrames[i]);
-        tasks[i] = &(ctrl.createwOcraContactTask(names[i], *feats[i], _mu, _margin));
+        tasks[i] = &dynamic_cast<ocra::OneLevelTask&>(ctrl.createContactTask(names[i], *feats[i], _mu, _margin));
         // Control the acceleration of the contact point
         tasks[i]->initAsAccelerationTask();
         ctrl.addTask(*tasks[i]);

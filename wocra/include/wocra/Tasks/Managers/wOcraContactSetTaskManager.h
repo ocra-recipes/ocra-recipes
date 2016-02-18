@@ -3,8 +3,8 @@
 
 #include "ocra/control/Model.h"
 #include "wocra/Tasks/wOcraTaskManagerBase.h"
-#include "wocra/Tasks/wOcraTask.h"
-#include "wocra/wOcraController.h"
+
+
 // #include "wocra/Features/wOcraFeature.h"
 #include "ocra/control/Feature.h"
 
@@ -20,7 +20,7 @@ namespace wocra
 class wOcraContactSetTaskManager: public wOcraTaskManagerBase
 {
     public:
-        wOcraContactSetTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, std::vector<Eigen::Displacementd> H_segment_frames, double mu, double margin, bool usesYarpPorts = true);
+        wOcraContactSetTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, std::vector<Eigen::Displacementd> H_segment_frames, double mu, double margin, bool usesYarpPorts = true);
 
         ~wOcraContactSetTaskManager();
 
@@ -36,7 +36,7 @@ class wOcraContactSetTaskManager: public wOcraTaskManagerBase
         const std::string&              segmentName;
 
         std::string*                    names;
-        wocra::wOcraTask**             tasks;
+        ocra::OneLevelTask**             tasks;
         int                             numContacts;
 
         ocra::PointContactFeature**      feats;

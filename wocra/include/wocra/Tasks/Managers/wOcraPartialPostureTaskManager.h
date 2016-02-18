@@ -3,8 +3,8 @@
 
 #include "wocra/Tasks/wOcraTaskManagerBase.h"
 #include "ocra/control/Model.h"
-#include "wocra/Tasks/wOcraTask.h"
-#include "wocra/wOcraController.h"
+
+
 // #include "wocra/Features/wOcraFeature.h"
 #include "ocra/control/Feature.h"
 
@@ -19,14 +19,14 @@ namespace wocra
 class wOcraPartialPostureTaskManager : public wOcraTaskManagerBase
 {
     public:
-        wOcraPartialPostureTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight, bool usesYarpPorts = true);
+        wOcraPartialPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight, bool usesYarpPorts = true);
 
-        wOcraPartialPostureTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = false);
+        wOcraPartialPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = false);
 
-        wOcraPartialPostureTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight,
+        wOcraPartialPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight,
             Eigen::VectorXd& init_q, bool usesYarpPorts = true);
 
-        wOcraPartialPostureTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight,
+        wOcraPartialPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight,
             Eigen::VectorXd& init_q, bool usesYarpPorts = false);
 
         ~wOcraPartialPostureTaskManager();
@@ -56,7 +56,6 @@ class wOcraPartialPostureTaskManager : public wOcraTaskManagerBase
         virtual bool checkIfActivated();
 
     private:
-        // wocra::wOcraTask*                      task;
         ocra::PartialStateFeature*           feat;
         ocra::PartialModelState*             featState;
 
@@ -69,8 +68,8 @@ class wOcraPartialPostureTaskManager : public wOcraTaskManagerBase
         Eigen::Vector3d                 _accDes;
 */
 
-        void _init(int fullStateType, VectorXi& dofIndices, double stiffness, double damping, double weight);
-        void _init(int fullStateType, VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight);
+        void _init(int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight);
+        void _init(int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight);
 };
 
 }

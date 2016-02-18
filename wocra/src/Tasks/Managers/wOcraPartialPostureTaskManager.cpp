@@ -5,7 +5,7 @@ namespace wocra
 
 /** Base constructor
  *
- * \param ctrl                  wOcraController to connect to
+ * \param ctrl                  ocra::Controller to connect to
  * \param model                 ocra model to setup the task
  * \param taskName              Name of the task
  * \param fullStateType         ocra::FullState enum specifying between (ocra::FullState::FULL_STATE, ocra::FullState::FREE_FLYER, ocra::FullState::INTERNAL)
@@ -14,7 +14,7 @@ namespace wocra
  * \param damping               Damping constant for task
  * \param weight                Weight constant for task
  */
-wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& _ctrl,
+wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(ocra::Controller& _ctrl,
                                                                 const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 int _fullStateType,
@@ -28,7 +28,7 @@ wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& 
     _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight);
 }
 
-wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& _ctrl,
+wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(ocra::Controller& _ctrl,
                                                                 const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 int _fullStateType,
@@ -45,7 +45,7 @@ wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& 
 
 /** Constructor with desired initial position
  *
- * \param ctrl                  wOcraController to connect to
+ * \param ctrl                  ocra::Controller to connect to
  * \param model                 ocra model to setup the task
  * \param taskName              Name of the task
  * \param fullStateType         ocra::FullState enum specifying between (ocra::FullState::FULL_STATE, ocra::FullState::FREE_FLYER, ocra::FullState::INTERNAL)
@@ -55,7 +55,7 @@ wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& 
  * \param weight                Weight constant for task
  * \param init_q                Initial posture
  */
-wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& _ctrl,
+wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(ocra::Controller& _ctrl,
                                                                 const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 int _fullStateType,
@@ -71,7 +71,7 @@ wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& 
     setPosture(_init_q);
 }
 
-wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& _ctrl,
+wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(ocra::Controller& _ctrl,
                                                                 const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 int _fullStateType,
@@ -96,7 +96,7 @@ wOcraPartialPostureTaskManager::~wOcraPartialPostureTaskManager()
 /** Initializer function for constructor, sets up the frames, parameters, controller and task
  *
  */
-void wOcraPartialPostureTaskManager::_init(int _fullStateType, VectorXi& _dofIndices, double _stiffness, double _damping, double _weight)
+void wOcraPartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& _dofIndices, double _stiffness, double _damping, double _weight)
 {
     featState = new ocra::PartialModelState(name + ".PartialModelState", model, _dofIndices, _fullStateType);
     featDesState = new ocra::PartialTargetState(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
@@ -104,7 +104,7 @@ void wOcraPartialPostureTaskManager::_init(int _fullStateType, VectorXi& _dofInd
     featDes = new ocra::PartialStateFeature(name + ".PartialStateFeature_Des", *featDesState);
 
     // The feature initializes as Zero for posture
-    task = &(ctrl.createwOcraTask(name, *feat, *featDes));
+    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
     task->initAsAccelerationTask();
     ctrl.addTask(*task);
 
@@ -118,7 +118,7 @@ void wOcraPartialPostureTaskManager::_init(int _fullStateType, VectorXi& _dofInd
     setStateDimension(task->getDimension());
 }
 
-void wOcraPartialPostureTaskManager::_init(int _fullStateType, VectorXi& _dofIndices, double _stiffness, double _damping, const Eigen::VectorXd& _weight)
+void wOcraPartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& _dofIndices, double _stiffness, double _damping, const Eigen::VectorXd& _weight)
 {
     featState = new ocra::PartialModelState(name + ".PartialModelState", model, _dofIndices, _fullStateType);
     featDesState = new ocra::PartialTargetState(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
@@ -126,7 +126,7 @@ void wOcraPartialPostureTaskManager::_init(int _fullStateType, VectorXi& _dofInd
     featDes = new ocra::PartialStateFeature(name + ".PartialStateFeature_Des", *featDesState);
 
     // The feature initializes as Zero for posture
-    task = &(ctrl.createwOcraTask(name, *feat, *featDes));
+    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
     task->initAsAccelerationTask();
     ctrl.addTask(*task);
 

@@ -10,7 +10,7 @@
 #include <boost/filesystem.hpp>
 
 #include "ocra/control/Model.h"
-#include "wocra/wOcraController.h"
+#include "ocra/control/Controller.h"
 #include "wocra/Tasks/wOcraTaskManagerBase.h"
 #include "wocra/Tasks/wOcraTaskSequenceBase.h"
 
@@ -50,7 +50,7 @@ namespace wocra
             bool parseTasksXML(TiXmlDocument* newTasksFile);
             void printTaskArguments();
 
-            bool addTaskManagersToSequence(wOcraController& ctrl, const ocra::Model& model, wOcraTaskSequenceBase* sequence);
+            bool addTaskManagersToSequence(ocra::Controller& ctrl, const ocra::Model& model, wOcraTaskSequenceBase* sequence);
 
             // bool parseTasksYarp(yarp::os::Bottle* yarpMessage);
             // bool xmlToYarp(const char* filePath, yarp::os::Bottle* yarpMessage);
@@ -65,7 +65,7 @@ namespace wocra
 
             const char * getDisplacementArgs(TiXmlElement* xmlElem);
 
-            wOcraTaskManagerBase* constructTaskManager(wOcraController& ctrl, const ocra::Model& model, std::vector<taskManagerArgs>::iterator argStructPtr);
+            wOcraTaskManagerBase* constructTaskManager(ocra::Controller& ctrl, const ocra::Model& model, std::vector<taskManagerArgs>::iterator argStructPtr);
 
             Eigen::Displacementd eigenVectorToDisplacementd(Eigen::VectorXd& eigenVector);
 

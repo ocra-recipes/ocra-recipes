@@ -2,8 +2,8 @@
 #define wOcraTASKMANAGERBASE_H
 
 #include "ocra/control/Model.h"
-#include "wocra/wOcraController.h"
-#include "wocra/Tasks/wOcraTask.h"
+#include "ocra/control/Controller.h"
+#include "ocra/control/OneLevelTask.h"
 #include "wocra/Trajectory/wOcraTrajectory.h"
 
 #include <Eigen/Dense>
@@ -25,7 +25,7 @@ namespace wocra
 class wOcraTaskManagerBase
 {
     public:
-        wOcraTaskManagerBase(wocra::wOcraController& ctrl, const ocra::Model& model, const std::string& name, bool usesYarpPorts=false);
+        wOcraTaskManagerBase(ocra::Controller& ctrl, const ocra::Model& model, const std::string& name, bool usesYarpPorts=false);
         virtual ~wOcraTaskManagerBase();
 
 
@@ -99,11 +99,11 @@ class wOcraTaskManagerBase
         virtual void setWeights(Eigen::Vector3d weight){};
 
     protected:
-        wocra::wOcraTask*              task;
+        ocra::OneLevelTask*              task;
 
 
-        wocra::wOcraController&        ctrl;
-        const ocra::Model&       model;
+        ocra::Controller&               ctrl;
+        const ocra::Model&              model;
         const std::string&              name;
         std::string                     stableName; //hack to avoid using name in compileOutgoingMessage()
 

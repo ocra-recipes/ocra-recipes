@@ -3,8 +3,8 @@
 
 #include "ocra/control/Model.h"
 #include "wocra/Tasks/wOcraTaskManagerBase.h"
-#include "wocra/Tasks/wOcraTask.h"
-#include "wocra/wOcraController.h"
+
+
 
 #include <Eigen/Dense>
 
@@ -17,13 +17,13 @@ namespace wocra
 class wOcraSegOrientationTaskManager: public wOcraTaskManagerBase
 {
     public:
-        wOcraSegOrientationTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, double weight, bool usesYarpPorts = true);
+        wOcraSegOrientationTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, double weight, bool usesYarpPorts = true);
 
-        wOcraSegOrientationTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = true);
+        wOcraSegOrientationTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = true);
 
-        wOcraSegOrientationTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, double weight, const Eigen::Rotation3d& targetPose, bool usesYarpPorts = true);
+        wOcraSegOrientationTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, double weight, const Eigen::Rotation3d& targetPose, bool usesYarpPorts = true);
 
-        wOcraSegOrientationTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, const Eigen::VectorXd& weight, const Eigen::Rotation3d& targetPose, bool usesYarpPorts = true);
+        wOcraSegOrientationTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, const Eigen::VectorXd& weight, const Eigen::Rotation3d& targetPose, bool usesYarpPorts = true);
 
         ~wOcraSegOrientationTaskManager();
 
@@ -53,7 +53,6 @@ class wOcraSegOrientationTaskManager: public wOcraTaskManagerBase
 
 
     private:
-        // wocra::wOcraTask*              task;
         const std::string&              segmentName;
 
         ocra::OrientationFeature*        feat;

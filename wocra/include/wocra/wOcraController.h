@@ -17,7 +17,7 @@
 #include "ocra/control/Model.h"
 #include "ocra/optim/OneLevelSolver.h"
 // WOCRA INCLUDES
-#include "wocra/Tasks/wOcraTask.h"#include "ocra/control/ControlConstraint.h"
+#include "ocra/control/OneLevelTask.h"#include "ocra/control/ControlConstraint.h"
 
 using namespace ocra;
 
@@ -40,9 +40,9 @@ public:
     virtual ~wOcraController();
 
     //getter
-    Model&      getModel();
-    ocra::OneLevelSolver& getSolver();
-    bool        isUsingReducedProblem();
+    Model&                  getModel();
+    ocra::OneLevelSolver&   getSolver();
+    bool                    isUsingReducedProblem();
 
     //setter
     void setVariableMinimizationWeights(double w_ddq, double w_tau, double w_fc);
@@ -56,9 +56,9 @@ public:
     void addConstraint(ocra::ControlConstraint& constraint) const;
     void removeConstraint(ocra::ControlConstraint& constraint) const;
 
-    wOcraTask& createwOcraTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
-    wOcraTask& createwOcraTask(const std::string& name, const Feature& feature) const;
-    wOcraTask& createwOcraContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
+    // wOcraTask& createwOcraTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
+    // wOcraTask& createwOcraTask(const std::string& name, const Feature& feature) const;
+    // wOcraTask& createwOcraContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
 
 protected:
     virtual void doComputeOutput(Eigen::VectorXd& tau);

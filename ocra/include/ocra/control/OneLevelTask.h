@@ -1,6 +1,6 @@
 /**
 
- * \file wOcraTask.h
+ * \file OneLevelTask.h
 
  * \author Joseph Salini
 
@@ -12,9 +12,9 @@
 
  */
 
-#ifndef __wOcraTASK_H__
+#ifndef _ONE_LEVEL_TASK_H_
 
-#define __wOcraTASK_H__
+#define _ONE_LEVEL_TASK_H_
 
 
 // OCRA INCLUDES
@@ -31,11 +31,10 @@
 
 
 
-using namespace ocra;
 
 
 
-namespace wocra
+namespace ocra
 
 {
 
@@ -52,7 +51,7 @@ namespace wocra
  *       Furthermore, writting this class helps me to better understand the xde framework.
  */
 
-class wOcraTask: public Task
+class OneLevelTask: public Task
 
 {
 
@@ -61,10 +60,10 @@ public:
     enum TYPETASK { UNKNOWNTASK, ACCELERATIONTASK, TORQUETASK, FORCETASK, COMMOMENTUMTASK };
 
 
-    wOcraTask(const std::string& taskName, const Model& innerModel, const Feature& feature, const Feature& featureDes);
+    OneLevelTask(const std::string& taskName, const Model& innerModel, const Feature& feature, const Feature& featureDes);
 
-    wOcraTask(const std::string& taskName, const Model& innerModel, const Feature& feature);
-    virtual ~wOcraTask();
+    OneLevelTask(const std::string& taskName, const Model& innerModel, const Feature& feature);
+    virtual ~OneLevelTask();
 
     void initAsAccelerationTask();
     void initAsTorqueTask();
@@ -79,9 +78,8 @@ public:
 
 
     //------------------------ friendship ------------------------//
-protected:
-    friend class wOcraController;    //Only the wOcraController should know about the following functions
-    void connectToController(ocra::OneLevelSolver& _solver, const ocra::FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
+    // friend class wOcraController;    //Only the wOcraController should know about the following functions
+    void connectToController(OneLevelSolver& _solver, const FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
     // void disconnectFromController();
     void update();
 

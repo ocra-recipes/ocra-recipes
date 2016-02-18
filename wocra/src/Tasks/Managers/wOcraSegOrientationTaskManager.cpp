@@ -5,7 +5,7 @@ namespace wocra
 
 /** Base constructor
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _segmentName          Name of the segment for the task
@@ -13,7 +13,7 @@ namespace wocra
  * \param _damping              Damping constant for task
  * \param _weight               Weight constant for task
  */
-wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& _ctrl,
+wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(ocra::Controller& _ctrl,
                                                                 const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
@@ -26,7 +26,7 @@ wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& 
     _init(Eigen::Rotation3d::Identity(), _stiffness, _damping, _weight);
 }
 
-wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& _ctrl,
+wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(ocra::Controller& _ctrl,
                                                                 const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
@@ -41,7 +41,7 @@ wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& 
 
 /** Constructor with desired pose
  *
- * \param _ctrl                 wOcraController to connect to
+ * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
  * \param _taskName             Name of the task
  * \param _segmentName          Name of the segment for the task
@@ -50,7 +50,7 @@ wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& 
  * \param _weight               Weight constant for task
  * \param _orientationDes       Initial orientation for task
  */
-wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& _ctrl,
+wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(ocra::Controller& _ctrl,
                                                                 const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
@@ -65,7 +65,7 @@ wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& 
     setOrientation(_orientationDes);
 }
 
-wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(wOcraController& _ctrl,
+wOcraSegOrientationTaskManager::wOcraSegOrientationTaskManager(ocra::Controller& _ctrl,
                                                                 const ocra::Model& _model,
                                                                 const std::string& _taskName,
                                                                 const std::string& _segmentName,
@@ -100,7 +100,7 @@ void wOcraSegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_Loc
     featDesFrame->setVelocity(Eigen::Twistd::Zero());
     featDesFrame->setAcceleration(Eigen::Twistd::Zero());
 
-    task = &(ctrl.createwOcraTask(name, *feat, *featDes));
+    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
     task->initAsAccelerationTask();
     ctrl.addTask(*task);
 
@@ -123,7 +123,7 @@ void wOcraSegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_Loc
     featDesFrame->setVelocity(Eigen::Twistd::Zero());
     featDesFrame->setAcceleration(Eigen::Twistd::Zero());
 
-    task = &(ctrl.createwOcraTask(name, *feat, *featDes));
+    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
     task->initAsAccelerationTask();
     ctrl.addTask(*task);
 

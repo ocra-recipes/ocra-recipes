@@ -4,8 +4,8 @@
 #include "ocra/control/Model.h"
 #include "wocra/Tasks/wOcraTaskManagerBase.h"
 #include "ocra/control/FullState.h"
-// #include "wocra/Tasks/wOcraTask.h"
-#include "wocra/wOcraController.h"
+// 
+
 
 #include <Eigen/Dense>
 
@@ -18,13 +18,13 @@ namespace wocra
 class wOcraFullPostureTaskManager : public wOcraTaskManagerBase
 {
     public:
-        wOcraFullPostureTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, double stiffness, double damping, double weight, bool usesYarpPorts = true);
+        wOcraFullPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, double stiffness, double damping, double weight, bool usesYarpPorts = true);
 
-        wOcraFullPostureTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, double stiffness, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = true);
+        wOcraFullPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, double stiffness, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = true);
 
-        wOcraFullPostureTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, double stiffness, double damping, double weight, const Eigen::VectorXd& init_q, bool usesYarpPorts = true);
+        wOcraFullPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, double stiffness, double damping, double weight, const Eigen::VectorXd& init_q, bool usesYarpPorts = true);
 
-        wOcraFullPostureTaskManager(wOcraController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, double stiffness, double damping, const Eigen::VectorXd& weight, const Eigen::VectorXd& init_q, bool usesYarpPorts = true);
+        wOcraFullPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, double stiffness, double damping, const Eigen::VectorXd& weight, const Eigen::VectorXd& init_q, bool usesYarpPorts = true);
 
         ~wOcraFullPostureTaskManager();
 
@@ -57,7 +57,7 @@ class wOcraFullPostureTaskManager : public wOcraTaskManagerBase
 
 
     private:
-        // wocra::wOcraTask*          task;
+        
 
 
         ocra::FullStateFeature*          feat;
