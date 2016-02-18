@@ -5,7 +5,8 @@
 #include "ocra/control/Model.h"
 #include "wocra/Tasks/wOcraTask.h"
 #include "wocra/wOcraController.h"
-#include "wocra/Features/wOcraFeature.h"
+// #include "wocra/Features/wOcraFeature.h"
+#include "ocra/control/Feature.h"
 
 #include <Eigen/Dense>
 
@@ -56,11 +57,11 @@ class wOcraPartialPostureTaskManager : public wOcraTaskManagerBase
 
     private:
         // wocra::wOcraTask*                      task;
-        wocra::PartialStateFeature*           feat;
-        wocra::PartialModelState*             featState;
+        ocra::PartialStateFeature*           feat;
+        ocra::PartialModelState*             featState;
 
-        wocra::PartialStateFeature*           featDes;
-        wocra::PartialTargetState*            featDesState;
+        ocra::PartialStateFeature*           featDes;
+        ocra::PartialTargetState*            featDesState;
 
 /*
         Eigen::Vector3d                 _posDes;

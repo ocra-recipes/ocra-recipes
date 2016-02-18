@@ -1,16 +1,16 @@
 /**
- * \file gOcraPartialState.h
+ * \file PartialState.h
  * \author Joseph Salini
  *
  * \brief Define partial state classes that can be used to control some joints of the robot.
  *
- * The xde framework propose a full state control. However, sometimes we want to control only a subset of joint,
+ * The ocra framework propose a full state control. However, sometimes we want to control only a subset of joint,
  * for instance the back joints to stay straight, the neck joints, the arms joint to be in a particular position.
- * That's why we extend the xde framework with these classes.
+ * That's why we extend the ocra framework with these classes.
  */
 
-#ifndef __GOCRAPARTIALSTATE_H__
-#define __GOCRAPARTIALSTATE_H__
+#ifndef __PARTIALSTATE_H__
+#define __PARTIALSTATE_H__
 
 
 #include "ocra/optim/NamedInstance.h"
@@ -18,10 +18,7 @@
 #include <Eigen/Core>
 #include <boost/shared_ptr.hpp>
 
-using namespace ocra;
-
-
-namespace gocra
+namespace ocra
 {
 
 /** \addtogroup feature
@@ -30,7 +27,7 @@ namespace gocra
 
 /** \brief A abstract partial state.
  *
- * This class is greatly inspired from the \b FullState class defined in the xde framework.
+ * This class is greatly inspired from the \b FullState class defined in the ocra framework.
  */
 class PartialState : public NamedInstance
 {
@@ -112,7 +109,7 @@ private:
 
 /** \} */ // end group feature
 
-} //end of namespace gocra
+} //end of namespace ocra
 
 
 #endif

@@ -42,10 +42,10 @@ gOcraPartialPostureTaskManager::gOcraPartialPostureTaskManager(GHCJTController& 
  */
 void gOcraPartialPostureTaskManager::_init(int _fullStateType, VectorXi& _dofIndices, double _stiffness, double _damping)
 {
-    featState = new gocra::PartialModelState(name + ".PartialModelState", model, _dofIndices, _fullStateType);
-    featDesState = new gocra::PartialTargetState(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
-    feat = new gocra::PartialStateFeature(name + ".PartialStateFeature", *featState);
-    featDes = new gocra::PartialStateFeature(name + ".PartialStateFeature_Des", *featDesState);
+    featState = new ocra::PartialModelState(name + ".PartialModelState", model, _dofIndices, _fullStateType);
+    featDesState = new ocra::PartialTargetState(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
+    feat = new ocra::PartialStateFeature(name + ".PartialStateFeature", *featState);
+    featDes = new ocra::PartialStateFeature(name + ".PartialStateFeature_Des", *featDesState);
 
     // The feature initializes as Zero for posture
     task = &(ctrl.createGHCJTTask(name, *feat, *featDes));

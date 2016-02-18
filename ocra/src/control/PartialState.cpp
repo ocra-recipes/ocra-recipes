@@ -1,18 +1,18 @@
 /**
- * \file wOcraPartialState.cpp
+ * \file PartialState.cpp
  * \author Joseph Salini
  *
  * \brief Implement partial state classes that can be used to control some joints of the robot.
  */
 
 
-#include "wocra/Features/wOcraPartialState.h"
+#include "ocra/control/PartialState.h"
 
 #include "ocra/control/FullState.h"
 
 #include <iostream>
 
-namespace wocra
+namespace ocra
 {
 
 struct PartialState::Pimpl
@@ -282,4 +282,4 @@ void PartialTargetState::set_tau(const Eigen::VectorXd& tau)
 
 
 
-} // end namespace wocra
+} // end namespace ocra

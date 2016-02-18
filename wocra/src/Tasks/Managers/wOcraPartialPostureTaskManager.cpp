@@ -89,7 +89,7 @@ wOcraPartialPostureTaskManager::wOcraPartialPostureTaskManager(wOcraController& 
 
 wOcraPartialPostureTaskManager::~wOcraPartialPostureTaskManager()
 {
-    
+
 }
 
 
@@ -98,10 +98,10 @@ wOcraPartialPostureTaskManager::~wOcraPartialPostureTaskManager()
  */
 void wOcraPartialPostureTaskManager::_init(int _fullStateType, VectorXi& _dofIndices, double _stiffness, double _damping, double _weight)
 {
-    featState = new wocra::PartialModelState(name + ".PartialModelState", model, _dofIndices, _fullStateType);
-    featDesState = new wocra::PartialTargetState(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
-    feat = new wocra::PartialStateFeature(name + ".PartialStateFeature", *featState);
-    featDes = new wocra::PartialStateFeature(name + ".PartialStateFeature_Des", *featDesState);
+    featState = new ocra::PartialModelState(name + ".PartialModelState", model, _dofIndices, _fullStateType);
+    featDesState = new ocra::PartialTargetState(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
+    feat = new ocra::PartialStateFeature(name + ".PartialStateFeature", *featState);
+    featDes = new ocra::PartialStateFeature(name + ".PartialStateFeature_Des", *featDesState);
 
     // The feature initializes as Zero for posture
     task = &(ctrl.createwOcraTask(name, *feat, *featDes));
@@ -120,10 +120,10 @@ void wOcraPartialPostureTaskManager::_init(int _fullStateType, VectorXi& _dofInd
 
 void wOcraPartialPostureTaskManager::_init(int _fullStateType, VectorXi& _dofIndices, double _stiffness, double _damping, const Eigen::VectorXd& _weight)
 {
-    featState = new wocra::PartialModelState(name + ".PartialModelState", model, _dofIndices, _fullStateType);
-    featDesState = new wocra::PartialTargetState(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
-    feat = new wocra::PartialStateFeature(name + ".PartialStateFeature", *featState);
-    featDes = new wocra::PartialStateFeature(name + ".PartialStateFeature_Des", *featDesState);
+    featState = new ocra::PartialModelState(name + ".PartialModelState", model, _dofIndices, _fullStateType);
+    featDesState = new ocra::PartialTargetState(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
+    feat = new ocra::PartialStateFeature(name + ".PartialStateFeature", *featState);
+    featDes = new ocra::PartialStateFeature(name + ".PartialStateFeature_Des", *featDesState);
 
     // The feature initializes as Zero for posture
     task = &(ctrl.createwOcraTask(name, *feat, *featDes));

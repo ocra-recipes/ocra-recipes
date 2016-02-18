@@ -5,7 +5,8 @@
 #include "wocra/Tasks/wOcraTaskManagerBase.h"
 #include "wocra/Tasks/wOcraTask.h"
 #include "wocra/wOcraController.h"
-#include "wocra/Features/wOcraFeature.h"
+// #include "wocra/Features/wOcraFeature.h"
+#include "ocra/control/Feature.h"
 
 #include <Eigen/Dense>
 

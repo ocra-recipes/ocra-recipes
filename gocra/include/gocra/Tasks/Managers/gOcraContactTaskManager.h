@@ -5,7 +5,7 @@
 #include "gocra/Tasks/GHCJTTask.h"
 #include "gocra/Tasks/gOcraTaskManagerBase.h"
 #include "gocra/GHCJTController.h"
-#include "gocra/Features/gOcraFeature.h"
+#include "ocra/control/Feature.h"
 
 #include <Eigen/Dense>
 
