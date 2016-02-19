@@ -1,7 +1,7 @@
 #pragma warning(disable: 4181) // XXX Eigen 3
 #include "ocra/control/SFCController.h"
 
-#include "ocra/control/SFCTask.h"
+#include "ocra/control/Tasks/SFCTask.h"
 #include "ocra/control/FullState.h"
 #include "ocra/control/Feature.h"
 #include "ocra/control/Model.h"

@@ -46,8 +46,8 @@ typedef Eigen::Map<Eigen::VectorXd> VectorMap;
  *
  * To get a concrete implementation of wOcra solvers, you should call:
  *
- *      - wocra::OneLevelSolver if we consider that all the tasks registered have the same level of importance (but not necessarily the same weights)
- *      - wocra::HierarchySolver if we consider that tasks registered can have different level of importance
+ *      - OneLevelSolver if we consider that all the tasks registered have the same level of importance (but not necessarily the same weights)
+ *      - HierarchySolver if we consider that tasks registered can have different level of importance
  */
 class OneLevelSolver: public ocra::Solver
 {

@@ -7,30 +7,15 @@ include_directories(include
                     )
 file(GLOB_RECURSE wocra_srcs src/*.cpp)
 
-# Check for SMLT
-find_package(SMLT QUIET)
-IF(SMLT_FOUND)
-    message(STATUS "-- SMLT lib found. Compiling gaussian process trajectory.")
-    include_directories(${SMLT_INCLUDE_DIRS})
-ELSE()
-    message(STATUS "-- SMLT lib NOT found. Removing gaussian process trajectory from source list.")
-    list(REMOVE_ITEM wocra_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/Trajectory/wOcraGaussianProcessTrajectory.cpp)
-ENDIF()
-
-
 add_library(wocra ${wocra_srcs})
 
 LIST(APPEND link_libs   ${Boost_LIBRARIES}
                         ${TinyXML_LIBRARIES}
                         ${YARP_LIBRARIES}
                         ${QUADPROG_LIBRARIES}
-			ocra-control
-			ocra-optim
+			            ocra-control
+            			ocra-optim
                         )
-
-IF(SMLT_FOUND)
- LIST(APPEND link_libs ${SMLT_LIBRARIES})
-ENDIF()
 
 TARGET_LINK_LIBRARIES(wocra ${link_libs})
 

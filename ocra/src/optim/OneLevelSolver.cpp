@@ -130,7 +130,7 @@ void OneLevelSolver::doConclude()
  * \param outstream the output stream where to write the performances information
  * \param addCommaAtEnd If true, add a comma at the end of the stream. If false, it means that this is the end of the json file, nothing will be added after that, no comma is added.
  *
- * See wocra::Orocos_wOcraController::getPerformances() to know more. Here it saves:
+ * See Orocos_wOcraController::getPerformances() to know more. Here it saves:
  *
  *  - solver_prepare
  *  - solver_solve
@@ -206,7 +206,7 @@ void OneLevelSolver::reduceConstraints(const Eigen::MatrixXd& A, const Eigen::Ve
  */
 void OneLevelSolver::setObjectiveLevel(ocra::QuadraticObjective& obj, int level)
 {
-    //std::cout<<"[wocra::OneLevelSolver::setObjectiveLevel] Warning: solver doesn't take into account level for task.\n";
+    //std::cout<<"[OneLevelSolver::setObjectiveLevel] Warning: solver doesn't take into account level for task.\n";
 }
 
 
