@@ -25,6 +25,7 @@ namespace ocra
   public:
     virtual ~Task() = 0;
 
+    void update();
     void activateAsObjective();
     void activateAsConstraint();
     void deactivate();
@@ -94,6 +95,8 @@ namespace ocra
     virtual void doSetMargin() = 0;
     virtual void doSetWeight() = 0;
     virtual void doGetOutput(Eigen::VectorXd& output) const = 0;
+    virtual void doUpdate(){};
+
 
   private:
     struct Pimpl;

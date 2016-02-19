@@ -482,7 +482,7 @@ void OneLevelTask::doSetWeight()
 
 
 //--------------------------------------------------------------------------------------------------------------------//
-void OneLevelTask::update()
+void OneLevelTask::doUpdate()
 {
     switch(pimpl->innerTaskType)
     {

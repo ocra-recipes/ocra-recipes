@@ -81,7 +81,7 @@ public:
     // friend class wOcraController;    //Only the wOcraController should know about the following functions
     void connectToController(OneLevelSolver& _solver, const FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
     // void disconnectFromController();
-    void update();
+    // void update();
 
 
 
@@ -107,7 +107,8 @@ protected:
     virtual void doSetWeight();
     virtual void doActivateAsObjective();
     virtual void doGetOutput(Eigen::VectorXd& output) const;
-
+    virtual void doUpdate();
+    
   private:
     struct Pimpl;
     boost::shared_ptr<Pimpl> pimpl;

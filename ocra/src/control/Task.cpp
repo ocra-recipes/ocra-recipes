@@ -86,6 +86,11 @@ namespace ocra
   {
   }
 
+  void Task::update()
+  {
+    doUpdate();
+  }
+  
   void Task::activateAsObjective()
   {
     if(pimpl->mode == TASK_AS_OBJECTIVE)

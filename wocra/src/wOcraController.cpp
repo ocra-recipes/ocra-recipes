@@ -78,7 +78,6 @@ struct wOcraController::Pimpl
     ObjectivePtr<ocra::QuadraticFunction>     minTauObjective;
     ObjectivePtr<ocra::QuadraticFunction>     minFcObjective;
 
-    std::vector< ocra::OneLevelTask* >                    createdTask;
 
     // PERFORMANCE RECORDERS
     PerformanceRecorder updateTasksRecorder;
@@ -140,10 +139,10 @@ wOcraController::wOcraController(const std::string& ctrlName, Model& innerModel,
  */
 wOcraController::~wOcraController()
 {
-    for (int i=0; i<pimpl->createdTask.size(); ++i)
+    const std::map<std::string, Task*>& taskMap = getTasks();
+    for (std::map<std::string, Task*>::const_iterator it = taskMap.begin(); it != taskMap.end(); ++it)
     {
-        pimpl->createdTask[i]->disconnectFromController();
-        delete pimpl->createdTask[i];
+        (dynamic_cast<ocra::OneLevelTask*>(it->second))->disconnectFromController();
     }
 
     if (!pimpl->reducedProblem)
@@ -323,8 +322,8 @@ void wOcraController::doAddContactSet(const ContactSet& contacts)
 Task* wOcraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
 {
     ocra::OneLevelTask* nTask = new ocra::OneLevelTask(name, pimpl->innerModel, feature, featureDes);
-    pimpl->createdTask.push_back(nTask);
-    return nTask;
+    return nTask;
+
 };
 
 /** Internal implementation inside the createTask method.
@@ -339,8 +338,8 @@ Task* wOcraController::doCreateTask(const std::string& name, const Feature& feat
 Task* wOcraController::doCreateTask(const std::string& name, const Feature& feature) const
 {
     ocra::OneLevelTask* nTask = new ocra::OneLevelTask(name, pimpl->innerModel, feature);
-    pimpl->createdTask.push_back(nTask);
-    return nTask;
+    return nTask;
+
 };
 
 /** Internal implementation inside the createContactTask method.
@@ -357,8 +356,8 @@ Task* wOcraController::doCreateTask(const std::string& name, const Feature& feat
 Task* wOcraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
 {
     ocra::OneLevelTask* nTask = new ocra::OneLevelTask(name, pimpl->innerModel, feature);
-    pimpl->createdTask.push_back(nTask);
-    return nTask;
+    return nTask;
+
 };
 
 
@@ -376,23 +375,21 @@ void wOcraController::doComputeOutput(Eigen::VectorXd& tau)
 {
     pimpl->updateTasksRecorder.initializeTime();
     const std::vector<Task*>& tasks = getActiveTasks();
-    for(int i=0; i< tasks.size(); i++)
-    {
-        ocra::OneLevelTask* cTask = static_cast<ocra::OneLevelTask*>(tasks[i]); // addTask throws if this cast is not possible
-        cTask->update();
+    for(int i=0; i< tasks.size(); i++)    {
+        tasks[i]->update();
     }
     pimpl->updateTasksRecorder.saveRelativeTime();
 
     pimpl->solveProblemRecorder.initializeTime();
-    if(!pimpl->innerSolver.solve().info)
-    {
-        tau = pimpl->innerModel.getJointTorqueVariable().getValue();
-    }
-    else
-    {
-        setErrorMessage("solver error");
-        setErrorFlag(OTHER | CRITICAL_ERROR);
-    }
+    if(!pimpl->innerSolver.solve().info)    {
+        tau = pimpl->innerModel.getJointTorqueVariable().getValue();
+    }
+
+    else    {
+        setErrorMessage("solver error");
+        setErrorFlag(OTHER | CRITICAL_ERROR);
+    }
+
     pimpl->solveProblemRecorder.saveRelativeTime();
 }
 
