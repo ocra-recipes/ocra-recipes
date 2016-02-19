@@ -43,8 +43,8 @@ void wOcraCoMMomentumTaskManager::_init(double damping, double weight)
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
-    task->initAsCoMMomentumTask();
+    task = &ctrl.createTask(name, *feat, *featDes);
+    task->setTaskType(ocra::Task::COMMOMENTUMTASK);
     ctrl.addTask(*task);
 
 //    task->setStiffness(stiffness);
@@ -65,8 +65,8 @@ void wOcraCoMMomentumTaskManager::_init(double damping, const Eigen::VectorXd& w
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
-    task->initAsCoMMomentumTask();
+    task = &ctrl.createTask(name, *feat, *featDes);
+    task->setTaskType(ocra::Task::COMMOMENTUMTASK);
     ctrl.addTask(*task);
 
 //    task->setStiffness(stiffness);

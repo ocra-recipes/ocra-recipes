@@ -46,7 +46,7 @@ namespace
     {
       return data;
     }
-    
+
     void erase(const std::string& name)
     {
         this->data.erase(name);

@@ -100,8 +100,8 @@ void wOcraSegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_Loc
     featDesFrame->setVelocity(Eigen::Twistd::Zero());
     featDesFrame->setAcceleration(Eigen::Twistd::Zero());
 
-    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
-    task->initAsAccelerationTask();
+    task = &ctrl.createTask(name, *feat, *featDes);
+    task->setTaskType(ocra::Task::ACCELERATIONTASK);
     ctrl.addTask(*task);
 
     task->activateAsObjective();
@@ -123,8 +123,8 @@ void wOcraSegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_Loc
     featDesFrame->setVelocity(Eigen::Twistd::Zero());
     featDesFrame->setAcceleration(Eigen::Twistd::Zero());
 
-    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
-    task->initAsAccelerationTask();
+    task = &ctrl.createTask(name, *feat, *featDes);
+    task->setTaskType(ocra::Task::ACCELERATIONTASK);
     ctrl.addTask(*task);
 
     task->activateAsObjective();

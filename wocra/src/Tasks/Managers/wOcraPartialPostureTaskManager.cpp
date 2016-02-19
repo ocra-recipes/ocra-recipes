@@ -104,8 +104,8 @@ void wOcraPartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& 
     featDes = new ocra::PartialStateFeature(name + ".PartialStateFeature_Des", *featDesState);
 
     // The feature initializes as Zero for posture
-    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
-    task->initAsAccelerationTask();
+    task = &ctrl.createTask(name, *feat, *featDes);
+    task->setTaskType(ocra::Task::ACCELERATIONTASK);
     ctrl.addTask(*task);
 
 
@@ -126,8 +126,8 @@ void wOcraPartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& 
     featDes = new ocra::PartialStateFeature(name + ".PartialStateFeature_Des", *featDesState);
 
     // The feature initializes as Zero for posture
-    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
-    task->initAsAccelerationTask();
+    task = &ctrl.createTask(name, *feat, *featDes);
+    task->setTaskType(ocra::Task::ACCELERATIONTASK);
     ctrl.addTask(*task);
 
 

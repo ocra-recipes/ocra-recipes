@@ -148,8 +148,8 @@ void wOcraVariableWeightsTaskManager::_init(const Eigen::Vector3d& _taskPoint_Lo
         ocra::PositionFeature* feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes[i]);
         ocra::PositionFeature* featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes[i]);
 
-        tasks[i] = new ocra::OneLevelTask(name+axesLabels[i], model, *feat, *featDes);
-        tasks[i]->initAsAccelerationTask();
+        tasks[i] = &ctrl.createTask(name+axesLabels[i], *feat, *featDes);
+        tasks[i]->setTaskType(ocra::Task::ACCELERATIONTASK);
         ctrl.addTask(*tasks[i]);
 
         tasks[i]->activateAsObjective();

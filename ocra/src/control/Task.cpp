@@ -51,6 +51,7 @@ namespace ocra
     double margin;
     bool useActualMass;
     bool contactActive;
+    TYPETASK innerTaskType;
 
     Pimpl(const Feature& s, const Feature* sdes)
       : feature(s)
@@ -67,6 +68,7 @@ namespace ocra
       , margin(0.)
       , useActualMass(true)
       , contactActive(false)
+      , innerTaskType(UNKNOWNTASK)
     {}
   };
 
@@ -86,11 +88,25 @@ namespace ocra
   {
   }
 
+  void Task::setTaskType(Task::TYPETASK newTaskType)
+  {
+      if (getTaskType()==UNKNOWNTASK) {
+          pimpl->innerTaskType = newTaskType;
+      }else{
+          std::cout << "[warning] can't change a task's type once it has been set." << std::endl;
+      }
+  }
+
+  Task::TYPETASK Task::getTaskType()
+  {
+      return pimpl->innerTaskType;
+  }
+
   void Task::update()
   {
     doUpdate();
   }
-  
+
   void Task::activateAsObjective()
   {
     if(pimpl->mode == TASK_AS_OBJECTIVE)

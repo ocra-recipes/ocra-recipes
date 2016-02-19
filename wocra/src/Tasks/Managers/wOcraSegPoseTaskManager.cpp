@@ -192,8 +192,8 @@ void wOcraSegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame,
     feat = new ocra::DisplacementFeature(name + ".DisplacementFeature", *featFrame, axes);
     featDes = new ocra::DisplacementFeature(name + ".DisplacementFeature_Des", *featDesFrame, axes);
 
-    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
-    task->initAsAccelerationTask();
+    task = &ctrl.createTask(name, *feat, *featDes);
+    task->setTaskType(ocra::Task::ACCELERATIONTASK);
     ctrl.addTask(*task);
 
     featDesFrame->setPosition(Eigen::Displacementd::Identity());
@@ -218,8 +218,8 @@ void wOcraSegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame,
     feat = new ocra::DisplacementFeature(name + ".DisplacementFeature", *featFrame, axes);
     featDes = new ocra::DisplacementFeature(name + ".DisplacementFeature_Des", *featDesFrame, axes);
 
-    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
-    task->initAsAccelerationTask();
+    task = &ctrl.createTask(name, *feat, *featDes);
+    task->setTaskType(ocra::Task::ACCELERATIONTASK);
     ctrl.addTask(*task);
 
     featDesFrame->setPosition(Eigen::Displacementd::Identity());

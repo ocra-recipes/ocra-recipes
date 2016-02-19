@@ -61,7 +61,6 @@ struct OneLevelTask::Pimpl
     bool isRegisteredAsObjective;
     bool isRegisteredAsConstraint;
 
-    TYPETASK                                innerTaskType;
 
     LinearFunction*                         innerObjectiveFunction;
     Objective<SquaredLinearFunction>*       innerTaskAsObjective;
@@ -82,7 +81,6 @@ struct OneLevelTask::Pimpl
         , frictionConstraintIsRegisteredInConstraint(false)
         , isRegisteredAsObjective(false)
         , isRegisteredAsConstraint(false)
-        , innerTaskType(UNKNOWNTASK)
         , innerObjectiveFunction(NULL)
         , innerTaskAsObjective(NULL)
     {
@@ -188,7 +186,7 @@ void OneLevelTask::connectToController(OneLevelSolver& solver, const FullDynamic
     pimpl->dynamicEquation   = &dynamicEquation;
     pimpl->useReducedProblem =  useReducedProblem;
 
-    switch(pimpl->innerTaskType)
+    switch(getTaskType())
     {
 
         case(ACCELERATIONTASK):
@@ -248,36 +246,31 @@ void OneLevelTask::disconnectFromController()
     }
 
 }
-
-
-
-void OneLevelTask::initAsAccelerationTask()
-{
-    pimpl->innerTaskType = ACCELERATIONTASK;
-}
-
-
-void OneLevelTask::initAsTorqueTask()
-{
-    pimpl->innerTaskType = TORQUETASK;
-}
-
-
-void OneLevelTask::initAsForceTask()
-{
-    pimpl->innerTaskType = FORCETASK;
-}
-
-
-void OneLevelTask::initAsCoMMomentumTask()
-{
-    pimpl->innerTaskType = COMMOMENTUMTASK;
-}
-
-OneLevelTask::TYPETASK OneLevelTask::getTaskType() const
-{
-    return pimpl->innerTaskType;
-}
+// 
+//
+//
+// void OneLevelTask::initAsAccelerationTask()
+// {
+//     getTaskType() = ACCELERATIONTASK;
+// }
+//
+//
+// void OneLevelTask::initAsTorqueTask()
+// {
+//     getTaskType() = TORQUETASK;
+// }
+//
+//
+// void OneLevelTask::initAsForceTask()
+// {
+//     getTaskType() = FORCETASK;
+// }
+//
+//
+// void OneLevelTask::initAsCoMMomentumTask()
+// {
+//     getTaskType() = COMMOMENTUMTASK;
+// }
 
 
 const Eigen::VectorXd& OneLevelTask::getComputedForce() const
@@ -405,7 +398,7 @@ void OneLevelTask::doActivateAsObjective()
     pimpl->solver->addObjective(*pimpl->innerTaskAsObjective);
     pimpl->isRegisteredAsObjective = true;
 
-    if (pimpl->innerTaskType == FORCETASK)
+    if (getTaskType() == FORCETASK)
     {
         addContactPointInModel();
     }
@@ -421,7 +414,7 @@ void OneLevelTask::doDeactivateAsObjective()
     pimpl->solver->removeObjective(*pimpl->innerTaskAsObjective);
     pimpl->isRegisteredAsObjective = false;
 
-    if (pimpl->innerTaskType == FORCETASK)
+    if (getTaskType() == FORCETASK)
     {
         removeContactPointInModel();
     }
@@ -438,7 +431,7 @@ void OneLevelTask::doActivateAsConstraint()
     pimpl->solver->addConstraint(pimpl->innerTaskAsConstraint);
     pimpl->isRegisteredAsConstraint = true;
 
-    if (pimpl->innerTaskType == FORCETASK)
+    if (getTaskType() == FORCETASK)
     {
         addContactPointInModel();
     }
@@ -454,7 +447,7 @@ void OneLevelTask::doDeactivateAsConstraint()
     pimpl->solver->removeConstraint(pimpl->innerTaskAsConstraint);
     pimpl->isRegisteredAsConstraint = false;
 
-    if (pimpl->innerTaskType == FORCETASK)
+    if (getTaskType() == FORCETASK)
     {
         removeContactPointInModel();
     }
@@ -484,7 +477,7 @@ void OneLevelTask::doSetWeight()
 //--------------------------------------------------------------------------------------------------------------------//
 void OneLevelTask::doUpdate()
 {
-    switch(pimpl->innerTaskType)
+    switch(getTaskType())
     {
 
         case(ACCELERATIONTASK):

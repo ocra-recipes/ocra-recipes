@@ -36,7 +36,7 @@ class wOcraContactSetTaskManager: public wOcraTaskManagerBase
         const std::string&              segmentName;
 
         std::string*                    names;
-        ocra::OneLevelTask**             tasks;
+        ocra::Task**             tasks;
         int                             numContacts;
 
         ocra::PointContactFeature**      feats;

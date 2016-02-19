@@ -25,7 +25,12 @@ namespace ocra
   public:
     virtual ~Task() = 0;
 
+    enum TYPETASK { UNKNOWNTASK, ACCELERATIONTASK, TORQUETASK, FORCETASK, COMMOMENTUMTASK };
+
+
     void update();
+    void setTaskType(Task::TYPETASK newTaskType);
+    Task::TYPETASK getTaskType();
     void activateAsObjective();
     void activateAsConstraint();
     void deactivate();

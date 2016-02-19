@@ -18,7 +18,7 @@ namespace wocra
 wOcraContactSetTaskManager::wOcraContactSetTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, std::vector<Eigen::Displacementd> _H_segment_frames, double _mu, double _margin, bool _usesYarpPorts)
     : wOcraTaskManagerBase(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), numContacts(_H_segment_frames.size())
 {
-    tasks = new ocra::OneLevelTask*[numContacts];
+    tasks = new ocra::Task*[numContacts];
     feats = new ocra::PointContactFeature*[numContacts];
     featFrames = new ocra::SegmentFrame*[numContacts];
     names = new std::string[numContacts];
@@ -31,9 +31,9 @@ wOcraContactSetTaskManager::wOcraContactSetTaskManager(ocra::Controller& _ctrl, 
 
         featFrames[i] = new ocra::SegmentFrame(names[i] + ".SegmentFrame", model, model.SegmentName(segmentName), _H_segment_frames[i]);
         feats[i] = new ocra::PointContactFeature(names[i] + ".PointContactFeature", *featFrames[i]);
-        tasks[i] = &dynamic_cast<ocra::OneLevelTask&>(ctrl.createContactTask(names[i], *feats[i], _mu, _margin));
+        tasks[i] = &ctrl.createContactTask(names[i], *feats[i], _mu, _margin);
         // Control the acceleration of the contact point
-        tasks[i]->initAsAccelerationTask();
+        tasks[i]->setTaskType(ocra::Task::ACCELERATIONTASK);
         ctrl.addTask(*tasks[i]);
 
         tasks[i]->activateAsConstraint();
@@ -46,7 +46,7 @@ wOcraContactSetTaskManager::~wOcraContactSetTaskManager()
     for (int i = 0; i < numContacts; i++)
     {
         tasks[i]->deactivate();
-        tasks[i]->disconnectFromController();
+        // tasks[i]->disconnectFromController();
     }
 }
 

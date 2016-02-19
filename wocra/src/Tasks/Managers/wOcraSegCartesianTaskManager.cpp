@@ -198,8 +198,8 @@ void wOcraSegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_Local
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
-    task->initAsAccelerationTask();
+    task = &ctrl.createTask(name, *feat, *featDes);
+    task->setTaskType(ocra::Task::ACCELERATIONTASK);
     ctrl.addTask(*task);
 
     task->activateAsObjective();
@@ -219,8 +219,8 @@ void wOcraSegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_Local
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
-    task->initAsAccelerationTask();
+    task = &ctrl.createTask(name, *feat, *featDes);
+    task->setTaskType(ocra::Task::ACCELERATIONTASK);
     ctrl.addTask(*task);
 
     task->activateAsObjective();

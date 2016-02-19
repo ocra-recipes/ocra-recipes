@@ -19,9 +19,9 @@ wOcraContactTaskManager::wOcraContactTaskManager(ocra::Controller& _ctrl, const 
     featFrame = new ocra::SegmentFrame(name + ".SegmentFrame", model, model.SegmentName(segmentName), _H_segment_frame);
     feat = new ocra::PointContactFeature(name + ".PointContactFeature", *featFrame);
 
-    task = &dynamic_cast<ocra::OneLevelTask&>(ctrl.createContactTask(name, *feat, _mu, _margin));
+    task = &ctrl.createContactTask(name, *feat, _mu, _margin);
     // Control the acceleration of the contact point
-    task->initAsAccelerationTask();
+    task->setTaskType(ocra::Task::ACCELERATIONTASK);
     ctrl.addTask(*task);
 
     task->activateAsConstraint();

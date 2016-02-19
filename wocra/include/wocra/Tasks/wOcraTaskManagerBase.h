@@ -99,7 +99,7 @@ class wOcraTaskManagerBase
         virtual void setWeights(Eigen::Vector3d weight){};
 
     protected:
-        ocra::OneLevelTask*              task;
+        ocra::Task*                     task;
 
 
         ocra::Controller&               ctrl;

@@ -57,7 +57,7 @@ class OneLevelTask: public Task
 
 public:
 
-    enum TYPETASK { UNKNOWNTASK, ACCELERATIONTASK, TORQUETASK, FORCETASK, COMMOMENTUMTASK };
+    // enum TYPETASK { UNKNOWNTASK, ACCELERATIONTASK, TORQUETASK, FORCETASK, COMMOMENTUMTASK };
 
 
     OneLevelTask(const std::string& taskName, const Model& innerModel, const Feature& feature, const Feature& featureDes);
@@ -65,12 +65,12 @@ public:
     OneLevelTask(const std::string& taskName, const Model& innerModel, const Feature& feature);
     virtual ~OneLevelTask();
 
-    void initAsAccelerationTask();
-    void initAsTorqueTask();
-    void initAsForceTask();
-    void initAsCoMMomentumTask();
-
-    TYPETASK getTaskType() const;
+    // void initAsAccelerationTask();
+    // void initAsTorqueTask();
+    // void initAsForceTask();
+    // void initAsCoMMomentumTask();
+    //
+    // TYPETASK getTaskType() const;
 
     const Eigen::VectorXd& getComputedForce() const;
 
@@ -108,7 +108,7 @@ protected:
     virtual void doActivateAsObjective();
     virtual void doGetOutput(Eigen::VectorXd& output) const;
     virtual void doUpdate();
-    
+
   private:
     struct Pimpl;
     boost::shared_ptr<Pimpl> pimpl;

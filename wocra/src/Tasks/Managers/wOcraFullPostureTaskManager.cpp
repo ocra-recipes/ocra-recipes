@@ -123,8 +123,8 @@ void wOcraFullPostureTaskManager::_init(int fullStateType, double stiffness, dou
     featDes = new ocra::FullStateFeature(name + ".FullStateFeature_Des", *featDesState);
 
     // The feature initializes as Zero for posture
-    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
-    task->initAsAccelerationTask();
+    task = &ctrl.createTask(name, *feat, *featDes);
+    task->setTaskType(ocra::Task::ACCELERATIONTASK);
     ctrl.addTask(*task);
 
 
@@ -145,8 +145,8 @@ void wOcraFullPostureTaskManager::_init(int fullStateType, double stiffness, dou
     featDes = new ocra::FullStateFeature(name + ".FullStateFeature_Des", *featDesState);
 
     // The feature initializes as Zero for posture
-    task = new ocra::OneLevelTask(name, model, *feat, *featDes);
-    task->initAsAccelerationTask();
+    task = &ctrl.createTask(name, *feat, *featDes);
+    task->setTaskType(ocra::Task::ACCELERATIONTASK);
     ctrl.addTask(*task);
 
 

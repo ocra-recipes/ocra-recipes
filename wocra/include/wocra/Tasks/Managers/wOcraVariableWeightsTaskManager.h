@@ -96,7 +96,7 @@ class wOcraVariableWeightsTaskManager : public wOcraTaskManagerBase
         std::vector<ocra::ECartesianDof>     axes;
         std::vector<std::string>             axesLabels;
         int                                  nDoF;
-        std::vector<ocra::OneLevelTask*>       tasks;
+        std::vector<ocra::Task*>            tasks;
 
         const std::string&              segmentName;
 
