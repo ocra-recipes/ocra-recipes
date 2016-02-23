@@ -3,7 +3,12 @@ project(quadprog CXX)
 set(QUADPROG_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")
 set(QUADPROG_LIBRARIES quadprog CACHE TARGET "")
 
-include_directories(include)
+find_package(EigenLgsm REQUIRED)
+
+include_directories(
+        include
+        ${EigenLgsm_INCLUDE_DIRS}
+        )
 
 file(GLOB quadprog_srcs src/*.cpp)
 

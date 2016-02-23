@@ -17,9 +17,9 @@ namespace gocra
 class gOcraSegOrientationTaskManager: public gOcraTaskManagerBase
 {
     public:
-        gOcraSegOrientationTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping);
+        gOcraSegOrientationTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping);
 
-        gOcraSegOrientationTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, const Eigen::Rotation3d& targetPose);
+        gOcraSegOrientationTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, const Eigen::Rotation3d& targetPose);
 
         ~gOcraSegOrientationTaskManager();
 

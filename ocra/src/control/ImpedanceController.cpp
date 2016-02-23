@@ -1,6 +1,6 @@
 #include "ocra/control/ImpedanceController.h"
 
-#include "ocra/control/ImpedanceTask.h"
+#include "ocra/control/Tasks/ImpedanceTask.h"
 #include "ocra/control/Model.h"
 #include "ocra/control/Feature.h"
 #include "ocra/control/DynamicEquationFunction.h"

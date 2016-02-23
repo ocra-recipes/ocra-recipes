@@ -15,7 +15,7 @@ namespace gocra
  * \param _mu                   Coefficient of friction
  * \param _margin               Margin inside the friction cone
  */
-gOcraContactSetTaskManager::gOcraContactSetTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, const std::string& _segmentName, Eigen::Displacementd _H_segment_frame[], int _numContacts, double _mu, double _margin)
+gOcraContactSetTaskManager::gOcraContactSetTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, Eigen::Displacementd _H_segment_frame[], int _numContacts, double _mu, double _margin)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName), segmentName(_segmentName), numContacts(_numContacts)
 {
     tasks = new gocra::GHCJTTask*[numContacts];

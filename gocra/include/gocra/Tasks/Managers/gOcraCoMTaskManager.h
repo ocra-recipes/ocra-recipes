@@ -17,11 +17,11 @@ namespace gocra
 class gOcraCoMTaskManager: public gOcraTaskManagerBase
 {
     public:
-        gOcraCoMTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping);
+        gOcraCoMTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping);
 
-        gOcraCoMTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, Eigen::Vector3d posDes);
+        gOcraCoMTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, Eigen::Vector3d posDes);
 
-        gOcraCoMTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, Eigen::Vector3d posDes, Eigen::Vector3d velDes, Eigen::Vector3d accDes);
+        gOcraCoMTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, Eigen::Vector3d posDes, Eigen::Vector3d velDes, Eigen::Vector3d accDes);
 
         ~gOcraCoMTaskManager();
 

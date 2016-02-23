@@ -9,7 +9,7 @@ namespace gocra
  * \param model                 ocra model to setup the task
  * \param taskName              Name of the task
  */
-gOcraTaskManagerBase::gOcraTaskManagerBase(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName)
+gOcraTaskManagerBase::gOcraTaskManagerBase(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName)
     : ctrl(_ctrl), model(_model), name(_taskName)
 {
 }

@@ -5,7 +5,7 @@
 #include "gocra/Tasks/gOcraTaskManagerBase.h"
 #include "gocra/Tasks/GHCJTTask.h"
 #include "gocra/GHCJTController.h"
-#include "gocra/Features/gOcraFeature.h"
+#include "ocra/control/Feature.h"
 
 #include <Eigen/Dense>
 
@@ -19,7 +19,7 @@ namespace gocra
 class gOcraContactSetTaskManager: public gOcraTaskManagerBase
 {
     public:
-        gOcraContactSetTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, const std::string& segmentName, Eigen::Displacementd H_segment_frame[], int numContacts, double mu, double margin);
+        gOcraContactSetTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, Eigen::Displacementd H_segment_frame[], int numContacts, double mu, double margin);
 
         ~gOcraContactSetTaskManager();
 
