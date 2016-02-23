@@ -104,14 +104,12 @@ struct WocraController::Pimpl
 
 
 
-/** Initialize Wocra controller.
- *
- * \param ctrlName           The name of the controller
- * \param innerModel         The internal model of the robot one wants to control
- * \param innerSolver        The internal solver one wants to use to make the quadratic optimization
- * \param useReducedProblem  Tell if the redundant problem is considered (unknown variable is \f$ [ \ddq \; \torque \; \force_c ] \f$),
- *                           or is the reduced problem (non-redundant) is considred (unknown variable is \f$ [ \torque \; \force_c ] \f$)
- */
+/** Initialize Wocra controller. * \param ctrlName           The name of the controller
+ * \param innerModel         The internal model of the robot one wants to control
+ * \param innerSolver        The internal solver one wants to use to make the quadratic optimization
+ * \param useReducedProblem  Tell if the redundant problem is considered (unknown variable is \f$ [ \ddq, \torque, \force_c ] \f$), or is the reduced problem (non-redundant) is considred (unknown variable is \f$ [ \torque, \force_c ] \f$)
+ */
+
 WocraController::WocraController(const std::string& ctrlName, Model& innerModel, ocra::OneLevelSolver& innerSolver, bool useReducedProblem)
     : Controller(ctrlName, innerModel)
     , pimpl( new Pimpl(innerModel, innerSolver, useReducedProblem) )

@@ -56,6 +56,7 @@ namespace ocra
     void  setState(const Eigen::Displacementd& H_root, const Eigen::VectorXd& q, const Eigen::Twistd& T_root, const Eigen::VectorXd& q_dot);
     virtual const Eigen::VectorXd& getJointPositions()         const = 0;
     virtual const Eigen::VectorXd& getJointVelocities()        const = 0;
+    virtual const Eigen::VectorXd& getJointTorques()            const = 0;
     virtual const Eigen::Displacementd& getFreeFlyerPosition() const = 0;
     virtual const Eigen::Twistd& getFreeFlyerVelocity()        const = 0;
 
@@ -129,6 +130,8 @@ namespace ocra
       const std::string& getDofName(int index) const;
       const std::string DofName(const std::string& name) const;
       const std::string SegmentName(const std::string& name) const;
+      virtual const std::string&           getJointName             (int index) const = 0;
+
       //-----------------------------END OF SHIT------------------------------------//
 
 
