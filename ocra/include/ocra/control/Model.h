@@ -27,16 +27,16 @@ namespace ocra
   /** @class Model
     *	@brief %Model class.
     *	@warning None
-    *
+    *  
     * TODO: complete description
     *
-    * terms of the dynamic equation are given so that the equation writes this way :
+    * terms of the dynamic equation are given so that the equation writes this way : 
     * M\dot{T} + N + G = L tau - J_c^T f
     */
   class Model : public ObserverSubject, public NamedInstance
   {
   public:
-    Model(const std::string& name, int ndofs, bool freeRoot,
+    Model(const std::string& name, int ndofs, bool freeRoot, 
           const std::string& jointTorqueVariableName = "tau",
           const std::string& forceVariableName = "f",
           const std::string& configurationVariableName = "q",
@@ -56,7 +56,6 @@ namespace ocra
     void  setState(const Eigen::Displacementd& H_root, const Eigen::VectorXd& q, const Eigen::Twistd& T_root, const Eigen::VectorXd& q_dot);
     virtual const Eigen::VectorXd& getJointPositions()         const = 0;
     virtual const Eigen::VectorXd& getJointVelocities()        const = 0;
-    virtual const Eigen::VectorXd& getJointTorques()            const = 0;
     virtual const Eigen::Displacementd& getFreeFlyerPosition() const = 0;
     virtual const Eigen::Twistd& getFreeFlyerVelocity()        const = 0;
 
@@ -69,7 +68,7 @@ namespace ocra
     virtual const Eigen::VectorXd&   getActuatedDofs()     const = 0;
     virtual const Eigen::VectorXd&   getJointLowerLimits() const = 0;
     virtual const Eigen::VectorXd&   getJointUpperLimits() const = 0;
-      //CoM
+      //CoM    
     virtual double            getMass()             const = 0;
     virtual const Eigen::Vector3d&   getCoMPosition()      const = 0;
     virtual const Eigen::Vector3d&   getCoMVelocity()      const = 0;
@@ -85,7 +84,7 @@ namespace ocra
     virtual const Eigen::VectorXd&   getNonLinearTerms()           const = 0;
     virtual const Eigen::VectorXd&   getLinearTerms()              const = 0;
     virtual const Eigen::VectorXd&   getGravityTerms()             const = 0;
-
+    
     //segment data
     virtual const Eigen::Displacementd&  getSegmentPosition(int index) const = 0;
     virtual const Eigen::Twistd&         getSegmentVelocity(int index) const = 0;
@@ -124,16 +123,6 @@ namespace ocra
 
     // ------------------------ public methods ----------------------------------
   public:
-      //TODO: Clean this shit up...
-      //-----------------------------BEGINING OF SHIT-------------------------------//
-      int getDofIndex(const std::string& name) const;
-      const std::string& getDofName(int index) const;
-      const std::string DofName(const std::string& name) const;
-      const std::string SegmentName(const std::string& name) const;
-      virtual const std::string&           getJointName             (int index) const = 0;
-
-      //-----------------------------END OF SHIT------------------------------------//
-
 
     // ------------------------ public static methods ---------------------------
   public:
@@ -149,15 +138,6 @@ namespace ocra
     virtual const std::string&  doGetSegmentName(int index)                 const = 0;
 
     virtual void doInvalidate() {}
-
-    //TODO: Clean this shit up...
-    //-----------------------------BEGINING OF SHIT-------------------------------//
-    virtual int                 doGetDofIndex       (const std::string& name) const;
-    virtual const std::string&  doGetDofName        (int index) const;
-    virtual const std::string   doSegmentName       (const std::string& name) const;
-    virtual const std::string   doDofName           (const std::string& name) const;
-    //-----------------------------END OF SHIT------------------------------------//
-
 
     // ------------------------ protected static methods ------------------------
   protected:

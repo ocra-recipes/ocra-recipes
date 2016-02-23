@@ -2,7 +2,7 @@
  * \file Performances.h
  * \author Joseph Salini
  *
- * \brief Define and implement function to compute and save performances of the Wocra controlker.
+ * \brief Define and implement function to compute and save performances of the wOcra controlker.
  */
 
 #ifndef __PERFORMANCES_H__
@@ -158,3 +158,6 @@ protected:
 }
 
 #endif
+
+
+

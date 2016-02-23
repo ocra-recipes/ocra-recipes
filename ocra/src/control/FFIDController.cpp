@@ -1,6 +1,6 @@
 #include "ocra/control/FFIDController.h"
 
-#include "ocra/control/Tasks/FFIDTask.h"
+#include "ocra/control/FFIDTask.h"
 #include "ocra/control/Model.h"
 #include "ocra/control/Feature.h"
 #include "ocra/control/FullState.h"

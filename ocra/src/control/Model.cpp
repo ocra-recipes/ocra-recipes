@@ -4,7 +4,7 @@
 namespace ocra
 {
   Model::Model(const std::string& name, int ndofs, bool freeRoot, const std::string& jointTorqueVariableName,
-               const std::string& forceVariableName, const std::string& configurationVariableName,
+               const std::string& forceVariableName, const std::string& configurationVariableName, 
                const std::string& internalDofsSuffix, const std::string& externalDofsSuffix)
     : NamedInstance(name)
     , _dofs(ndofs)
@@ -216,61 +216,14 @@ namespace ocra
     throw std::runtime_error("[Model::doGetSegmentName] This function was not overriden for a specific model");
   }
 
-  void Model::invalidate(int timestamp)
-  {
+  void Model::invalidate(int timestamp) 
+  { 
     doInvalidate();
     doSetJointPositions(getInternalConfigurationVariable().getValue());
     doSetJointVelocities(getInternalVelocityVariable().getValue());
     if (!_fixedRoot)
       doSetFreeFlyerVelocity(Twistd(getRootVelocityVariable().getValue()));
   }
-
-  //TODO: Clean this shit up...
-  //-----------------------------BEGINING OF SHIT-------------------------------//
-  int Model::getDofIndex(const std::string& name) const
-  {
-    return doGetDofIndex(name);
-  }
-
-  const std::string& Model::getDofName(int index) const
-  {
-    assert(index>=0 && index < nbDofs());
-    return doGetDofName(index);
-  }
-
-  const std::string Model::SegmentName(const std::string& name) const
-  {
-      return doSegmentName(name);
-  }
-
-  const std::string Model::DofName(const std::string& name) const
-  {
-      return doDofName(name);
-  }
-
-  int Model::doGetDofIndex(const std::string& name) const
-  {
-    throw std::runtime_error("[Model::doGetDofIndex] This function was not overriden for a specific model");
-  }
-
-  const std::string& Model::doGetDofName(int index) const
-  {
-    throw std::runtime_error("[Model::doGetDofName] This function was not overriden for a specific model");
-  }
-
-  // Translates segment name to the format of the model (for example orcXdeModel should be robot.name)
-  const std::string Model::doSegmentName(const std::string& name) const
-  {
-    throw std::runtime_error("[Model::doSegmentName] This function was not overriden for a specific model");
-  }
-
-  // Translates DOF name to the format of the model (for example orcXdeModel should be robot.name)
-  const std::string Model::doDofName(const std::string& name) const
-  {
-    throw std::runtime_error("[Model::doDofName] This function was not overriden for a specific model");
-  }
-  //-----------------------------END OF SHIT------------------------------------//
-  
 
 }
 
