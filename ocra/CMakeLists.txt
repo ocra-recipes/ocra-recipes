@@ -12,7 +12,7 @@ set(OCRA_CORE_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")
 
 # Check for SMLT
 find_package(SMLT QUIET)
-IF(SMLT_FOUND)
+IF(${SMLT_FOUND})
     message(STATUS "-- SMLT lib found. Compiling gaussian process trajectory.")
     include_directories(${SMLT_INCLUDE_DIRS})
 ELSE()
@@ -27,7 +27,7 @@ LIST(APPEND link_libs   ${Boost_LIBRARIES}
                         ${QUADPROG_LIBRARIES}
                         ${YARP_LIBRARIES}
                         )
-IF(SMLT_FOUND)
+IF(${SMLT_FOUND})
  LIST(APPEND link_libs ${SMLT_LIBRARIES})
 ENDIF()
 
