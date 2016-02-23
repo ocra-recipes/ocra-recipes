@@ -1,7 +1,7 @@
 #ifndef gOcraTASKMANAGERBASE_H
 #define gOcraTASKMANAGERBASE_H
 
-#include "ocra/control/Model.h"
+#include "gocra/Models/gOcraModel.h"
 #include "gocra/GHCJTController.h"
 
 #include <Eigen/Dense>
@@ -15,7 +15,7 @@ namespace gocra
 class gOcraTaskManagerBase
 {
     public:
-        gOcraTaskManagerBase(gocra::GHCJTController& ctrl, const ocra::Model& model, const std::string& name);
+        gOcraTaskManagerBase(gocra::GHCJTController& ctrl, const gocra::gOcraModel& model, const std::string& name);
 
         virtual void activate() = 0;
         virtual void deactivate() = 0;
@@ -25,7 +25,7 @@ class gOcraTaskManagerBase
  
     protected:
         gocra::GHCJTController&        ctrl;
-        const ocra::Model&       model;
+        const gocra::gOcraModel&       model;
         const std::string&              name;
         //gocra::GHCJTTask              task;
 };

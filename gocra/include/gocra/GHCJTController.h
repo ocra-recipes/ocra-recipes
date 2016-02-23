@@ -17,11 +17,11 @@
 // OCRA INCLUDES
 #include "ocra/control/Controller.h"
 #include "ocra/control/Model.h"
-#include "ocra/optim/OneLevelSolver.h"
 
 
 // GOCRA INCLUDES
 #include "gocra/Tasks/GHCJTTask.h"
+#include "gocra/Solvers/gOcraSolver.h"
 //#include "gocra/Constraints/gOcraConstraint.h"
 //#include "gocra/Constraints/GHCAccelerationConstraint.h"
 using namespace ocra;
@@ -41,12 +41,12 @@ class GHCJTController: public Controller
 {
 public:
 
-    GHCJTController(const std::string& ctrlName, Model& innerModel, ocra::OneLevelSolver& innerSolver, bool useGrav);
+    GHCJTController(const std::string& ctrlName, Model& innerModel, gOcraSolver& innerSolver, bool useGrav);
     virtual ~GHCJTController();
 
     //getter
     Model&      getModel();
-    ocra::OneLevelSolver& getSolver();
+    gOcraSolver& getSolver();
 
     //setter
     void takeIntoAccountGravity(bool useGrav);

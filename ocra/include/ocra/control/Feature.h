@@ -16,12 +16,6 @@ File history:
 
 #include "ocra/control/ControlEnum.h"
 #include "ocra/optim/NamedInstance.h"
-
-#include "ocra/control/ControlFrame.h"
-#include "ocra/control/Model.h"
-#include "ocra/control/FullState.h"
-#include "ocra/control/PartialState.h"
-
 #include <Eigen/Lgsm>
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
@@ -30,7 +24,6 @@ namespace ocra
 {
   class ControlFrame;
   class FullState;
-  class PartialState;
 }
 
 namespace ocra
@@ -334,43 +327,6 @@ namespace ocra
   {
   public:
     FullStateFeature(const std::string& name, const FullState& state);
-
-    int getDimension() const;
-
-    const Eigen::MatrixXd& getSpaceTransform() const;
-
-    const Eigen::VectorXd& computeEffort(const Feature& featureDes) const;
-    const Eigen::VectorXd& computeAcceleration(const Feature& featureDes) const;
-    const Eigen::VectorXd& computeError(const Feature& featureDes) const;
-    const Eigen::VectorXd& computeErrorDot(const Feature& featureDes) const;
-    const Eigen::MatrixXd& computeJacobian(const Feature& featureDes) const;
-    const Eigen::MatrixXd& computeProjectedMass(const Feature& featureDes) const;
-    const Eigen::MatrixXd& computeProjectedMassInverse(const Feature& featureDes) const;
-
-    const Eigen::VectorXd& computeEffort() const;
-    const Eigen::VectorXd& computeAcceleration() const;
-    const Eigen::VectorXd& computeError() const;
-    const Eigen::VectorXd& computeErrorDot() const;
-    const Eigen::MatrixXd& computeJacobian() const;
-    const Eigen::MatrixXd& computeProjectedMass() const;
-    const Eigen::MatrixXd& computeProjectedMassInverse() const;
-
-  private:
-    struct Pimpl;
-    boost::shared_ptr<Pimpl> pimpl;
-  };
-
-  // --- PARTIAL - ARTICULAR ----------------------------------------
-
-  //! Used to build tasks in a partial configuration space.
-  /*!
-  Can be used e.g. for Joint PD control.
-  */
-  class PartialStateFeature
-    : public Feature
-  {
-  public:
-    PartialStateFeature(const std::string& name, const PartialState& state);
 
     int getDimension() const;
 
