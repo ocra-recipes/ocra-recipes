@@ -14,22 +14,21 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_POSITION_INDEPENDENT_CODE "TRUE")
 
-find_package(Eigen REQUIRED)
+#find_package(Eigen REQUIRED)
 find_package(EigenLgsm REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 find_package(TinyXML REQUIRED)
 find_package(YARP REQUIRED)
 
-add_subdirectory(solvers)
-
 include_directories(
     ${Eigen_INCLUDE_DIRS}
     ${EigenLgsm_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
-    ${QUADPROG_INCLUDE_DIRS}
 )
 
 add_subdirectory(ocra)
+
+add_subdirectory(solvers)
 add_subdirectory(wocra)
 add_subdirectory(gocra)
 
@@ -38,8 +37,6 @@ find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in
                    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-   configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/docs/latex_custom_commands.sty
-                    ${CMAKE_CURRENT_BINARY_DIR}/latex_custom_commands.sty COPYONLY)
     add_custom_target(doc
         ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

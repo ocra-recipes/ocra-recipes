@@ -10,7 +10,6 @@
 
 #include <iostream>
 
-#include "ocra/optim/OneLevelSolver.h"
 #include "ocra/optim/QuadraticFunction.h"
 #include "ocra/optim/FunctionHelpers.h"
 #include "ocra/optim/SumOfLinearFunctions.h"
@@ -19,6 +18,7 @@
 #include "ocra/control/Model.h"
 #include "ocra/control/ContactSet.h"
 
+#include "gocra/Solvers/gOcraSolver.h"
 #include "gocra/Tasks/GHCJTTask.h"
 #include "gocra/Performances.h"
 #include "gocra/OrthonormalFamily.h"
@@ -33,7 +33,7 @@ namespace gocra
 struct GHCJTController::Pimpl
 {
     Model&       innerModel;
-    ocra::OneLevelSolver&  innerSolver;
+    gOcraSolver&  innerSolver;
     bool         isFreeFloating;
     bool         useGrav;
 
@@ -50,7 +50,7 @@ struct GHCJTController::Pimpl
     PerformanceRecorder updateTasksRecorder;
     PerformanceRecorder solveProblemRecorder;
 
-    Pimpl(const std::string& name, Model& m, ocra::OneLevelSolver&  s, bool useGrav)
+    Pimpl(const std::string& name, Model& m, gOcraSolver&  s, bool useGrav)
         : innerModel(m)
         , innerSolver(s)
         , isFreeFloating(m.nbDofs() - m.nbInternalDofs()>0)
@@ -82,7 +82,7 @@ struct GHCJTController::Pimpl
  * \param innerSolver The internal solver one wants to use to make the quadratic optimization
  * \param useGrav Whether to activate gravity compensation or not
  */
-GHCJTController::GHCJTController(const std::string& ctrlName, Model& innerModel, ocra::OneLevelSolver& innerSolver, bool useGrav)
+GHCJTController::GHCJTController(const std::string& ctrlName, Model& innerModel, gOcraSolver& innerSolver, bool useGrav)
     : Controller(ctrlName, innerModel)
     , pimpl( new Pimpl(ctrlName, innerModel, innerSolver, useGrav) )
 {
@@ -118,7 +118,7 @@ Model& GHCJTController::getModel()
 /**
  * \return the inner solver used to construct this controller instance
  */
-ocra::OneLevelSolver& GHCJTController::getSolver()
+gOcraSolver& GHCJTController::getSolver()
 {
     return pimpl->innerSolver;
 }
@@ -363,7 +363,7 @@ void GHCJTController::writePerformanceInStream(std::ostream& outstream, bool add
  *  - solver_prepare
  *  - solver_solve
  *
- * See gocra::GHCJTController::writePerformanceInStream(std::ostream&, bool) and gocra::ocra::OneLevelSolver::writePerformanceInStream(std::ostream&, bool).
+ * See gocra::GHCJTController::writePerformanceInStream(std::ostream&, bool) and gocra::gOcraSolver::writePerformanceInStream(std::ostream&, bool).
  */
 std::string GHCJTController::getPerformances() const
 {
@@ -410,7 +410,7 @@ void GHCJTController::doUpdateAugmentedJacobian()
      for (int i=0; i<pimpl->nbActiveTask; ++i)
      {
          taskdim = pimpl->activeTask[i]->getDimension();
-         jacobian.block(rowindex,0, taskdim, nDof)=pimpl->activeTask[i]->getJacobian();
+         jacobian.block(rowindex,0, taskdim, nDof)=pimpl->activeTask[i]->getJacobian();        
          rowindex += taskdim;
      }
      pimpl->augmentedJacobian = jacobian;
@@ -511,7 +511,7 @@ void GHCJTController::computeProjector(const MatrixXd &C, const MatrixXd &J, Mat
     {
         Chat(j)=Cs(origin(j));
     }
-
+    
 
     MatrixXd alpha = MatrixXd(Chat.asDiagonal());
 //    std::cout<<"Cs"<<std::endl;

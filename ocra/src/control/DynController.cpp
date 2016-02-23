@@ -1,6 +1,6 @@
 #include "ocra/control/DynController.h"
 
-#include "ocra/control/Tasks/DynTask.h"
+#include "ocra/control/DynTask.h"
 #include "ocra/control/Model.h"
 #include "ocra/control/Feature.h"
 #include "ocra/control/FullState.h"

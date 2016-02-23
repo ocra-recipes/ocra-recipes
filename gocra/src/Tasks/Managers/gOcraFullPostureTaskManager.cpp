@@ -12,7 +12,7 @@ namespace gocra
  * \param _stiffness            Stiffness constant for task
  * \param _damping              Damping constant for task
  */
-gOcraFullPostureTaskManager::gOcraFullPostureTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, int _fullStateType, double _stiffness, double _damping)
+gOcraFullPostureTaskManager::gOcraFullPostureTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, int _fullStateType, double _stiffness, double _damping)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName)
 {
     _init(_fullStateType, _stiffness, _damping);
@@ -28,7 +28,7 @@ gOcraFullPostureTaskManager::gOcraFullPostureTaskManager(GHCJTController& _ctrl,
  * \param _damping              Damping constant for task
  * \param _init_q               Initial posture
  */
-gOcraFullPostureTaskManager::gOcraFullPostureTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, int _fullStateType, double _stiffness, double _damping, const Eigen::VectorXd& _init_q)
+gOcraFullPostureTaskManager::gOcraFullPostureTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, int _fullStateType, double _stiffness, double _damping, const Eigen::VectorXd& _init_q)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName)
 {
     _init(_fullStateType, _stiffness, _damping);

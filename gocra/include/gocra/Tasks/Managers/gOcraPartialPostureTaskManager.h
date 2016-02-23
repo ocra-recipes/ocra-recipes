@@ -5,7 +5,7 @@
 #include "ocra/control/Model.h"
 #include "gocra/Tasks/GHCJTTask.h"
 #include "gocra/GHCJTController.h"
-#include "ocra/control/Feature.h"
+#include "gocra/Features/gOcraFeature.h"
 
 #include <Eigen/Dense>
 
@@ -18,9 +18,9 @@ namespace gocra
 class gOcraPartialPostureTaskManager : public gOcraTaskManagerBase
 {
     public:
-        gOcraPartialPostureTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping);
+        gOcraPartialPostureTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping);
 
-        gOcraPartialPostureTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, Eigen::VectorXd& init_q);
+        gOcraPartialPostureTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, Eigen::VectorXd& init_q);
 
         ~gOcraPartialPostureTaskManager();
 
@@ -35,11 +35,11 @@ class gOcraPartialPostureTaskManager : public gOcraTaskManagerBase
  
     private:
         gocra::GHCJTTask*                      task;
-        ocra::PartialStateFeature*           feat;
-        ocra::PartialModelState*             featState;
+        gocra::PartialStateFeature*           feat;
+        gocra::PartialModelState*             featState;
 
-        ocra::PartialStateFeature*           featDes;
-        ocra::PartialTargetState*            featDesState;
+        gocra::PartialStateFeature*           featDes;
+        gocra::PartialTargetState*            featDesState;
 
 /*
         Eigen::Vector3d                 _posDes;

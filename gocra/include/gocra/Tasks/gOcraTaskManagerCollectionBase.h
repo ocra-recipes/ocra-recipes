@@ -13,7 +13,7 @@
 #include "gocra/Tasks/Managers/gOcraSegPoseTaskManager.h"
 //#include "gocra/Tasks/Managers/gOcraVariableWeightsTaskManager.h"
 
-#include "ocra/control/Model.h"
+#include "gocra/Models/gOcraModel.h"
 
 namespace gocra
 {
@@ -23,11 +23,11 @@ namespace gocra
     {
         public:
             virtual ~gOcraTaskManagerCollectionBase();
-            void init(gocra::GHCJTController& ctrl, ocra::Model& model);
-            void update(double time, ocra::Model& state, void** args);
+            void init(gocra::GHCJTController& ctrl, gocra::gOcraModel& model);
+            void update(double time, gocra::gOcraModel& state, void** args);
         protected: 
-            virtual void doInit(gocra::GHCJTController& ctrl, ocra::Model& model) = 0;
-            virtual void doUpdate(double time, ocra::Model& state, void** args) = 0;
+            virtual void doInit(gocra::GHCJTController& ctrl, gocra::gOcraModel& model) = 0;
+            virtual void doUpdate(double time, gocra::gOcraModel& state, void** args) = 0;
 
             TaskManagerDict taskManagers;
     };

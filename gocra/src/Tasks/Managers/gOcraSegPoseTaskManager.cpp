@@ -13,7 +13,7 @@ namespace gocra
  * \param _stiffness             Stiffness constant for task
  * \param _damping               Damping constant for task
  */
-gOcraSegPoseTaskManager::gOcraSegPoseTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, ocra::ECartesianDof _axes, double _stiffness, double _damping)
+gOcraSegPoseTaskManager::gOcraSegPoseTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, const std::string& _segmentName, ocra::ECartesianDof _axes, double _stiffness, double _damping)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName), segmentName(_segmentName), axes(_axes)
 {
     _init(Eigen::Displacementd::Identity(), _stiffness, _damping);
@@ -30,7 +30,7 @@ gOcraSegPoseTaskManager::gOcraSegPoseTaskManager(GHCJTController& _ctrl, const o
  * \param _damping              Damping constant for task
  * \param _poseDes              Initial pose for task
  */
-gOcraSegPoseTaskManager::gOcraSegPoseTaskManager(GHCJTController& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::Displacementd& _poseDes)
+gOcraSegPoseTaskManager::gOcraSegPoseTaskManager(GHCJTController& _ctrl, const gOcraModel& _model, const std::string& _taskName, const std::string& _segmentName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::Displacementd& _poseDes)
     : gOcraTaskManagerBase(_ctrl, _model, _taskName), segmentName(_segmentName), axes(_axes)
 {
     _init(Eigen::Displacementd::Identity(), _stiffness, _damping);
