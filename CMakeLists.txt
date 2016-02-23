@@ -14,21 +14,22 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_POSITION_INDEPENDENT_CODE "TRUE")
 
-#find_package(Eigen REQUIRED)
+find_package(Eigen REQUIRED)
 find_package(EigenLgsm REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 find_package(TinyXML REQUIRED)
 find_package(YARP REQUIRED)
 
+add_subdirectory(solvers)
+
 include_directories(
     ${Eigen_INCLUDE_DIRS}
     ${EigenLgsm_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
+    ${QUADPROG_INCLUDE_DIRS}
 )
 
 add_subdirectory(ocra)
-
-add_subdirectory(solvers)
 add_subdirectory(wocra)
 add_subdirectory(gocra)
 
