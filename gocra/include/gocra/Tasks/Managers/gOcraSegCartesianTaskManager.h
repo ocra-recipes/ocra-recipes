@@ -17,13 +17,13 @@ namespace gocra
 class gOcraSegCartesianTaskManager : public gOcraTaskManagerBase
 {
     public:
-        gOcraSegCartesianTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, ocra::ECartesianDof axes, double stiffness, double damping);
+        gOcraSegCartesianTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, const std::string& segmentName, ocra::ECartesianDof axes, double stiffness, double damping);
 
-        gOcraSegCartesianTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, const Eigen::Vector3d& segPoint_Local, ocra::ECartesianDof axes, double stiffness, double damping);
+        gOcraSegCartesianTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, const std::string& segmentName, const Eigen::Vector3d& segPoint_Local, ocra::ECartesianDof axes, double stiffness, double damping);
 
-        gOcraSegCartesianTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, ocra::ECartesianDof axes, double stiffness, double damping, const Eigen::Vector3d& targetPose);
+        gOcraSegCartesianTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, const std::string& segmentName, ocra::ECartesianDof axes, double stiffness, double damping, const Eigen::Vector3d& targetPose);
 
-        gOcraSegCartesianTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, const Eigen::Vector3d& segPoint_Local, ocra::ECartesianDof axes, double stiffness, double damping, const Eigen::Vector3d& targetPose);
+        gOcraSegCartesianTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, const std::string& segmentName, const Eigen::Vector3d& segPoint_Local, ocra::ECartesianDof axes, double stiffness, double damping, const Eigen::Vector3d& targetPose);
 
         ~gOcraSegCartesianTaskManager();
 

@@ -18,9 +18,9 @@ namespace gocra
 class gOcraFullPostureTaskManager : public gOcraTaskManagerBase
 {
     public:
-        gOcraFullPostureTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, double stiffness, double damping);
+        gOcraFullPostureTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, int fullStateType, double stiffness, double damping);
 
-        gOcraFullPostureTaskManager(GHCJTController& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, double stiffness, double damping, const Eigen::VectorXd& init_q);
+        gOcraFullPostureTaskManager(GHCJTController& ctrl, const gOcraModel& model, const std::string& taskName, int fullStateType, double stiffness, double damping, const Eigen::VectorXd& init_q);
 
         ~gOcraFullPostureTaskManager();
 
