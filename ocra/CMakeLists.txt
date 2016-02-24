@@ -5,8 +5,8 @@ include_directories(include
                     ${YARP_INCLUDE_DIRS}
                     )
 
-file(GLOB_RECURSE control_srcs src/control/*.cpp)
-file(GLOB_RECURSE optim_srcs src/optim/*.cpp)
+file(GLOB control_srcs src/control/*.cpp)
+file(GLOB optim_srcs src/optim/*.cpp)
 
 set(OCRA_CORE_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")
 
@@ -17,7 +17,7 @@ IF(${SMLT_FOUND})
     include_directories(${SMLT_INCLUDE_DIRS})
 ELSE()
     message(STATUS "-- SMLT lib NOT found. Removing gaussian process trajectory from source list.")
-    list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/Trajectory/GaussianProcessTrajectory.cpp)
+    list(REMOVE_ITEM control_srcs src/Trajectory/GaussianProcessTrajectory.cpp)
 ENDIF()
 
 add_library(ocra-control ${control_srcs})
