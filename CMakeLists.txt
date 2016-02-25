@@ -2,6 +2,16 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(ocra-recipes)
 
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+if(COMPILER_SUPPORTS_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+else()
+    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+endif()
+
+set(BUILD_SHARED_LIBS TRUE)
+
 set(VARS_PREFIX "OcraRecipes")
 
 set(${VARS_PREFIX}_MAJOR_VERSION 1)
