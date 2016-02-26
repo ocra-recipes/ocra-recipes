@@ -17,7 +17,7 @@ IF(${SMLT_FOUND})
     include_directories(${SMLT_INCLUDE_DIRS})
 ELSE()
     message(STATUS "-- SMLT lib NOT found. Removing gaussian process trajectory from source list.")
-    list(REMOVE_ITEM control_srcs src/Trajectory/GaussianProcessTrajectory.cpp)
+    list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Trajectory/GaussianProcessTrajectory.cpp)
 ENDIF()
 
 add_library(ocra-control ${control_srcs})
