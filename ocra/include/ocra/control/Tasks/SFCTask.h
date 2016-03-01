@@ -23,7 +23,7 @@ namespace ocra
     SFCTask(const std::string& name, const Model& model, const Feature& feature);
 
     void setSolver(QuadraticSolver& solver, SumOfLinearFunctions& seConstraint);
-    void update();
+    void doUpdate();
     const Variable& getVariable() const;
 
   protected:
