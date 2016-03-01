@@ -8,6 +8,16 @@ include_directories(include
 file(GLOB_RECURSE control_srcs src/control/*.cpp)
 file(GLOB_RECURSE optim_srcs src/optim/*.cpp)
 
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/SFCController.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/ImpedanceController.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/FFIDController.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/DynController.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Tasks/SFCTask.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Tasks/ImpedanceTask.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Tasks/FFIDTask.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Tasks/DynTask.cpp)
+
+
 set(OCRA_CORE_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")
 
 # Check for SMLT
