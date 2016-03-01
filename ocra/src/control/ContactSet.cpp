@@ -22,7 +22,7 @@ namespace ocra
     , _factory(factory)
     , _body(body)
     , _bodyFeature(new ContactConstraintFeature(body.getName()+".feature", body))
-    , _bodyTask(&factory.createTask(body.getName()+".task", *_bodyFeature))
+    , _bodyTask(factory.createTask(body.getName()+".task", *_bodyFeature))
     , _points()
     , _mu(mu)
     , _margin(margin)
@@ -46,7 +46,7 @@ namespace ocra
     PointContactFeature* pf = new PointContactFeature(sf->getName()+".feature", *sf);
     _features.push_back(pf);
 
-    Task* task = &_factory.createContactTask(sf->getName()+".task", *pf, _mu, _margin);
+    std::shared_ptr<Task> task = _factory.createContactTask(sf->getName()+".task", *pf, _mu, _margin);
     _tasks.push_back(task);
   }
 
@@ -60,9 +60,9 @@ namespace ocra
     return *_bodyFeature;
   }
 
-  Task& ContactSet::getBodyTask() const
+  std::shared_ptr<Task> ContactSet::getBodyTask() const
   {
-    return *_bodyTask;
+    return _bodyTask;
   }
 
   const std::vector<SegmentFrame*>& ContactSet::getPoints() const
@@ -75,7 +75,7 @@ namespace ocra
     return _features;
   }
 
-  const std::vector<Task*>& ContactSet::getTasks() const
+  const std::vector<std::shared_ptr<Task>>& ContactSet::getTasks() const
   {
     return _tasks;
   }
