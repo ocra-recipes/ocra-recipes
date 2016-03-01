@@ -17,6 +17,7 @@ File history:
 #include <Eigen/Lgsm>
 #include <boost/shared_ptr.hpp>
 #include <vector>
+#include <memory>
 
 namespace ocra
 {
@@ -37,7 +38,7 @@ namespace ocra
 
   //! Contact task factory.
   /*!
-  Creates a set of contact 
+  Creates a set of contact
   This object must be used as a factory. It does not manage its memory, so you have to delete the
   created frames yourself.
   */
@@ -51,10 +52,10 @@ namespace ocra
     void addContactFrame(const Eigen::Displacementd& frame);
 
     ContactConstraintFeature& getBodyFeature() const;
-    Task& getBodyTask() const;
+    std::shared_ptr<Task> getBodyTask() const;
     const std::vector<SegmentFrame*>& getPoints() const;
     const std::vector<PointContactFeature*>& getFeatures() const;
-    const std::vector<Task*>& getTasks() const;
+    const std::vector<std::shared_ptr<Task>>& getTasks() const;
 
     const SegmentFrame& getBodyFrame() const;
     double getMu() const;
@@ -69,10 +70,10 @@ namespace ocra
     const Controller& _factory;
     const SegmentFrame& _body;
     ContactConstraintFeature* _bodyFeature;
-    Task* _bodyTask;
+    std::shared_ptr<Task> _bodyTask;
     std::vector<SegmentFrame*> _points;
     std::vector<PointContactFeature*> _features;
-    std::vector<Task*> _tasks;
+    std::vector<std::shared_ptr<Task>> _tasks;
     double _mu;
     double _margin;
     int _nFacets;
