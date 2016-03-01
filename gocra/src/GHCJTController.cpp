@@ -187,17 +187,20 @@ void GHCJTController::doAddContactSet(const ContactSet& contacts)
 
 GHCJTTask& GHCJTController::createGHCJTTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
 {
-    return dynamic_cast<GHCJTTask&>(createTask(name, feature, featureDes));
+    auto taskPtr = createTask(name, feature, featureDes).get();
+    return dynamic_cast<GHCJTTask&>(*taskPtr);
 }
 
 GHCJTTask& GHCJTController::createGHCJTTask(const std::string& name, const Feature& feature) const
 {
-    return dynamic_cast<GHCJTTask&>(createTask(name, feature));
+    auto taskPtr = createTask(name, feature).get();
+    return dynamic_cast<GHCJTTask&>(*taskPtr);
 }
 
 GHCJTTask& GHCJTController::createGHCJTContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
 {
-    return dynamic_cast<GHCJTTask&>(createContactTask(name, feature, mu, margin));
+    auto taskPtr = createContactTask(name, feature, mu, margin).get();
+    return dynamic_cast<GHCJTTask&>(*taskPtr);
 }
 
 

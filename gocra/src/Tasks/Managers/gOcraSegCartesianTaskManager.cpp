@@ -88,7 +88,7 @@ void gOcraSegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_Local
          
 
     task = &(ctrl.createGHCJTTask(name, *feat, *featDes));
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
     task->activateAsObjective();
     task->setStiffness(_stiffness);

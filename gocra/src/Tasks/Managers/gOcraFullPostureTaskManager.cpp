@@ -48,7 +48,7 @@ void gOcraFullPostureTaskManager::_init(int fullStateType, double stiffness, dou
     // The feature initializes as Zero for posture
     task = &(ctrl.createGHCJTTask(name, *feat, *featDes));
 
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
 
     task->setStiffness(stiffness);

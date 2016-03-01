@@ -51,7 +51,7 @@ void gOcraSegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_Loc
 
     task = &(ctrl.createGHCJTTask(name, *feat, *featDes));
 
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
     task->activateAsObjective();
     task->setStiffness(_stiffness);

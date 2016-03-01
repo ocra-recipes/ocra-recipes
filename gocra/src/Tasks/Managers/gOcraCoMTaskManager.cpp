@@ -62,7 +62,7 @@ void gOcraCoMTaskManager::_init(double stiffness, double damping)
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
     task = &(ctrl.createGHCJTTask(name, *feat, *featDes));
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
     task->setStiffness(stiffness);
     task->setDamping(damping);
     task->setWeight(1);

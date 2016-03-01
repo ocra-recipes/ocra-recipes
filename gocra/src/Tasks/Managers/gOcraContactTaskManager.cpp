@@ -21,7 +21,7 @@ gOcraContactTaskManager::gOcraContactTaskManager(GHCJTController& _ctrl, const o
 
     task = &(ctrl.createGHCJTContactTask(name, *feat, _mu, _margin));
 
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
     task->activateAsConstraint();
 }

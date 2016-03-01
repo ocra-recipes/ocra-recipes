@@ -49,7 +49,7 @@ void gOcraSegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame,
 
     task = &(ctrl.createGHCJTTask(name, *feat, *featDes));
 
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
     featDesFrame->setPosition(Eigen::Displacementd::Identity());
     featDesFrame->setVelocity(Eigen::Twistd::Zero());
