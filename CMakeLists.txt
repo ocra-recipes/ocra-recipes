@@ -41,7 +41,7 @@ include_directories(
 
 add_subdirectory(ocra)
 add_subdirectory(wocra)
-add_subdirectory(gocra)
+# add_subdirectory(gocra)
 
 # add a target to generate API documentation with Doxygen
 find_package(Doxygen QUIET)
