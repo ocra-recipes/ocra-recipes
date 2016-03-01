@@ -1,6 +1,8 @@
 #ifndef TASKMANAGERBASE_H
 #define TASKMANAGERBASE_H
 
+#include <memory>
+
 #include "ocra/control/Model.h"
 #include "ocra/control/Controller.h"
 #include "ocra/control/Tasks/OneLevelTask.h"
@@ -99,7 +101,9 @@ class TaskManager
         virtual void setWeights(Eigen::Vector3d weight){};
 
     protected:
-        ocra::Task*                     task;
+        std::shared_ptr<ocra::Task>                 task;
+        std::vector< std::shared_ptr<ocra::Task> >  taskVector;
+        // ocra::Task*                     task;
 
 
         ocra::Controller&               ctrl;
@@ -112,7 +116,7 @@ class TaskManager
         bool usesTrajectory;
         bool followingTrajectory;
 
-        Trajectory*     taskTrajectory;
+        std::unique_ptr<Trajectory>     taskTrajectory;
 
         //Generic double vector to store states:
 
@@ -135,16 +139,14 @@ class TaskManager
 
 
         // For parsing and compiling yarp messages.
-        virtual void parseIncomingMessage(yarp::os::Bottle *input, yarp::os::Bottle *reply);
+        virtual void parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply);
 
         std::string printValidMessageTags();
 
 
-        bool usesYARP;
         yarp::os::Network yarp;
         yarp::os::RpcServer rpcPort;
         std::string portName;
-        rpcMessageCallback* processor;
 
         int stateDimension;
 
@@ -158,11 +160,11 @@ class TaskManager
         std::string inputControlPortName, outputControlPortName;
         yarp::os::Port inputControlPort, outputControlPort;
 
-        controlInputCallback* controlCallback;
-        // controlOutputCallback* stateCallback;
+        std::unique_ptr<RpcMessageCallback> rpcCallback;
+        std::unique_ptr<ControlInputCallback> controlCallback;
+        std::unique_ptr<StateUpdateThread> stateThread;
 
-        bool parseControlInput(yarp::os::Bottle *input);
-        stateUpdateThread* stateThread;
+        bool parseControlInput(yarp::os::Bottle& input);
 
 
 };

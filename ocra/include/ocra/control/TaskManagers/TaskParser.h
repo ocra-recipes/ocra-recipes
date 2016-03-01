@@ -65,7 +65,7 @@ namespace ocra
 
             const char * getDisplacementArgs(TiXmlElement* xmlElem);
 
-            TaskManager* constructTaskManager(ocra::Controller& ctrl, const ocra::Model& model, std::vector<taskManagerArgs>::iterator argStructPtr);
+            std::shared_ptr<TaskManager> constructTaskManager(ocra::Controller& ctrl, const ocra::Model& model, std::vector<taskManagerArgs>::iterator argStructPtr);
 
             Eigen::Displacementd eigenVectorToDisplacementd(Eigen::VectorXd& eigenVector);
 
