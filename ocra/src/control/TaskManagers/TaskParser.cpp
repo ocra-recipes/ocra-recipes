@@ -526,7 +526,7 @@ namespace ocra
 
 
 
-    TaskManager* TaskParser::constructTaskManager(ocra::Controller& ctrl, const ocra::Model& model, std::vector<taskManagerArgs>::iterator argStructPtr)
+    std::shared_ptr<TaskManager> TaskParser::constructTaskManager(ocra::Controller& ctrl, const ocra::Model& model, std::vector<taskManagerArgs>::iterator argStructPtr)
     {
 
 
@@ -541,14 +541,14 @@ namespace ocra
 
 
 
-        TaskManager* newTaskManager;
+        std::shared_ptr<TaskManager> newTaskManager;
 
         if(argStructPtr->taskType == "CoMTaskManager")
         {
             if (sizeDesired == 0)
             {
                 if (argStructPtr->useWeightVectorConstructor) {
-                    newTaskManager = new CoMTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<CoMTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
                                                             argStructPtr->kp,
@@ -556,7 +556,7 @@ namespace ocra
                                                             argStructPtr->weightVector,
                                                             argStructPtr->usesYarp);            }
                 else {
-                    newTaskManager = new CoMTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<CoMTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
                                                             argStructPtr->kp,
@@ -567,7 +567,7 @@ namespace ocra
             else
             {
                 if (argStructPtr->useWeightVectorConstructor) {
-                    newTaskManager = new CoMTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<CoMTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
                                                             argStructPtr->kp,
@@ -576,7 +576,7 @@ namespace ocra
                                                             argStructPtr->desired,
                                                             argStructPtr->usesYarp);            }
                 else {
-                    newTaskManager = new CoMTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<CoMTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
                                                             argStructPtr->kp,
@@ -592,7 +592,7 @@ namespace ocra
 
         else if(argStructPtr->taskType == "ContactSetTaskManager")
         {
-            newTaskManager = new ContactSetTaskManager(ctrl, model,
+            newTaskManager = std::make_shared<ContactSetTaskManager>(ctrl, model,
                                                     argStructPtr->taskName,
                                                     argStructPtr->segment,
                                                     eigenVectorToDisplacementd(argStructPtr->offset),
@@ -606,7 +606,7 @@ namespace ocra
         else if(argStructPtr->taskType == "ContactTaskManager")
         {
 
-            newTaskManager = new ContactTaskManager(ctrl, model,
+            newTaskManager = std::make_shared<ContactTaskManager>(ctrl, model,
                                                     argStructPtr->taskName,
                                                     argStructPtr->segment,
                                                     eigenVectorToDisplacementd(argStructPtr->offset.front()),
@@ -621,7 +621,7 @@ namespace ocra
             if (sizeDesired == 0)
             {
                 if (argStructPtr->useWeightVectorConstructor) {
-                    newTaskManager = new FullPostureTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<FullPostureTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             ocra::FullState::INTERNAL,
                                                             argStructPtr->kp,
@@ -630,7 +630,7 @@ namespace ocra
                                                             argStructPtr->usesYarp);
                 }
                 else {
-                    newTaskManager = new FullPostureTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<FullPostureTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             ocra::FullState::INTERNAL,
                                                             argStructPtr->kp,
@@ -642,7 +642,7 @@ namespace ocra
             else
             {
                 if (argStructPtr->useWeightVectorConstructor) {
-                    newTaskManager = new FullPostureTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<FullPostureTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             ocra::FullState::INTERNAL,
                                                             argStructPtr->kp,
@@ -652,7 +652,7 @@ namespace ocra
                                                             argStructPtr->usesYarp);
                 }
                 else {
-                    newTaskManager = new FullPostureTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<FullPostureTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             ocra::FullState::INTERNAL,
                                                             argStructPtr->kp,
@@ -676,7 +676,7 @@ namespace ocra
                 if (sizeDesired==0)
                 {
                     if (argStructPtr->useWeightVectorConstructor) {
-                        newTaskManager = new PartialPostureTaskManager(ctrl, model,
+                        newTaskManager = std::make_shared<PartialPostureTaskManager>(ctrl, model,
                                                                 argStructPtr->taskName,
                                                                 ocra::FullState::INTERNAL,
                                                                 argStructPtr->jointIndexes,
@@ -686,7 +686,7 @@ namespace ocra
                                                                 argStructPtr->usesYarp);
                     }
                     else {
-                        newTaskManager = new PartialPostureTaskManager(ctrl, model,
+                        newTaskManager = std::make_shared<PartialPostureTaskManager>(ctrl, model,
                                                                 argStructPtr->taskName,
                                                                 ocra::FullState::INTERNAL,
                                                                 argStructPtr->jointIndexes,
@@ -699,7 +699,7 @@ namespace ocra
                 else
                 {
                     if (argStructPtr->useWeightVectorConstructor) {
-                        newTaskManager = new PartialPostureTaskManager(ctrl, model,
+                        newTaskManager = std::make_shared<PartialPostureTaskManager>(ctrl, model,
                                                                 argStructPtr->taskName,
                                                                 ocra::FullState::INTERNAL,
                                                                 argStructPtr->jointIndexes,
@@ -710,7 +710,7 @@ namespace ocra
                                                                 argStructPtr->usesYarp);
                     }
                     else {
-                        newTaskManager = new PartialPostureTaskManager(ctrl, model,
+                        newTaskManager = std::make_shared<PartialPostureTaskManager>(ctrl, model,
                                                                 argStructPtr->taskName,
                                                                 ocra::FullState::INTERNAL,
                                                                 argStructPtr->jointIndexes,
@@ -740,7 +740,7 @@ namespace ocra
             if (sizeDesired!=3)
             {
                 if (argStructPtr->useWeightVectorConstructor) {
-                    newTaskManager = new SegCartesianTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<SegCartesianTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             argStructPtr->segment,
                                                             argStructPtr->offset.front(),
@@ -751,7 +751,7 @@ namespace ocra
                                                             argStructPtr->usesYarp);
                 }
                 else {
-                    newTaskManager = new SegCartesianTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<SegCartesianTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             argStructPtr->segment,
                                                             argStructPtr->offset.front(),
@@ -769,7 +769,7 @@ namespace ocra
             else if(sizeDesired == 3)
             {
                 if (argStructPtr->useWeightVectorConstructor) {
-                    newTaskManager = new SegCartesianTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<SegCartesianTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             argStructPtr->segment,
                                                             argStructPtr->offset.front(),
@@ -781,7 +781,7 @@ namespace ocra
                                                             argStructPtr->usesYarp);
                 }
                 else {
-                    newTaskManager = new SegCartesianTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<SegCartesianTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             argStructPtr->segment,
                                                             argStructPtr->offset.front(),
@@ -805,7 +805,7 @@ namespace ocra
             if (sizeDesired!=4)
             {
                 if (argStructPtr->useWeightVectorConstructor) {
-                    newTaskManager = new SegOrientationTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<SegOrientationTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             argStructPtr->segment,
                                                             argStructPtr->kp,
@@ -814,7 +814,7 @@ namespace ocra
                                                             argStructPtr->usesYarp);
                 }
                 else {
-                    newTaskManager = new SegOrientationTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<SegOrientationTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             argStructPtr->segment,
                                                             argStructPtr->kp,
@@ -835,7 +835,7 @@ namespace ocra
                 argStructPtr->desired(3) = tmpW;
 
                 if (argStructPtr->useWeightVectorConstructor) {
-                    newTaskManager = new SegOrientationTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<SegOrientationTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             argStructPtr->segment,
                                                             argStructPtr->kp,
@@ -845,7 +845,7 @@ namespace ocra
                                                             argStructPtr->usesYarp);
                 }
                 else {
-                    newTaskManager = new SegOrientationTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<SegOrientationTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             argStructPtr->segment,
                                                             argStructPtr->kp,
@@ -865,7 +865,7 @@ namespace ocra
             if (sizeDesired!=7)
             {
                 if (argStructPtr->useWeightVectorConstructor) {
-                    newTaskManager = new SegPoseTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<SegPoseTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             argStructPtr->segment,
                                                             eigenVectorToDisplacementd(argStructPtr->offset.front()),
@@ -876,7 +876,7 @@ namespace ocra
                                                             argStructPtr->usesYarp);
                 }
                 else {
-                    newTaskManager = new SegPoseTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<SegPoseTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             argStructPtr->segment,
                                                             eigenVectorToDisplacementd(argStructPtr->offset.front()),
@@ -894,7 +894,7 @@ namespace ocra
             else if(sizeDesired == 7)
             {
                 if (argStructPtr->useWeightVectorConstructor) {
-                    newTaskManager = new SegPoseTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<SegPoseTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             argStructPtr->segment,
                                                             eigenVectorToDisplacementd(argStructPtr->offset.front()),
@@ -906,7 +906,7 @@ namespace ocra
                                                             argStructPtr->usesYarp );
                 }
                 else {
-                    newTaskManager = new SegPoseTaskManager(ctrl, model,
+                    newTaskManager = std::make_shared<SegPoseTaskManager>(ctrl, model,
                                                             argStructPtr->taskName,
                                                             argStructPtr->segment,
                                                             eigenVectorToDisplacementd(argStructPtr->offset.front()),

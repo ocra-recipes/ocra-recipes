@@ -29,7 +29,7 @@ namespace ocra
         doUpdate(time, state, args);
     }
 
-    bool TaskSequence::addTaskManager(std::string keyValue, TaskManager* newTaskManager)
+    bool TaskSequence::addTaskManager(std::string keyValue, std::shared_ptr<TaskManager> newTaskManager)
     {
         if (newTaskManager==NULL) {
             std::cout << "[WARNING] (TaskSequence::addTaskManager): The newTaskManager pointer you passed was empty." << std::endl;
@@ -52,7 +52,8 @@ namespace ocra
         if (taskManagers.find(keyValue) != taskManagers.end()) {
             //TODO: Deactivate tasks smoothly?
             taskManagers[keyValue]->deactivate();
-            delete(taskManagers[keyValue]);
+            // (std::dynamic_pointer_cast<ocra::OneLevelTask>(taskManagers[keyValue]))->disconnectFromController();
+            // delete(taskManagers[keyValue]);
             taskManagers.erase(keyValue);
             return true;
         }
@@ -69,7 +70,9 @@ namespace ocra
         {
             std::cout << " --> " << it->first << std::endl;
             it->second->deactivate();
-            delete(it->second);
+            // (std::dynamic_pointer_cast<ocra::OneLevelTask>(it->second))->disconnectFromController();
+
+            // delete(it->second);
         }
 
         std::cout << "\n Clearing task sequence...\n" << std::endl;
@@ -102,7 +105,7 @@ namespace ocra
         return strVector;
     }
 
-    TaskManager* TaskSequence::getTaskManagerPointer(std::string taskName)
+    std::shared_ptr<TaskManager> TaskSequence::getTaskManagerPointer(std::string taskName)
     {
         if (taskManagers.find(taskName) != taskManagers.end()) {
             return taskManagers[taskName];
