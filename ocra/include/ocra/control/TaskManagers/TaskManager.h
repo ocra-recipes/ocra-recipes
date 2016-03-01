@@ -44,42 +44,42 @@ class TaskManager
         double getTaskErrorNorm();
 
         /*****************************************************************************************/
-        /** \brief rpcMessageCallback
+        /** \brief RpcMessageCallback
         *
         */
-        class rpcMessageCallback : public yarp::os::PortReader {
+        class RpcMessageCallback : public yarp::os::PortReader {
         private:
             TaskManager& tmBase;
 
         public:
-            rpcMessageCallback(TaskManager& tmBaseRef);
+            RpcMessageCallback(TaskManager& tmBaseRef);
 
             virtual bool read(yarp::os::ConnectionReader& connection);
         };
 
-        /** \brief controlInputCallback
+        /** \brief ControlInputCallback
         *
         */
-        class controlInputCallback : public yarp::os::PortReader {
+        class ControlInputCallback : public yarp::os::PortReader {
         private:
             TaskManager& tmBase;
 
         public:
-            controlInputCallback(TaskManager& tmBaseRef);
+            ControlInputCallback(TaskManager& tmBaseRef);
 
             virtual bool read(yarp::os::ConnectionReader& connection);
         };
 
-        /** \brief stateUpdateThread
+        /** \brief StateUpdateThread
         *
         */
-        class stateUpdateThread : public yarp::os::RateThread
+        class StateUpdateThread : public yarp::os::RateThread
         {
         private:
             TaskManager& tmBase;
 
         public:
-            stateUpdateThread(int period, TaskManager& tmBaseRef);
+            StateUpdateThread(int period, TaskManager& tmBaseRef);
             bool threadInit();
             void run();
             void threadRelease();
