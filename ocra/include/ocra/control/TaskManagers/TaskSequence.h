@@ -2,6 +2,7 @@
 #define TASKSEQUENCEBASE_H
 
 #include <cmath>
+#include <memory>
 
 // Includes the set of all possible task managers to make it easier to reference
 #include "ocra/control/TaskManagers/TaskManager.h"
@@ -22,8 +23,8 @@
 
 namespace ocra
 {
-    typedef std::map<std::string, TaskManager*> TaskManagerDict;
-    typedef std::map<std::string, TaskManager*>::iterator tmIterator;
+    typedef std::map<std::string, std::shared_ptr<TaskManager> > TaskManagerDict;
+    typedef std::map<std::string, std::shared_ptr<TaskManager> >::iterator tmIterator;
 
     class TaskSequence
     {
@@ -34,19 +35,19 @@ namespace ocra
             void init(ocra::Controller& ctrl, ocra::Model& model);
             void update(double time, ocra::Model& state, void** args);
 
-            bool addTaskManager(std::string keyValue, TaskManager* newTaskManager);
+            bool addTaskManager(std::string keyValue, std::shared_ptr<TaskManager> newTaskManager);
             bool removeTaskManager(std::string keyValue);
             bool clearSequence();
             std::vector<std::string> getTaskList();
             std::vector<std::string> getTaskPorts();
 
-            TaskManager* getTaskManagerPointer(std::string taskName);
+            std::shared_ptr<TaskManager> getTaskManagerPointer(std::string taskName);
 
 
 
         protected:
-            virtual void doInit(ocra::Controller& ctrl, ocra::Model& model) = 0;
-            virtual void doUpdate(double time, ocra::Model& state, void** args) = 0;
+            virtual void doInit(ocra::Controller& ctrl, ocra::Model& model){};
+            virtual void doUpdate(double time, ocra::Model& state, void** args){};
 
             TaskManagerDict taskManagers;
 
