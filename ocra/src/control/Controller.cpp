@@ -12,37 +12,37 @@ namespace
   class checked_map
   {
   private:
-    std::map<std::string, T*> data;
+    std::map<std::string, std::shared_ptr<T>> data;
     const std::string id;
 
   public:
     checked_map(const std::string& id_): id(id_) {}
 
-    const T& get(const std::string& name) const
+    const std::shared_ptr<T> get(const std::string& name) const
     {
-      typename std::map<std::string, T*>::const_iterator it = data.find(name);
+      typename std::map<std::string, std::shared_ptr<T>>::const_iterator it = data.find(name);
       if(it == data.end())
         throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" not found!");
-      return *it->second;
+      return it->second;
     }
 
-    T& get(const std::string& name)
+    std::shared_ptr<T> get(const std::string& name)
     {
-      typename std::map<std::string, T*>::iterator it = data.find(name);
+      typename std::map<std::string, std::shared_ptr<T>>::iterator it = data.find(name);
       if(it == data.end())
         throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" not found!");
-      return *it->second;
+      return it->second;
     }
 
-    void add(const std::string& name, T& elm)
+    void add(const std::string& name, std::shared_ptr<T> elm)
     {
-      typename std::map<std::string, T*>::const_iterator it = data.find(name);
+      typename std::map<std::string, std::shared_ptr<T>>::const_iterator it = data.find(name);
       if(it != data.end())
         throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" already registered!");
-      data[name] = &elm;
+      data[name] = elm;
     }
 
-    const std::map<std::string, T*>& getData() const
+    const std::map<std::string, std::shared_ptr<T>>& getData() const
     {
       return data;
     }
@@ -53,9 +53,9 @@ namespace
     }
 
     template<class P>
-    void getIf(P predicate, std::vector<T*>& result) const
+    void getIf(P predicate, std::vector<std::shared_ptr<T>>& result) const
     {
-      typename std::map<std::string, T*>::const_iterator it = data.begin();
+      typename std::map<std::string, std::shared_ptr<T>>::const_iterator it = data.begin();
       for(; it != data.end(); ++it)
       {
         if(predicate(it->second))
@@ -67,7 +67,7 @@ namespace
 
   struct isTaskActive
   {
-    bool operator()(const ocra::Task* task)
+    bool operator()(const std::shared_ptr<ocra::Task> task)
     {
       return (task->isActiveAsObjective() ||task->isActiveAsConstraint());
     }
@@ -82,7 +82,7 @@ namespace ocra
     VectorXd tau_max;
     VectorXd tau;
     checked_map<Task> tasks;
-    std::vector<Task*> activeTasks;
+    std::vector<std::shared_ptr<Task>> activeTasks;
     std::string errorMessage;
     double maxTau;
     int errorFlag;
@@ -126,7 +126,7 @@ namespace ocra
       os << "\tError message: " << getErrorMessage() << std::endl;
     }
 
-    const std::vector<Task*>& activeTasks = getActiveTasks();
+    const std::vector<std::shared_ptr<Task>>& activeTasks = getActiveTasks();
 
     if(activeTasks.empty())
       os << "\tNo active task" << std::endl;
@@ -176,16 +176,16 @@ namespace ocra
     return pimpl->tau_max;
   }
 
-  void Controller::addTask(Task& task)
+  void Controller::addTask(std::shared_ptr<Task> task)
   {
-    pimpl->tasks.add(task.getName(), task);
+    pimpl->tasks.add(task->getName(), task);
     doAddTask(task);
   }
 
-  void Controller::addTasks(const std::vector<Task*>& tasks)
+  void Controller::addTasks(const std::vector<std::shared_ptr<Task>>& tasks)
   {
     for(size_t i = 0; i < tasks.size(); ++i)
-      addTask(*tasks[i]);
+      addTask(tasks[i]);
   }
 
   void Controller::removeTask(const std::string& taskName)
@@ -204,12 +204,12 @@ namespace ocra
     doAddContactSet(contacts);
   }
 
-  Task& Controller::getTask(const std::string& name)
+  std::shared_ptr<Task> Controller::getTask(const std::string& name)
   {
     return pimpl->tasks.get(name);
   }
 
-  const Task& Controller::getTask(const std::string& name) const
+  const std::shared_ptr<Task> Controller::getTask(const std::string& name) const
   {
     return pimpl->tasks.get(name);
   }
@@ -303,29 +303,35 @@ namespace ocra
     return pimpl->maxTau;
   }
 
-  Task& Controller::createTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+  std::shared_ptr<Task> Controller::createTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
   {
-    Task* task = doCreateTask(name, feature, featureDes);
+    std::shared_ptr<Task> task(doCreateTask(name, feature, featureDes));
     task->setDesiredMassToActualOne();
     task->setDamping(0.);
     task->setStiffness(0.);
     task->setWeight(1.);
-    return *task;
+    // return *task;
+    return task;
   }
 
-  Task& Controller::createTask(const std::string& name, const Feature& feature) const
+  std::shared_ptr<Task> Controller::createTask(const std::string& name, const Feature& feature) const
   {
-    Task* task = doCreateTask(name, feature);
+    // Task* task = doCreateTask(name, feature);
+    std::shared_ptr<Task> task(doCreateTask(name, feature));
     task->setDesiredMassToActualOne();
     task->setDamping(0.);
     task->setStiffness(0.);
     task->setWeight(1.);
-    return *task;
+    // return *task;
+    return task;
   }
 
-  Task& Controller::createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+  // Task& Controller::createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+  std::shared_ptr<Task> Controller::createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
   {
-    Task* task = doCreateContactTask(name, feature, mu, margin);
+    // Task* task = doCreateContactTask(name, feature, mu, margin);
+    std::shared_ptr<Task> task(doCreateContactTask(name, feature, mu, margin));
+
     task->setDesiredMassToActualOne();
     task->setDamping(0.);
     task->setStiffness(0.);
@@ -333,10 +339,11 @@ namespace ocra
     task->setMargin(margin);
     task->setWeight(1.);
     task->activateContactMode();
-    return *task;
+    // return *task;
+    return task;
   }
 
-  const std::vector<Task*>& Controller::getActiveTasks() const
+  const std::vector<std::shared_ptr<Task>>& Controller::getActiveTasks() const
   {
     pimpl->activeTasks.clear();
     pimpl->tasks.getIf(isTaskActive(), pimpl->activeTasks);
@@ -353,7 +360,7 @@ namespace ocra
     pimpl->errorMessage = msg;
   }
 
-  const std::map<std::string, Task*>& Controller::getTasks() const
+  const std::map<std::string, std::shared_ptr<Task>>& Controller::getTasks() const
   {
     return pimpl->tasks.getData();
   }
