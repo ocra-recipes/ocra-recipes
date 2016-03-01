@@ -22,6 +22,7 @@ File history:
 #include <string>
 #include <vector>
 #include <map>
+#include <memory>
 
 namespace ocra
 {
@@ -53,16 +54,16 @@ namespace ocra
     void setMaxJointTorques(const Eigen::VectorXd& tau_max);
     const Eigen::VectorXd& getMaxJointTorques() const;
 
-    void addTask(Task& task);
-    void addTasks(const std::vector<Task*>& tasks);
+    void addTask(std::shared_ptr<Task> task);
+    void addTasks(const std::vector<std::shared_ptr<Task>>& tasks);
 
     void removeTask(const std::string& taskName);
     void removeTasks(const std::vector<std::string> tasks);
 
     void addContactSet(const ContactSet& contacts);
-    Task& getTask(const std::string& name);
-    const Task& getTask(const std::string& name) const;
-    const std::map<std::string, Task*>& getTasks() const;
+    std::shared_ptr<Task> getTask(const std::string& name);
+    const std::shared_ptr<Task> getTask(const std::string& name) const;
+    const std::map<std::string, std::shared_ptr<Task>>& getTasks() const;
 
     //! Computation of output torques based on the tasks added to the controller.
     /*!
@@ -97,31 +98,31 @@ namespace ocra
   public: // factory
     //@{
     //! Generic task creation
-    Task& createTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
-    Task& createTask(const std::string& name, const Feature& feature) const;
+    std::shared_ptr<Task> createTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
+    std::shared_ptr<Task> createTask(const std::string& name, const Feature& feature) const;
     //@}
 
     //! Creates a contact task
     /*!
     The parameters describe the friction cone parameters for the force applied by the manikin on the environment.
     */
-    Task& createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
+    std::shared_ptr<Task> createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
 
   protected:
-    const std::vector<Task*>& getActiveTasks() const;
+    const std::vector<std::shared_ptr<Task>>& getActiveTasks() const;
     void setErrorFlag(int eflag);
     void setErrorMessage(const std::string& msg);
 
   protected:
     virtual void doComputeOutput(Eigen::VectorXd& tau) = 0;
-    virtual void doAddTask(Task& task) = 0;
+    virtual void doAddTask(std::shared_ptr<Task> task) = 0;
     virtual void doAddContactSet(const ContactSet& contacts) = 0;
     virtual void doSetMaxJointTorques(const Eigen::VectorXd& tauMax); // Does nothing if not overloaded
 
   protected: // factory
-    virtual Task* doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const = 0;
-    virtual Task* doCreateTask(const std::string& name, const Feature& feature) const = 0;
-    virtual Task* doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const = 0;
+    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const = 0;
+    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, const Feature& feature) const = 0;
+    virtual std::shared_ptr<Task> doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const = 0;
 
   private:
     struct Pimpl;

@@ -19,13 +19,13 @@ namespace ocra
 
   protected:
     void doComputeOutput(Eigen::VectorXd& tau);
-    void doAddTask(Task& task);
+    void doAddTask(std::shared_ptr<Task> task);
     void doAddContactSet(const ContactSet& contacts);
 
   protected:
-    Task* doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
-    Task* doCreateTask(const std::string& name, const Feature& feature) const;
-    Task* doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
+      std::shared_ptr<Task> doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
+      std::shared_ptr<Task> doCreateTask(const std::string& name, const Feature& feature) const;
+      std::shared_ptr<Task> doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
 
   private:
     struct Pimpl;
