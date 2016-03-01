@@ -137,10 +137,10 @@ WocraController::WocraController(const std::string& ctrlName, Model& innerModel,
  */
 WocraController::~WocraController()
 {
-    const std::map<std::string, Task*>& taskMap = getTasks();
-    for (std::map<std::string, Task*>::const_iterator it = taskMap.begin(); it != taskMap.end(); ++it)
+    const std::map<std::string, std::shared_ptr<Task>>& taskMap = getTasks();
+    for (std::map<std::string, std::shared_ptr<Task>>::const_iterator it = taskMap.begin(); it != taskMap.end(); ++it)
     {
-        (dynamic_cast<ocra::OneLevelTask*>(it->second))->disconnectFromController();
+        (std::dynamic_pointer_cast<ocra::OneLevelTask>(it->second))->disconnectFromController();
     }
 
     if (!pimpl->reducedProblem)
@@ -248,21 +248,19 @@ void WocraController::removeConstraint(ocra::ControlConstraint& constraint) cons
 
 
 
-/** Internal implementation inside the addTask method.
- *
- * \param task The task to add in the controller
- */
-void WocraController::doAddTask(Task& task)
-{
-    try {
-        ocra::OneLevelTask& ctask = dynamic_cast<ocra::OneLevelTask&>(task);
-        ctask.connectToController(pimpl->innerSolver, pimpl->dynamicEquation, pimpl->reducedProblem);
-    }
+/** Internal implementation inside the addTask method. *
+ * \param task The task to add in the controller
+ */
+void WocraController::doAddTask(std::shared_ptr<Task> task)
+{
+    try {
+        std::shared_ptr<ocra::OneLevelTask> ctask = std::dynamic_pointer_cast<ocra::OneLevelTask>(task);        ctask->connectToController(pimpl->innerSolver, pimpl->dynamicEquation, pimpl->reducedProblem);
+    }
     catch(const std::exception & e) {
-        std::cerr << e.what() ;
-        throw std::runtime_error("[WocraController::doAddTask] cannot add task to controller (wrong type)");
-    }
-};
+        std::cerr << e.what() ;        throw std::runtime_error("[WocraController::doAddTask] cannot add task to controller (wrong type)");
+    }
+};
+
 
 /** Internal implementation inside the addContactSet method.
  *
@@ -307,56 +305,48 @@ void WocraController::doAddContactSet(const ContactSet& contacts)
 
 
 
-/** Internal implementation inside the createTask method.
- *
- * \param name The task name, a unique identifier
- * \param feature The part of the robot one wants to control (full state, frame, CoM,...)
- * \param featureDes The desired state one wants to reach, depends on the \a feature argument
- * \return The pointer to the new created task
- *
- * This method is called by the higher level methods #createWocraTask(const std::string&, const Feature&, const Feature&) const
- * and is the concrete implementation required by the ocra Controller class.
- */
-Task* WocraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
-{
-    ocra::OneLevelTask* nTask = new ocra::OneLevelTask(name, pimpl->innerModel, feature, featureDes);
-    return nTask;
+/** Internal implementation inside the createTask method. *
+ * \param name The task name, a unique identifier
+ * \param feature The part of the robot one wants to control (full state, frame, CoM,...)
+ * \param featureDes The desired state one wants to reach, depends on the \a feature argument
+ * \return The pointer to the new created task
+ *
+ * This method is called by the higher level methods #createWocraTask(const std::string&, const Feature&, const Feature&) const
+ * and is the concrete implementation required by the ocra Controller class.
+ */
 
-};
-
-/** Internal implementation inside the createTask method.
- *
- * \param name The task name, a unique identifier
- * \param feature The part of the robot one wants to control (full state, frame, CoM,...)
- * \return The pointer to the new created task
- *
- * This method is called by the higher level methods #createWocraTask(const std::string&, const Feature&) const
- * and is the concrete implementation required by the ocra Controller class.
- */
-Task* WocraController::doCreateTask(const std::string& name, const Feature& feature) const
-{
-    ocra::OneLevelTask* nTask = new ocra::OneLevelTask(name, pimpl->innerModel, feature);
-    return nTask;
+ std::shared_ptr<Task> WocraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const{
+    return std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature, featureDes);
+};
 
-};
-
-/** Internal implementation inside the createContactTask method.
- *
- * \param name     The task name, a unique identifier
- * \param feature  The contact point feature of the robot one wants to control
- * \param mu       The friction cone coefficient \f$ \mu \f$ such as \f$ \Vert \force_t \Vert < \mu \force_n \f$
- * \param margin   The margin inside the friction cone
- * \return The pointer to the new created contact task
- *
- * This method is called by the higher level methods #createWocraContactTask(const std::string&, const PointContactFeature&, , double, double) const
- * and is the concrete implementation required by the ocra::Controller class.
- */
-Task* WocraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
-{
-    ocra::OneLevelTask* nTask = new ocra::OneLevelTask(name, pimpl->innerModel, feature);
-    return nTask;
+/** Internal implementation inside the createTask method. *
+ * \param name The task name, a unique identifier
+ * \param feature The part of the robot one wants to control (full state, frame, CoM,...)
+ * \return The pointer to the new created task
+ *
+ * This method is called by the higher level methods #createWocraTask(const std::string&, const Feature&) const
+ * and is the concrete implementation required by the ocra Controller class.
+ */
+ std::shared_ptr<Task> WocraController::doCreateTask(const std::string& name, const Feature& feature) const
+{
+    return std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature);
+};
 
-};
+/** Internal implementation inside the createContactTask method. *
+ * \param name     The task name, a unique identifier
+ * \param feature  The contact point feature of the robot one wants to control
+ * \param mu       The friction cone coefficient \f$ \mu \f$ such as \f$ \Vert \force_t \Vert < \mu \force_n \f$
+ * \param margin   The margin inside the friction cone
+ * \return The pointer to the new created contact task
+ *
+ * This method is called by the higher level methods #createWocraContactTask(const std::string&, const PointContactFeature&, , double, double) const
+ * and is the concrete implementation required by the ocra::Controller class.
+ */
+
+ std::shared_ptr<Task> WocraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const{
+    return std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature);
+};
+
 
 
 
@@ -372,7 +362,7 @@ Task* WocraController::doCreateContactTask(const std::string& name, const PointC
 void WocraController::doComputeOutput(Eigen::VectorXd& tau)
 {
     pimpl->updateTasksRecorder.initializeTime();
-    const std::vector<Task*>& tasks = getActiveTasks();
+    const std::vector<std::shared_ptr<Task>>& tasks = getActiveTasks();
     for(int i=0; i< tasks.size(); i++)    {
         tasks[i]->update();
     }

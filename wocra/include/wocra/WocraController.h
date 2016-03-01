@@ -13,6 +13,7 @@
 
 #include <string>#include <vector>
 #include <iostream>
+#include <memory>
 // OCRA INCLUDES#include "ocra/control/Controller.h"
 #include "ocra/control/Model.h"
 #include "ocra/optim/OneLevelSolver.h"
@@ -62,13 +63,13 @@ public:
 
 protected:
     virtual void doComputeOutput(Eigen::VectorXd& tau);
-    virtual void doAddTask(Task& task);
+    virtual void doAddTask(std::shared_ptr<Task> task);
     virtual void doAddContactSet(const ContactSet& contacts);
 
 protected: // factory
-    virtual Task* doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
-    virtual Task* doCreateTask(const std::string& name, const Feature& feature) const;
-    virtual Task* doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
+    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
+    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, const Feature& feature) const;
+    virtual std::shared_ptr<Task> doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
 
 
 private:
