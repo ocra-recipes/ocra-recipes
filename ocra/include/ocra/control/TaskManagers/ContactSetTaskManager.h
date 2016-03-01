@@ -36,7 +36,6 @@ class ContactSetTaskManager: public TaskManager
         const std::string&              segmentName;
 
         std::string*                    names;
-        ocra::Task**             tasks;
         int                             numContacts;
 
         ocra::PointContactFeature**      feats;
