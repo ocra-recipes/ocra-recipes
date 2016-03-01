@@ -71,7 +71,7 @@ namespace ocra
     pimpl->seConstraint = &seConstraint;
   }
 
-  void SFCTask::update()
+  void SFCTask::doUpdate()
   {
     if(isBodyContactConstraint())
       return;
