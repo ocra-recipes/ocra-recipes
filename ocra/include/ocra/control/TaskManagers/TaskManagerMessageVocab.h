@@ -1,0 +1,43 @@
+#ifndef TASK_MANAGER_MESSAGE_VOCAB_H
+#define TASK_MANAGER_MESSAGE_VOCAB_H
+
+#include <iostream>
+
+namespace ocra
+{
+
+enum OCRA_TASK_MANAGER_MESSAGE_TAG
+{
+    // Indicators
+    OCRA_FAILURE = 0,
+    OCRA_SUCCESS,
+    OCRA_WARNING,
+    // Getters
+    GET_CURRENT_STATE,
+    GET_STIFFNESS,
+    GET_DAMPING,
+    GET_WEIGHT,
+    GET_DESIRED,
+    GET_ACTIVITY_STATUS,
+    GET_DIMENSION,
+    GET_TYPE,
+    GET_NAME,
+    GET_CONTROL_PORT_NAMES,
+    // Setters
+    SET_STIFFNESS,
+    SET_DAMPING,
+    SET_WEIGHT,
+    SET_MAX_VELOCITY,
+    SET_DESIRED,
+    // Other
+    USE_TRAJECTORY,
+    ACTIVATE,
+    DEACTIVATE,
+    OPEN_CONTROL_PORTS,
+    CLOSE_CONTROL_PORTS,
+    HELP
+
+};
+
+} // namespace ocra
+#endif // TASK_MANAGER_MESSAGE_VOCAB_H
