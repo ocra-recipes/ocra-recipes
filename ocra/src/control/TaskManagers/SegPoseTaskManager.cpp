@@ -192,9 +192,9 @@ void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, doub
     feat = new ocra::DisplacementFeature(name + ".DisplacementFeature", *featFrame, axes);
     featDes = new ocra::DisplacementFeature(name + ".DisplacementFeature_Des", *featDesFrame, axes);
 
-    task = &ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
     featDesFrame->setPosition(Eigen::Displacementd::Identity());
     featDesFrame->setVelocity(Eigen::Twistd::Zero());
@@ -218,9 +218,9 @@ void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, doub
     feat = new ocra::DisplacementFeature(name + ".DisplacementFeature", *featFrame, axes);
     featDes = new ocra::DisplacementFeature(name + ".DisplacementFeature_Des", *featDesFrame, axes);
 
-    task = &ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
     featDesFrame->setPosition(Eigen::Displacementd::Identity());
     featDesFrame->setVelocity(Eigen::Twistd::Zero());

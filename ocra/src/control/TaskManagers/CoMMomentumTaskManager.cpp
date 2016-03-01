@@ -43,9 +43,9 @@ void CoMMomentumTaskManager::_init(double damping, double weight)
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = &ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::COMMOMENTUMTASK);
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
 //    task->setStiffness(stiffness);
     task->setDamping(damping);
@@ -65,9 +65,9 @@ void CoMMomentumTaskManager::_init(double damping, const Eigen::VectorXd& weight
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = &ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::COMMOMENTUMTASK);
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
 //    task->setStiffness(stiffness);
     task->setDamping(damping);

@@ -87,9 +87,9 @@ void CoMTaskManager::_init(double stiffness, double damping, double weight)
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = &ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
     task->setStiffness(stiffness);
     task->setDamping(damping);
@@ -109,9 +109,9 @@ void CoMTaskManager::_init(double stiffness, double damping, const Eigen::Vector
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = &ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
     task->setStiffness(stiffness);
     task->setDamping(damping);

@@ -198,9 +198,9 @@ void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = &ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
     task->activateAsObjective();
     task->setStiffness(_stiffness);
@@ -219,9 +219,9 @@ void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
-    task = &ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
     task->activateAsObjective();
     task->setStiffness(_stiffness);

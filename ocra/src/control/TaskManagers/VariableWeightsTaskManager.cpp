@@ -129,7 +129,7 @@ void VariableWeightsTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFr
     nDoF = 3;
     axes.resize(nDoF);
     axesLabels.resize(nDoF);
-    tasks.resize(nDoF);
+    taskVector.resize(nDoF);
 
     axes[0] = ocra::X;
     axes[1] = ocra::Y;
@@ -148,14 +148,14 @@ void VariableWeightsTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFr
         ocra::PositionFeature* feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes[i]);
         ocra::PositionFeature* featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes[i]);
 
-        tasks[i] = &ctrl.createTask(name+axesLabels[i], *feat, *featDes);
-        tasks[i]->setTaskType(ocra::Task::ACCELERATIONTASK);
-        ctrl.addTask(*tasks[i]);
+        taskVector[i] = ctrl.createTask(name+axesLabels[i], *feat, *featDes);
+        taskVector[i]->setTaskType(ocra::Task::ACCELERATIONTASK);
+        ctrl.addTask(taskVector[i]);
 
-        tasks[i]->activateAsObjective();
-        tasks[i]->setStiffness(_stiffness);
-        tasks[i]->setDamping(_damping);
-        tasks[i]->setWeight(_weight(i));
+        taskVector[i]->activateAsObjective();
+        taskVector[i]->setStiffness(_stiffness);
+        taskVector[i]->setDamping(_damping);
+        taskVector[i]->setWeight(_weight(i));
 
     }
 
@@ -194,7 +194,7 @@ void VariableWeightsTaskManager::setWeights(Eigen::Vector3d weight)
 {
     for (int i=0; i<nDoF; i++)
     {
-        tasks[i]->setWeight(weight(i));
+        taskVector[i]->setWeight(weight(i));
     }
 }
 
@@ -207,7 +207,7 @@ Eigen::VectorXd VariableWeightsTaskManager::getWeights()
     Eigen::VectorXd weights(nDoF);
     for (int i=0; i<nDoF; i++)
     {
-        weights(i) = tasks[i]->getWeight()[0];
+        weights(i) = taskVector[i]->getWeight()[0];
     }
     return weights;
 }
@@ -220,7 +220,7 @@ void VariableWeightsTaskManager::setStiffness(double stiffness)
 {
     for (int i=0; i<nDoF; i++)
     {
-        tasks[i]->setStiffness(stiffness);
+        taskVector[i]->setStiffness(stiffness);
     }
 }
 
@@ -230,7 +230,7 @@ void VariableWeightsTaskManager::setStiffness(double stiffness)
  */
 double VariableWeightsTaskManager::getStiffness()
 {
-    Eigen::MatrixXd K = tasks[0]->getStiffness();
+    Eigen::MatrixXd K = taskVector[0]->getStiffness();
     return K(0, 0);
 }
 
@@ -242,7 +242,7 @@ void VariableWeightsTaskManager::setDamping(double damping)
 {
     for (int i=0; i<nDoF; i++)
     {
-        tasks[i]->setDamping(damping);
+        taskVector[i]->setDamping(damping);
     }
 }
 
@@ -252,7 +252,7 @@ void VariableWeightsTaskManager::setDamping(double damping)
  */
 double VariableWeightsTaskManager::getDamping()
 {
-    Eigen::MatrixXd C = tasks[0]->getDamping();
+    Eigen::MatrixXd C = taskVector[0]->getDamping();
     return C(0, 0);
 }
 
@@ -263,7 +263,7 @@ void VariableWeightsTaskManager::activate()
 {
     for (int i=0; i<nDoF; i++)
     {
-        tasks[i]->activateAsObjective();
+        taskVector[i]->activateAsObjective();
     }
 }
 
@@ -274,7 +274,7 @@ void VariableWeightsTaskManager::deactivate()
 {
     for (int i=0; i<nDoF; i++)
     {
-        tasks[i]->deactivate();
+        taskVector[i]->deactivate();
     }
 }
 
@@ -286,7 +286,7 @@ Eigen::VectorXd VariableWeightsTaskManager::getTaskError()
     Eigen::VectorXd errors(nDoF);
     for (int i=0; i<nDoF; i++)
     {
-        errors(i) = tasks[i]->getError()[i];
+        errors(i) = taskVector[i]->getError()[i];
     }
     return errors;
 }

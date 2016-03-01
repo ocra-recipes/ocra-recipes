@@ -8,7 +8,7 @@ namespace ocra
  *
  * \param _ctrl                 ocra::Controller to connect to
  * \param _model                ocra model to setup the task
- * \param _taskName             Name of the tasks (prefix for the set of tasks)
+ * \param _taskName             Name of the taskVector (prefix for the set of taskVector)
  * \param _segmentName          Name of segment that the contacts are attached to
  * \param _H_segment_frames      Array of contact points local to the segment
  * \param _numContacts          Number of contact points in this set
@@ -18,7 +18,7 @@ namespace ocra
 ContactSetTaskManager::ContactSetTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, std::vector<Eigen::Displacementd> _H_segment_frames, double _mu, double _margin, bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), numContacts(_H_segment_frames.size())
 {
-    tasks = new ocra::Task*[numContacts];
+    taskVector.resize(numContacts);
     feats = new ocra::PointContactFeature*[numContacts];
     featFrames = new ocra::SegmentFrame*[numContacts];
     names = new std::string[numContacts];
@@ -31,12 +31,12 @@ ContactSetTaskManager::ContactSetTaskManager(ocra::Controller& _ctrl, const ocra
 
         featFrames[i] = new ocra::SegmentFrame(names[i] + ".SegmentFrame", model, model.SegmentName(segmentName), _H_segment_frames[i]);
         feats[i] = new ocra::PointContactFeature(names[i] + ".PointContactFeature", *featFrames[i]);
-        tasks[i] = &ctrl.createContactTask(names[i], *feats[i], _mu, _margin);
+        taskVector[i] = ctrl.createContactTask(names[i], *feats[i], _mu, _margin);
         // Control the acceleration of the contact point
-        tasks[i]->setTaskType(ocra::Task::ACCELERATIONTASK);
-        ctrl.addTask(*tasks[i]);
+        taskVector[i]->setTaskType(ocra::Task::ACCELERATIONTASK);
+        ctrl.addTask(taskVector[i]);
 
-        tasks[i]->activateAsConstraint();
+        taskVector[i]->activateAsConstraint();
     }
 
 }
@@ -45,8 +45,8 @@ ContactSetTaskManager::~ContactSetTaskManager()
 {
     for (int i = 0; i < numContacts; i++)
     {
-        tasks[i]->deactivate();
-        // tasks[i]->disconnectFromController();
+        taskVector[i]->deactivate();
+        // taskVector[i]->disconnectFromController();
     }
 }
 
@@ -58,7 +58,7 @@ void ContactSetTaskManager::activate()
 {
     for (int i = 0; i < numContacts; i++)
     {
-        tasks[i]->activateAsConstraint();
+        taskVector[i]->activateAsConstraint();
     }
 }
 
@@ -70,7 +70,7 @@ void ContactSetTaskManager::deactivate()
 {
     for (int i = 0; i < numContacts; i++)
     {
-        tasks[i]->deactivate();
+        taskVector[i]->deactivate();
     }
 }
 

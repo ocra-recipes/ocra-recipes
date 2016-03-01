@@ -100,9 +100,9 @@ void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFra
     featDesFrame->setVelocity(Eigen::Twistd::Zero());
     featDesFrame->setAcceleration(Eigen::Twistd::Zero());
 
-    task = &ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
     task->activateAsObjective();
     task->setStiffness(_stiffness);
@@ -123,9 +123,9 @@ void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFra
     featDesFrame->setVelocity(Eigen::Twistd::Zero());
     featDesFrame->setAcceleration(Eigen::Twistd::Zero());
 
-    task = &ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
-    ctrl.addTask(*task);
+    ctrl.addTask(task);
 
     task->activateAsObjective();
     task->setStiffness(_stiffness);
