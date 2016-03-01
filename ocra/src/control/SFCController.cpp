@@ -63,7 +63,8 @@ namespace ocra
     : Controller(name, model)
     , pimpl( new Pimpl(name, model) )
   {
-    doAddTask(pimpl->gravityTask);
+    std::shared_ptr<Task> gravTask = std::make_shared<SFCTask>(pimpl->gravityTask);
+    doAddTask(gravTask);
     pimpl->gravityTask.activateAsObjective();
   }
 
@@ -159,8 +160,8 @@ namespace ocra
 			pimpl->rootStateDes.set_tau(pimpl->model.getGravityTerms().head(nfree));
 			pimpl->gravityTask.update();
 		}
-    
-    const std::vector<Task*>& tasks = getActiveTasks();
+
+    const std::vector<std::shared_ptr<Task>>& tasks = getActiveTasks();
 
     if(tasks.size()==0)
     {
@@ -171,8 +172,7 @@ namespace ocra
 
     for(size_t i = 0; i < tasks.size(); ++i)
     {
-      SFCTask& currentTask = static_cast<SFCTask&>(*tasks[i]); // addTask throws if this cast is not possible
-      currentTask.update();
+      tasks[i]->update();
     }
 
     if(!pimpl->solver->solve().info)
@@ -203,11 +203,13 @@ namespace ocra
     }
   }
 
-  void SFCController::doAddTask(Task& task)
+  void SFCController::doAddTask(std::shared_ptr<Task> task)
   {
     try {
-      SFCTask& sfctask = dynamic_cast<SFCTask&>(task);
-      sfctask.setSolver(*pimpl->solver, pimpl->seConstraint.getFunction());
+    //   SFCTask& sfctask = dynamic_cast<SFCTask&>(task);
+      std::shared_ptr<SFCTask> sfctask = std::dynamic_pointer_cast<SFCTask>(task);
+
+      sfctask->setSolver(*pimpl->solver, pimpl->seConstraint.getFunction());
     }
     catch(...) {
       throw std::runtime_error("[SFCController::doAddTask] cannot add task to controller (wrong type)");
@@ -220,19 +222,19 @@ namespace ocra
     addTask(contacts.getBodyTask());
   }
 
-  Task* SFCController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+  std::shared_ptr<Task> SFCController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
   {
-    return new SFCTask(name, pimpl->model, feature, featureDes);
+    return std::make_shared<SFCTask>(name, pimpl->model, feature, featureDes);
   }
 
-  Task* SFCController::doCreateTask(const std::string& name, const Feature& feature) const
+  std::shared_ptr<Task> SFCController::doCreateTask(const std::string& name, const Feature& feature) const
   {
-    return new SFCTask(name, pimpl->model, feature);
+    return std::make_shared<SFCTask>(name, pimpl->model, feature);
   }
 
-  Task* SFCController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+  std::shared_ptr<Task> SFCController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
   {
-    return new SFCTask(name, pimpl->model, feature);
+    return std::make_shared<SFCTask>(name, pimpl->model, feature);
   }
 }
 
