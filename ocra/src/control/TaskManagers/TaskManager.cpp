@@ -505,7 +505,7 @@ bool TaskManager::RpcMessageCallback::read(yarp::os::ConnectionReader& connectio
     }
     else{
         tmBase.parseIncomingMessage(input, reply);
-        std::unique_ptr<yarp::os::ConnectionWriter> returnToSender(connection.getWriter());
+        yarp::os::ConnectionWriter* returnToSender = connection.getWriter();
         if (returnToSender!=NULL) {
             reply.write(*returnToSender);
         }
