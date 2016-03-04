@@ -56,7 +56,7 @@ bool TaskManagerSet::removeTaskManager(const std::string& keyValue)
     }
 }
 
-bool TaskManagerSet::clearSequence()
+bool TaskManagerSet::clearSet()
 {
     std::cout << "\n=== Deactivating tasks ===" << std::endl;
     for (tmIterator it = taskManagers.begin(); it != taskManagers.end(); ++it)

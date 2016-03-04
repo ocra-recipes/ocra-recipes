@@ -35,7 +35,7 @@ public:
 
     bool addTaskManager(const std::string& keyValue, std::shared_ptr<TaskManager> newTaskManager);
     bool removeTaskManager(const std::string& keyValue);
-    bool clearSequence();
+    bool clearSet();
     std::vector<std::string> getTaskList();
     std::vector<std::string> getTaskPorts();
 
