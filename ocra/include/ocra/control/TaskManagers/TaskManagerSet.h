@@ -1,5 +1,5 @@
-#ifndef TASKSEQUENCEBASE_H
-#define TASKSEQUENCEBASE_H
+#ifndef TASK_MANAGER_SET_H
+#define TASK_MANAGER_SET_H
 
 #include <cmath>
 #include <memory>
@@ -23,37 +23,30 @@
 
 namespace ocra
 {
-    typedef std::map<std::string, std::shared_ptr<TaskManager> > TaskManagerDict;
-    typedef std::map<std::string, std::shared_ptr<TaskManager> >::iterator tmIterator;
+typedef std::map<std::string, std::shared_ptr<TaskManager> > TaskManagerDict;
+typedef std::map<std::string, std::shared_ptr<TaskManager> >::iterator tmIterator;
 
-    class TaskManagerSet
-    {
-        public:
-            virtual ~TaskManagerSet();
+class TaskManagerSet
+{
+public:
+    TaskManagerSet(std::shared_ptr<Controller> ctrlPtr, std::shared_ptr<Model> modelPtr);
 
+    virtual ~TaskManagerSet();
 
-            void init(ocra::Controller& ctrl, ocra::Model& model);
-            void update(double time, ocra::Model& state, void** args);
+    bool addTaskManager(const std::string& keyValue, std::shared_ptr<TaskManager> newTaskManager);
+    bool removeTaskManager(const std::string& keyValue);
+    bool clearSequence();
+    std::vector<std::string> getTaskList();
+    std::vector<std::string> getTaskPorts();
 
-            bool addTaskManager(std::string keyValue, std::shared_ptr<TaskManager> newTaskManager);
-            bool removeTaskManager(std::string keyValue);
-            bool clearSequence();
-            std::vector<std::string> getTaskList();
-            std::vector<std::string> getTaskPorts();
+    std::shared_ptr<TaskManager> getTaskManagerPointer(const std::string& taskName);
 
-            std::shared_ptr<TaskManager> getTaskManagerPointer(std::string taskName);
+protected:
+    std::shared_ptr<Controller> ctrl;
+    std::shared_ptr<Model> model;
+    TaskManagerDict taskManagers;
+};
 
+} // namespace ocra
 
-
-        protected:
-            virtual void doInit(ocra::Controller& ctrl, ocra::Model& model){};
-            virtual void doUpdate(double time, ocra::Model& state, void** args){};
-
-            TaskManagerDict taskManagers;
-
-
-
-    };
-}
-
-#endif // TASKSEQUENCE_H
+#endif // TASK_MANAGER_SET_H
