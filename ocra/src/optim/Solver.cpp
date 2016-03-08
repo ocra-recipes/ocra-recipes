@@ -37,15 +37,20 @@ namespace ocra
   const OptimizationResult& Solver::solve()
   {
     _result.solution.resize(_problemVariable.getVariable().getSize());
+
     doPrepare();
 
     if (_memory.capacity() > 0)
       _memory.push_back(toString());
+
     doSolve();
+
     if (_autodump && _result.info!=RETURN_SUCCESS)
       dump(_autodumpFile);
 
     doConclude();
+
+    // TODO: We get a seg fault here when a task is deleted after it has been removed.
     _problemVariable.setValue(_result.solution);
 
     return _result;

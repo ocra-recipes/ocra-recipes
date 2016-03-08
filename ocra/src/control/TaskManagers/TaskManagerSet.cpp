@@ -37,14 +37,12 @@ bool TaskManagerSet::removeTaskManager(const std::string& keyValue)
     if (taskManagers.find(keyValue) != taskManagers.end()) {
         //TODO: Deactivate tasks smoothly?
         // Deactivate the task first.
-        taskManagers[keyValue]->deactivate();
-        // If it is in the controller then remove it.
-        if(ctrl->getTasks().find(keyValue) != ctrl->getTasks().end()){
-            ctrl->removeTask(keyValue);
-        }
+        taskManagers[keyValue]->deactivate(); // Disconnects from the controller.
 
-        // (std::dynamic_pointer_cast<ocra::OneLevelTask>(taskManagers[keyValue]))->disconnectFromController();
-        // delete(taskManagers[keyValue]);
+        // TODO: If it is in the controller then remove it. The problem with this is that some of the objective functions in the task go out of scope and then the solver seg faults when it iterates through its `_problemVariable` children because it does not resize the children and it tries to access a pointer which was deleted with the task. I am too sick of this bug to figure it out today.
+        // if(ctrl->getTasks().find(keyValue) != ctrl->getTasks().end()){
+        //     ctrl->removeTask(keyValue);
+        // }
 
         // Remove the manager from the set.
         taskManagers.erase(keyValue);
@@ -63,11 +61,7 @@ bool TaskManagerSet::clearSet()
     {
         std::cout << " --> " << it->first << std::endl;
         it->second->deactivate();
-        // (std::dynamic_pointer_cast<ocra::OneLevelTask>(it->second))->disconnectFromController();
-
-        // delete(it->second);
     }
-
     std::cout << "\n Clearing task sequence...\n" << std::endl;
     taskManagers.clear();
     return true;
