@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <iterator>
+#include <iostream>
 
 
 namespace

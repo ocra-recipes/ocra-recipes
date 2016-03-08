@@ -195,8 +195,8 @@ namespace ocra
 
   void Controller::removeTasks(const std::vector<std::string> tasks)
   {
-    for(size_t i = 0; i < tasks.size(); ++i)
-      removeTask(tasks[i]);
+    for(auto task : tasks)
+      removeTask(task);
   }
 
   void Controller::addContactSet(const ContactSet& contacts)

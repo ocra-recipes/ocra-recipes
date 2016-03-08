@@ -363,13 +363,14 @@ void WocraController::doComputeOutput(Eigen::VectorXd& tau)
 {
     pimpl->updateTasksRecorder.initializeTime();
     const std::vector<std::shared_ptr<Task>>& tasks = getActiveTasks();
-    for(int i=0; i< tasks.size(); i++)    {
-        tasks[i]->update();
-    }
+    for(auto task : tasks)    {
+        task->update();
+    }
+
     pimpl->updateTasksRecorder.saveRelativeTime();
 
-    pimpl->solveProblemRecorder.initializeTime();
-    if(!pimpl->innerSolver.solve().info)    {
+    pimpl->solveProblemRecorder.initializeTime();    if(!pimpl->innerSolver.solve().info)
+    {
         tau = pimpl->innerModel.getJointTorqueVariable().getValue();
     }
 
@@ -377,8 +378,8 @@ void WocraController::doComputeOutput(Eigen::VectorXd& tau)
         setErrorMessage("solver error");
         setErrorFlag(OTHER | CRITICAL_ERROR);
     }
+    pimpl->solveProblemRecorder.saveRelativeTime();
 
-    pimpl->solveProblemRecorder.saveRelativeTime();
 }
 
 /** Write information about controller performances in a string stream.

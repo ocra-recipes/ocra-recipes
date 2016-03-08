@@ -54,7 +54,6 @@ void OneLevelSolver::removeObjective(ocra::QuadraticObjective& obj)
 {
     internalRemoveObjective(obj);
     _objectives.erase(std::find(_objectives.begin(), _objectives.end(), &obj));
-
 }
 
 /** Add a linear constraint to the controller.
@@ -361,7 +360,6 @@ void OneLevelSolverWithQuadProg::updateConstraintEquations()
 void OneLevelSolverWithQuadProg::doSolve()
 {
     // solveRecorder.initializeTime();
-
     QuadProgPP::solve_quadprog(_C, -_d, _Atotal, _btotal, _G, _h, Xsolution);
     _result.solution = Xsolution;
     _result.info = ocra::RETURN_SUCCESS; //TODO: should be dfined through the result of the QuadProgPP::solve_quadprog
