@@ -127,7 +127,7 @@ Give a description...
 
 ### Generating the documentation
 
-To build the documentation for `orca-recipes` you will need [`doxygen`](http://www.stack.nl/~dimitri/doxygen/index.html). To install `doxygen` on linux run `sudo apt-get install doxygen`.
+To build the documentation for `ocra-recipes` you will need [`doxygen`](http://www.stack.nl/~dimitri/doxygen/index.html). To install `doxygen` on linux run `sudo apt-get install doxygen`.
 
 In your `build/` directory (if you have already run `cmake ..` simply run:
 ```
