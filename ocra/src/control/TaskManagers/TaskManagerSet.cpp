@@ -70,12 +70,10 @@ bool TaskManagerSet::clearSet()
 
 std::vector<std::string> TaskManagerSet::getTaskList()
 {
-    std::vector<std::string> strVector(taskManagers.size());
-    int i = 0;
-    for (tmIterator it = taskManagers.begin(); it != taskManagers.end(); ++it)
+    std::vector<std::string> strVector;
+    for (auto tm : taskManagers)
     {
-        strVector[i] = it->first;
-        ++i;
+        strVector.push_back(tm.first);
     }
     return strVector;
 }
