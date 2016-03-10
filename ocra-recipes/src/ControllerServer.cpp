@@ -2,7 +2,7 @@
 
 using namespace ocra_recipes;
 
-ControllerServer::ControllerServer(const OCRA_CONTROLLER_TYPE ctrlType, const bool usingInterprocessCommunication)
+ControllerServer::ControllerServer(const CONTROLLER_TYPE ctrlType, const bool usingInterprocessCommunication)
 : controllerType(ctrlType)
 , usingComs(usingInterprocessCommunication)
 {
@@ -10,10 +10,13 @@ ControllerServer::ControllerServer(const OCRA_CONTROLLER_TYPE ctrlType, const bo
 
 ControllerServer::~ControllerServer()
 {
+    if(!serverComs.close())
+        std::cout << "Couldn't close controller server communications." << std::endl;
 }
 
 bool ControllerServer::initialize()
 {
+    bool res = true;
     model = setRobotModel();
     if(model)
     {
@@ -40,9 +43,15 @@ bool ControllerServer::initialize()
 
     if(usingComs)
     {
-        // port.open
-
+        serverComs = ServerCommunications(controller, model, taskManagerSet);
+        res &= serverComs.open();
     }
+
+    res &= bool(model);
+    res &= bool(controller);
+    res &= bool(taskManagerSet);
+
+    return res;
 }
 
 const Eigen::VectorXd& ControllerServer::computeTorques()
@@ -57,7 +66,4 @@ const Eigen::VectorXd& ControllerServer::computeTorques()
     return tau;
 }
 
-void ControllerServer::parseControllerMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply)
-{
-
-}
+// bool ControllerServer::addTaskManager(std::shared_ptr<ocra::TaskManager>)
