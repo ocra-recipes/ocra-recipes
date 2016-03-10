@@ -38,10 +38,12 @@ TaskManager::~TaskManager()
 {
     std::cout << "\t--> Closing ports" << std::endl;
     rpcPort.close();
-    if(task!=NULL){
+    if(task){
         std::dynamic_pointer_cast<OneLevelTask>(task)->disconnectFromController();
     }
-
+    if(stateThread){
+        closeControlPorts();
+    }
 
 
     std::cout << "\t--> Destroying " << stableName << std::endl;
@@ -365,9 +367,10 @@ bool TaskManager::openControlPorts()
 
 bool TaskManager::closeControlPorts()
 {
-    if (controlPortsOpen) {
+    if (stateThread->isRunning()) {
         stateThread->stop();
-        // stateThread = NULL;
+    }
+    if (controlPortsOpen) {
         inputControlPort.close();
         outputControlPort.close();
     }
