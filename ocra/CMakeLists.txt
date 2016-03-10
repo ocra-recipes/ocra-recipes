@@ -8,6 +8,7 @@ include_directories(include
 file(GLOB_RECURSE control_srcs src/control/*.cpp)
 file(GLOB_RECURSE optim_srcs src/optim/*.cpp)
 
+
 list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/SFCController.cpp)
 list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/ImpedanceController.cpp)
 list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/FFIDController.cpp)
@@ -18,7 +19,7 @@ list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Tasks/FFID
 list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Tasks/DynTask.cpp)
 
 
-set(OCRA_CORE_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")
+set(OCRA_INCLUDE_DIRS include CACHE PATH "")
 
 # Check for SMLT
 find_package(SMLT QUIET)
@@ -27,7 +28,7 @@ IF(${SMLT_FOUND})
     include_directories(${SMLT_INCLUDE_DIRS})
 ELSE()
     message(STATUS "-- SMLT lib NOT found. Removing gaussian process trajectory from source list.")
-    list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Trajectory/GaussianProcessTrajectory.cpp)
+    list(REMOVE_ITEM control_srcs src/control/Trajectory/GaussianProcessTrajectory.cpp)
 ENDIF()
 
 add_library(ocra-control ${control_srcs})
@@ -53,4 +54,4 @@ install(TARGETS ocra-control ocra-optim
         DESTINATION lib)
 
 set_property(GLOBAL APPEND PROPERTY ${VARS_PREFIX}_TARGETS ocra-control ocra-optim)
-set_property(GLOBAL APPEND PROPERTY PACKAGE_${VARS_PREFIX}_INCLUDEDIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set_property(GLOBAL APPEND PROPERTY PACKAGE_${VARS_PREFIX}_INCLUDEDIR include)

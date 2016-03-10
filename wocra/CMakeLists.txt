@@ -1,7 +1,7 @@
 project(wocra CXX)
 
 include_directories(include
-                    ${OCRA_CORE_INCLUDE_DIRS}
+                    ${OCRA_INCLUDE_DIRS}
                     ${YARP_INCLUDE_DIRS}
                     ${QUADPROG_INCLUDE_DIRS}
                     )
@@ -16,6 +16,8 @@ LIST(APPEND link_libs   ${Boost_LIBRARIES}
 			            ocra-control
             			ocra-optim
                         )
+
+set(WOCRA_INCLUDE_DIRS include CACHE PATH "")
 
 TARGET_LINK_LIBRARIES(wocra ${link_libs})
 

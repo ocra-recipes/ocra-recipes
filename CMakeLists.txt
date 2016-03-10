@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.11)
 
-project(ocra-recipes)
+project(OcraRecipes)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -41,6 +41,7 @@ include_directories(
 
 add_subdirectory(ocra)
 add_subdirectory(wocra)
+add_subdirectory(ocra-recipes)
 # add_subdirectory(gocra)
 
 # add a target to generate API documentation with Doxygen

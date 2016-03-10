@@ -2,12 +2,22 @@
 
 using namespace ocra_recipes;
 
-ControllerServer::ControllerServer(const OCRA_CONTROLLER_TYPE ctrlType, const bool using_interprocess_coms)
+ControllerServer::ControllerServer(const OCRA_CONTROLLER_TYPE ctrlType, const bool usingInterprocessCommunication)
+: controllerType(ctrlType)
+, usingComs(usingInterprocessCommunication)
 {
-    model = setModel();
+}
+
+ControllerServer::~ControllerServer()
+{
+}
+
+bool ControllerServer::initialize()
+{
+    model = setRobotModel();
     if(model)
     {
-        switch (ctrlType)
+        switch (controllerType)
         {
             case WOCRA_CONTROLLER:
             {
@@ -28,29 +38,26 @@ ControllerServer::ControllerServer(const OCRA_CONTROLLER_TYPE ctrlType, const bo
         }
     }
 
-    if(using_interprocess_coms)
+    if(usingComs)
     {
         // port.open
 
     }
-
-};
-
-virtual ControllerServer::~ControllerServer()
+}
 
 const Eigen::VectorXd& ControllerServer::computeTorques()
 {
-    getStates(q, qd, H_root, T_root);
+    getRobotState(q, qd, H_root, T_root);
     if (model->hasFixedRoot()){
         model->setState(q, qd);
     }else{
-        model->setState(q, qd, H_root, T_root);
+        model->setState(H_root, q, T_root, qd);
     }
     controller->computeOutput(tau);
     return tau;
 }
 
-void ControllerServer::parseControllerMessage(input, reply)
+void ControllerServer::parseControllerMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply)
 {
 
 }
