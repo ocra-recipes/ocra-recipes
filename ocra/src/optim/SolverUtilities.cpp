@@ -7,13 +7,13 @@ namespace ocra
   {
     using namespace details;
 
-    /** \internal Here is the sum up of operations that convert a given [Ax,b] constraint (column entries) 
+    /** \internal Here is the sum up of operations that convert a given [Ax,b] constraint (column entries)
       * into an [Cx,d] constraint (row entries).
       *
       *          |  Ax+b=0        Ax+b=b'       Ax+b<0        Ax+b<u        0<Ax+b      l<Ax+b          l<Ax+b<u
       * _________|________________________________________________________________________________________________________________
       *          |
-      *  Cx+d=0  | C=A, d=b	    C=A, d=b-b'       NA            NA            NA          NA               NA 
+      *  Cx+d=0  | C=A, d=b	    C=A, d=b-b'       NA            NA            NA          NA               NA
       *  Cx-d=0  | C=A, d=-b	  C=A, d=b'-b       NA            NA            NA          NA               NA
       *  Cx+d<0  |    NA            NA        C=A, d=b      C=A, d=b-u    C=-A, d=-b  C=-A, d=l-b   break into l<Ax+b and Ax+b<u
       *  Cx-d<0  |    NA            NA        C=A, d=-b     C=A, d=u-b    C=-A, d=b   C=-A, d=b-l   break into l<Ax+b and Ax+b<u
@@ -41,7 +41,7 @@ namespace ocra
       double eps = 1.e-8;
       double zero = 1.e-15;
       if (var.getNumberOfChildren() >0)
-      { 
+      {
         const CompositeVariable& cv = reinterpret_cast<const CompositeVariable&>(var);
         int n=0;
         int l;
@@ -100,7 +100,7 @@ namespace ocra
     std::cout << m << std::endl << std::endl;
     std::cout << Q << std::endl << std::endl;
 
-    system("pause");
+    int ret = system("pause");
   }
 }
 
