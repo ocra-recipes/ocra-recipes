@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-namespace ocra_yarp
+namespace ocra_recipes
 {
 
 enum SERVER_COMMUNICATIONS_MESSAGE

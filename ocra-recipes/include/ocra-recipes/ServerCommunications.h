@@ -34,9 +34,6 @@ public:
     ServerCommunications();
     ServerCommunications(std::shared_ptr<ocra::Controller> ctrl, std::shared_ptr<ocra::Model> mdl, std::shared_ptr<TaskManagerSet> tms);
 
-    ServerCommunications(const ServerCommunications& that);
-    ServerCommunications& operator=(const ServerCommunications& that);
-
     virtual ~ServerCommunications();
 
     bool open();

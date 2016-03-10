@@ -10,7 +10,7 @@ ControllerServer::ControllerServer(const CONTROLLER_TYPE ctrlType, const bool us
 
 ControllerServer::~ControllerServer()
 {
-    if(!serverComs.close())
+    if(!serverComs->close())
         std::cout << "Couldn't close controller server communications." << std::endl;
 }
 
@@ -43,8 +43,8 @@ bool ControllerServer::initialize()
 
     if(usingComs)
     {
-        serverComs = ServerCommunications(controller, model, taskManagerSet);
-        res &= serverComs.open();
+        serverComs = std::make_shared<ServerCommunications>(controller, model, taskManagerSet);
+        res &= serverComs->open();
     }
 
     res &= bool(model);

@@ -39,11 +39,14 @@ protected:
     virtual void getRobotState(Eigen::VectorXd& q, Eigen::VectorXd& qd, Eigen::Displacementd& H_root, Eigen::Twistd& T_root) = 0;
 
 public:
-    ControllerServer(const CONTROLLER_TYPE ctrlType, const bool usingInterprocessCommunication=true);
+    ControllerServer(const CONTROLLER_TYPE ctrlType=WOCRA_CONTROLLER, const bool usingInterprocessCommunication=true);
     virtual ~ControllerServer();
 
     bool initialize();
     const Eigen::VectorXd& computeTorques();
+
+    const std::shared_ptr<ocra::Controller> getController(){return controller;}
+    const std::shared_ptr<ocra::Model> getRobotModel(){return model;}
 
 
 private:
@@ -53,7 +56,7 @@ private:
     std::shared_ptr<ocra::OneLevelSolver>   internalSolver;
     std::shared_ptr<ocra::TaskManagerSet>   taskManagerSet;
 
-    ServerCommunications                        serverComs;
+    std::shared_ptr<ServerCommunications>       serverComs;
 
 
     Eigen::VectorXd              q;

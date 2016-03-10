@@ -15,32 +15,6 @@ ServerCommunications::ServerCommunications(std::shared_ptr<ocra::Controller> ctr
     outputPort_Name = "/ControllerServer:o";
 }
 
-ServerCommunications::ServerCommunications(const ServerCommunications& that)
-{
-    model = that.model;
-    controller = that.controller;
-    taskManagerSet = that.taskManagerSet;
-    rpcServerPort = that.rpcServerPort;
-    outputPort = that.outputPort;
-    rpcServerPort_Name = that.rpcServerPort_Name;
-    outputPort_Name = that.outputPort_Name;
-}
-
-ServerCommunications& ServerCommunications::operator=(const ServerCommunications& that)
-{
-    if (this != &that)
-    {
-        model = that.model;
-        controller = that.controller;
-        taskManagerSet = that.taskManagerSet;
-        rpcServerPort = that.rpcServerPort;
-        outputPort = that.outputPort;
-        rpcServerPort_Name = that.rpcServerPort_Name;
-        outputPort_Name = that.outputPort_Name;
-    }
-    return *this;
-}
-
 ServerCommunications::~ServerCommunications()
 {
 }
@@ -83,28 +57,28 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
             case GET_CONTROLLER_STATUS:
                 {
                     std::cout << "Got message: GET_CONTROLLER_STATUS." << std::endl;
-                    reply.addInt(controllerStatus);
+                    // reply.addInt(controllerStatus);
                     ++i;
                 }break;
 
             case GET_WBI_CONFIG_FILE_PATH:
                 {
                     std::cout << "Got message: GET_WBI_CONFIG_FILE_PATH." << std::endl;
-                    reply.addString(ctrlOptions.wbiConfigFilePath);
+                    // reply.addString(ctrlOptions.wbiConfigFilePath);
                     ++i;
                 }break;
 
             case GET_ROBOT_NAME:
                 {
                     std::cout << "Got message: GET_ROBOT_NAME." << std::endl;
-                    reply.addString(ctrlOptions.robotName);
+                    // reply.addString(ctrlOptions.robotName);
                     ++i;
                 }break;
 
             case GET_IS_FLOATING_BASE:
                 {
                     std::cout << "Got message: GET_IS_FLOATING_BASE." << std::endl;
-                    reply.addInt(ctrlOptions.isFloatingBase);
+                    reply.addInt(!model->hasFixedRoot());
                     ++i;
                 }break;
 
@@ -112,7 +86,7 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
                 {
                     ++i;
                     std::cout << "Got message: START_CONTROLLER." << std::endl;
-                    this->start();
+                    // this->start();
                     // TODO: make a switch case for if the controller is suspended then resume but if it is stopped then start.
                 }break;
 
@@ -120,14 +94,14 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
                 {
                     ++i;
                     std::cout << "Got message: STOP_CONTROLLER." << std::endl;
-                    this->stop();
+                    // this->stop();
                 }break;
 
             case PAUSE_CONTROLLER:
                 {
                     ++i;
                     std::cout << "Got message: PAUSE_CONTROLLER." << std::endl;
-                    this->suspend();
+                    // this->suspend();
                     // TODO: Make a custom function that puts the robot in pos mode before suspend.
                 }break;
 
