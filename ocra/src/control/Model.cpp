@@ -96,11 +96,6 @@ namespace ocra
     propagate<EVT_CHANGE_VALUE>();
   }
 
-  void doSetState()
-  {
-      // Does nothing, just a function to implement if you want
-  }
-
   void Model::setState(const VectorXd& q, const VectorXd& q_dot)
   {
     doSetState();
