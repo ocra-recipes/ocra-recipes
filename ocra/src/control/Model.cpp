@@ -96,14 +96,21 @@ namespace ocra
     propagate<EVT_CHANGE_VALUE>();
   }
 
+  void doSetState()
+  {
+      // Does nothing, just a function to implement if you want
+  }
+
   void Model::setState(const VectorXd& q, const VectorXd& q_dot)
   {
+    doSetState();
     setJointPositions(q);
     setJointVelocities(q_dot);
   }
 
   void Model::setState(const Eigen::Displacementd& H_root, const VectorXd& q, const Eigen::Twistd& T_root, const VectorXd& q_dot)
   {
+    doSetState();
     setJointPositions(q);
     setJointVelocities(q_dot);
     if(!_fixedRoot)
@@ -205,7 +212,6 @@ namespace ocra
     return _jointDamping;
   }
 
-
   int Model::doGetSegmentIndex(const std::string& name) const
   {
     throw std::runtime_error("[Model::doGetSegmentIndex] This function was not overriden for a specific model");
@@ -270,7 +276,7 @@ namespace ocra
     throw std::runtime_error("[Model::doDofName] This function was not overriden for a specific model");
   }
   //-----------------------------END OF SHIT------------------------------------//
-  
+
 
 }
 
