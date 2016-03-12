@@ -7,7 +7,7 @@
 #include <ocra/control/Controller.h>
 #include <ocra/control/Model.h>
 #include <ocra/control/TaskManagers/TaskManagerSet.h>
-#include <ocra/control/TaskManagers/TaskParser.h>
+#include <ocra/control/TaskManagers/TaskManagerFactory.h>
 
 #include <ocra/optim/OneLevelSolver.h>
 #include <wocra/WocraController.h>
