@@ -66,4 +66,23 @@ const Eigen::VectorXd& ControllerServer::computeTorques()
     return tau;
 }
 
-// bool ControllerServer::addTaskManager(std::shared_ptr<ocra::TaskManager>)
+bool ControllerServer::addTaskManagersFromXmlFile(const std::string& filePath)
+{
+    ocra::TaskManagerFactory factory;
+    if(factory.parseTasksXML(filePath))
+        return factory.addTaskManagersToSet(controller, model, taskManagerSet);
+
+    else
+        return false;
+}
+
+
+bool ControllerServer::addTaskManagers(ocra::TaskManagerOptions& tmOpts)
+{
+    ocra::TaskManagerFactory factory;
+    if(factory.addTaskManagerOptions(tmOpts))
+        return factory.addTaskManagersToSet(controller, model, taskManagerSet);
+
+    else
+        return false;
+}

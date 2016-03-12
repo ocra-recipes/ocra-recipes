@@ -8,6 +8,7 @@
 #include <ocra/control/Model.h>
 #include <ocra/control/TaskManagers/TaskManagerSet.h>
 #include <ocra/control/TaskManagers/TaskManagerFactory.h>
+#include <ocra/control/TaskManagers/TaskManagerOptions.h>
 
 #include <ocra/optim/OneLevelSolver.h>
 #include <wocra/WocraController.h>
@@ -48,7 +49,8 @@ public:
     const std::shared_ptr<ocra::Controller> getController(){return controller;}
     const std::shared_ptr<ocra::Model> getRobotModel(){return model;}
 
-    // bool addTaskManager()
+    bool addTaskManagersFromXmlFile(const std::string& filePath);
+    bool addTaskManagers(ocra::TaskManagerOptions& tmOpts);
 
 
 private:
