@@ -1,20 +1,30 @@
-#include "ocra/control/TaskManagers/TaskParser.h"
+#include "ocra/control/TaskManagers/TaskManagerFactory.h"
 
 
 namespace ocra
 {
-TaskParser::~TaskParser()
+
+TaskManagerFactory::TaskManagerFactory()
 {
 }
 
-bool TaskParser::parseTasksXML(const char * filePath)
+TaskManagerFactory::~TaskManagerFactory()
+{
+}
+
+bool TaskManagerFactory::parseTasksXML(const std::string& filePath)
+{
+    return parseTasksXML(filePath.c_str());
+}
+
+bool TaskManagerFactory::parseTasksXML(const char * filePath)
 {
     if(boost::filesystem::exists(filePath))
     {
         TiXmlDocument newTasksFile( filePath );
         if(!newTasksFile.LoadFile())
         {
-            std::cout << "[ERROR] (TaskParser::parseTasksXML): Could not read the XML file: " << filePath << std::endl;
+            std::cout << "[ERROR] (TaskManagerFactory::parseTasksXML): Could not read the XML file: " << filePath << std::endl;
             return false;
         }
         else
@@ -22,11 +32,12 @@ bool TaskParser::parseTasksXML(const char * filePath)
     }
     else
     {
-        std::cout << "[ERROR] (TaskParser::parseTasksXML): Filepath provided does not exist: "<< filePath << std::endl;
+        std::cout << "[ERROR] (TaskManagerFactory::parseTasksXML): Filepath provided does not exist: "<< filePath << std::endl;
+        return false;
     }
 }
 
-bool TaskParser::parseTasksXML(TiXmlDocument* newTasksFile)
+bool TaskManagerFactory::parseTasksXML(TiXmlDocument* newTasksFile)
 {
     if(newTasksFile == NULL)
         return false;
@@ -178,7 +189,7 @@ bool TaskParser::parseTasksXML(TiXmlDocument* newTasksFile)
 
                 }
 
-                tmArgsVector.push_back(currentTmArgs);
+                tmOptsVector.push_back(currentTmArgs);
 
             }
         }
@@ -188,47 +199,55 @@ bool TaskParser::parseTasksXML(TiXmlDocument* newTasksFile)
     }
 }
 
-
-bool TaskParser::addTaskManagersToSequence(std::shared_ptr<ocra::Controller> ctrl, std::shared_ptr<ocra::Model> model, std::shared_ptr<TaskManagerSet> taskSet)
+bool TaskManagerFactory::addTaskManagerOptions(TaskManagerOptions& tmOpts)
 {
-    if (tmArgsVector.size() > 0)
+    //TODO: Verify the options are good.
+    tmOptsVector.push_back(tmOpts);
+    //TODO: return true if success.
+    return true;
+}
+
+
+bool TaskManagerFactory::addTaskManagersToSet(std::shared_ptr<ocra::Controller> ctrl, std::shared_ptr<ocra::Model> model, std::shared_ptr<TaskManagerSet> taskSet)
+{
+    if (tmOptsVector.size() > 0)
     {
         int successCount = 0;
 
-        for(tmArgsIt=tmArgsVector.begin(); tmArgsIt != tmArgsVector.end(); tmArgsIt++)
+        for(tmOptsIterator tmIt=tmOptsVector.begin(); tmIt != tmOptsVector.end(); ++tmIt)
         {
-            std::cout << "\n=== Adding new task \"" << tmArgsIt->taskName<<"\" to the taskSet ===" << std::endl;
-            bool addSuccess = taskSet->addTaskManager(tmArgsIt->taskName, constructTaskManager(ctrl, model, tmArgsIt));
+            std::cout << "\n=== Adding new task \"" << tmIt->taskName<<"\" to the taskSet ===" << std::endl;
+            bool addSuccess = taskSet->addTaskManager(tmIt->taskName, constructTaskManager(ctrl, model, tmIt));
             if (!addSuccess) {
-                std::cout << "\n[WARNING] Unable to add " << tmArgsIt->taskName << std::endl;
+                std::cout << "\n[WARNING] Unable to add " << tmIt->taskName << std::endl;
             }
             successCount += addSuccess;
         }
 
         if (successCount==0)
         {
-            std::cout << "[ERROR] (TaskParser::addTaskManagersToSequence): None of the parsed tasks were added to the sequence." << std::endl;
+            std::cout << "[ERROR] (TaskManagerFactory::addTaskManagersToSequence): None of the parsed tasks were added to the sequence." << std::endl;
             return false;
         }
-        else if (successCount==tmArgsVector.size())
+        else if (successCount==tmOptsVector.size())
         {
             return true;
         }
         else
         {
-            std::cout << "[WARNING] (TaskParser::addTaskManagersToSequence): Only " << successCount << " of " << tmArgsVector.size() << " were added to the sequence. Double check XML syntax." << std::endl;
+            std::cout << "[WARNING] (TaskManagerFactory::addTaskManagersToSequence): Only " << successCount << " of " << tmOptsVector.size() << " were added to the sequence. Double check XML syntax." << std::endl;
             return false;
         }
     }
     else
     {
-        std::cout << "[WARNING] (TaskParser::addTaskManagersToSequence): There are no tasks to add. Doing nothing." << std::endl;
+        std::cout << "[WARNING] (TaskManagerFactory::addTaskManagersToSequence): There are no tasks to add. Doing nothing." << std::endl;
         return false;
     }
 }
 
 
-Eigen::VectorXd TaskParser::stringToVectorXd(const char * valueString)
+Eigen::VectorXd TaskManagerFactory::stringToVectorXd(const char * valueString)
 {
     std::stringstream valueStream;
     std::vector<double> doubleVector;
