@@ -1,6 +1,9 @@
 #ifndef TASK_MANAGER_OPTIONS_H
 #define TASK_MANAGER_OPTIONS_H
 
+#include <Eigen/Dense>
+#include <Eigen/Lgsm>
+
 namespace ocra
 {
 

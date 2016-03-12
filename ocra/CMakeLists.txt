@@ -19,7 +19,7 @@ list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Tasks/FFID
 list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Tasks/DynTask.cpp)
 
 
-set(OCRA_INCLUDE_DIRS include CACHE PATH "")
+set(OCRA_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")
 
 # Check for SMLT
 find_package(SMLT QUIET)

@@ -1,5 +1,5 @@
-#ifndef TASKPARSER_H
-#define TASKPARSER_H
+#ifndef TASK_MANAGER_FACTORY_H
+#define TASK_MANAGER_FACTORY_H
 
 #include <iostream>
 #include <tinyxml.h>
@@ -61,5 +61,5 @@ private:
     void prepareTaskManagerArguments(std::shared_ptr<ocra::Model> model, tmOptsIterator tmOptsPtr);
 };
 
-}
-#endif // TASKPARSER_H
+} // namespace ocra
+#endif // TASK_MANAGER_FACTORY_H

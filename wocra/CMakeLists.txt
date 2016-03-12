@@ -17,7 +17,7 @@ LIST(APPEND link_libs   ${Boost_LIBRARIES}
             			ocra-optim
                         )
 
-set(WOCRA_INCLUDE_DIRS include CACHE PATH "")
+set(WOCRA_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")
 
 TARGET_LINK_LIBRARIES(wocra ${link_libs})
 
