@@ -98,14 +98,14 @@ namespace ocra
 
   void Model::setState(const VectorXd& q, const VectorXd& q_dot)
   {
-    doSetState();
+    doSetState(q, q_dot);
     setJointPositions(q);
     setJointVelocities(q_dot);
   }
 
   void Model::setState(const Eigen::Displacementd& H_root, const VectorXd& q, const Eigen::Twistd& T_root, const VectorXd& q_dot)
   {
-    doSetState();
+    doSetState(H_root, q, T_root, q_dot);
     setJointPositions(q);
     setJointVelocities(q_dot);
     if(!_fixedRoot)

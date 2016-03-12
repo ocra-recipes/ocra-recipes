@@ -140,7 +140,9 @@ namespace ocra
 
     // ------------------------ protected methods -------------------------------
   protected:
-    virtual void  doSetState(){};
+    virtual void  doSetState(const Eigen::VectorXd& q, const Eigen::VectorXd& q_dot){};
+    virtual void  doSetState(const Eigen::Displacementd& H_root, const Eigen::VectorXd& q, const Eigen::Twistd& T_root, const Eigen::VectorXd& q_dot){};
+
     virtual void  doSetJointPositions(const Eigen::VectorXd& q) = 0;
     virtual void  doSetJointVelocities(const Eigen::VectorXd& q_dot) = 0;
     virtual void  doSetFreeFlyerPosition(const Eigen::Displacementd& H_root) = 0;
