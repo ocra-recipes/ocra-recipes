@@ -49,7 +49,7 @@ bool TaskManagerFactory::parseTasksXML(TiXmlDocument* newTasksFile)
 
             if ( (xmlTask->Attribute("name") != NULL) && (xmlTask->Attribute("type") != NULL) )
             {
-                taskManagerArgs currentTmArgs;
+                TaskManagerOptions currentTmArgs;
 
                 currentTmArgs.taskName = xmlTask->Attribute("name");
                 currentTmArgs.taskType = xmlTask->Attribute("type");
@@ -280,7 +280,7 @@ Eigen::VectorXd TaskManagerFactory::stringToVectorXd(const char * valueString)
 }
 
 
-Eigen::VectorXi TaskParser::stringToVectorXi(const char * valueString)
+Eigen::VectorXi TaskManagerFactory::stringToVectorXi(const char * valueString)
 {
     std::stringstream valueStream;
     std::vector<int> doubleVector;
@@ -313,24 +313,24 @@ Eigen::VectorXi TaskParser::stringToVectorXi(const char * valueString)
 }
 
 
-void TaskParser::printTaskArguments()
+void TaskManagerFactory::printTaskArguments()
 {
-    int nTasks = tmArgsVector.size();
+    int nTasks = tmOptsVector.size();
     for (int i=0; i<nTasks; i++)
     {
         std::cout << "\n=== Task " << i+1 << " of " << nTasks << " ===" << std::endl << std::endl;
-        std::cout << "Task name:\n" << tmArgsVector[i].taskName << std::endl << std::endl;
-        std::cout << "Task type:\n" << tmArgsVector[i].taskType << std::endl << std::endl;
-        std::cout << "Segment:\n" << tmArgsVector[i].segment << std::endl << std::endl;
-        std::cout << "kp:\n" << tmArgsVector[i].kp << std::endl << std::endl;
-        std::cout << "kd:\n" << tmArgsVector[i].kd << std::endl << std::endl;
-        std::cout << "weight:\n" << tmArgsVector[i].weight << std::endl << std::endl;
-        std::cout << "weights:\n" << tmArgsVector[i].weightVector.transpose() << std::endl << std::endl;
-        std::cout << "axes:\n" << tmArgsVector[i].axes << std::endl << std::endl;
+        std::cout << "Task name:\n" << tmOptsVector[i].taskName << std::endl << std::endl;
+        std::cout << "Task type:\n" << tmOptsVector[i].taskType << std::endl << std::endl;
+        std::cout << "Segment:\n" << tmOptsVector[i].segment << std::endl << std::endl;
+        std::cout << "kp:\n" << tmOptsVector[i].kp << std::endl << std::endl;
+        std::cout << "kd:\n" << tmOptsVector[i].kd << std::endl << std::endl;
+        std::cout << "weight:\n" << tmOptsVector[i].weight << std::endl << std::endl;
+        std::cout << "weights:\n" << tmOptsVector[i].weightVector.transpose() << std::endl << std::endl;
+        std::cout << "axes:\n" << tmOptsVector[i].axes << std::endl << std::endl;
         std::cout << "offset:\n";
-        for(int j=0; j<tmArgsVector[i].offset.size(); j++){std::cout << tmArgsVector[i].offset[j].transpose() << std::endl;}std::cout << std::endl;
-        std::cout << "jointIndexes:\n" << tmArgsVector[i].jointIndexes.transpose() << std::endl << std::endl;
-        std::cout << "desired:\n" << tmArgsVector[i].desired.transpose() << std::endl << std::endl;
+        for(int j=0; j<tmOptsVector[i].offset.size(); j++){std::cout << tmOptsVector[i].offset[j].transpose() << std::endl;}std::cout << std::endl;
+        std::cout << "jointIndexes:\n" << tmOptsVector[i].jointIndexes.transpose() << std::endl << std::endl;
+        std::cout << "desired:\n" << tmOptsVector[i].desired.transpose() << std::endl << std::endl;
 
 
     }
@@ -338,7 +338,7 @@ void TaskParser::printTaskArguments()
 
 
 
-const char * TaskParser::getDisplacementArgs(TiXmlElement* xmlElem)
+const char * TaskManagerFactory::getDisplacementArgs(TiXmlElement* xmlElem)
 {
     if(xmlElem != NULL)
     {
@@ -386,81 +386,81 @@ const char * TaskParser::getDisplacementArgs(TiXmlElement* xmlElem)
 
 
 
-void TaskParser::prepareTaskManagerArguments(std::shared_ptr<ocra::Model> model, std::vector<taskManagerArgs>::iterator argStructPtr)
+void TaskManagerFactory::prepareTaskManagerArguments(std::shared_ptr<ocra::Model> model, tmOptsIterator tmOptsPtr)
 {
     int sizeDof = model->nbInternalDofs();
-    if (argStructPtr->offset.empty()) {
-        argStructPtr->offset.push_back(Eigen::VectorXd::Zero(3));
+    if (tmOptsPtr->offset.empty()) {
+        tmOptsPtr->offset.push_back(Eigen::VectorXd::Zero(3));
     }
-    int sizeDesired = argStructPtr->desired.rows();
-    int sizeIndexDesired = argStructPtr->indexDesired.rows();
-    int sizeNameDesired = argStructPtr->nameDesired.rows();
-    int sizeWeightVector = argStructPtr->weightVector.rows();
-    int sizeIndexWeightVector = argStructPtr->indexWeightVector.rows();
-    int sizeNameWeightVector = argStructPtr->nameWeightVector.rows();
-    int sizeJointIndexes = argStructPtr->jointIndexes.rows();
-    int sizeJointNames = argStructPtr->jointNames.size();
+    int sizeDesired = tmOptsPtr->desired.rows();
+    int sizeIndexDesired = tmOptsPtr->indexDesired.rows();
+    int sizeNameDesired = tmOptsPtr->nameDesired.rows();
+    int sizeWeightVector = tmOptsPtr->weightVector.rows();
+    int sizeIndexWeightVector = tmOptsPtr->indexWeightVector.rows();
+    int sizeNameWeightVector = tmOptsPtr->nameWeightVector.rows();
+    int sizeJointIndexes = tmOptsPtr->jointIndexes.rows();
+    int sizeJointNames = tmOptsPtr->jointNames.size();
 
 
-    if ((argStructPtr->taskType == "FullPostureTaskManager") || (argStructPtr->taskType == "PartialPostureTaskManager"))
+    if ((tmOptsPtr->taskType == "FullPostureTaskManager") || (tmOptsPtr->taskType == "PartialPostureTaskManager"))
     {
         int sizeDofConcerned;
-        if(argStructPtr->taskType == "FullPostureTaskManager")
+        if(tmOptsPtr->taskType == "FullPostureTaskManager")
         {
             sizeDofConcerned = sizeDof;
-        }else if(argStructPtr->taskType == "PartialPostureTaskManager"){
+        }else if(tmOptsPtr->taskType == "PartialPostureTaskManager"){
             sizeDofConcerned = sizeIndexDesired+sizeNameDesired;
         }
 
         if (sizeDesired == 0)
         {
-            if(argStructPtr->taskType == "FullPostureTaskManager")
+            if(tmOptsPtr->taskType == "FullPostureTaskManager")
             {
-                argStructPtr->desired = model->getJointPositions();
-            }else if(argStructPtr->taskType == "PartialPostureTaskManager"){
-                argStructPtr->desired = Eigen::VectorXd::Zero(sizeDofConcerned);
+                tmOptsPtr->desired = model->getJointPositions();
+            }else if(tmOptsPtr->taskType == "PartialPostureTaskManager"){
+                tmOptsPtr->desired = Eigen::VectorXd::Zero(sizeDofConcerned);
             }
         }
         else
         {
             if (sizeDesired == 1)
             {
-                argStructPtr->desired = Eigen::VectorXd::Constant(sizeDofConcerned, argStructPtr->desired[0]);
+                tmOptsPtr->desired = Eigen::VectorXd::Constant(sizeDofConcerned, tmOptsPtr->desired[0]);
             }
             else if (sizeDesired != sizeDofConcerned)
             {
-                if(argStructPtr->taskType == "FullPostureTaskManager")
+                if(tmOptsPtr->taskType == "FullPostureTaskManager")
                 {
-                    argStructPtr->desired = model->getJointPositions();
-                }else if(argStructPtr->taskType == "PartialPostureTaskManager"){
-                    argStructPtr->desired = Eigen::VectorXd::Zero(sizeDofConcerned);
+                    tmOptsPtr->desired = model->getJointPositions();
+                }else if(tmOptsPtr->taskType == "PartialPostureTaskManager"){
+                    tmOptsPtr->desired = Eigen::VectorXd::Zero(sizeDofConcerned);
                 }
             }
         }
-        if (argStructPtr->useWeightVectorConstructor)
+        if (tmOptsPtr->useWeightVectorConstructor)
         {
             if (sizeWeightVector != sizeDofConcerned)
             {
-                argStructPtr->weightVector = Eigen::VectorXd::Constant(sizeDofConcerned, argStructPtr->weight);
+                tmOptsPtr->weightVector = Eigen::VectorXd::Constant(sizeDofConcerned, tmOptsPtr->weight);
             }
         }
 
 
-        if(argStructPtr->taskType == "FullPostureTaskManager")
+        if(tmOptsPtr->taskType == "FullPostureTaskManager")
         {
             if (sizeJointIndexes>0 && sizeJointIndexes == sizeIndexDesired)
             {
                 for(int i=0; i<sizeJointIndexes; i++)
                 {
-                    if(argStructPtr->indexDesired(i) != -1000.0)
+                    if(tmOptsPtr->indexDesired(i) != -1000.0)
                     {
-                        argStructPtr->desired(argStructPtr->jointIndexes(i)) = argStructPtr->indexDesired(i);
+                        tmOptsPtr->desired(tmOptsPtr->jointIndexes(i)) = tmOptsPtr->indexDesired(i);
                     }
-                    if (argStructPtr->useWeightVectorConstructor)
+                    if (tmOptsPtr->useWeightVectorConstructor)
                     {
-                        if (argStructPtr->indexWeightVector(i) >= 0.0)
+                        if (tmOptsPtr->indexWeightVector(i) >= 0.0)
                         {
-                            argStructPtr->weightVector(argStructPtr->jointIndexes(i)) = argStructPtr->indexWeightVector(i);
+                            tmOptsPtr->weightVector(tmOptsPtr->jointIndexes(i)) = tmOptsPtr->indexWeightVector(i);
                         }
                     }
                 }
@@ -469,21 +469,21 @@ void TaskParser::prepareTaskManagerArguments(std::shared_ptr<ocra::Model> model,
             {
                 for(int i=0; i<sizeJointNames; i++)
                 {
-                    if(argStructPtr->nameDesired(i) != -1000.0)
+                    if(tmOptsPtr->nameDesired(i) != -1000.0)
                     {
-                    argStructPtr->desired(model->getDofIndex(argStructPtr->jointNames[i])) = argStructPtr->nameDesired(i);
+                    tmOptsPtr->desired(model->getDofIndex(tmOptsPtr->jointNames[i])) = tmOptsPtr->nameDesired(i);
                     }
-                    if (argStructPtr->useWeightVectorConstructor)
+                    if (tmOptsPtr->useWeightVectorConstructor)
                     {
-                        if (argStructPtr->nameWeightVector(i) >= 0.0)
+                        if (tmOptsPtr->nameWeightVector(i) >= 0.0)
                         {
-                            argStructPtr->weightVector(model->getDofIndex(argStructPtr->jointNames[i])) = argStructPtr->nameWeightVector(i);
+                            tmOptsPtr->weightVector(model->getDofIndex(tmOptsPtr->jointNames[i])) = tmOptsPtr->nameWeightVector(i);
                         }
                     }
                 }
             }
         }
-        else if(argStructPtr->taskType == "PartialPostureTaskManager")
+        else if(tmOptsPtr->taskType == "PartialPostureTaskManager")
         {
             Eigen::VectorXi jointIndexesTemp(sizeDofConcerned);
             int indexCounter = 0;
@@ -492,16 +492,16 @@ void TaskParser::prepareTaskManagerArguments(std::shared_ptr<ocra::Model> model,
             {
                 for(int i=0; i<sizeJointIndexes; i++)
                 {
-                    jointIndexesTemp(indexCounter) = argStructPtr->jointIndexes(i);
-                    if(argStructPtr->indexDesired(i) != -1000.0)
+                    jointIndexesTemp(indexCounter) = tmOptsPtr->jointIndexes(i);
+                    if(tmOptsPtr->indexDesired(i) != -1000.0)
                     {
-                        argStructPtr->desired(indexCounter) = argStructPtr->indexDesired(i);
+                        tmOptsPtr->desired(indexCounter) = tmOptsPtr->indexDesired(i);
                     }
-                    if (argStructPtr->useWeightVectorConstructor)
+                    if (tmOptsPtr->useWeightVectorConstructor)
                     {
-                        if (argStructPtr->indexWeightVector(i) >= 0.0)
+                        if (tmOptsPtr->indexWeightVector(i) >= 0.0)
                         {
-                            argStructPtr->weightVector(indexCounter) = argStructPtr->indexWeightVector(i);
+                            tmOptsPtr->weightVector(indexCounter) = tmOptsPtr->indexWeightVector(i);
                         }
                     }
                     indexCounter++;
@@ -511,26 +511,26 @@ void TaskParser::prepareTaskManagerArguments(std::shared_ptr<ocra::Model> model,
             {
                 for(int i=0; i<sizeJointNames; i++)
                 {
-                    jointIndexesTemp(indexCounter) = model->getDofIndex(argStructPtr->jointNames[i]);
-                    if(argStructPtr->nameDesired(i) == -1000.0)
+                    jointIndexesTemp(indexCounter) = model->getDofIndex(tmOptsPtr->jointNames[i]);
+                    if(tmOptsPtr->nameDesired(i) == -1000.0)
                     {
-                        argStructPtr->desired(indexCounter) = model->getJointPositions()(model->getDofIndex(argStructPtr->jointNames[i]));
+                        tmOptsPtr->desired(indexCounter) = model->getJointPositions()(model->getDofIndex(tmOptsPtr->jointNames[i]));
                     }
                     else{
-                        argStructPtr->desired(indexCounter) = argStructPtr->nameDesired(i);
+                        tmOptsPtr->desired(indexCounter) = tmOptsPtr->nameDesired(i);
                     }
-                    if (argStructPtr->useWeightVectorConstructor)
+                    if (tmOptsPtr->useWeightVectorConstructor)
                     {
-                        if (argStructPtr->nameWeightVector(i) >= 0.0)
+                        if (tmOptsPtr->nameWeightVector(i) >= 0.0)
                         {
-                            argStructPtr->weightVector(indexCounter) = argStructPtr->nameWeightVector(i);
+                            tmOptsPtr->weightVector(indexCounter) = tmOptsPtr->nameWeightVector(i);
                         }
                     }
                     indexCounter++;
                 }
             }
-            argStructPtr->jointIndexes.resize(sizeDofConcerned);
-            argStructPtr->jointIndexes = jointIndexesTemp;
+            tmOptsPtr->jointIndexes.resize(sizeDofConcerned);
+            tmOptsPtr->jointIndexes = jointIndexesTemp;
 
         }
 
@@ -545,140 +545,140 @@ void TaskParser::prepareTaskManagerArguments(std::shared_ptr<ocra::Model> model,
 
 
 
-std::shared_ptr<TaskManager> TaskParser::constructTaskManager(std::shared_ptr<ocra::Controller> ctrl, std::shared_ptr<ocra::Model> model, std::vector<taskManagerArgs>::iterator argStructPtr)
+std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::shared_ptr<ocra::Controller> ctrl, std::shared_ptr<ocra::Model> model, tmOptsIterator tmOptsPtr)
 {
 
 
 
 
-    prepareTaskManagerArguments(model, argStructPtr);
+    prepareTaskManagerArguments(model, tmOptsPtr);
 
     int sizeDof = model->nbInternalDofs();
-    int sizeOffset = argStructPtr->offset[0].rows();
-    int sizeJointIndexes = argStructPtr->jointIndexes.rows();
-    int sizeDesired = argStructPtr->desired.rows();
+    int sizeOffset = tmOptsPtr->offset[0].rows();
+    int sizeJointIndexes = tmOptsPtr->jointIndexes.rows();
+    int sizeDesired = tmOptsPtr->desired.rows();
 
 
 
     std::shared_ptr<TaskManager> newTaskManager;
 
-    if(argStructPtr->taskType == "CoMTaskManager")
+    if(tmOptsPtr->taskType == "CoMTaskManager")
     {
         if (sizeDesired == 0)
         {
-            if (argStructPtr->useWeightVectorConstructor) {
+            if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<CoMTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weightVector,
-                                                        argStructPtr->usesYarp);            }
+                                                        tmOptsPtr->taskName,
+                                                        ocra::ECartesianDof(tmOptsPtr->axes),//ocra::XYZ,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weightVector,
+                                                        tmOptsPtr->usesYarp);            }
             else {
                 newTaskManager = std::make_shared<CoMTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weight,
-                                                        argStructPtr->usesYarp);            }
+                                                        tmOptsPtr->taskName,
+                                                        ocra::ECartesianDof(tmOptsPtr->axes),//ocra::XYZ,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weight,
+                                                        tmOptsPtr->usesYarp);            }
         }
         else
         {
-            if (argStructPtr->useWeightVectorConstructor) {
+            if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<CoMTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weightVector,
-                                                        argStructPtr->desired,
-                                                        argStructPtr->usesYarp);            }
+                                                        tmOptsPtr->taskName,
+                                                        ocra::ECartesianDof(tmOptsPtr->axes),//ocra::XYZ,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weightVector,
+                                                        tmOptsPtr->desired,
+                                                        tmOptsPtr->usesYarp);            }
             else {
                 newTaskManager = std::make_shared<CoMTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weight,
-                                                        argStructPtr->desired,
-                                                        argStructPtr->usesYarp);            }
+                                                        tmOptsPtr->taskName,
+                                                        ocra::ECartesianDof(tmOptsPtr->axes),//ocra::XYZ,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weight,
+                                                        tmOptsPtr->desired,
+                                                        tmOptsPtr->usesYarp);            }
         }
 
 
         return newTaskManager;
     }
 
-    else if(argStructPtr->taskType == "ContactSetTaskManager")
+    else if(tmOptsPtr->taskType == "ContactSetTaskManager")
     {
         newTaskManager = std::make_shared<ContactSetTaskManager>(*ctrl, *model,
-                                                argStructPtr->taskName,
-                                                argStructPtr->segment,
-                                                eigenVectorToDisplacementd(argStructPtr->offset),
-                                                argStructPtr->mu,
-                                                argStructPtr->margin,
-                                                argStructPtr->usesYarp);
+                                                tmOptsPtr->taskName,
+                                                tmOptsPtr->segment,
+                                                eigenVectorToDisplacementd(tmOptsPtr->offset),
+                                                tmOptsPtr->mu,
+                                                tmOptsPtr->margin,
+                                                tmOptsPtr->usesYarp);
 
         return newTaskManager;
     }
 
-    else if(argStructPtr->taskType == "ContactTaskManager")
+    else if(tmOptsPtr->taskType == "ContactTaskManager")
     {
 
         newTaskManager = std::make_shared<ContactTaskManager>(*ctrl, *model,
-                                                argStructPtr->taskName,
-                                                argStructPtr->segment,
-                                                eigenVectorToDisplacementd(argStructPtr->offset.front()),
-                                                argStructPtr->mu,
-                                                argStructPtr->margin,
-                                                argStructPtr->usesYarp);
+                                                tmOptsPtr->taskName,
+                                                tmOptsPtr->segment,
+                                                eigenVectorToDisplacementd(tmOptsPtr->offset.front()),
+                                                tmOptsPtr->mu,
+                                                tmOptsPtr->margin,
+                                                tmOptsPtr->usesYarp);
         return newTaskManager;
     }
 
-    else if(argStructPtr->taskType == "FullPostureTaskManager")
+    else if(tmOptsPtr->taskType == "FullPostureTaskManager")
     {
         if (sizeDesired == 0)
         {
-            if (argStructPtr->useWeightVectorConstructor) {
+            if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<FullPostureTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
+                                                        tmOptsPtr->taskName,
                                                         ocra::FullState::INTERNAL,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weightVector,
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weightVector,
+                                                        tmOptsPtr->usesYarp);
             }
             else {
                 newTaskManager = std::make_shared<FullPostureTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
+                                                        tmOptsPtr->taskName,
                                                         ocra::FullState::INTERNAL,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weight,
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weight,
+                                                        tmOptsPtr->usesYarp);
             }
         }
         else
         {
-            if (argStructPtr->useWeightVectorConstructor) {
+            if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<FullPostureTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
+                                                        tmOptsPtr->taskName,
                                                         ocra::FullState::INTERNAL,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weightVector,
-                                                        argStructPtr->desired,
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weightVector,
+                                                        tmOptsPtr->desired,
+                                                        tmOptsPtr->usesYarp);
             }
             else {
                 newTaskManager = std::make_shared<FullPostureTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
+                                                        tmOptsPtr->taskName,
                                                         ocra::FullState::INTERNAL,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weight,
-                                                        argStructPtr->desired,
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weight,
+                                                        tmOptsPtr->desired,
+                                                        tmOptsPtr->usesYarp);
             }
         }
 
@@ -688,56 +688,56 @@ std::shared_ptr<TaskManager> TaskParser::constructTaskManager(std::shared_ptr<oc
         return newTaskManager;
     }
 
-    else if(argStructPtr->taskType == "PartialPostureTaskManager")
+    else if(tmOptsPtr->taskType == "PartialPostureTaskManager")
     {
         if (sizeJointIndexes>0 && sizeJointIndexes<=sizeDof)
         {
             if (sizeDesired==0)
             {
-                if (argStructPtr->useWeightVectorConstructor) {
+                if (tmOptsPtr->useWeightVectorConstructor) {
                     newTaskManager = std::make_shared<PartialPostureTaskManager>(*ctrl, *model,
-                                                            argStructPtr->taskName,
+                                                            tmOptsPtr->taskName,
                                                             ocra::FullState::INTERNAL,
-                                                            argStructPtr->jointIndexes,
-                                                            argStructPtr->kp,
-                                                            argStructPtr->kd,
-                                                            argStructPtr->weightVector,
-                                                            argStructPtr->usesYarp);
+                                                            tmOptsPtr->jointIndexes,
+                                                            tmOptsPtr->kp,
+                                                            tmOptsPtr->kd,
+                                                            tmOptsPtr->weightVector,
+                                                            tmOptsPtr->usesYarp);
                 }
                 else {
                     newTaskManager = std::make_shared<PartialPostureTaskManager>(*ctrl, *model,
-                                                            argStructPtr->taskName,
+                                                            tmOptsPtr->taskName,
                                                             ocra::FullState::INTERNAL,
-                                                            argStructPtr->jointIndexes,
-                                                            argStructPtr->kp,
-                                                            argStructPtr->kd,
-                                                            argStructPtr->weight,
-                                                            argStructPtr->usesYarp);
+                                                            tmOptsPtr->jointIndexes,
+                                                            tmOptsPtr->kp,
+                                                            tmOptsPtr->kd,
+                                                            tmOptsPtr->weight,
+                                                            tmOptsPtr->usesYarp);
                 }
             }
             else
             {
-                if (argStructPtr->useWeightVectorConstructor) {
+                if (tmOptsPtr->useWeightVectorConstructor) {
                     newTaskManager = std::make_shared<PartialPostureTaskManager>(*ctrl, *model,
-                                                            argStructPtr->taskName,
+                                                            tmOptsPtr->taskName,
                                                             ocra::FullState::INTERNAL,
-                                                            argStructPtr->jointIndexes,
-                                                            argStructPtr->kp,
-                                                            argStructPtr->kd,
-                                                            argStructPtr->weightVector,
-                                                            argStructPtr->desired,
-                                                            argStructPtr->usesYarp);
+                                                            tmOptsPtr->jointIndexes,
+                                                            tmOptsPtr->kp,
+                                                            tmOptsPtr->kd,
+                                                            tmOptsPtr->weightVector,
+                                                            tmOptsPtr->desired,
+                                                            tmOptsPtr->usesYarp);
                 }
                 else {
                     newTaskManager = std::make_shared<PartialPostureTaskManager>(*ctrl, *model,
-                                                            argStructPtr->taskName,
+                                                            tmOptsPtr->taskName,
                                                             ocra::FullState::INTERNAL,
-                                                            argStructPtr->jointIndexes,
-                                                            argStructPtr->kp,
-                                                            argStructPtr->kd,
-                                                            argStructPtr->weight,
-                                                            argStructPtr->desired,
-                                                            argStructPtr->usesYarp);
+                                                            tmOptsPtr->jointIndexes,
+                                                            tmOptsPtr->kp,
+                                                            tmOptsPtr->kd,
+                                                            tmOptsPtr->weight,
+                                                            tmOptsPtr->desired,
+                                                            tmOptsPtr->usesYarp);
                 }
             }
 
@@ -748,37 +748,37 @@ std::shared_ptr<TaskManager> TaskParser::constructTaskManager(std::shared_ptr<oc
             return NULL;
     }
 
-    else if(argStructPtr->taskType == "SegCartesianTaskManager")
+    else if(tmOptsPtr->taskType == "SegCartesianTaskManager")
     {
 
         if(sizeOffset!=3)
         {
-            argStructPtr->offset.front() = Eigen::VectorXd::Zero(3);
+            tmOptsPtr->offset.front() = Eigen::VectorXd::Zero(3);
         }
 
         if (sizeDesired!=3)
         {
-            if (argStructPtr->useWeightVectorConstructor) {
+            if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<SegCartesianTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        argStructPtr->segment,
-                                                        argStructPtr->offset.front(),
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weightVector,
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->taskName,
+                                                        tmOptsPtr->segment,
+                                                        tmOptsPtr->offset.front(),
+                                                        ocra::ECartesianDof(tmOptsPtr->axes),//ocra::XYZ,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weightVector,
+                                                        tmOptsPtr->usesYarp);
             }
             else {
                 newTaskManager = std::make_shared<SegCartesianTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        argStructPtr->segment,
-                                                        argStructPtr->offset.front(),
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weight,
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->taskName,
+                                                        tmOptsPtr->segment,
+                                                        tmOptsPtr->offset.front(),
+                                                        ocra::ECartesianDof(tmOptsPtr->axes),//ocra::XYZ,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weight,
+                                                        tmOptsPtr->usesYarp);
             }
 
             return newTaskManager;
@@ -787,29 +787,29 @@ std::shared_ptr<TaskManager> TaskParser::constructTaskManager(std::shared_ptr<oc
 
         else if(sizeDesired == 3)
         {
-            if (argStructPtr->useWeightVectorConstructor) {
+            if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<SegCartesianTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        argStructPtr->segment,
-                                                        argStructPtr->offset.front(),
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weightVector,
-                                                        argStructPtr->desired,
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->taskName,
+                                                        tmOptsPtr->segment,
+                                                        tmOptsPtr->offset.front(),
+                                                        ocra::ECartesianDof(tmOptsPtr->axes),//ocra::XYZ,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weightVector,
+                                                        tmOptsPtr->desired,
+                                                        tmOptsPtr->usesYarp);
             }
             else {
                 newTaskManager = std::make_shared<SegCartesianTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        argStructPtr->segment,
-                                                        argStructPtr->offset.front(),
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weight,
-                                                        argStructPtr->desired,
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->taskName,
+                                                        tmOptsPtr->segment,
+                                                        tmOptsPtr->offset.front(),
+                                                        ocra::ECartesianDof(tmOptsPtr->axes),//ocra::XYZ,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weight,
+                                                        tmOptsPtr->desired,
+                                                        tmOptsPtr->usesYarp);
             }
 
             return newTaskManager;
@@ -818,28 +818,28 @@ std::shared_ptr<TaskManager> TaskParser::constructTaskManager(std::shared_ptr<oc
 
     }
 
-    else if(argStructPtr->taskType == "SegOrientationTaskManager")
+    else if(tmOptsPtr->taskType == "SegOrientationTaskManager")
     {
 
         if (sizeDesired!=4)
         {
-            if (argStructPtr->useWeightVectorConstructor) {
+            if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<SegOrientationTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        argStructPtr->segment,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weightVector,
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->taskName,
+                                                        tmOptsPtr->segment,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weightVector,
+                                                        tmOptsPtr->usesYarp);
             }
             else {
                 newTaskManager = std::make_shared<SegOrientationTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        argStructPtr->segment,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weight,
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->taskName,
+                                                        tmOptsPtr->segment,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weight,
+                                                        tmOptsPtr->usesYarp);
             }
 
             return newTaskManager;
@@ -849,61 +849,61 @@ std::shared_ptr<TaskManager> TaskParser::constructTaskManager(std::shared_ptr<oc
         else if(sizeDesired == 4)
         {
             // We have to reorganize the quaternion vector when we use this constructor because it stores the coeffs in reverse order.
-            double tmpW = argStructPtr->desired(0);
-            argStructPtr->desired.head(3) = argStructPtr->desired.tail(3).eval();
-            argStructPtr->desired(3) = tmpW;
+            double tmpW = tmOptsPtr->desired(0);
+            tmOptsPtr->desired.head(3) = tmOptsPtr->desired.tail(3).eval();
+            tmOptsPtr->desired(3) = tmpW;
 
-            if (argStructPtr->useWeightVectorConstructor) {
+            if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<SegOrientationTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        argStructPtr->segment,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weightVector,
-                                                        Eigen::Rotation3d(argStructPtr->desired.data()),
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->taskName,
+                                                        tmOptsPtr->segment,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weightVector,
+                                                        Eigen::Rotation3d(tmOptsPtr->desired.data()),
+                                                        tmOptsPtr->usesYarp);
             }
             else {
                 newTaskManager = std::make_shared<SegOrientationTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        argStructPtr->segment,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weight,
-                                                        Eigen::Rotation3d(argStructPtr->desired.data()),
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->taskName,
+                                                        tmOptsPtr->segment,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weight,
+                                                        Eigen::Rotation3d(tmOptsPtr->desired.data()),
+                                                        tmOptsPtr->usesYarp);
             }
 
             return newTaskManager;
         }
     }
 
-    else if(argStructPtr->taskType == "SegPoseTaskManager")
+    else if(tmOptsPtr->taskType == "SegPoseTaskManager")
     {
 
         if (sizeDesired!=7)
         {
-            if (argStructPtr->useWeightVectorConstructor) {
+            if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<SegPoseTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        argStructPtr->segment,
-                                                        eigenVectorToDisplacementd(argStructPtr->offset.front()),
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weightVector,
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->taskName,
+                                                        tmOptsPtr->segment,
+                                                        eigenVectorToDisplacementd(tmOptsPtr->offset.front()),
+                                                        ocra::ECartesianDof(tmOptsPtr->axes),//ocra::XYZ,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weightVector,
+                                                        tmOptsPtr->usesYarp);
             }
             else {
                 newTaskManager = std::make_shared<SegPoseTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        argStructPtr->segment,
-                                                        eigenVectorToDisplacementd(argStructPtr->offset.front()),
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weight,
-                                                        argStructPtr->usesYarp);
+                                                        tmOptsPtr->taskName,
+                                                        tmOptsPtr->segment,
+                                                        eigenVectorToDisplacementd(tmOptsPtr->offset.front()),
+                                                        ocra::ECartesianDof(tmOptsPtr->axes),//ocra::XYZ,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weight,
+                                                        tmOptsPtr->usesYarp);
             }
 
             return newTaskManager;
@@ -912,29 +912,29 @@ std::shared_ptr<TaskManager> TaskParser::constructTaskManager(std::shared_ptr<oc
 
         else if(sizeDesired == 7)
         {
-            if (argStructPtr->useWeightVectorConstructor) {
+            if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<SegPoseTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        argStructPtr->segment,
-                                                        eigenVectorToDisplacementd(argStructPtr->offset.front()),
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weightVector,
-                                                        eigenVectorToDisplacementd(argStructPtr->desired),
-                                                        argStructPtr->usesYarp );
+                                                        tmOptsPtr->taskName,
+                                                        tmOptsPtr->segment,
+                                                        eigenVectorToDisplacementd(tmOptsPtr->offset.front()),
+                                                        ocra::ECartesianDof(tmOptsPtr->axes),//ocra::XYZ,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weightVector,
+                                                        eigenVectorToDisplacementd(tmOptsPtr->desired),
+                                                        tmOptsPtr->usesYarp );
             }
             else {
                 newTaskManager = std::make_shared<SegPoseTaskManager>(*ctrl, *model,
-                                                        argStructPtr->taskName,
-                                                        argStructPtr->segment,
-                                                        eigenVectorToDisplacementd(argStructPtr->offset.front()),
-                                                        ocra::ECartesianDof(argStructPtr->axes),//ocra::XYZ,
-                                                        argStructPtr->kp,
-                                                        argStructPtr->kd,
-                                                        argStructPtr->weight,
-                                                        eigenVectorToDisplacementd(argStructPtr->desired),
-                                                        argStructPtr->usesYarp );
+                                                        tmOptsPtr->taskName,
+                                                        tmOptsPtr->segment,
+                                                        eigenVectorToDisplacementd(tmOptsPtr->offset.front()),
+                                                        ocra::ECartesianDof(tmOptsPtr->axes),//ocra::XYZ,
+                                                        tmOptsPtr->kp,
+                                                        tmOptsPtr->kd,
+                                                        tmOptsPtr->weight,
+                                                        eigenVectorToDisplacementd(tmOptsPtr->desired),
+                                                        tmOptsPtr->usesYarp );
             }
 
 
@@ -946,7 +946,7 @@ std::shared_ptr<TaskManager> TaskParser::constructTaskManager(std::shared_ptr<oc
 
     else
     {
-        std::cout << "[ERROR] (TaskParser::constructTaskManager): The task type provided --> " << argStructPtr->taskType << " <-- doesn't match any valid taskManager type. Ignoring." << std::endl;
+        std::cout << "[ERROR] (TaskManagerFactory::constructTaskManager): The task type provided --> " << tmOptsPtr->taskType << " <-- doesn't match any valid taskManager type. Ignoring." << std::endl;
         return NULL;
     }
 
@@ -954,7 +954,7 @@ std::shared_ptr<TaskManager> TaskParser::constructTaskManager(std::shared_ptr<oc
 }
 
 
-Eigen::Displacementd TaskParser::eigenVectorToDisplacementd(Eigen::VectorXd& eigenVector)
+Eigen::Displacementd TaskManagerFactory::eigenVectorToDisplacementd(Eigen::VectorXd& eigenVector)
 {
     Eigen::VectorXd tmpVector = Eigen::VectorXd::Zero(7);
     tmpVector(3) = 1.0;
@@ -969,7 +969,7 @@ Eigen::Displacementd TaskParser::eigenVectorToDisplacementd(Eigen::VectorXd& eig
     return Eigen::Displacementd(tmpVector(0), tmpVector(1), tmpVector(2), tmpVector(3), tmpVector(4), tmpVector(5), tmpVector(6));
 }
 
-std::vector<Eigen::Displacementd> TaskParser::eigenVectorToDisplacementd(std::vector<Eigen::VectorXd>& eigenVector)
+std::vector<Eigen::Displacementd> TaskManagerFactory::eigenVectorToDisplacementd(std::vector<Eigen::VectorXd>& eigenVector)
 {
     std::vector<Eigen::Displacementd> dispVec;
     for(int i=0; i<eigenVector.size(); i++)
