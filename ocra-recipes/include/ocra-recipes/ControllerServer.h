@@ -45,6 +45,8 @@ public:
 
     bool initialize();
     const Eigen::VectorXd& computeTorques();
+    void computeTorques(Eigen::VectorXd& torques);
+
 
     const std::shared_ptr<ocra::Controller> getController(){return controller;}
     const std::shared_ptr<ocra::Model> getRobotModel(){return model;}
@@ -54,6 +56,7 @@ public:
 
 
 private:
+    void updateModel();
 
     std::shared_ptr<ocra::Model>                     model;
     std::shared_ptr<ocra::Controller>           controller;

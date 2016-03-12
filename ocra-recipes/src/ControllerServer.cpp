@@ -10,6 +10,9 @@ ControllerServer::ControllerServer(const CONTROLLER_TYPE ctrlType, const bool us
 
 ControllerServer::~ControllerServer()
 {
+    if(taskManagerSet)
+        taskManagerSet->clearSet();
+
     if(!serverComs->close())
         std::cout << "Couldn't close controller server communications." << std::endl;
 }
@@ -51,10 +54,23 @@ bool ControllerServer::initialize()
     res &= bool(controller);
     res &= bool(taskManagerSet);
 
+    updateModel();
     return res;
 }
 
 const Eigen::VectorXd& ControllerServer::computeTorques()
+{
+    computeTorques(tau);
+    return tau;
+}
+
+void ControllerServer::computeTorques(Eigen::VectorXd& torques)
+{
+    updateModel();
+    controller->computeOutput(torques);
+}
+
+void ControllerServer::updateModel()
 {
     getRobotState(q, qd, H_root, T_root);
     if (model->hasFixedRoot()){
@@ -62,8 +78,6 @@ const Eigen::VectorXd& ControllerServer::computeTorques()
     }else{
         model->setState(H_root, q, T_root, qd);
     }
-    controller->computeOutput(tau);
-    return tau;
 }
 
 bool ControllerServer::addTaskManagersFromXmlFile(const std::string& filePath)
