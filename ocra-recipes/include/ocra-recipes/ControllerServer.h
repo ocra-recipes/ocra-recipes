@@ -36,7 +36,7 @@ enum CONTROLLER_TYPE
 class ControllerServer
 {
 protected:
-    virtual std::shared_ptr<Model> setRobotModel() = 0;
+    virtual std::shared_ptr<Model> loadRobotModel() = 0;
     virtual void getRobotState(Eigen::VectorXd& q, Eigen::VectorXd& qd, Eigen::Displacementd& H_root, Eigen::Twistd& T_root) = 0;
 
 public:

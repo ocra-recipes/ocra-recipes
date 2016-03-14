@@ -20,7 +20,7 @@ ControllerServer::~ControllerServer()
 bool ControllerServer::initialize()
 {
     bool res = true;
-    model = setRobotModel();
+    model = loadRobotModel();
     if(model)
     {
         switch (controllerType)
