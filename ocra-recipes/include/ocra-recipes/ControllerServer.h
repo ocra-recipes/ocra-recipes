@@ -54,7 +54,6 @@ public:
     bool addTaskManagersFromXmlFile(const std::string& filePath);
     bool addTaskManagers(ocra::TaskManagerOptions& tmOpts);
 
-
 private:
     void updateModel();
 
@@ -64,7 +63,6 @@ private:
     std::shared_ptr<ocra::TaskManagerSet>   taskManagerSet;
 
     std::shared_ptr<ServerCommunications>       serverComs;
-
 
     Eigen::VectorXd              q;
     Eigen::VectorXd             qd;

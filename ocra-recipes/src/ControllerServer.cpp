@@ -90,7 +90,6 @@ bool ControllerServer::addTaskManagersFromXmlFile(const std::string& filePath)
         return false;
 }
 
-
 bool ControllerServer::addTaskManagers(ocra::TaskManagerOptions& tmOpts)
 {
     ocra::TaskManagerFactory factory;

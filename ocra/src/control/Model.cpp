@@ -112,9 +112,7 @@ namespace ocra
     {
       setFreeFlyerPosition(H_root);
       setFreeFlyerVelocity(T_root);
-    //   getRootVelocityVariable().setValue(T_root.get());
     }
-    //no propagation: it is already done in setJointPosition and setJointVelocities, through the setValue on _q and _q_dot
   }
 
   Variable& Model::getConfigurationVariable() const
