@@ -24,8 +24,10 @@
 #include <string>
 #include <Eigen/SVD>
 
+//#ifdef USE_QPOASES
 
-
+#include <qpOASES.hpp>
+//#endif
 
 namespace ocra
 {
@@ -39,6 +41,9 @@ namespace ocra
 
 typedef Eigen::Map<Eigen::MatrixXd> MatrixMap;
 typedef Eigen::Map<Eigen::VectorXd> VectorMap;
+
+typedef Eigen::Map< Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> > MatrixMapRm; /* Row Major for QPOASES */
+typedef Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> MatrixXdRm;
 
 /** \brief A generic abstract class the solvers that can be used in the wOcra Controller.
  *
@@ -143,9 +148,56 @@ protected:
 
 };
 
+//#ifdef USE_QPOASES
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/** \brief Solver class that only consider one level of importance for all tasks using QPOASES.
+ *
+ * It uses a linear quadratic program which comes from https://projects.coin-or.org/qpOASES .
+ *
+ * QPOASES solve the following problem:
+ *
+ * \f{align*}{
+ *     \argmin{\x} &: \;  \frac{1}{2} \x\tp G \x + \vec{g}_0\tp \x \\
+ *     & CE \x + \vec{ce}_0 =    \vec{0} \\
+ *     & CI \x + \vec{ci}_0 \geq \vec{0}
+ * \f}
+ */
+class OneLevelSolverWithQPOASES: public OneLevelSolver
+{
+public:
+    OneLevelSolverWithQPOASES();
+    virtual ~OneLevelSolverWithQPOASES(){};
 
+protected:
+    std::unique_ptr<qpOASES::SQProblem> sqp_prob;
+    qpOASES::Options sqp_options;
+    //struct qp{
+        qpOASES::real_t* H;
+        qpOASES::real_t* g;
+        qpOASES::real_t* lb;
+        qpOASES::real_t* ub;
+        qpOASES::real_t* A;
+        qpOASES::real_t* lbA;
+        qpOASES::real_t* ubA;
+    //};
+    
+    Eigen::VectorXd _xl;
+    Eigen::VectorXd _xu;
 
+    MatrixXdRm _AandG,_C_row_major;
+    Eigen::VectorXd _lbAandG,_ubAandG;
+    Eigen::VectorXd _lbA,_lbG,_ubA,_ubG;
+    
+    int _nWSR_every_run,nWSR;
+    // function in doPrepare
+    virtual void doSolve();
+    virtual void updateObjectiveEquations();
+    virtual void updateConstraintEquations();
+    static ocra::eReturnInfo toOcraRetValue(const qpOASES::returnValue& ret);
+
+};
+//#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
