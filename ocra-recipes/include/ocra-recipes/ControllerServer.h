@@ -36,7 +36,7 @@ enum CONTROLLER_TYPE
 class ControllerServer
 {
 protected:
-    virtual std::shared_ptr<Model> setRobotModel() = 0;
+    virtual std::shared_ptr<Model> loadRobotModel() = 0;
     virtual void getRobotState(Eigen::VectorXd& q, Eigen::VectorXd& qd, Eigen::Displacementd& H_root, Eigen::Twistd& T_root) = 0;
 
 public:
@@ -54,7 +54,6 @@ public:
     bool addTaskManagersFromXmlFile(const std::string& filePath);
     bool addTaskManagers(ocra::TaskManagerOptions& tmOpts);
 
-
 private:
     void updateModel();
 
@@ -64,7 +63,6 @@ private:
     std::shared_ptr<ocra::TaskManagerSet>   taskManagerSet;
 
     std::shared_ptr<ServerCommunications>       serverComs;
-
 
     Eigen::VectorXd              q;
     Eigen::VectorXd             qd;

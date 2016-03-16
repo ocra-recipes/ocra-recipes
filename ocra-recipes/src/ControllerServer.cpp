@@ -20,7 +20,7 @@ ControllerServer::~ControllerServer()
 bool ControllerServer::initialize()
 {
     bool res = true;
-    model = setRobotModel();
+    model = loadRobotModel();
     if(model)
     {
         switch (controllerType)
@@ -89,7 +89,6 @@ bool ControllerServer::addTaskManagersFromXmlFile(const std::string& filePath)
     else
         return false;
 }
-
 
 bool ControllerServer::addTaskManagers(ocra::TaskManagerOptions& tmOpts)
 {
