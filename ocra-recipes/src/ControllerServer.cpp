@@ -10,11 +10,8 @@ ControllerServer::ControllerServer(const CONTROLLER_TYPE ctrlType, const bool us
 
 ControllerServer::~ControllerServer()
 {
-    if(taskManagerSet)
-        taskManagerSet->clearSet();
-
-    if(!serverComs->close())
-        std::cout << "Couldn't close controller server communications." << std::endl;
+    // if(taskManagerSet)
+    //     taskManagerSet->clearSet();
 }
 
 bool ControllerServer::initialize()

@@ -18,6 +18,7 @@ ServerCommunications::ServerCommunications(std::shared_ptr<ocra::Controller> ctr
 
 ServerCommunications::~ServerCommunications()
 {
+    close();
 }
 
 bool ServerCommunications::open()
