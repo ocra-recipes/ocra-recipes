@@ -78,30 +78,29 @@ namespace ocra
   {
     if (std::find(_objectives.begin(), _objectives.end(), &objective) != _objectives.end())
     {
-      std::stringstream ss;
-      ss << "[ocra::Solver::internalAddObjective] Objective was already added in the solver, so it cannot be added again\n";
-      ss << "\tObjective is named: " << objective.getName() << std::endl;
-      throw std::runtime_error(ss.str());
+      std::cout << "[ocra::Solver::internalAddObjective] Objective was already added in the solver, so it cannot be added again\n" << "\tObjective is named: " << objective.getName() << std::endl;
     }
-
-    objective.getFunction().connect<EVT_RESIZE>(*this, &Solver::onObjectiveResize);
-    _objectives.push_back(&objective);
-    _problemVariable.insert(&const_cast<GenericObjective*>(&objective)->getVariable());
+    else
+    {
+        objective.getFunction().connect<EVT_RESIZE>(*this, &Solver::onObjectiveResize);
+        _objectives.push_back(&objective);
+        _problemVariable.insert(&const_cast<GenericObjective*>(&objective)->getVariable());
+    }
   }
 
   void Solver::internalAddConstraint(const GenericConstraint& constraint)
   {
     if (std::find(_constraints.begin(), _constraints.end(), &constraint) != _constraints.end())
     {
-      std::stringstream ss;
-      ss << "[ocra::Solver::internalAddConstraint] Constraint was already added in the solver, so it cannot be added again\n";
-      ss << "\tConstraint is named: " << constraint.getName() << std::endl;
-      throw std::runtime_error(ss.str());
+      std::cout << "[ocra::Solver::internalAddConstraint] Constraint was already added in the solver, so it cannot be added again\n" << "\tConstraint is named: " << constraint.getName() << std::endl;
     }
-    constraint.getFunction().connect<EVT_RESIZE>(*this, &Solver::onConstraintResize);
-    constraint.connect(*this, &Solver::onConstraintResize);
-    _constraints.push_back(&constraint);
-    _problemVariable.insert(&const_cast<GenericConstraint*>(&constraint)->getVariable());
+    else
+    {
+        constraint.getFunction().connect<EVT_RESIZE>(*this, &Solver::onConstraintResize);
+        constraint.connect(*this, &Solver::onConstraintResize);
+        _constraints.push_back(&constraint);
+        _problemVariable.insert(&const_cast<GenericConstraint*>(&constraint)->getVariable());
+    }
   }
 
   void Solver::internalRemoveObjective(const GenericObjective& objective)
@@ -109,15 +108,14 @@ namespace ocra
     std::vector<const GenericObjective*>::iterator it = std::find(_objectives.begin(), _objectives.end(), &objective);
     if(it == _objectives.end())
     {
-      std::stringstream ss;
-      ss << "[ocra::Solver::internalRemoveObjective] Objective was not added in the solver, so it cannot be removed\n";
-      ss << "\tObjective is named: " << objective.getName() << std::endl;
-      throw std::runtime_error(ss.str());
+      std::cout << "[ocra::Solver::internalRemoveObjective] Objective was not added in the solver, so it cannot be removed\n" << "\tObjective is named: " << objective.getName() << std::endl;
     }
-
-    _objectives.erase(it);
-    objective.getFunction().disconnect<EVT_RESIZE>(*this, &Solver::onObjectiveResize);
-    _problemVariable.remove(&const_cast<GenericObjective*>(&objective)->getVariable());
+    else
+    {
+        _objectives.erase(it);
+        objective.getFunction().disconnect<EVT_RESIZE>(*this, &Solver::onObjectiveResize);
+        _problemVariable.remove(&const_cast<GenericObjective*>(&objective)->getVariable());
+    }
   }
 
   void Solver::internalRemoveConstraint(const GenericConstraint& constraint)
@@ -125,16 +123,15 @@ namespace ocra
     std::vector<const GenericConstraint*>::iterator it = std::find(_constraints.begin(), _constraints.end(), &constraint);
     if(it == _constraints.end())
     {
-      std::stringstream ss;
-      ss << "[ocra::Solver::internalRemoveConstraint] Constraint was not added in the solver, or has already been removed, so it cannot be removed\n";
-      ss << "\tConstraint is named: " << constraint.getName() << std::endl;
-      throw std::runtime_error(ss.str());
+      std::cout << "[ocra::Solver::internalRemoveConstraint] Constraint was not added in the solver, or has already been removed, so it cannot be removed\n" << "\tConstraint is named: " << constraint.getName() << std::endl;
     }
-
-    _constraints.erase(it);
-    constraint.disconnect(*this, &Solver::onConstraintResize);
-    constraint.getFunction().disconnect<EVT_RESIZE>(*this, &Solver::onConstraintResize);
-    _problemVariable.remove(&const_cast<GenericConstraint*>(&constraint)->getVariable());
+    else
+    {
+        _constraints.erase(it);
+        constraint.disconnect(*this, &Solver::onConstraintResize);
+        constraint.getFunction().disconnect<EVT_RESIZE>(*this, &Solver::onConstraintResize);
+        _problemVariable.remove(&const_cast<GenericConstraint*>(&constraint)->getVariable());
+    }
   }
 
   void Solver::onConstraintResize(int timestamp)

@@ -139,8 +139,8 @@ WocraController::~WocraController()
 {
     const std::map<std::string, std::shared_ptr<Task>>& taskMap = getTasks();
     for (std::map<std::string, std::shared_ptr<Task>>::const_iterator it = taskMap.begin(); it != taskMap.end(); ++it)
-    {
-        (std::dynamic_pointer_cast<ocra::OneLevelTask>(it->second))->disconnectFromController();
+    {        if(it->second)
+            (std::dynamic_pointer_cast<ocra::OneLevelTask>(it->second))->disconnectFromController();
     }
 
     if (!pimpl->reducedProblem)
