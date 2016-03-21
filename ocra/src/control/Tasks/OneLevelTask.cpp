@@ -229,7 +229,9 @@ void OneLevelTask::disconnectFromController()
 {
     if (pimpl->isRegisteredAsObjective)
     {
-        pimpl->solver->removeObjective(*pimpl->innerTaskAsObjective);
+        if(pimpl->innerTaskAsObjective != NULL){
+            pimpl->solver->removeObjective(*pimpl->innerTaskAsObjective);
+        }
     }
     if (pimpl->isRegisteredAsConstraint)
     {
@@ -246,7 +248,7 @@ void OneLevelTask::disconnectFromController()
     }
 
 }
-// 
+//
 //
 //
 // void OneLevelTask::initAsAccelerationTask()
@@ -395,8 +397,11 @@ void OneLevelTask::doSetMargin()
 void OneLevelTask::doActivateAsObjective()
 {
     checkIfConnectedToController();
-    pimpl->solver->addObjective(*pimpl->innerTaskAsObjective);
-    pimpl->isRegisteredAsObjective = true;
+    if(!pimpl->isRegisteredAsObjective)
+    {
+        pimpl->solver->addObjective(*pimpl->innerTaskAsObjective);
+        pimpl->isRegisteredAsObjective = true;
+    }
 
     if (getTaskType() == FORCETASK)
     {
@@ -411,9 +416,11 @@ void OneLevelTask::doActivateAsObjective()
 void OneLevelTask::doDeactivateAsObjective()
 {
     checkIfConnectedToController();
-    pimpl->solver->removeObjective(*pimpl->innerTaskAsObjective);
-    pimpl->isRegisteredAsObjective = false;
-
+    if(pimpl->isRegisteredAsObjective)
+    {
+        pimpl->solver->removeObjective(*pimpl->innerTaskAsObjective);
+        pimpl->isRegisteredAsObjective = false;
+    }
     if (getTaskType() == FORCETASK)
     {
         removeContactPointInModel();
@@ -428,9 +435,11 @@ void OneLevelTask::doDeactivateAsObjective()
 void OneLevelTask::doActivateAsConstraint()
 {
     checkIfConnectedToController();
-    pimpl->solver->addConstraint(pimpl->innerTaskAsConstraint);
-    pimpl->isRegisteredAsConstraint = true;
-
+    if(!pimpl->isRegisteredAsConstraint)
+    {
+        pimpl->solver->addConstraint(pimpl->innerTaskAsConstraint);
+        pimpl->isRegisteredAsConstraint = true;
+    }
     if (getTaskType() == FORCETASK)
     {
         addContactPointInModel();
@@ -444,9 +453,11 @@ void OneLevelTask::doActivateAsConstraint()
 void OneLevelTask::doDeactivateAsConstraint()
 {
     checkIfConnectedToController();
-    pimpl->solver->removeConstraint(pimpl->innerTaskAsConstraint);
-    pimpl->isRegisteredAsConstraint = false;
-
+    if(pimpl->isRegisteredAsConstraint)
+    {
+        pimpl->solver->removeConstraint(pimpl->innerTaskAsConstraint);
+        pimpl->isRegisteredAsConstraint = false;
+    }
     if (getTaskType() == FORCETASK)
     {
         removeContactPointInModel();
