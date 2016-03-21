@@ -21,6 +21,14 @@ list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Tasks/DynT
 
 set(OCRA_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")
 
+find_package(qpOASES)
+if(qpOASES_FOUND)
+    include_directories(${qpOASES_INCLUDE_DIRS})
+    set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS USE_QPOASES)
+else()
+    set(qpOASES_LIBRARIES "")
+endif()
+
 # Check for SMLT
 find_package(SMLT QUIET)
 IF(${SMLT_FOUND})
@@ -37,6 +45,7 @@ add_library(ocra-optim ${optim_srcs})
 LIST(APPEND link_libs   ${Boost_LIBRARIES}
                         ${QUADPROG_LIBRARIES}
                         ${YARP_LIBRARIES}
+                        ${qpOASES_LIBRARIES}
                         )
 IF(${SMLT_FOUND})
  LIST(APPEND link_libs ${SMLT_LIBRARIES})
