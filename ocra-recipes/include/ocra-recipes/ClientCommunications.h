@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <memory>
-
+#include <map>
 
 #include <Eigen/Dense>
 #include <Eigen/Lgsm>
@@ -27,15 +27,36 @@ namespace ocra_recipes
 {
 class ClientCommunications : public yarp::os::PortReader
 {
+using TaskPortMap = std::map<std::string, std::shared_ptr<yarp::os::RpcClient> >;
+
 public:
     ClientCommunications();
     virtual ~ClientCommunications();
 
     bool open(const bool connectToTaskManagers = true);
     bool close();
+    void close(const std::string& taskName);
 
     virtual bool read(yarp::os::ConnectionReader& connection);
     void parseMessage(yarp::os::Bottle& input);
+
+
+
+    yarp::os::Bottle queryController(yarp::os::Bottle& requestBottle);
+    yarp::os::Bottle queryController(const SERVER_COMMUNICATIONS_MESSAGE request);
+    yarp::os::Bottle queryController(const std::vector<SERVER_COMMUNICATIONS_MESSAGE> requestVector);
+    // void queryController(const SERVER_COMMUNICATIONS_MESSAGE request, yarp::os::Bottle& reply);
+
+    // void queryTask(const std::string& taskName, const SERVER_COMMUNICATIONS_MESSAGE request, yarp::os::Bottle& reply);
+    // void queryTask(const int taskIndex, const SERVER_COMMUNICATIONS_MESSAGE request, yarp::os::Bottle& reply);
+    // void queryTasks(const SERVER_COMMUNICATIONS_MESSAGE request, std::vector<yarp::os::Bottle&>& replies);
+    // void queryTasks(const std::vector<SERVER_COMMUNICATIONS_MESSAGE>& requests, std::vector<yarp::os::Bottle&>& replies);
+    // void queryTasks(const std::vector<SERVER_COMMUNICATIONS_MESSAGE>& requests, std::vector<yarp::os::Bottle&>& replies);
+
+    std::vector<std::string> getTaskPortNames();
+    std::vector<std::string> getTaskNames();
+    std::shared_ptr<yarp::os::RpcClient> getTaskClient(const std::string& taskName);
+
 
 private:
     bool openServerConnections();
@@ -55,6 +76,8 @@ private:
     yarp::os::Log yLog;
 
     static constexpr double CONNECTION_TIMEOUT = 20.0;
+
+    TaskPortMap taskRpcClients;
 
 
 };
