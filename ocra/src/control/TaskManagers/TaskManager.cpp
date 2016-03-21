@@ -38,9 +38,9 @@ TaskManager::~TaskManager()
 {
     std::cout << "\t--> Closing ports" << std::endl;
     rpcPort.close();
-    if(task){
-        std::dynamic_pointer_cast<OneLevelTask>(task)->disconnectFromController();
-    }
+    // if(task){
+    //     std::dynamic_pointer_cast<OneLevelTask>(task)->disconnectFromController();
+    // }
     if(stateThread){
         closeControlPorts();
     }
