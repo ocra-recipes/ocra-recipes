@@ -28,29 +28,29 @@
 #include <iosfwd>
 
 /** @namespace ocra
-  * @brief Optimization-based Robot Controller namespace. 
+  * @brief Optimization-based Robot Controller namespace.
   *  a library of classes to write and solve optimization problems dedicated to
-  *  the control of multi-body systems. 
+  *  the control of multi-body systems.
   */
 namespace ocra
 {
   /** @class Solver
     *	@brief %Solver class.
     *	@warning None
-    *  
+    *
     * This is a base class for every optimization solver in ocra. It provides an interface for derived solvers and some
-    * core methods. 
+    * core methods.
     * It has two responsibilities of its own:
-    *   - (i)  keep (lazily) up-do-date the variable of the optimization problem, 
+    *   - (i)  keep (lazily) up-do-date the variable of the optimization problem,
     *   - (ii) maintain the mappings of function's variables relative to this problem variable.
     * (i) can be explain by an example:
-    * if we want to optimize the sum of two functions f(x,y) and g(y,z), then we need to solve a problem over 
-    * V=(x,y,z). V is said to be the problem variable. If at one point g becomes a function of y only, then we have a 
+    * if we want to optimize the sum of two functions f(x,y) and g(y,z), then we need to solve a problem over
+    * V=(x,y,z). V is said to be the problem variable. If at one point g becomes a function of y only, then we have a
     * new problem variable V'=(x,y). The solver tracks correctly such changes to keep the problem variable up-to-date.
-    * This implies to observe the EVT_CHANGE_DEPENDENCIES events coming from the variables of all constraints and 
+    * This implies to observe the EVT_CHANGE_DEPENDENCIES events coming from the variables of all constraints and
     * objectives. This observation is configured in the internalAdd/RemoveObjective/Constraint methods which the user
     * must call when adding/removing an objective/constraint in a derived solver. When this event is triggered, a flag
-    * is simply change, the actual recomputation of the problem variable will only take automatically place, if needed, 
+    * is simply change, the actual recomputation of the problem variable will only take automatically place, if needed,
     * when the \a solve method is called.
     * (ii) the variable of any constraint or objective in an optimization problem is a subset of the problem variable.
     * Many solvers need to know how a specific variable is mapped with respect to the problem variable. The Solver
@@ -59,7 +59,7 @@ namespace ocra
     * retrieve the mapping of a variable.
     *
     * Some general rules which must be followed by the derived solver:
-    *   - when there are several objectives, they are added in one objective. If not (multi-objective optimization 
+    *   - when there are several objectives, they are added in one objective. If not (multi-objective optimization
     * e.g.), the documentation of the particular solver must report it,
     *   - likewise, when there is several constraints, the problem considers (naturally) their intersection, unless
     * documented differently.
@@ -87,7 +87,7 @@ namespace ocra
     // ------------------------ public interface --------------------------------
   public:
     /** Translate the actual optimization problem for a specific solver and call its optimization routine.
-      * 
+      *
       * \internal The following computations are performed:
       *   - update of the problem variable and the resize of the result array if needed,
       *   - call doPrepare(), doSolve() and doConclude()
@@ -124,7 +124,7 @@ namespace ocra
       * will be dumped into the specified file from older to newer state.
       */
     void setAutoDumpFile(const std::string& file);
-    
+
     /** Activates auto dumping when solver fails. */
     void activateAutoDump();
 
@@ -151,7 +151,7 @@ namespace ocra
       * They are called one after the other so that writing a command at the end of one has the same effect as writing
       * it at the beginning of the next. However, programmers should respect the following convention when deriving
       * these methods:
-      * - doPrepare should manage the memory and perform the translation from the ocra objectives and constraints to the 
+      * - doPrepare should manage the memory and perform the translation from the ocra objectives and constraints to the
       * input data of the optimization routine
       * - doSolve is only meant to call to the solver optimization routine with the data properly ordered and then to
       * fill _result according to the output of the routine.
