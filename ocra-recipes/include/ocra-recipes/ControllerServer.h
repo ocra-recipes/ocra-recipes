@@ -19,8 +19,10 @@
 
 // TODO: Should put in defines for yarp independent builds
 #include <yarp/os/Bottle.h>
+#include <yarp/os/Port.h>
 
 #include <ocra-recipes/ServerCommunications.h>
+#include <ocra-recipes/RobotState.h>
 
 
 namespace ocra_recipes
@@ -64,14 +66,18 @@ private:
 
     std::shared_ptr<ServerCommunications>       serverComs;
 
-    Eigen::VectorXd              q;
-    Eigen::VectorXd             qd;
     Eigen::VectorXd            tau;
-    Eigen::Displacementd    H_root;
-    Eigen::Twistd           T_root;
+    RobotState              rState;
+    // Eigen::VectorXd              q;
+    // Eigen::VectorXd             qd;
+    // Eigen::Displacementd    H_root;
+    // Eigen::Twistd           T_root;
 
     CONTROLLER_TYPE    controllerType;
     bool                    usingComs;
+
+    yarp::os::Bottle statesBottle;
+    yarp::os::Port statesPort;
 };
 
 } // namespace ocra_recipes

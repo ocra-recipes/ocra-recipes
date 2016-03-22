@@ -18,6 +18,8 @@ bool ControllerServer::initialize()
 {
     bool res = true;
     model = loadRobotModel();
+
+    rState = RobotState(model->nbDofs());
     if(model)
     {
         switch (controllerType)
@@ -45,6 +47,7 @@ bool ControllerServer::initialize()
     {
         serverComs = std::make_shared<ServerCommunications>(controller, model, taskManagerSet);
         res &= serverComs->open();
+        res &= statesPort.open("/ControllerServer/states:o");
     }
 
     res &= bool(model);
@@ -69,12 +72,13 @@ void ControllerServer::computeTorques(Eigen::VectorXd& torques)
 
 void ControllerServer::updateModel()
 {
-    getRobotState(q, qd, H_root, T_root);
+    getRobotState(rState.q, rState.qd, rState.H_root, rState.T_root);
     if (model->hasFixedRoot()){
-        model->setState(q, qd);
+        model->setState(rState.q, rState.qd);
     }else{
-        model->setState(H_root, q, T_root, qd);
+        model->setState(rState.H_root, rState.q, rState.T_root, rState.qd);
     }
+    statesPort.write(rState);
 }
 
 bool ControllerServer::addTaskManagersFromXmlFile(const std::string& filePath)
