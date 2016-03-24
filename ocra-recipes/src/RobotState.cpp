@@ -49,6 +49,7 @@ std::ostream& operator<<(std::ostream &out, const RobotState& state)
 
 bool RobotState::write(yarp::os::ConnectionWriter& connection)
 {
+    connection.appendInt(q.size());
     for(auto i=0; i<q.size(); ++i)
     {
         connection.appendDouble(q(i));
@@ -73,26 +74,28 @@ bool RobotState::write(yarp::os::ConnectionWriter& connection)
 
 bool RobotState::read(yarp::os::ConnectionReader& connection)
 {
-
-    for(auto i=0; i<q.size(); ++i)
+    this->nDoF = connection.expectInt();
+    this->q.resize(nDoF);
+    this->qd.resize(nDoF);
+    for(auto i=0; i<this->nDoF; ++i)
     {
-        q(i) = connection.expectDouble();
-        qd(i) = connection.expectDouble();
+        this->q(i) = connection.expectDouble();
+        this->qd(i) = connection.expectDouble();
     }
-    H_root.x() = connection.expectDouble();
-    H_root.y() = connection.expectDouble();
-    H_root.z() = connection.expectDouble();
-    H_root.qx() = connection.expectDouble();
-    H_root.qy() = connection.expectDouble();
-    H_root.qz() = connection.expectDouble();
-    H_root.qw() = connection.expectDouble();
+    this->H_root.x() = connection.expectDouble();
+    this->H_root.y() = connection.expectDouble();
+    this->H_root.z() = connection.expectDouble();
+    this->H_root.qx() = connection.expectDouble();
+    this->H_root.qy() = connection.expectDouble();
+    this->H_root.qz() = connection.expectDouble();
+    this->H_root.qw() = connection.expectDouble();
 
-    T_root.rx() = connection.expectDouble();
-    T_root.ry() = connection.expectDouble();
-    T_root.rz() = connection.expectDouble();
-    T_root.vx() = connection.expectDouble();
-    T_root.vy() = connection.expectDouble();
-    T_root.vz() = connection.expectDouble();
+    this->T_root.rx() = connection.expectDouble();
+    this->T_root.ry() = connection.expectDouble();
+    this->T_root.rz() = connection.expectDouble();
+    this->T_root.vx() = connection.expectDouble();
+    this->T_root.vy() = connection.expectDouble();
+    this->T_root.vz() = connection.expectDouble();
 
     return !connection.isError();
 }
@@ -123,7 +126,7 @@ bool StateListener::read(yarp::os::ConnectionReader& connection)
         return false;
     }
     else{
-        std::cout << state << std::endl;
+        std::cout << "State read: \n" << state << std::endl;
         model->setState(state.H_root, state.q, state.T_root, state.qd);
         return true;
     }
