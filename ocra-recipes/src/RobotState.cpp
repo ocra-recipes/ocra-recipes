@@ -126,7 +126,6 @@ bool StateListener::read(yarp::os::ConnectionReader& connection)
         return false;
     }
     else{
-        std::cout << "State read: \n" << state << std::endl;
         model->setState(state.H_root, state.q, state.T_root, state.qd);
         return true;
     }
