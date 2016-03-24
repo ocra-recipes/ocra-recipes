@@ -7,6 +7,7 @@
 #include <yarp/os/Network.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/RateThread.h>
+#include <yarp/os/ResourceFinder.h>
 
 namespace ocra_recipes
 {

@@ -2,8 +2,9 @@
 
 using namespace ocra_recipes;
 
-ControllerServer::ControllerServer(const CONTROLLER_TYPE ctrlType, const bool usingInterprocessCommunication)
+ControllerServer::ControllerServer(const CONTROLLER_TYPE ctrlType, const SOLVER_TYPE solver, const bool usingInterprocessCommunication)
 : controllerType(ctrlType)
+, solverType(solver)
 , usingComs(usingInterprocessCommunication)
 {
 }
@@ -22,18 +23,36 @@ bool ControllerServer::initialize()
     rState = RobotState(model->nbDofs());
     if(model)
     {
+        // Set the solver.
+        switch (solverType)
+        {
+            case QUADPROG:
+            {
+                internalSolver = std::make_shared<ocra::OneLevelSolverWithQuadProg>();
+            }break;
+
+            case QPOASES:
+            {
+                internalSolver = std::make_shared<ocra::OneLevelSolverWithQPOASES>();
+            }break;
+
+            default:
+            {
+                internalSolver = std::make_shared<ocra::OneLevelSolverWithQuadProg>();
+            }break;
+        }
+
+        // Construct the desired controller.
         switch (controllerType)
         {
             case WOCRA_CONTROLLER:
             {
-                internalSolver = std::make_shared<ocra::OneLevelSolverWithQuadProg>();
                 bool useReducedProblem = false;
                 controller = std::make_shared<wocra::WocraController>("WocraController", *model, *internalSolver, useReducedProblem);
             }break;
 
             default:
             {
-                internalSolver = std::make_shared<ocra::OneLevelSolverWithQuadProg>();
                 bool useReducedProblem = false;
                 controller = std::make_shared<wocra::WocraController>("WocraController", *model, *internalSolver, useReducedProblem);
             }break;

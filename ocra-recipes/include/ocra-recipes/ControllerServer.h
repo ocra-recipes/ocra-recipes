@@ -35,6 +35,12 @@ enum CONTROLLER_TYPE
     GOCRA_CONTROLLER
 };
 
+enum SOLVER_TYPE
+{
+    QUADPROG,
+    QPOASES
+};
+
 class ControllerServer
 {
 protected:
@@ -42,7 +48,7 @@ protected:
     virtual void getRobotState(Eigen::VectorXd& q, Eigen::VectorXd& qd, Eigen::Displacementd& H_root, Eigen::Twistd& T_root) = 0;
 
 public:
-    ControllerServer(const CONTROLLER_TYPE ctrlType=WOCRA_CONTROLLER, const bool usingInterprocessCommunication=true);
+    ControllerServer(const CONTROLLER_TYPE ctrlType=WOCRA_CONTROLLER, const SOLVER_TYPE solver=QUADPROG, const bool usingInterprocessCommunication=true);
     virtual ~ControllerServer();
 
     bool initialize();
@@ -74,6 +80,7 @@ private:
     // Eigen::Twistd           T_root;
 
     CONTROLLER_TYPE    controllerType;
+    SOLVER_TYPE        solverType;
     bool                    usingComs;
 
     yarp::os::Bottle statesBottle;
