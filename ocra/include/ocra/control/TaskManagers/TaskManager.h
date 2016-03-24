@@ -161,8 +161,8 @@ class TaskManager
         yarp::os::Port inputControlPort, outputControlPort;
 
         std::unique_ptr<RpcMessageCallback> rpcCallback;
-        std::unique_ptr<ControlInputCallback> controlCallback;
-        std::unique_ptr<StateUpdateThread> stateThread;
+        std::shared_ptr<ControlInputCallback> controlCallback;
+        std::shared_ptr<StateUpdateThread> stateThread;
 
         bool parseControlInput(yarp::os::Bottle& input);
 

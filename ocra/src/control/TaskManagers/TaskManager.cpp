@@ -354,10 +354,17 @@ bool TaskManager::openControlPorts()
     res = res && inputControlPort.open(inputControlPortName.c_str());
     res = res && outputControlPort.open(outputControlPortName.c_str());
 
-    controlCallback = std::unique_ptr<ControlInputCallback>(new ControlInputCallback(*this));
-    inputControlPort.setReader(*controlCallback);
+    // controlCallback = std::unique_ptr<ControlInputCallback>(new ControlInputCallback(*this));
+    if (!controlCallback) {
+        controlCallback = std::make_shared<ControlInputCallback>(*this);
+        inputControlPort.setReader(*controlCallback);
+    }
 
-    stateThread = std::unique_ptr<StateUpdateThread>(new StateUpdateThread(10, *this));
+
+    // stateThread = std::unique_ptr<StateUpdateThread>(new StateUpdateThread(10, *this));
+    if(!stateThread) {
+        stateThread = std::make_shared<StateUpdateThread>(10, *this);
+    }
     stateThread->start();
 
     controlPortsOpen = res;

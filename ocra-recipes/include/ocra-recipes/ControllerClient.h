@@ -41,9 +41,10 @@ protected:
     virtual void release(){/* Do nothing. */}
     virtual void loop() = 0;
 
-private:
     std::shared_ptr<ClientCommunications> clientComs;
     std::shared_ptr<ocra::Model> model;
+
+private:
 
     bool isReady;
 
