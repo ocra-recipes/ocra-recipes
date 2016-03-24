@@ -28,6 +28,13 @@ public:
 
     int getExpectedPeriod(){return expectedPeriod;}
 
+    /*! Configures the module by parsing the RF contents.
+     *  \param rf A resource finder instance which is initialized from the command line args.
+     *
+     *  \return True or false if the configuration was successful.
+     */
+    virtual bool configure(yarp::os::ResourceFinder &rf){return true;};
+
 protected:
     virtual bool initialize(){return true;}
     virtual void release(){/* Do nothing. */}

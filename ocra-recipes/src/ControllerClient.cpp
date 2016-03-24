@@ -30,7 +30,7 @@ ControllerClient::ControllerClient(std::shared_ptr<ocra::Model> derivedModelPtr,
 
     statesPort.setReader(stateCallback);
 
-    yarp.connect("/ControllerClient/states:o", statesPort_Name.c_str());
+    yarp.connect("/ControllerServer/states:o", statesPort_Name.c_str());
 
     isReady = true;
 }
