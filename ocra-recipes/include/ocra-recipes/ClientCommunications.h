@@ -54,6 +54,8 @@ public:
     // void queryTasks(const std::vector<SERVER_COMMUNICATIONS_MESSAGE>& requests, std::vector<yarp::os::Bottle&>& replies);
 
     std::vector<std::string> getTaskPortNames();
+    std::string getTaskPortName(const std::string& taskName);
+
     std::vector<std::string> getTaskNames();
     std::shared_ptr<yarp::os::RpcClient> getTaskClient(const std::string& taskName);
 

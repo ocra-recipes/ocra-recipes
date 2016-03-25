@@ -161,6 +161,28 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
                     }
                 }break;
 
+            case GET_TASK_PORT_NAME:
+                {
+                    ++i;
+                    std::string taskName = input.get(i).asString();
+                    ++i;
+                    std::cout << "Got message: GET_TASK_PORT_NAME." << std::endl;
+                    int taskCounter = 0;
+                    int taskFoundIndex = -1;
+                    for(auto tName : taskManagerSet->getTaskList()){
+                        if (taskName == tName) {
+                            taskFoundIndex = taskCounter;
+                        } else {
+                            ++taskCounter;
+                        }
+                    }
+                    if (taskFoundIndex >= 0)
+                    {
+                        reply.addString(taskManagerSet->getTaskPorts()[taskFoundIndex]);
+                    }
+
+                }break;
+
             case HELP:
                 {
                     ++i;

@@ -129,6 +129,20 @@ std::vector<std::string> ClientCommunications::getTaskPortNames()
     return portNameVec;
 }
 
+std::string ClientCommunications::getTaskPortName(const std::string& taskName)
+{
+    yarp::os::Bottle message, reply;
+    message.addInt(GET_TASK_PORT_NAME);
+    message.addString(taskName);
+    rpcClientPort.write(message, reply);
+
+    std::string portName = "";
+    if (reply.size()>0) {
+        portName = reply.get(0).asString();
+    }
+    return portName;
+}
+
 std::vector<std::string> ClientCommunications::getTaskNames()
 {
     std::vector<std::string> nameVec;
