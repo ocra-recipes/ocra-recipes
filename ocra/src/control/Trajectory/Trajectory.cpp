@@ -1,7 +1,7 @@
 #include "ocra/control/Trajectory/Trajectory.h"
 #include <math.h>
 
-#define MAX_VEL 0.1
+#define MAX_VEL 0.05
 
 namespace ocra
 {
