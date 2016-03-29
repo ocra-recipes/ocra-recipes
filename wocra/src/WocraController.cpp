@@ -1,26 +1,18 @@
-/**
- * \file WocraController.cpp
- * \author Joseph Salini
- *
- * \brief Implement the LQP-based controller developped during my PhD thesis with ocra framework.
- */
-
-#include "wocra/WocraController.h"
-
-#include <iostream>
-
-#include "ocra/optim/QuadraticFunction.h"
-#include "ocra/control/Tasks/OneLevelTask.h"
-
-#include "wocra/Performances.h"
-
+/** * \file WocraController.cpp
+ * \author Joseph Salini
+ *
+ * \brief Implement the LQP-based controller developped during my PhD thesis with ocra framework.
+ */
 
+#include "wocra/WocraController.h"
+#include <iostream>
+#include "ocra/optim/QuadraticFunction.h"
+#include "ocra/control/Tasks/OneLevelTask.h"
+#include "wocra/Performances.h"
 /** \brief Contains all the abstract & concrete classes for robotic control with optimization, based on the ocra framework.
  *
- */
-namespace wocra
-{
-
+ */namespace wocra
+{
 
 /** \brief QuadraticFunction dedicated to the minimization of the force of contact (fc) variable.
  *
@@ -60,11 +52,10 @@ public:
 };
 
 
-struct WocraController::Pimpl
-{
-    Model&       innerModel;
-    ocra::OneLevelSolver&  innerSolver;
-    bool         reducedProblem;
+struct WocraController::Pimpl{
+    std::shared_ptr<Model>          innerModel;
+    std::shared_ptr<OneLevelSolver> innerSolver;
+    bool                            reducedProblem;
 
     // EQUALITY CONSTRAINT OF THE DYNAMIC EQUATION
     ocra::EqualZeroConstraintPtr< ocra::FullDynamicEquationFunction >      dynamicEquation;
@@ -83,14 +74,16 @@ struct WocraController::Pimpl
     PerformanceRecorder updateTasksRecorder;
     PerformanceRecorder solveProblemRecorder;
 
-    Pimpl(Model& m, ocra::OneLevelSolver&  s, bool useReducedProblem)
+    Pimpl(std::shared_ptr<Model> m, std::shared_ptr<OneLevelSolver> s, bool useReducedProblem)
         : innerModel(m)
         , innerSolver(s)
         , reducedProblem(useReducedProblem)
-        , dynamicEquation( new ocra::FullDynamicEquationFunction(m) )
-        , minDdqFunction(  new ocra::QuadraticFunction(m.getAccelerationVariable(), Eigen::MatrixXd::Identity(m.nbDofs(), m.nbDofs()), Eigen::VectorXd::Zero(m.nbDofs()), 0) )
-        , minTauFunction(  new ocra::QuadraticFunction(m.getJointTorqueVariable(), Eigen::MatrixXd::Identity(m.getJointTorqueVariable().getSize(),m.getJointTorqueVariable().getSize()), Eigen::VectorXd::Zero(m.getJointTorqueVariable().getSize()), 0) )
-        , minFcFunction(   new FcQuadraticFunction(m.getModelContacts().getContactForcesVariable()) )
+        , dynamicEquation( new ocra::FullDynamicEquationFunction(*m) )
+
+        , minDdqFunction(  new ocra::QuadraticFunction(m->getAccelerationVariable(), Eigen::MatrixXd::Identity(m->nbDofs(), m->nbDofs()), Eigen::VectorXd::Zero(m->nbDofs()), 0) )
+
+        , minTauFunction(  new ocra::QuadraticFunction(m->getJointTorqueVariable(), Eigen::MatrixXd::Identity(m->getJointTorqueVariable().getSize(), m->getJointTorqueVariable().getSize()), Eigen::VectorXd::Zero(m->getJointTorqueVariable().getSize()), 0) )
+        , minFcFunction(   new FcQuadraticFunction(m->getModelContacts().getContactForcesVariable()) )
     {
         minDdqObjective.set(minDdqFunction);
         minTauObjective.set(minTauFunction);
@@ -110,21 +103,21 @@ struct WocraController::Pimpl
  * \param useReducedProblem  Tell if the redundant problem is considered (unknown variable is \f$ [ \ddq, \torque, \force_c ] \f$), or is the reduced problem (non-redundant) is considred (unknown variable is \f$ [ \torque, \force_c ] \f$)
  */
 
-WocraController::WocraController(const std::string& ctrlName, Model& innerModel, ocra::OneLevelSolver& innerSolver, bool useReducedProblem)
-    : Controller(ctrlName, innerModel)
+WocraController::WocraController(const std::string& ctrlName, std::shared_ptr<Model> innerModel, std::shared_ptr<OneLevelSolver> innerSolver, bool useReducedProblem)
+    : Controller(ctrlName, *innerModel)
     , pimpl( new Pimpl(innerModel, innerSolver, useReducedProblem) )
 {
     if (!pimpl->reducedProblem)
     {
-        pimpl->innerSolver.addConstraint(pimpl->dynamicEquation.getConstraint());
-        pimpl->innerSolver.addObjective(pimpl->minDdqObjective);
-        pimpl->innerSolver.addObjective(pimpl->minTauObjective);
-        pimpl->innerSolver.addObjective(pimpl->minFcObjective);
+        pimpl->innerSolver->addConstraint(pimpl->dynamicEquation.getConstraint());
+        pimpl->innerSolver->addObjective(pimpl->minDdqObjective);
+        pimpl->innerSolver->addObjective(pimpl->minTauObjective);
+        pimpl->innerSolver->addObjective(pimpl->minFcObjective);
     }
     else
     {
-        pimpl->innerSolver.addObjective(pimpl->minTauObjective);
-        pimpl->innerSolver.addObjective(pimpl->minFcObjective);
+        pimpl->innerSolver->addObjective(pimpl->minTauObjective);
+        pimpl->innerSolver->addObjective(pimpl->minFcObjective);
     }
     setVariableMinimizationWeights(1e-7, 1e-8, 1e-9);
     takeIntoAccountGravity(true);
@@ -145,15 +138,15 @@ WocraController::~WocraController()
 
     if (!pimpl->reducedProblem)
     {
-        pimpl->innerSolver.removeConstraint(pimpl->dynamicEquation.getConstraint());
-        pimpl->innerSolver.removeObjective(pimpl->minDdqObjective);
-        pimpl->innerSolver.removeObjective(pimpl->minTauObjective);
-        pimpl->innerSolver.removeObjective(pimpl->minFcObjective);
+        pimpl->innerSolver->removeConstraint(pimpl->dynamicEquation.getConstraint());
+        pimpl->innerSolver->removeObjective(pimpl->minDdqObjective);
+        pimpl->innerSolver->removeObjective(pimpl->minTauObjective);
+        pimpl->innerSolver->removeObjective(pimpl->minFcObjective);
     }
     else
     {
-        pimpl->innerSolver.removeObjective(pimpl->minTauObjective);
-        pimpl->innerSolver.removeObjective(pimpl->minFcObjective);
+        pimpl->innerSolver->removeObjective(pimpl->minTauObjective);
+        pimpl->innerSolver->removeObjective(pimpl->minFcObjective);
     }
 };
 
@@ -161,7 +154,7 @@ WocraController::~WocraController()
 /** return the inner model
  * \return the inner model used to construct this controller instance
  */
-Model& WocraController::getModel()
+std::shared_ptr<Model> WocraController::getModel()
 {
     return pimpl->innerModel;
 }
@@ -169,7 +162,7 @@ Model& WocraController::getModel()
 /** return the inner solver
  * \return the inner solver used to construct this controller instance
  */
-ocra::OneLevelSolver& WocraController::getSolver()
+std::shared_ptr<OneLevelSolver> WocraController::getSolver()
 {
     return pimpl->innerSolver;
 }
@@ -213,7 +206,7 @@ void WocraController::takeIntoAccountGravity(bool useGrav)
  */
 void WocraController::addConstraint(ocra::LinearConstraint& constraint) const
 {
-    pimpl->innerSolver.addConstraint(constraint);
+    pimpl->innerSolver->addConstraint(constraint);
 }
 
 /** remove a Linear constraint that is equivalent for the full & reduced problems.
@@ -221,7 +214,7 @@ void WocraController::addConstraint(ocra::LinearConstraint& constraint) const
  */
 void WocraController::removeConstraint(ocra::LinearConstraint& constraint) const
 {
-    pimpl->innerSolver.removeConstraint(constraint);
+    pimpl->innerSolver->removeConstraint(constraint);
 }
 
 /** add a Linear constraint that has different expressions, depending on the problem type.
@@ -232,7 +225,7 @@ void WocraController::removeConstraint(ocra::LinearConstraint& constraint) const
 void WocraController::addConstraint(ocra::ControlConstraint& constraint) const
 {
     constraint.connectToController(pimpl->dynamicEquation, pimpl->reducedProblem);
-    pimpl->innerSolver.addConstraint(constraint.getConstraint());
+    pimpl->innerSolver->addConstraint(constraint.getConstraint());
 }
 
 /** add a Linear constraint that has different expressions, depending on the problem type.
@@ -242,7 +235,7 @@ void WocraController::addConstraint(ocra::ControlConstraint& constraint) const
  */
 void WocraController::removeConstraint(ocra::ControlConstraint& constraint) const
 {
-    pimpl->innerSolver.removeConstraint(constraint.getConstraint());
+    pimpl->innerSolver->removeConstraint(constraint.getConstraint());
     constraint.disconnectFromController();
 }
 
@@ -369,9 +362,9 @@ void WocraController::doComputeOutput(Eigen::VectorXd& tau)
 
     pimpl->updateTasksRecorder.saveRelativeTime();
 
-    pimpl->solveProblemRecorder.initializeTime();    if(!pimpl->innerSolver.solve().info)
+    pimpl->solveProblemRecorder.initializeTime();    if(!pimpl->innerSolver->solve().info)
     {
-        tau = pimpl->innerModel.getJointTorqueVariable().getValue();
+        tau = pimpl->innerModel->getJointTorqueVariable().getValue();
     }
 
     else    {
@@ -398,7 +391,7 @@ void WocraController::writePerformanceInStream(std::ostream& outstream, bool add
 {
     pimpl->updateTasksRecorder.writeInStream("controller_update_tasks", outstream, true);
     pimpl->solveProblemRecorder.writeInStream("controller_solve_problem", outstream, true);
-    pimpl->innerSolver.writePerformanceInStream(outstream, addCommaAtEnd);
+    pimpl->innerSolver->writePerformanceInStream(outstream, addCommaAtEnd);
 }
 
 

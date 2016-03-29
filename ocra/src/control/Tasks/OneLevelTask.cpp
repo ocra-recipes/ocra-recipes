@@ -40,8 +40,8 @@ public:
 
 struct OneLevelTask::Pimpl
 {
-    const Model&                                innerModel;
-    OneLevelSolver*                       solver;
+    std::shared_ptr<Model>                                innerModel;
+    std::shared_ptr<OneLevelSolver>                       solver;
     const FullDynamicEquationFunction*    dynamicEquation;
     bool                                        useReducedProblem;
     BaseVariable                          fcVar;
@@ -67,7 +67,7 @@ struct OneLevelTask::Pimpl
     EqualZeroConstraintPtr<LinearFunction>  innerTaskAsConstraint;
 
 
-    Pimpl(const std::string& name, const Model& m, const Feature& s)
+    Pimpl(const std::string& name, std::shared_ptr<Model> m, const Feature& s)
         : innerModel(m)
         , solver(0x0)
         , dynamicEquation(0x0)
@@ -120,7 +120,7 @@ struct OneLevelTask::Pimpl
         }
         else
         {
-            innerObjectiveFunction = new LinearFunction (innerModel.getAccelerationVariable(), Eigen::MatrixXd::Zero(featn, innerModel.nbDofs()), Eigen::VectorXd::Zero(featn));
+            innerObjectiveFunction = new LinearFunction (innerModel->getAccelerationVariable(), Eigen::MatrixXd::Zero(featn, innerModel->nbDofs()), Eigen::VectorXd::Zero(featn));
         }
         connectFunctionnWithObjectiveAndConstraint();
     }
@@ -128,7 +128,7 @@ struct OneLevelTask::Pimpl
     void setAsTorqueTask()
     {
         int featn = feature.getDimension();
-        innerObjectiveFunction = new LinearFunction(innerModel.getJointTorqueVariable(), Eigen::MatrixXd::Zero(featn, innerModel.nbInternalDofs()), Eigen::VectorXd::Zero(featn));
+        innerObjectiveFunction = new LinearFunction(innerModel->getJointTorqueVariable(), Eigen::MatrixXd::Zero(featn, innerModel->nbInternalDofs()), Eigen::VectorXd::Zero(featn));
         connectFunctionnWithObjectiveAndConstraint();
     }
 
@@ -154,8 +154,8 @@ struct OneLevelTask::Pimpl
  * \param feature     The task feature, meaning what we want to control
  * \param featureDes  The desired task feature, meaning the goal we want to reach with the \a feature
  */
- OneLevelTask::OneLevelTask(const std::string& taskName, const Model& innerModel, const Feature& feature, const Feature& featureDes)
-    : Task(taskName, innerModel, feature, featureDes)
+ OneLevelTask::OneLevelTask(const std::string& taskName, std::shared_ptr<Model> innerModel, const Feature& feature, const Feature& featureDes)
+    : Task(taskName, *innerModel, feature, featureDes)
     , pimpl(new Pimpl(taskName, innerModel, feature))
 {
 
@@ -167,8 +167,8 @@ struct OneLevelTask::Pimpl
  * \param innerModel  The Model on which we will update the dynamic parameters
  * \param feature     The task feature, meaning what we want to control
  */
- OneLevelTask::OneLevelTask(const std::string& taskName, const Model& innerModel, const Feature& feature)
-    : Task(taskName, innerModel, feature)
+ OneLevelTask::OneLevelTask(const std::string& taskName, std::shared_ptr<Model> innerModel, const Feature& feature)
+    : Task(taskName, *innerModel, feature)
     , pimpl(new Pimpl(taskName, innerModel, feature))
 {
 
@@ -180,9 +180,9 @@ OneLevelTask::~OneLevelTask()
 }
 
 
-void OneLevelTask::connectToController(OneLevelSolver& solver, const FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem)
+void OneLevelTask::connectToController(std::shared_ptr<OneLevelSolver> solver, const FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem)
 {
-    pimpl->solver            = &solver;
+    pimpl->solver            = solver;
     pimpl->dynamicEquation   = &dynamicEquation;
     pimpl->useReducedProblem =  useReducedProblem;
 
@@ -303,7 +303,7 @@ void OneLevelTask::addContactPointInModel()
     //THIS SHOULD BE DONE ONLY ONCE!!!
     if ( ! pimpl->contactPointHasBeenSavedInModel )
     {
-        pimpl->innerModel.getModelContacts().addContactPoint(pimpl->fcVar, getFeature());
+        pimpl->innerModel->getModelContacts().addContactPoint(pimpl->fcVar, getFeature());
         pimpl->contactPointHasBeenSavedInModel = true;
     }
 
@@ -598,10 +598,10 @@ void OneLevelTask::doUpdateForceTask()
 
 void OneLevelTask::doUpdateCoMMomentumTask()
 {
-    const MatrixXd& J  = pimpl->innerModel.getCoMAngularJacobian();
+    const MatrixXd& J  = pimpl->innerModel->getCoMAngularJacobian();
     const MatrixXd& Kd = getDamping();
 
-    const VectorXd  accDes = - Kd * pimpl->innerModel.getCoMAngularVelocity();
+    const VectorXd  accDes = - Kd * pimpl->innerModel->getCoMAngularVelocity();
 
 
     if (pimpl->useReducedProblem)

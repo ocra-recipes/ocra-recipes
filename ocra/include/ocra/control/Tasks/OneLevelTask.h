@@ -60,9 +60,9 @@ public:
     // enum TYPETASK { UNKNOWNTASK, ACCELERATIONTASK, TORQUETASK, FORCETASK, COMMOMENTUMTASK };
 
 
-    OneLevelTask(const std::string& taskName, const Model& innerModel, const Feature& feature, const Feature& featureDes);
+    OneLevelTask(const std::string& taskName, std::shared_ptr<Model> innerModel, const Feature& feature, const Feature& featureDes);
 
-    OneLevelTask(const std::string& taskName, const Model& innerModel, const Feature& feature);
+    OneLevelTask(const std::string& taskName, std::shared_ptr<Model> innerModel, const Feature& feature);
     virtual ~OneLevelTask();
 
     // void initAsAccelerationTask();
@@ -79,7 +79,7 @@ public:
 
     //------------------------ friendship ------------------------//
     // friend class wOcraController;    //Only the wOcraController should know about the following functions
-    void connectToController(OneLevelSolver& _solver, const FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
+    void connectToController(std::shared_ptr<OneLevelSolver> _solver, const FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
     // void disconnectFromController();
     // void update();
 

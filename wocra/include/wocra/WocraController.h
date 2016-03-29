@@ -37,12 +37,12 @@ class WocraController: public Controller
 {
 public:
 
-    WocraController(const std::string& ctrlName, Model& innerModel, ocra::OneLevelSolver& innerSolver, bool useReducedProblem);
+    WocraController(const std::string& ctrlName, std::shared_ptr<Model> innerModel, std::shared_ptr<OneLevelSolver> innerSolver, bool useReducedProblem);
     virtual ~WocraController();
 
     //getter
-    Model&                  getModel();
-    ocra::OneLevelSolver&   getSolver();
+    std::shared_ptr<Model>                  getModel();
+    std::shared_ptr<OneLevelSolver>   getSolver();
     bool                    isUsingReducedProblem();
 
     //setter
