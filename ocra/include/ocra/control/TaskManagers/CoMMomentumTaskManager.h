@@ -36,9 +36,7 @@ class CoMMomentumTaskManager: public TaskManager
         virtual std::string getTaskManagerType();
         virtual bool checkIfActivated();
 
-        // All Managers have this
-        void activate();
-        void deactivate();
+
 
         // For objective tasks
 //        void setStiffness(double stiffness);

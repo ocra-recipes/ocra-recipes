@@ -177,29 +177,6 @@ double CoMMomentumTaskManager::getDamping()
     return C(0, 0);
 }
 
-/** Activates the task
- *
- */
-void CoMMomentumTaskManager::activate()
-{
-    task->activateAsObjective();
-}
-
-/** Deactivates the task
- *
- */
-void CoMMomentumTaskManager::deactivate()
-{
-    task->deactivate();
-}
-
-/** Gets the error for this task (COM position error)
- *
- */
-//Eigen::VectorXd CoMMomentumTaskManager::getTaskError()
-//{
-//    return task->getError();
-//}
 
 const double* CoMMomentumTaskManager::getCurrentState()
 {

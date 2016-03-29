@@ -189,23 +189,6 @@ void PartialPostureTaskManager::setDesiredState()
     setPosture(newPosture);
 }
 
-
-/** Activate function
- *
- */
-void PartialPostureTaskManager::activate()
-{
-    task->activateAsObjective();
-}
-
-/** Deactivate function
- *
- */
-void PartialPostureTaskManager::deactivate()
-{
-    task->deactivate();
-}
-
 /** Sets the weight constant for this task
  *
  *  \param weight               Desired weight value

@@ -32,24 +32,6 @@ ContactTaskManager::~ContactTaskManager()
 
 }
 
-/** Activate function
- *
- *  Activates the constraint
- */
-void ContactTaskManager::activate()
-{
-    task->activateAsConstraint();
-}
-
-/** Deactivate function
- *
- *  Deactivates the constraint
- */
-void ContactTaskManager::deactivate()
-{
-    task->deactivate();
-}
-
 // Masks base class function
 VectorXd ContactTaskManager::getTaskError()
 {

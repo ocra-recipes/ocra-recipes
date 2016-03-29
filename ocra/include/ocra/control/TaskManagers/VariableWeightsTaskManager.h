@@ -64,9 +64,7 @@ class VariableWeightsTaskManager : public TaskManager
         // Sets the position velocity and acceleration
         void setState(const Eigen::Vector3d& position, const Eigen::Vector3d& velocity, const Eigen::Vector3d& acceleration);
 
-        // All Managers have this
-        void activate();
-        void deactivate();
+
 
         // For objective tasks
         void setStiffness(double stiffness);

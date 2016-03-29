@@ -207,7 +207,7 @@ void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame
     task->setDamping(_damping);
     task->setWeight(_weight);
 
-    setStateDimension(9, 3); //3 dof for pos vel and acc
+    setStateDimension(9); //3 dof for pos vel and acc
     // Set the desired state to the current position of the segment with 0 vel or acc
     setState(model.getSegmentPosition(model.getSegmentIndex(segmentName)).getTranslation());
 }
@@ -228,7 +228,7 @@ void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame
     task->setDamping(_damping);
     task->setWeight(_weight);
 
-    setStateDimension(9, 3); //3 dof for pos vel and acc
+    setStateDimension(9); //3 dof for pos vel and acc
     // Set the desired state to the current position of the segment with 0 vel or acc
     setState(model.getSegmentPosition(model.getSegmentIndex(segmentName)).getTranslation());
 }
@@ -328,22 +328,6 @@ double SegCartesianTaskManager::getDamping()
 {
     Eigen::MatrixXd C = task->getDamping();
     return C(0, 0);
-}
-
-/** Activates the task
- *
- */
-void SegCartesianTaskManager::activate()
-{
-    task->activateAsObjective();
-}
-
-/** Deactivates the task
- *
- */
-void SegCartesianTaskManager::deactivate()
-{
-    task->deactivate();
 }
 
 /** Gets the error for this task (Cartesian error)

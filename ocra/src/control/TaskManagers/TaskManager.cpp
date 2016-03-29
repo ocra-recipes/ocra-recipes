@@ -4,8 +4,8 @@
 // #include "ocra/control/Trajectory/MinimumJerkTrajectory.h"
 // #include "ocra/control/Trajectory/LinearInterpolationTrajectory.h"
 
-namespace ocra
-{
+using namespace ocra;
+
 
 /** base constructor
  *
@@ -17,18 +17,15 @@ TaskManager::TaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, con
 : ctrl(_ctrl)
 , model(_model)
 , name(_taskName)
-, task(NULL)
-, usesTrajectory(false)
-, followingTrajectory(false)
 , controlPortsOpen(false)
 , stateDimension(0)
+, taskMode(TASK_NOT_DEFINED)
 {
     stableName = name;
 
-    setTrajectoryType();
 
     portName = "/TM/"+name+"/rpc:i";
-    rpcCallback =  std::unique_ptr<RpcMessageCallback>(new RpcMessageCallback(*this));
+    rpcCallback =  std::make_shared<RpcMessageCallback>(*this);
     rpcPort.open(portName.c_str());
     rpcPort.setReader(*rpcCallback);
 }
@@ -49,6 +46,95 @@ TaskManager::~TaskManager()
     std::cout << "\t--> Destroying " << stableName << std::endl;
 }
 
+bool TaskManager::activate()
+{
+    if(task){
+        return activate(task, taskMode);
+    }
+    else if (!taskVector.empty()){
+        bool retVal = true;
+        for (auto tsk : taskVector)
+        {
+            retVal &= activate(tsk, taskMode);
+        }
+        return retVal;
+    }
+    else{
+        yLog.error() << "No valid task(s) to activate.";
+        return false;
+    }
+}
+
+bool TaskManager::activate(std::shared_ptr<Task> tsk, const TASK_MODE tmode)
+{
+    bool allActivated;
+    if(tsk)
+    {
+        switch (tmode)
+        {
+            case TASK_AS_OBJECTIVE:
+            {
+                tsk->activateAsObjective();
+                allActivated = true;
+            }break;
+
+            case TASK_AS_CONSTRAINT:
+            {
+                tsk->activateAsConstraint();
+                allActivated = true;
+            }break;
+
+            case TASK_NOT_DEFINED:
+            {
+                yLog.error() << "Task has not been defined as an objective or constraint therefore I can't activate it.";
+                allActivated = false;
+            }break;
+
+            default:
+            {
+                allActivated = false;
+            }break;
+        }
+    }
+    return allActivated;
+}
+
+bool TaskManager::deactivate()
+{
+    if(task){
+        taskMode = getTaskMode(task);
+        task->deactivate();
+        return true;
+    }
+    else if (!taskVector.empty()){
+        if(taskVector[0]){taskMode = getTaskMode(taskVector[0]);}
+        for (auto tsk : taskVector)
+        {
+            if(tsk){tsk->deactivate();}
+        }
+        return true;
+    }
+    else{
+        taskMode = TASK_NOT_DEFINED;
+        yLog.error() << "No valid task(s) to activate.";
+        return false;
+    }
+}
+
+TASK_MODE TaskManager::getTaskMode(std::shared_ptr<Task> tsk)
+{
+    if (tsk->isActiveAsObjective()) {
+        return TASK_AS_OBJECTIVE;
+    } else if (tsk->isActiveAsConstraint()) {
+        return TASK_AS_CONSTRAINT;
+    } else {
+        return TASK_NOT_DEFINED;
+    }
+}
+
+
+
+
 /** Returns the error vector of the task
  *
  *  If the derived child class does not have a meaningful error, it should override this function to throw an error
@@ -66,6 +152,215 @@ double TaskManager::getTaskErrorNorm()
 {
     return getTaskError().norm();
 }
+
+
+
+bool TaskManager::openControlPorts()
+{
+    bool res = true;
+    inputControlPortName = "/TM/"+stableName+"/state:i";
+    outputControlPortName = "/TM/"+stableName+"/state:o";
+
+    res = res && inputControlPort.open(inputControlPortName.c_str());
+    res = res && outputControlPort.open(outputControlPortName.c_str());
+
+    // controlCallback = std::unique_ptr<ControlInputCallback>(new ControlInputCallback(*this));
+    if (!controlCallback) {
+        controlCallback = std::make_shared<ControlInputCallback>(*this);
+        inputControlPort.setReader(*controlCallback);
+    }
+
+
+    // stateThread = std::unique_ptr<StateUpdateThread>(new StateUpdateThread(10, *this));
+    if(!stateThread) {
+        stateThread = std::make_shared<StateUpdateThread>(10, *this);
+    }
+    stateThread->start();
+
+    controlPortsOpen = res;
+
+    return res;
+}
+
+bool TaskManager::closeControlPorts()
+{
+    if(stateThread) {
+        if (stateThread->isRunning()) {
+            stateThread->stop();
+        }
+    }
+    if (controlPortsOpen) {
+        inputControlPort.close();
+        outputControlPort.close();
+    }
+
+    bool controlPortsClosed = !inputControlPort.isOpen() && !outputControlPort.isOpen();
+
+    controlPortsOpen = !controlPortsClosed;
+
+    return controlPortsClosed;
+}
+
+bool TaskManager::parseControlInput(yarp::os::Bottle& input)
+{
+    if (input.size() >= stateDimension)
+    {
+        for(int i=0; i<stateDimension; i++)
+        {
+            newDesiredStateVector[i] = input.get(i).asDouble(); //make sure there are no NULL entries
+        }
+        Eigen::VectorXd newWeights = getWeight();
+        if (input.size()==(stateDimension + newWeights.size())) {
+            int j = 0;
+            for(int i = stateDimension; i<(stateDimension + newWeights.size()); i++)
+            {
+                newWeights(j) = input.get(i).asDouble(); //make sure there are no NULL entries
+                j++;
+            }
+            setWeight(newWeights);
+        }
+
+        setDesiredState(); // constructs the appropropriate state inputs
+        return true;
+    }
+    else{return false;}
+}
+
+std::string TaskManager::getTaskManagerType()
+{
+    return "[TaskManager::getTaskManagerType()]: getTaskManagerType has not been implemented for this task manager.";
+}
+
+void TaskManager::setStateDimension(int taskDimension)
+{
+    stateDimension = taskDimension;
+    currentStateVector.resize(stateDimension);
+    desiredStateVector.resize(stateDimension);
+    newDesiredStateVector.resize(stateDimension);
+
+    for(int i=0; i<stateDimension; i++){
+      newDesiredStateVector[i] = 0.0; //make sure there are no NULL entries
+    }
+
+    eigenCurrentStateVector = Eigen::VectorXd::Zero(stateDimension);
+    eigenDesiredStateVector = Eigen::VectorXd::Zero(stateDimension);
+}
+
+void TaskManager::updateCurrentStateVector(const double* ptrToFirstIndex)
+{
+    if (controlPortsOpen){stateOutBottle.clear();}
+    for(int i=0; i<stateDimension; i++){
+        currentStateVector[i] = *ptrToFirstIndex;
+        if (controlPortsOpen){stateOutBottle.addDouble(*ptrToFirstIndex);}
+        ptrToFirstIndex++;
+    }
+    if (controlPortsOpen){outputControlPort.write(stateOutBottle);}
+}
+
+void TaskManager::updateDesiredStateVector(const double* ptrToFirstIndex)
+{
+    for(int i=0; i<stateDimension; i++){
+        desiredStateVector[i] = *ptrToFirstIndex;
+        ptrToFirstIndex++;
+    }
+}
+
+const double* TaskManager::getCurrentState()
+{
+    Eigen::VectorXd emptyVector = Eigen::VectorXd::Zero(stateDimension);
+    return emptyVector.data();
+}
+
+
+bool TaskManager::checkIfActivated()
+{
+    return false;
+}
+
+
+std::string TaskManager::getPortName()
+{
+    return portName;
+}
+
+
+/**************************************************************************************************
+                                    Nested RpcMessageCallback Class
+**************************************************************************************************/
+TaskManager::RpcMessageCallback::RpcMessageCallback(TaskManager& tmBaseRef)
+: tmBase(tmBaseRef)
+{
+    //do nothing
+}
+
+bool TaskManager::RpcMessageCallback::read(yarp::os::ConnectionReader& connection)
+{
+    yarp::os::Bottle input;
+    yarp::os::Bottle reply;
+
+    if (!input.read(connection)){
+        return false;
+    }
+    else{
+        tmBase.parseIncomingMessage(input, reply);
+        yarp::os::ConnectionWriter* returnToSender = connection.getWriter();
+        if (returnToSender!=NULL) {
+            reply.write(*returnToSender);
+        }
+        return true;
+    }
+}
+/**************************************************************************************************
+**************************************************************************************************/
+
+
+
+/**************************************************************************************************
+                                    Nested ControlInputCallback Class
+**************************************************************************************************/
+TaskManager::ControlInputCallback::ControlInputCallback(TaskManager& tmBaseRef)
+: tmBase(tmBaseRef)
+{
+    //do nothing
+}
+
+bool TaskManager::ControlInputCallback::read(yarp::os::ConnectionReader& connection)
+{
+    yarp::os::Bottle input;
+    if (input.read(connection)){
+        return tmBase.parseControlInput(input);
+    }
+    else{
+        return false;
+    }
+}
+/**************************************************************************************************
+**************************************************************************************************/
+
+
+/**************************************************************************************************
+                                    Nested StateUpdateThread Class
+**************************************************************************************************/
+TaskManager::StateUpdateThread::StateUpdateThread(int period, TaskManager& tmBaseRef):
+RateThread(period),
+tmBase(tmBaseRef)
+{
+    // Do nothing
+}
+bool TaskManager::StateUpdateThread::threadInit()
+{
+    return true;
+}
+void TaskManager::StateUpdateThread::run()
+{
+    tmBase.updateCurrentStateVector(tmBase.getCurrentState());
+}
+void TaskManager::StateUpdateThread::threadRelease()
+{
+    std::cout << "StateUpdateThread: Closing.\n";
+}
+/**************************************************************************************************
+**************************************************************************************************/
 
 
 void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply)
@@ -147,30 +442,6 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
            }
            i++;
        }
-
-        else if (msgTag == "useTrajectory")
-        {
-            i++;
-            usesTrajectory = true;
-            if(!input.get(i).asString().empty()){
-                setTrajectoryType(input.get(i).asString());
-                i++;
-            }else{
-                setTrajectoryType();
-            }
-            reply.addString("Using Trajectory");
-        }
-
-        else if (msgTag == "setMaxVelocity")
-        {
-            i++;
-            taskTrajectory->setMaxVelocity(input.get(i).asDouble());
-            reply.addString("maxVel:");
-            reply.addDouble(taskTrajectory->getMaxVelocity());
-            i++;
-        }
-
-
         // Desired State
         else if (msgTag == "setDesired")
         {
@@ -182,19 +453,10 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
                 newDesiredStateVector[k] = input.get(i).asDouble(); //make sure there are no NULL entries
                 i++; k++;
             }
-            if (usesTrajectory) {
-                updateCurrentStateVector(getCurrentState());
-                taskTrajectory->setWaypoints(currentStateVector, newDesiredStateVector, waypointSelector);
-                followingTrajectory = true;
-                reply.addString("Starting Trajectory...");
-            }
-
-            else{
-                setDesiredState(); // constructs the appropropriate state inputs
-                reply.addString("Desired:");
-                for (int j=0; j < stateDimension; j++){
-                    reply.addDouble(desiredStateVector[j]);
-                }
+            setDesiredState(); // constructs the appropropriate state inputs
+            reply.addString("Desired:");
+            for (int j=0; j < stateDimension; j++){
+                reply.addDouble(desiredStateVector[j]);
             }
             i++;
         }
@@ -334,7 +596,6 @@ std::string TaskManager::printValidMessageTags()
     helpString += "getDimension: Prints the state dimension. No arguments expected.\n";
     helpString += "getType: Retrieve the Type of the task. No arguments expected.\n";
     helpString += "getName: Retrieve the Name of the task. No arguments expected.\n";
-    helpString += "useTrajectory: Automatically generate a trajectory to follow for new desired states. You can optionally specify the type of trajectory: MinJerk, LinInterp, Experimental.\n";
     helpString += "openControlPorts: Open up high speed yarp control ports.\n";
     helpString += "closeControlPorts: Close high speed yarp control ports.\n";
     helpString += "getControlPortNames: Get the names of the high speed yarp control ports.\n";
@@ -343,235 +604,4 @@ std::string TaskManager::printValidMessageTags()
     helpString += "\nTypical usage: [message tag] [message value(s)]\ne.g.  >> stiffness 20 damping 10 desired_state 1.0 2.0 2.0\n";
 
     return helpString;
-}
-
-bool TaskManager::openControlPorts()
-{
-    bool res = true;
-    inputControlPortName = "/TM/"+stableName+"/state:i";
-    outputControlPortName = "/TM/"+stableName+"/state:o";
-
-    res = res && inputControlPort.open(inputControlPortName.c_str());
-    res = res && outputControlPort.open(outputControlPortName.c_str());
-
-    // controlCallback = std::unique_ptr<ControlInputCallback>(new ControlInputCallback(*this));
-    if (!controlCallback) {
-        controlCallback = std::make_shared<ControlInputCallback>(*this);
-        inputControlPort.setReader(*controlCallback);
-    }
-
-
-    // stateThread = std::unique_ptr<StateUpdateThread>(new StateUpdateThread(10, *this));
-    if(!stateThread) {
-        stateThread = std::make_shared<StateUpdateThread>(10, *this);
-    }
-    stateThread->start();
-
-    controlPortsOpen = res;
-
-    return res;
-}
-
-bool TaskManager::closeControlPorts()
-{
-    if (stateThread->isRunning()) {
-        stateThread->stop();
-    }
-    if (controlPortsOpen) {
-        inputControlPort.close();
-        outputControlPort.close();
-    }
-
-    bool res = !inputControlPort.isOpen() && !outputControlPort.isOpen();
-
-    controlPortsOpen = !res;
-
-    return res;
-}
-
-bool TaskManager::parseControlInput(yarp::os::Bottle& input)
-{
-    if (input.size() >= stateDimension)
-    {
-        for(int i=0; i<stateDimension; i++)
-        {
-            newDesiredStateVector[i] = input.get(i).asDouble(); //make sure there are no NULL entries
-        }
-        Eigen::VectorXd newWeights = getWeight();
-        if (input.size()==(stateDimension + newWeights.size())) {
-            int j = 0;
-            for(int i = stateDimension; i<(stateDimension + newWeights.size()); i++)
-            {
-                newWeights(j) = input.get(i).asDouble(); //make sure there are no NULL entries
-                j++;
-            }
-            setWeight(newWeights);
-        }
-
-        setDesiredState(); // constructs the appropropriate state inputs
-        return true;
-    }
-    else{return false;}
-}
-
-std::string TaskManager::getTaskManagerType()
-{
-    return "[TaskManager::getTaskManagerType()]: getTaskManagerType has not been implemented for this task manager.";
-}
-
-void TaskManager::setStateDimension(int taskDimension, int waypointDimension)
-{
-    waypointSelector = waypointDimension;
-    stateDimension = taskDimension;
-    currentStateVector.resize(stateDimension);
-    desiredStateVector.resize(stateDimension);
-    newDesiredStateVector.resize(stateDimension);
-
-    for(int i=0; i<stateDimension; i++){
-      newDesiredStateVector[i] = 0.0; //make sure there are no NULL entries
-    }
-
-    eigenCurrentStateVector = Eigen::VectorXd::Zero(stateDimension);
-    eigenDesiredStateVector = Eigen::VectorXd::Zero(stateDimension);
-}
-
-void TaskManager::updateCurrentStateVector(const double* ptrToFirstIndex)
-{
-    if (controlPortsOpen){stateOutBottle.clear();}
-    for(int i=0; i<stateDimension; i++){
-        currentStateVector[i] = *ptrToFirstIndex;
-        if (controlPortsOpen){stateOutBottle.addDouble(*ptrToFirstIndex);}
-        ptrToFirstIndex++;
-    }
-    if (controlPortsOpen){outputControlPort.write(stateOutBottle);}
-}
-
-void TaskManager::updateDesiredStateVector(const double* ptrToFirstIndex)
-{
-    for(int i=0; i<stateDimension; i++){
-        desiredStateVector[i] = *ptrToFirstIndex;
-        ptrToFirstIndex++;
-    }
-}
-
-const double* TaskManager::getCurrentState()
-{
-    Eigen::VectorXd emptyVector = Eigen::VectorXd::Zero(stateDimension);
-    return emptyVector.data();
-}
-
-
-bool TaskManager::checkIfActivated()
-{
-    return false;
-}
-
-
-std::string TaskManager::getPortName()
-{
-    return portName;
-}
-
-void TaskManager::setTrajectoryType(std::string trajType)
-{
-    if (trajType=="MinJerk") {
-        taskTrajectory = std::unique_ptr<MinimumJerkTrajectory>(new MinimumJerkTrajectory());
-    }
-    else if (trajType=="LinInterp") {
-        taskTrajectory = std::unique_ptr<LinearInterpolationTrajectory>(new LinearInterpolationTrajectory());
-    }
-    // else if (trajType == "Experimental"){
-    //     taskTrajectory = std::unique_ptr<ExperimentalTrajectory>(new ExperimentalTrajectory());
-    // }
-    else {
-        taskTrajectory = std::unique_ptr<MinimumJerkTrajectory>(new MinimumJerkTrajectory());
-    }
-}
-
-void TaskManager::updateTrajectory(double time)
-{
-    taskTrajectory->getDesiredValues(time, newDesiredStateVector);
-    setDesiredState();
-    followingTrajectory = !taskTrajectory->isFinished();
-}
-
-
-/**************************************************************************************************
-                                    Nested PortReader Class
-**************************************************************************************************/
-TaskManager::RpcMessageCallback::RpcMessageCallback(TaskManager& tmBaseRef)
-: tmBase(tmBaseRef)
-{
-    //do nothing
-}
-
-bool TaskManager::RpcMessageCallback::read(yarp::os::ConnectionReader& connection)
-{
-    yarp::os::Bottle input;
-    yarp::os::Bottle reply;
-
-    if (!input.read(connection)){
-        return false;
-    }
-    else{
-        tmBase.parseIncomingMessage(input, reply);
-        yarp::os::ConnectionWriter* returnToSender = connection.getWriter();
-        if (returnToSender!=NULL) {
-            reply.write(*returnToSender);
-        }
-        return true;
-    }
-}
-/**************************************************************************************************
-**************************************************************************************************/
-
-
-
-/**************************************************************************************************
-                                    Nested PortReader Class
-**************************************************************************************************/
-TaskManager::ControlInputCallback::ControlInputCallback(TaskManager& tmBaseRef)
-: tmBase(tmBaseRef)
-{
-    //do nothing
-}
-
-bool TaskManager::ControlInputCallback::read(yarp::os::ConnectionReader& connection)
-{
-    yarp::os::Bottle input;
-    if (input.read(connection)){
-        return tmBase.parseControlInput(input);
-    }
-    else{
-        return false;
-    }
-}
-/**************************************************************************************************
-**************************************************************************************************/
-
-
-/**************************************************************************************************
-                                    StateUpdateThread Class
-**************************************************************************************************/
-TaskManager::StateUpdateThread::StateUpdateThread(int period, TaskManager& tmBaseRef):
-RateThread(period),
-tmBase(tmBaseRef)
-{
-    // Do nothing
-}
-bool TaskManager::StateUpdateThread::threadInit()
-{
-    return true;
-}
-void TaskManager::StateUpdateThread::run()
-{
-    tmBase.updateCurrentStateVector(tmBase.getCurrentState());
-}
-void TaskManager::StateUpdateThread::threadRelease()
-{
-    std::cout << "StateUpdateThread: Closing.\n";
-}
-/**************************************************************************************************
-**************************************************************************************************/
-
 }

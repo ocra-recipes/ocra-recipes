@@ -266,21 +266,6 @@ double FullPostureTaskManager::getDamping()
     return C(0, 0);
 }
 
-/** Activate function
- *
- */
-void FullPostureTaskManager::activate()
-{
-    task->activateAsObjective();
-}
-
-/** Deactivate function
- *
- */
-void FullPostureTaskManager::deactivate()
-{
-    task->deactivate();
-}
 
 /** Gets the error for this task (posture error)
  *

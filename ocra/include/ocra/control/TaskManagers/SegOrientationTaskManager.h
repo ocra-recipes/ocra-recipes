@@ -29,9 +29,7 @@ class SegOrientationTaskManager: public TaskManager
 
         void setOrientation(const Eigen::Rotation3d& pos);
 
-        // All Managers have this
-        void activate();
-        void deactivate();
+        
 
         // For objective tasks
         void setStiffness(double stiffness);

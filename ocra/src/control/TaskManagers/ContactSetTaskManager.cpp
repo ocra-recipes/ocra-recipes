@@ -50,30 +50,6 @@ ContactSetTaskManager::~ContactSetTaskManager()
     }
 }
 
-/** Activate function
- *
- *  Activates all the constraints (as constraints)
- */
-void ContactSetTaskManager::activate()
-{
-    for (int i = 0; i < numContacts; i++)
-    {
-        taskVector[i]->activateAsConstraint();
-    }
-}
-
-/** Deactivate function
- *
- *  Deactivates all the constraints
- */
-void ContactSetTaskManager::deactivate()
-{
-    for (int i = 0; i < numContacts; i++)
-    {
-        taskVector[i]->deactivate();
-    }
-}
-
 // Masks base class function
 VectorXd ContactSetTaskManager::getTaskError()
 {

@@ -17,13 +17,13 @@ namespace ocra
 
     void TaskSequence::update(double time, ocra::Model& state, void** args)
     {
-        for (tmIterator it = taskManagers.begin(); it != taskManagers.end(); it++)
-        {
-            if(it->second->isFollowingTrajectory())
-            {
-                it->second->updateTrajectory(time);
-            }
-        }
+        // for (tmIterator it = taskManagers.begin(); it != taskManagers.end(); it++)
+        // {
+        //     if(it->second->isFollowingTrajectory())
+        //     {
+        //         it->second->updateTrajectory(time);
+        //     }
+        // }
 
         // Run the custom doUpdate function of the cpp Sequences for hard coded control logic:
         doUpdate(time, state, args);

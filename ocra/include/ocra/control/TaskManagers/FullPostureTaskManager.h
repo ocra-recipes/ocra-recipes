@@ -4,7 +4,7 @@
 #include "ocra/control/Model.h"
 #include "ocra/control/TaskManagers/TaskManager.h"
 #include "ocra/control/FullState.h"
-// 
+//
 
 
 #include <Eigen/Dense>
@@ -28,10 +28,7 @@ class FullPostureTaskManager : public TaskManager
 
         ~FullPostureTaskManager();
 
-        // All Managers have this
-        void activate();
-        void deactivate();
-
+    
         // Yarp related:
         virtual const double * getCurrentState();
         virtual std::string getTaskManagerType();
@@ -57,7 +54,7 @@ class FullPostureTaskManager : public TaskManager
 
 
     private:
-        
+
 
 
         ocra::FullStateFeature*          feat;

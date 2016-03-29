@@ -24,8 +24,7 @@ class ContactSetTaskManager: public TaskManager
 
         ~ContactSetTaskManager();
 
-        void activate();
-        void deactivate();
+        
         virtual std::string getTaskManagerType();
 
 

@@ -96,7 +96,7 @@ void CoMTaskManager::_init(double stiffness, double damping, double weight)
     task->setWeight(weight);
     task->activateAsObjective();
 
-    setStateDimension(9, 3); //3 dof for pos vel and acc
+    setStateDimension(9); //3 dof for pos vel and acc
 
     // Set the desired state to the current position of the segment with 0 vel or acc
     setState(model.getCoMPosition());
@@ -118,7 +118,7 @@ void CoMTaskManager::_init(double stiffness, double damping, const Eigen::Vector
     task->setWeight(weight);
     task->activateAsObjective();
 
-    setStateDimension(9, 3); //3 dof for pos vel and acc
+    setStateDimension(9); //3 dof for pos vel and acc
 
     // Set the desired state to the current position of the segment with 0 vel or acc
     setState(model.getCoMPosition());
@@ -219,22 +219,6 @@ double CoMTaskManager::getDamping()
 {
     Eigen::MatrixXd C = task->getDamping();
     return C(0, 0);
-}
-
-/** Activates the task
- *
- */
-void CoMTaskManager::activate()
-{
-    task->activateAsObjective();
-}
-
-/** Deactivates the task
- *
- */
-void CoMTaskManager::deactivate()
-{
-    task->deactivate();
 }
 
 /** Gets the error for this task (COM position error)

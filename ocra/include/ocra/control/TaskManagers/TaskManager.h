@@ -16,157 +16,164 @@
 #include <yarp/os/ConnectionReader.h>
 #include <yarp/os/Port.h>
 #include <yarp/os/RateThread.h>
+#include <yarp/os/Log.h>
+#include <yarp/os/LogStream.h>
 
 namespace ocra
 {
 
+enum TASK_MODE
+{
+    TASK_AS_OBJECTIVE,
+    TASK_AS_CONSTRAINT,
+    TASK_NOT_DEFINED
+};
 
-/** \brief Task Manager for the Center of Mass (CoM) task with the  Controller
+
+/*! \class TaskManager
+ *  \brief A factory base class which facilitates the construction of common task types.
  *
+ *  a long description
  */
 class TaskManager
 {
+public:
+    TaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& name, bool usesYarpPorts=false);
+    virtual ~TaskManager();
+
+
+    bool activate();
+    bool activate(std::shared_ptr<Task> tsk, const TASK_MODE tmode);
+
+    bool deactivate();
+    TASK_MODE getTaskMode(std::shared_ptr<Task> tsk);
+
+
+    std::string getPortName();
+    double getTaskErrorNorm();
+
+public: /*Nested callback classes */
+
+    /*! \class RpcMessageCallback
+     *  \brief a short description
+     *
+     *  a long description
+     */
+    class RpcMessageCallback : public yarp::os::PortReader {
+    private:
+        TaskManager& tmBase;
+
     public:
-        TaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& name, bool usesYarpPorts=false);
-        virtual ~TaskManager();
+        RpcMessageCallback(TaskManager& tmBaseRef);
+
+        virtual bool read(yarp::os::ConnectionReader& connection);
+    };
+
+    /*! \class ControlInputCallback
+     *  \brief a short description
+     *
+     *  a long description
+     */
+    class ControlInputCallback : public yarp::os::PortReader {
+    private:
+        TaskManager& tmBase;
+
+    public:
+        ControlInputCallback(TaskManager& tmBaseRef);
+
+        virtual bool read(yarp::os::ConnectionReader& connection);
+    };
+
+    /*! \class StateUpdateThread
+     *  \brief a short description
+     *
+     *  a long description
+     */
+    class StateUpdateThread : public yarp::os::RateThread
+    {
+    private:
+        TaskManager& tmBase;
+
+    public:
+        StateUpdateThread(int period, TaskManager& tmBaseRef);
+        bool threadInit();
+        void run();
+        void threadRelease();
+    };
+
+public: /* Public virtual methods */
+
+    virtual std::string getTaskManagerType();
+    virtual VectorXd getTaskError();
+
+    virtual void setStiffness(double stiffness){ std::cout << "setStiffness() Not implemented" << std::endl; }
+    virtual double getStiffness(){return 0.0;}
+    virtual void setDamping(double damping){ std::cout << "setDamping() Not implemented" << std::endl; }
+    virtual double getDamping(){return 0.0;}
+    virtual void setWeight(double weight){task->setWeight(weight);}
+    virtual void setWeight(Eigen::VectorXd& weight){task->setWeight(weight);}
+    virtual Eigen::VectorXd getWeight(){}
+    virtual void setDesiredState(){ std::cout << "setDesiredState() Not implemented" << std::endl; }
+    virtual void setWeights(Eigen::Vector3d weight){};
+    // virtual void activate() = 0;
+    // virtual void deactivate() = 0;
 
 
-        virtual void activate() = 0;
-        virtual void deactivate() = 0;
-
-        std::string getPortName();
-
-        void updateTrajectory(double time);
-        bool isFollowingTrajectory(){return followingTrajectory;}
-
-        // For getting the task type
-        virtual std::string getTaskManagerType();
-
-        virtual VectorXd getTaskError();
-        double getTaskErrorNorm();
-
-        /*****************************************************************************************/
-        /** \brief RpcMessageCallback
-        *
-        */
-        class RpcMessageCallback : public yarp::os::PortReader {
-        private:
-            TaskManager& tmBase;
-
-        public:
-            RpcMessageCallback(TaskManager& tmBaseRef);
-
-            virtual bool read(yarp::os::ConnectionReader& connection);
-        };
-
-        /** \brief ControlInputCallback
-        *
-        */
-        class ControlInputCallback : public yarp::os::PortReader {
-        private:
-            TaskManager& tmBase;
-
-        public:
-            ControlInputCallback(TaskManager& tmBaseRef);
-
-            virtual bool read(yarp::os::ConnectionReader& connection);
-        };
-
-        /** \brief StateUpdateThread
-        *
-        */
-        class StateUpdateThread : public yarp::os::RateThread
-        {
-        private:
-            TaskManager& tmBase;
-
-        public:
-            StateUpdateThread(int period, TaskManager& tmBaseRef);
-            bool threadInit();
-            void run();
-            void threadRelease();
-        };
-        /*****************************************************************************************/
+protected: /* Protected virtual methods */
+    virtual const double* getCurrentState();
+    virtual bool checkIfActivated();
 
 
-        virtual void setStiffness(double stiffness){ std::cout << "setStiffness() Not implemented" << std::endl; }
-        virtual double getStiffness(){return 0.0;}
-        virtual void setDamping(double damping){ std::cout << "setDamping() Not implemented" << std::endl; }
-        virtual double getDamping(){return 0.0;}
-        virtual void setWeight(double weight){task->setWeight(weight);}
-        virtual void setWeight(Eigen::VectorXd& weight){task->setWeight(weight);}
-        virtual Eigen::VectorXd getWeight(){}
-        virtual void setDesiredState(){ std::cout << "setDesiredState() Not implemented" << std::endl; }
-
-        virtual void setWeights(Eigen::Vector3d weight){};
-
-    protected:
-        std::shared_ptr<ocra::Task>                 task;
-        std::vector< std::shared_ptr<ocra::Task> >  taskVector;
-        // ocra::Task*                     task;
+protected: /* Protected methods */
+    void updateDesiredStateVector(const double* ptrToFirstIndex);
+    void updateCurrentStateVector(const double* ptrToFirstIndex);
+    void setStateDimension(int taskDimension);
+    // For parsing and compiling yarp messages.
+    virtual void parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply);
+    std::string printValidMessageTags();
+    bool openControlPorts();
+    bool closeControlPorts();
+    bool parseControlInput(yarp::os::Bottle& input);
 
 
-        ocra::Controller&               ctrl;
-        const ocra::Model&              model;
-        const std::string&              name;
-        std::string                     stableName; //hack to avoid using name in compileOutgoingMessage()
+protected:
+    std::shared_ptr<ocra::Task>                 task;
+    std::vector< std::shared_ptr<ocra::Task> >  taskVector;
 
-        bool taskManagerActive;
+    ocra::Controller&               ctrl;
+    const ocra::Model&              model;
+    const std::string&              name;
+    std::string                     stableName; //hack to avoid using name in compileOutgoingMessage()
 
-        bool usesTrajectory;
-        bool followingTrajectory;
+    bool taskManagerActive;
 
-        std::unique_ptr<Trajectory>     taskTrajectory;
+    //Generic double vector to store states:
+    std::vector<double> currentStateVector, desiredStateVector, newDesiredStateVector;
+    Eigen::VectorXd eigenCurrentStateVector, eigenDesiredStateVector;
+    int stateDimension;
 
-        //Generic double vector to store states:
 
-        std::vector<double> currentStateVector, desiredStateVector, newDesiredStateVector;
-
-        Eigen::VectorXd eigenCurrentStateVector, eigenDesiredStateVector;
-
-        int waypointSelector;
+    yarp::os::Network yarp;
+    yarp::os::RpcServer rpcPort;
+    std::string portName;
 
 
 
-
-        virtual const double* getCurrentState();
-        virtual bool checkIfActivated();
-
-        void updateDesiredStateVector(const double* ptrToFirstIndex);
-        void updateCurrentStateVector(const double* ptrToFirstIndex);
-
-        void setStateDimension(int taskDimension, int waypointDimension=0);
+    bool controlPortsOpen;
+    yarp::os::Bottle stateInBottle, stateOutBottle;
+    std::string inputControlPortName, outputControlPortName;
+    yarp::os::Port inputControlPort, outputControlPort;
 
 
-        // For parsing and compiling yarp messages.
-        virtual void parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply);
-
-        std::string printValidMessageTags();
 
 
-        yarp::os::Network yarp;
-        yarp::os::RpcServer rpcPort;
-        std::string portName;
+private:
+    std::shared_ptr<RpcMessageCallback> rpcCallback;
+    std::shared_ptr<ControlInputCallback> controlCallback;
+    std::shared_ptr<StateUpdateThread> stateThread;
 
-        int stateDimension;
-
-        void setTrajectoryType(std::string trajType="MinJerk");
-        bool openControlPorts();
-        bool closeControlPorts();
-
-
-        bool controlPortsOpen;
-        yarp::os::Bottle stateInBottle, stateOutBottle;
-        std::string inputControlPortName, outputControlPortName;
-        yarp::os::Port inputControlPort, outputControlPort;
-
-        std::unique_ptr<RpcMessageCallback> rpcCallback;
-        std::shared_ptr<ControlInputCallback> controlCallback;
-        std::shared_ptr<StateUpdateThread> stateThread;
-
-        bool parseControlInput(yarp::os::Bottle& input);
-
-
+    TASK_MODE taskMode;
+    yarp::os::Log yLog;
 };
 
 }

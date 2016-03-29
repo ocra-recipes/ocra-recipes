@@ -83,7 +83,7 @@ SegOrientationTaskManager::SegOrientationTaskManager(ocra::Controller& _ctrl,
 
 SegOrientationTaskManager::~SegOrientationTaskManager()
 {
-    
+
 }
 
 /** Initializer function for the constructor, sets up the frames, parameters, controller and task
@@ -216,22 +216,6 @@ double SegOrientationTaskManager::getDamping()
 {
     Eigen::MatrixXd C = task->getDamping();
     return C(0, 0);
-}
-
-/** Activates the task
- *
- */
-void SegOrientationTaskManager::activate()
-{
-    task->activateAsObjective();
-}
-
-/** Deactivates the task
- *
- */
-void SegOrientationTaskManager::deactivate()
-{
-    task->deactivate();
 }
 
 /** Gets the error for this task (COM position error)

@@ -256,27 +256,6 @@ double VariableWeightsTaskManager::getDamping()
     return C(0, 0);
 }
 
-/** Activates the task
- *
- */
-void VariableWeightsTaskManager::activate()
-{
-    for (int i=0; i<nDoF; i++)
-    {
-        taskVector[i]->activateAsObjective();
-    }
-}
-
-/** Deactivates the task
- *
- */
-void VariableWeightsTaskManager::deactivate()
-{
-    for (int i=0; i<nDoF; i++)
-    {
-        taskVector[i]->deactivate();
-    }
-}
 
 /** Gets the error for this task (Cartesian error)
  *
