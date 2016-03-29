@@ -352,12 +352,6 @@ std::string SegCartesianTaskManager::getTaskManagerType()
 }
 
 
-bool SegCartesianTaskManager::checkIfActivated()
-{
-    return task->isActiveAsObjective();
-}
-
-
 
 
 Eigen::Displacementd SegCartesianTaskManager::getTaskFrameDisplacement()

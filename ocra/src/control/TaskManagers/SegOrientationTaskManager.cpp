@@ -241,9 +241,6 @@ std::string SegOrientationTaskManager::getTaskManagerType()
 }
 
 
-bool SegOrientationTaskManager::checkIfActivated()
-{
-    return task->isActiveAsObjective();
-}
+
 
 }

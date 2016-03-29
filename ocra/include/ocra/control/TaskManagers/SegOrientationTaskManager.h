@@ -29,7 +29,7 @@ class SegOrientationTaskManager: public TaskManager
 
         void setOrientation(const Eigen::Rotation3d& pos);
 
-        
+
 
         // For objective tasks
         void setStiffness(double stiffness);
@@ -47,7 +47,6 @@ class SegOrientationTaskManager: public TaskManager
         // Yarp related:
         virtual const double * getCurrentState();
         virtual std::string getTaskManagerType();
-        virtual bool checkIfActivated();
 
 
     private:

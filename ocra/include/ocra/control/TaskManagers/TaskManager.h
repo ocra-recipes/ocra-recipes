@@ -22,6 +22,9 @@
 namespace ocra
 {
 
+/*! \enum TASK_MODE
+ *  \brief A basic enumeration for the different types of tasks we can have.
+ */
 enum TASK_MODE
 {
     TASK_AS_OBJECTIVE,
@@ -38,18 +41,58 @@ enum TASK_MODE
 class TaskManager
 {
 public:
-    TaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& name, bool usesYarpPorts=false);
+
+    /*! Constructor.
+     *  \param ctrl A reference to an ocra controller.
+     *  \param model A reference to and ocra model.
+     *  \param name The name of the task.
+     *  \param usesYarpPorts Whether or not to use yarp for interprocess communication with the task. True by defualt.
+     */
+    TaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& name, bool usesYarpPorts=true);
+
+    /*! Destructor. Mostly just closes yarp ports and threads.
+     */
     virtual ~TaskManager();
 
-
+    /*! Activates the underlying task(s)
+     *  \note \ref `deactivate()` must be called before this function to work properly.
+     *
+     *  \return A boolean indicating the success of the operation.
+     */
     bool activate();
+
+    /*! Activates a single task as either an objective or a constraint.
+     *  \note \ref `deactivate()` must be called before this function to work properly.
+     *
+     *  \return A boolean indicating the success of the operation.
+     */
     bool activate(std::shared_ptr<Task> tsk, const TASK_MODE tmode);
 
+    /*! Deactivates the underlying task(s). This is where we call \ref`getTaskMode()` to see if the task in an objective or a constraint.
+     *
+     *  \return A boolean indicating the success of the operation.
+     */
     bool deactivate();
+
+    /*! Gets the current task mode. Either objective, constraint or undefined.
+     *  \param tsk A pointer to a single task.
+     *
+     *  \return The mode of that task.
+     */
     TASK_MODE getTaskMode(std::shared_ptr<Task> tsk);
 
-
+    /*! Gets the name of the task manager's RPC server port.
+     *
+     *  \return The port's full name as a string.
+     */
     std::string getPortName();
+
+    /*! Check if the task is active as either an objective or a constraint.
+     *
+     *  \return A boolean indicating the task(s) activity.
+     */
+    bool isActivated();
+
     double getTaskErrorNorm();
 
 public: /*Nested callback classes */
@@ -121,7 +164,6 @@ public: /* Public virtual methods */
 
 protected: /* Protected virtual methods */
     virtual const double* getCurrentState();
-    virtual bool checkIfActivated();
 
 
 protected: /* Protected methods */

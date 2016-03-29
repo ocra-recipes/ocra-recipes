@@ -49,10 +49,12 @@ TaskManager::~TaskManager()
 bool TaskManager::activate()
 {
     if(task){
+        if(isActivated()){taskMode = getTaskMode(task);}
         return activate(task, taskMode);
     }
     else if (!taskVector.empty()){
         bool retVal = true;
+        if(isActivated()){taskMode = getTaskMode(taskVector[0]);}
         for (auto tsk : taskVector)
         {
             retVal &= activate(tsk, taskMode);
@@ -86,7 +88,7 @@ bool TaskManager::activate(std::shared_ptr<Task> tsk, const TASK_MODE tmode)
 
             case TASK_NOT_DEFINED:
             {
-                yLog.error() << "Task has not been defined as an objective or constraint therefore I can't activate it.";
+                yLog.error() << "Task, " << stableName << ", has not been defined as an objective or constraint therefore I can't activate it.";
                 allActivated = false;
             }break;
 
@@ -102,12 +104,16 @@ bool TaskManager::activate(std::shared_ptr<Task> tsk, const TASK_MODE tmode)
 bool TaskManager::deactivate()
 {
     if(task){
+        if(isActivated()){taskMode = getTaskMode(task);}
+
         taskMode = getTaskMode(task);
         task->deactivate();
         return true;
     }
     else if (!taskVector.empty()){
-        if(taskVector[0]){taskMode = getTaskMode(taskVector[0]);}
+        if(taskVector[0]){
+            if(isActivated()){taskMode = getTaskMode(taskVector[0]);}
+        }
         for (auto tsk : taskVector)
         {
             if(tsk){tsk->deactivate();}
@@ -132,52 +138,54 @@ TASK_MODE TaskManager::getTaskMode(std::shared_ptr<Task> tsk)
     }
 }
 
+bool TaskManager::isActivated()
+{
+    if(task){
+        return task->isActiveAsObjective() || task->isActiveAsConstraint();
+    }
+    else if (!taskVector.empty()) {
+        if(taskVector[0]) {
+            return taskVector[0]->isActiveAsObjective() || taskVector[0]->isActiveAsConstraint();
+        }
+    } else {
+        return false;
+    }
+}
 
-
-
-/** Returns the error vector of the task
- *
- *  If the derived child class does not have a meaningful error, it should override this function to throw an error
- */
 Eigen::VectorXd TaskManager::getTaskError()
 {
     throw std::runtime_error(std::string("[TaskManager::getTaskError()]: getTaskError has not been implemented or is not supported"));
 }
 
-/** Returns the norm of the error vector
- *
- *  If the derived child class does not have a meaningful error, it should override this function to throw an error
- */
 double TaskManager::getTaskErrorNorm()
 {
     return getTaskError().norm();
 }
 
-
-
 bool TaskManager::openControlPorts()
 {
     bool res = true;
-    inputControlPortName = "/TM/"+stableName+"/state:i";
-    outputControlPortName = "/TM/"+stableName+"/state:o";
+    if (!controlPortsOpen)
+    {
+        inputControlPortName = "/TM/"+stableName+"/state:i";
+        outputControlPortName = "/TM/"+stableName+"/state:o";
 
-    res = res && inputControlPort.open(inputControlPortName.c_str());
-    res = res && outputControlPort.open(outputControlPortName.c_str());
+        res = res && inputControlPort.open(inputControlPortName.c_str());
+        res = res && outputControlPort.open(outputControlPortName.c_str());
 
-    // controlCallback = std::unique_ptr<ControlInputCallback>(new ControlInputCallback(*this));
+        controlPortsOpen = res;
+    }
+
     if (!controlCallback) {
         controlCallback = std::make_shared<ControlInputCallback>(*this);
         inputControlPort.setReader(*controlCallback);
     }
-
-
-    // stateThread = std::unique_ptr<StateUpdateThread>(new StateUpdateThread(10, *this));
     if(!stateThread) {
         stateThread = std::make_shared<StateUpdateThread>(10, *this);
     }
-    stateThread->start();
-
-    controlPortsOpen = res;
+    if (!stateThread->isRunning()) {
+        stateThread->start();
+    }
 
     return res;
 }
@@ -205,17 +213,17 @@ bool TaskManager::parseControlInput(yarp::os::Bottle& input)
 {
     if (input.size() >= stateDimension)
     {
-        for(int i=0; i<stateDimension; i++)
+        for(int i=0; i<stateDimension; ++i)
         {
             newDesiredStateVector[i] = input.get(i).asDouble(); //make sure there are no NULL entries
         }
         Eigen::VectorXd newWeights = getWeight();
         if (input.size()==(stateDimension + newWeights.size())) {
             int j = 0;
-            for(int i = stateDimension; i<(stateDimension + newWeights.size()); i++)
+            for(int i = stateDimension; i<(stateDimension + newWeights.size()); ++i)
             {
                 newWeights(j) = input.get(i).asDouble(); //make sure there are no NULL entries
-                j++;
+                ++j;
             }
             setWeight(newWeights);
         }
@@ -269,12 +277,6 @@ const double* TaskManager::getCurrentState()
 {
     Eigen::VectorXd emptyVector = Eigen::VectorXd::Zero(stateDimension);
     return emptyVector.data();
-}
-
-
-bool TaskManager::checkIfActivated()
-{
-    return false;
 }
 
 
@@ -473,7 +475,7 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
         else if (msgTag == "getActivityStatus")
         {
             reply.addString("activated");
-            reply.addInt(checkIfActivated());
+            reply.addInt(isActivated());
             i++;
         }
 
@@ -481,7 +483,7 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
         else if (msgTag == "activate")
         {
             activate();
-            if (checkIfActivated()) {
+            if (isActivated()) {
                 reply.addString("activated");
             }else{reply.addString("failed");}
 
@@ -492,7 +494,7 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
         else if (msgTag == "deactivate")
         {
             deactivate();
-            if (!checkIfActivated()) {
+            if (!isActivated()) {
                 reply.addString("deactivated");
             }else{reply.addString("failed");}
             i++;

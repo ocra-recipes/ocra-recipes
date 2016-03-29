@@ -16,12 +16,17 @@ namespace ocra
  * \param _margin               Margin inside the friction cone
  */
 ContactSetTaskManager::ContactSetTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, std::vector<Eigen::Displacementd> _H_segment_frames, double _mu, double _margin, bool _usesYarpPorts)
-    : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), numContacts(_H_segment_frames.size())
+    : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
+    , segmentName(_segmentName)
+    , numContacts(_H_segment_frames.size())
 {
     taskVector.resize(numContacts);
-    feats = new ocra::PointContactFeature*[numContacts];
-    featFrames = new ocra::SegmentFrame*[numContacts];
-    names = new std::string[numContacts];
+    feats.resize(numContacts);
+    featFrames.resize(numContacts);
+    names.resize(numContacts);
+    // feats = new ocra::PointContactFeature*[numContacts];
+    // featFrames = new ocra::SegmentFrame*[numContacts];
+    // names = new std::string[numContacts];
 
     for (int i = 0; i < numContacts; i++)
     {
@@ -29,8 +34,9 @@ ContactSetTaskManager::ContactSetTaskManager(ocra::Controller& _ctrl, const ocra
         name_stream << name << i;
         names[i] = name_stream.str();
 
-        featFrames[i] = new ocra::SegmentFrame(names[i] + ".SegmentFrame", model, model.SegmentName(segmentName), _H_segment_frames[i]);
-        feats[i] = new ocra::PointContactFeature(names[i] + ".PointContactFeature", *featFrames[i]);
+        featFrames[i] = std::make_shared<ocra::SegmentFrame>(names[i] + ".SegmentFrame", model, model.SegmentName(segmentName), _H_segment_frames[i]);
+        feats[i] = std::make_shared<ocra::PointContactFeature>(names[i] + ".PointContactFeature", *featFrames[i]);
+
         taskVector[i] = ctrl.createContactTask(names[i], *feats[i], _mu, _margin);
         // Control the acceleration of the contact point
         taskVector[i]->setTaskType(ocra::Task::ACCELERATIONTASK);
@@ -43,11 +49,11 @@ ContactSetTaskManager::ContactSetTaskManager(ocra::Controller& _ctrl, const ocra
 
 ContactSetTaskManager::~ContactSetTaskManager()
 {
-    for (int i = 0; i < numContacts; i++)
-    {
-        taskVector[i]->deactivate();
-        // taskVector[i]->disconnectFromController();
-    }
+    // for (int i = 0; i < numContacts; i++)
+    // {
+    //     taskVector[i]->deactivate();
+    //     // taskVector[i]->disconnectFromController();
+    // }
 }
 
 // Masks base class function

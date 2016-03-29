@@ -261,11 +261,6 @@ std::string PartialPostureTaskManager::getTaskManagerType()
 }
 
 
-bool PartialPostureTaskManager::checkIfActivated()
-{
-    return task->isActiveAsObjective();
-}
-
 
 
 

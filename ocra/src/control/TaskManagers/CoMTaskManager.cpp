@@ -241,10 +241,6 @@ std::string CoMTaskManager::getTaskManagerType()
     return "CoMTaskManager";
 }
 
-bool CoMTaskManager::checkIfActivated()
-{
-    return task->isActiveAsObjective();
-}
 
 
 }

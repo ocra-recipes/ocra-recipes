@@ -24,7 +24,7 @@ class ContactSetTaskManager: public TaskManager
 
         ~ContactSetTaskManager();
 
-        
+
         virtual std::string getTaskManagerType();
 
 
@@ -32,13 +32,12 @@ class ContactSetTaskManager: public TaskManager
         double getTaskErrorNorm(); // Overrides base class function in this context
 
     private:
-        const std::string&              segmentName;
 
-        std::string*                    names;
-        int                             numContacts;
-
-        ocra::PointContactFeature**      feats;
-        ocra::SegmentFrame**             featFrames;
+        int                                                             numContacts;
+        std::string                                                     segmentName;
+        std::vector< std::string >                                      names;
+        std::vector< std::shared_ptr<ocra::PointContactFeature> >       feats;
+        std::vector< std::shared_ptr<ocra::SegmentFrame> >              featFrames;
 };
 
 }

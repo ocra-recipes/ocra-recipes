@@ -286,10 +286,5 @@ std::string FullPostureTaskManager::getTaskManagerType()
     return "FullPostureTaskManager";
 }
 
-bool FullPostureTaskManager::checkIfActivated()
-{
-    return task->isActiveAsObjective();
-}
-
 
 }

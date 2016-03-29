@@ -190,10 +190,6 @@ std::string CoMMomentumTaskManager::getTaskManagerType()
     return "CoMMomentumTaskManager";
 }
 
-bool CoMMomentumTaskManager::checkIfActivated()
-{
-    return task->isActiveAsObjective();
-}
 
 
 }

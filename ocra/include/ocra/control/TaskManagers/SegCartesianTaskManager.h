@@ -68,7 +68,6 @@ class SegCartesianTaskManager : public TaskManager
         // Yarp related:
         virtual const double * getCurrentState();
         virtual std::string getTaskManagerType();
-        virtual bool checkIfActivated();
 
 
 

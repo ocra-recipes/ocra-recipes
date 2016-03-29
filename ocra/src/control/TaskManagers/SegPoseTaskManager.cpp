@@ -362,14 +362,6 @@ std::string SegPoseTaskManager::getTaskManagerType()
     return "SegPoseTaskManager";
 }
 
-
-bool SegPoseTaskManager::checkIfActivated()
-{
-    return task->isActiveAsObjective();
-}
-
-
-
 Eigen::Displacementd SegPoseTaskManager::getTaskFrameDisplacement()
 {
     return featFrame->getPosition();

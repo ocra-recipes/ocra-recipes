@@ -28,11 +28,10 @@ class FullPostureTaskManager : public TaskManager
 
         ~FullPostureTaskManager();
 
-    
+
         // Yarp related:
         virtual const double * getCurrentState();
         virtual std::string getTaskManagerType();
-        virtual bool checkIfActivated();
 
         // Set the task reference
         void setPosture(const Eigen::VectorXd& q);
