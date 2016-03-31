@@ -23,6 +23,10 @@ install:
     - cd eigen_lgsm ; mkdir build ; cd build ; cmake ..
     - sudo make install
     - cd $CI_DIR
+    - git clone https://github.com/robotology-dependencies/qpOASES.git
+    - cd qpOASES ; mkdir build ; cd build ; cmake ..
+    - make -j2 && sudo make install
+    - cd $CI_DIR
     - mkdir build ; cd build
     - mkdir ~/ocra-install
     - cmake .. -DCMAKE_INSTALL_PREFIX=~/ocra-install
