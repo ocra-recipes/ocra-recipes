@@ -33,9 +33,8 @@
 #include <yarp/os/RFModule.h>
 #include <yarp/os/RpcServer.h>
 
-#include <yarpWholeBodyInterface/yarpWholeBodyInterface.h>
 #include "ocra-recipes/ControllerClient.h"
-// #include "ocra-icub/Utilities.h"
+
 
 namespace ocra_recipes
 {
