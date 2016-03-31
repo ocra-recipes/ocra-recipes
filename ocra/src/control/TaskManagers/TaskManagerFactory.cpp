@@ -40,7 +40,10 @@ bool TaskManagerFactory::parseTasksXML(const char * filePath)
 bool TaskManagerFactory::parseTasksXML(TiXmlDocument* newTasksFile)
 {
     if(newTasksFile == NULL)
+    {
+        std::cout << "[ERROR] newTasksFile arguement is NULL" << std::endl;
         return false;
+    }
 
     else
     {
@@ -68,10 +71,10 @@ bool TaskManagerFactory::parseTasksXML(TiXmlDocument* newTasksFile)
                             }else{currentTmArgs.kd=0.0;}
                         }
                         if (taskElem->QueryDoubleAttribute("weight", &currentTmArgs.weight)==TIXML_NO_ATTRIBUTE){currentTmArgs.weight=0.0; currentTmArgs.useWeightVectorConstructor=false;}else{currentTmArgs.useWeightVectorConstructor=false;}
-                        if (taskElem->QueryIntAttribute("axes", &currentTmArgs.axes)==TIXML_NO_ATTRIBUTE){currentTmArgs.axes=ocra::XYZ;}
+                        //if (taskElem->QueryIntAttribute("axes", &currentTmArgs.axes)==TIXML_NO_ATTRIBUTE){currentTmArgs.axes=ocra::XYZ;}
                         if (taskElem->QueryDoubleAttribute("mu", &currentTmArgs.mu)==TIXML_NO_ATTRIBUTE){currentTmArgs.mu=1.0;}
                         if (taskElem->QueryDoubleAttribute("margin", &currentTmArgs.margin)==TIXML_NO_ATTRIBUTE){currentTmArgs.margin=0.05;}
-                        if (taskElem->QueryIntAttribute("axes", &currentTmArgs.axes)==TIXML_NO_ATTRIBUTE){currentTmArgs.axes=ocra::XYZ;}
+                        currentTmArgs.axes=ocra::XYZ;
                         if (taskElem->Attribute("usesYarp") != NULL){
                             bool yarpBool;
                             std::string yarpString = std::string(taskElem->Attribute("usesYarp"));
@@ -377,7 +380,7 @@ const char * TaskManagerFactory::getDisplacementArgs(TiXmlElement* xmlElem)
             }
         }
 
-
+        
         return dispString.c_str();
     }
 }
@@ -756,7 +759,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
             tmOptsPtr->offset.front() = Eigen::VectorXd::Zero(3);
         }
 
-        if (sizeDesired!=3)
+        if (sizeDesired!=7)
         {
             if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<SegCartesianTaskManager>(*ctrl, *model,
@@ -785,7 +788,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
         }
 
 
-        else if(sizeDesired == 3)
+        else if(sizeDesired == 7)
         {
             if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<SegCartesianTaskManager>(*ctrl, *model,
@@ -796,7 +799,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weightVector,
-                                                        tmOptsPtr->desired,
+                                                        tmOptsPtr->desired.head(3),
                                                         tmOptsPtr->usesYarp);
             }
             else {
@@ -808,7 +811,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weight,
-                                                        tmOptsPtr->desired,
+                                                        tmOptsPtr->desired.head(3),
                                                         tmOptsPtr->usesYarp);
             }
 
@@ -821,7 +824,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
     else if(tmOptsPtr->taskType == "SegOrientationTaskManager")
     {
 
-        if (sizeDesired!=4)
+        if (sizeDesired!=7)
         {
             if (tmOptsPtr->useWeightVectorConstructor) {
                 newTaskManager = std::make_shared<SegOrientationTaskManager>(*ctrl, *model,
@@ -846,7 +849,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
         }
 
 
-        else if(sizeDesired == 4)
+        else if(sizeDesired == 7)
         {
             // We have to reorganize the quaternion vector when we use this constructor because it stores the coeffs in reverse order.
             double tmpW = tmOptsPtr->desired(0);
@@ -860,7 +863,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weightVector,
-                                                        Eigen::Rotation3d(tmOptsPtr->desired.data()),
+                                                        Eigen::Rotation3d(tmOptsPtr->desired.tail(4).data()),
                                                         tmOptsPtr->usesYarp);
             }
             else {
@@ -870,7 +873,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weight,
-                                                        Eigen::Rotation3d(tmOptsPtr->desired.data()),
+                                                        Eigen::Rotation3d(tmOptsPtr->desired.tail(4).data()),
                                                         tmOptsPtr->usesYarp);
             }
 
