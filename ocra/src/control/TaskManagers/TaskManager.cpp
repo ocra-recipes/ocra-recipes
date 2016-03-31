@@ -20,21 +20,27 @@ TaskManager::TaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, con
 , controlPortsOpen(false)
 , stateDimension(0)
 , taskMode(TASK_NOT_DEFINED)
+, usesYarp(_usesYarpPorts)
 {
     stableName = name;
 
-
-    portName = "/TM/"+name+"/rpc:i";
-    rpcCallback =  std::make_shared<RpcMessageCallback>(*this);
-    rpcPort.open(portName.c_str());
-    rpcPort.setReader(*rpcCallback);
+    if(usesYarp)
+    {
+        portName = "/TM/"+name+"/rpc:i";
+        rpcCallback =  std::make_shared<RpcMessageCallback>(*this);
+        rpcPort.open(portName.c_str());
+        rpcPort.setReader(*rpcCallback);
+    }
 }
 
 
 TaskManager::~TaskManager()
 {
-    std::cout << "\t--> Closing ports" << std::endl;
-    rpcPort.close();
+    if(usesYarp)
+    {
+        std::cout << "\t--> Closing ports" << std::endl;
+        rpcPort.close();
+    }
     // if(task){
     //     std::dynamic_pointer_cast<OneLevelTask>(task)->disconnectFromController();
     // }

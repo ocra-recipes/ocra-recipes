@@ -188,7 +188,7 @@ protected:
     std::string                     stableName; //hack to avoid using name in compileOutgoingMessage()
 
     bool taskManagerActive;
-
+    bool usesYarp;
     //Generic double vector to store states:
     std::vector<double> currentStateVector, desiredStateVector, newDesiredStateVector;
     Eigen::VectorXd eigenCurrentStateVector, eigenDesiredStateVector;
