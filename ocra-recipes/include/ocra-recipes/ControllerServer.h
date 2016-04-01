@@ -30,14 +30,14 @@ namespace ocra_recipes
 
 enum CONTROLLER_TYPE
 {
-    WOCRA_CONTROLLER,
+    WOCRA_CONTROLLER = 1,
     HOCRA_CONTROLLER,
     GOCRA_CONTROLLER
 };
 
 enum SOLVER_TYPE
 {
-    QUADPROG,
+    QUADPROG = 1,
     QPOASES
 };
 
