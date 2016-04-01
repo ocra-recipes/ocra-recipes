@@ -10,7 +10,11 @@ else()
     message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
-set(BUILD_SHARED_LIBS TRUE)
+if(APPLE)
+    set(BUILD_SHARED_LIBS FALSE)
+else()
+    set(BUILD_SHARED_LIBS TRUE)
+endif()
 
 set(VARS_PREFIX "OcraRecipes")
 
