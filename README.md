@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg)](https://travis-ci.org/ocra-recipes/ocra-recipes)
+Master : [![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg)](https://travis-ci.org/ocra-recipes/ocra-recipes)  Devel : [![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg?branch=dev)](https://travis-ci.org/ocra-recipes/ocra-recipes)
+-----
 # ocra-recipes
 
 Badass shit...
