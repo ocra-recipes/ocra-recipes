@@ -46,6 +46,15 @@ include_directories(
     ${QUADPROG_INCLUDE_DIRS}
 )
 
+find_package(qpOASES)
+if(qpOASES_FOUND)
+    include_directories(${qpOASES_INCLUDE_DIRS})
+    add_definitions(-DUSE_QPOASES)
+else()
+    set(qpOASES_LIBRARIES "")
+endif()
+
+
 add_subdirectory(ocra)
 add_subdirectory(wocra)
 add_subdirectory(ocra-recipes)
