@@ -42,7 +42,6 @@ namespace ocra
 typedef Eigen::Map<Eigen::MatrixXd> MatrixMap;
 typedef Eigen::Map<Eigen::VectorXd> VectorMap;
 
-typedef Eigen::Map< Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> > MatrixMapRm; /* Row Major for QPOASES */
 typedef Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> MatrixXdRm;
 
 /** \brief A generic abstract class the solvers that can be used in the wOcra Controller.
@@ -173,7 +172,7 @@ protected:
     std::unique_ptr<qpOASES::SQProblem> sqp_prob;
     qpOASES::Options sqp_options;
     //struct qp{
-        qpOASES::real_t* H;
+        std::vector<qpOASES::real_t> H;
         qpOASES::real_t* g;
         qpOASES::real_t* lb;
         qpOASES::real_t* ub;
@@ -186,6 +185,7 @@ protected:
     Eigen::VectorXd _xu;
 
     MatrixXdRm _AandG,_C_row_major;
+    Eigen::MatrixXd _RegTerm;
     Eigen::VectorXd _lbAandG,_ubAandG;
     Eigen::VectorXd _lbA,_lbG,_ubA,_ubG;
     
