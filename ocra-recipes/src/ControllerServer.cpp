@@ -65,7 +65,7 @@ bool ControllerServer::initialize()
     if(usingComs)
     {
         serverComs = std::make_shared<ServerCommunications>(controller, model, taskManagerSet);
-        res &= serverComs->open();
+        /*res &=*/ serverComs->open(); //TODO: find out why this returns false 
         res &= statesPort.open("/ControllerServer/states:o");
     }
 
