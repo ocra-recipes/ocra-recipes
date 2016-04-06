@@ -49,6 +49,7 @@ include_directories(
     ${EigenLgsm_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
     ${QUADPROG_INCLUDE_DIRS}
+    ${YARP_INCLUDE_DIRS}
 )
 
 find_package(qpOASES)

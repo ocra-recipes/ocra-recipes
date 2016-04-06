@@ -1,9 +1,7 @@
 project(ocra CXX)
 
 include_directories(BEFORE include)
-include_directories(${QUADPROG_INCLUDE_DIRS}
-                    ${YARP_INCLUDE_DIRS}
-                    )
+include_directories(${QUADPROG_INCLUDE_DIRS})
 
 file(GLOB_RECURSE control_srcs src/control/*.cpp)
 file(GLOB_RECURSE optim_srcs src/optim/*.cpp)
