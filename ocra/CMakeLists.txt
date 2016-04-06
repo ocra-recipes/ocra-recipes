@@ -1,7 +1,7 @@
 project(ocra CXX)
 
-include_directories(include
-                    ${QUADPROG_INCLUDE_DIRS}
+include_directories(BEFORE include)
+include_directories(${QUADPROG_INCLUDE_DIRS}
                     ${YARP_INCLUDE_DIRS}
                     )
 
