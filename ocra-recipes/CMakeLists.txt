@@ -1,6 +1,7 @@
 project(ocra-recipes)
 
-include_directories(include
+include_directories(BEFORE include)
+include_directories(
                     ${QUADPROG_INCLUDE_DIRS}
                     ${YARP_INCLUDE_DIRS}
                     ${OCRA_INCLUDE_DIRS}
