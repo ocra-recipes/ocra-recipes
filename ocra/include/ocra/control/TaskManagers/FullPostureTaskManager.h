@@ -37,19 +37,12 @@ class FullPostureTaskManager : public TaskManager
         void setPosture(const Eigen::VectorXd& q);
         void setPosture(const Eigen::VectorXd& q, const Eigen::VectorXd& qdot, const Eigen::VectorXd& qddot);
 
-        // For objective tasks
-        void setStiffness(double stiffness);
-        double getStiffness();
-        void setDamping(double damping);
-        double getDamping();
-        void setWeight(double weight);
-        void setWeight(const Eigen::VectorXd& weight);
-        Eigen::VectorXd getWeight();
+        
         void setDesiredState();
 
 
         // Task error
-        Eigen::VectorXd getTaskError();
+
 
 
     private:

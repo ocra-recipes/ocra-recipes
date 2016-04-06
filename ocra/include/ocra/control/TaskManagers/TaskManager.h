@@ -93,7 +93,92 @@ public:
      */
     bool isActivated();
 
+    /*! Gets the current error vector of the task.
+     *  \warn Only valid for task managers with 1 task, not sets of tasks.
+     *
+     *  \return A vector of errors in each DoF of the task.
+     */
+    VectorXd getTaskError();
+
+    /*! Gets the current error vector norm of the task.
+     *  \warn Only valid for task managers with 1 task, not sets of tasks.
+     *
+     *  \return The norm of the task error vector.
+     */
     double getTaskErrorNorm();
+
+    /*! Sets the stiffness, or proportional (Kp) gain, of the task.
+     *  \param K The proportional gain to set. Fills a diagonal matrix.
+     */
+    void setStiffness(double K);
+
+    /*! Sets the stiffness, or proportional (Kp) gains, of the task.
+     *  \param K The proportional gains to set for each DoF. Creates a diagonal matrix from K.
+     */
+    void setStiffness(const VectorXd& K);
+
+
+    /*! Sets the stiffness, or proportional (Kp) gains, of the task.
+     *  \param K The proportional gains to set for the task. Off diagonal components will create stiffness correlations between the task DoF.
+     */
+    void setStiffness(const MatrixXd& K);
+
+    /*! Gets the current stiffness, or proportional (Kp) gain, of the task.
+     *
+     *  \return The first diagonal entry of the stiffness matrix.
+     */
+    double getStiffness();
+
+    /*! Gets the current stiffness, or proportional (Kp) gain, of the task.
+     *
+     *  \return The stiffness matrix.
+     */
+    Eigen::MatrixXd getStiffnessMatrix();
+
+    /*! Sets the damping, or damping (Kd) gain, of the task.
+     *  \param K The damping gain to set. Fills a diagonal matrix.
+     */
+    void setDamping(double B);
+
+    /*! Sets the damping, or damping (Kd) gains, of the task.
+     *  \param K The damping gains to set for each DoF. Creates a diagonal matrix from K.
+     */
+    void setDamping(const VectorXd& B);
+
+
+    /*! Sets the damping, or damping (Kd) gains, of the task.
+     *  \param K The damping gains to set for the task. Off diagonal components will create damping correlations between the task DoF.
+     */
+    void setDamping(const MatrixXd& B);
+
+    /*! Gets the current damping, or damping (Kd) gain, of the task.
+     *
+     *  \return The first diagonal entry of the damping matrix.
+     */
+    double getDamping();
+
+    /*! Gets the current damping, or damping (Kd) gain, of the task.
+     *
+     *  \return The damping matrix.
+     */
+    Eigen::MatrixXd getDampingMatrix();
+
+
+    /*! Sets the weight for all DoF of a task.
+     *  \param weight The weight to apply to all task DoF.
+     */
+    void setWeight(double weight);
+
+    /*! Sets the weights for each DoF of a task.
+     *  \param weights A vector of weights to apply to each task DoF individually.
+     */
+    void setWeight(Eigen::VectorXd& weights);
+
+    /*! Gets the weights associated with the task. Often a task will have a single weight but it is still represented as a vector to be applied to each DoF of the task.
+     *
+     *  \return The vector of task weights.
+     */
+    Eigen::VectorXd getWeight();
 
 public: /*Nested callback classes */
 
@@ -147,19 +232,7 @@ public: /*Nested callback classes */
 public: /* Public virtual methods */
 
     virtual std::string getTaskManagerType();
-    virtual VectorXd getTaskError();
-
-    virtual void setStiffness(double stiffness){ std::cout << "setStiffness() Not implemented" << std::endl; }
-    virtual double getStiffness(){return 0.0;}
-    virtual void setDamping(double damping){ std::cout << "setDamping() Not implemented" << std::endl; }
-    virtual double getDamping(){return 0.0;}
-    virtual void setWeight(double weight){task->setWeight(weight);}
-    virtual void setWeight(Eigen::VectorXd& weight){task->setWeight(weight);}
-    virtual Eigen::VectorXd getWeight(){}
     virtual void setDesiredState(){ std::cout << "setDesiredState() Not implemented" << std::endl; }
-    virtual void setWeights(Eigen::Vector3d weight){};
-    // virtual void activate() = 0;
-    // virtual void deactivate() = 0;
 
 
 protected: /* Protected virtual methods */

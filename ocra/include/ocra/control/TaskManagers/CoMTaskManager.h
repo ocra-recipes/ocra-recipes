@@ -47,18 +47,10 @@ class CoMTaskManager: public TaskManager
         virtual std::string getTaskManagerType();
 
 
-        // For objective tasks
-        void setStiffness(double stiffness);
-        double getStiffness();
-        void setDamping(double damping);
-        double getDamping();
-        void setWeight(double weight);
-        void setWeight(const Eigen::VectorXd& weight);
-        Eigen::VectorXd getWeight();
         void setDesiredState();
 
         // Task error
-        Eigen::VectorXd getTaskError();
+
 
     private:
 

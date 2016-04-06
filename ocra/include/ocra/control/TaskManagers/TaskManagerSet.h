@@ -15,7 +15,6 @@
 #include "ocra/control/TaskManagers/SegCartesianTaskManager.h"
 #include "ocra/control/TaskManagers/SegOrientationTaskManager.h"
 #include "ocra/control/TaskManagers/SegPoseTaskManager.h"
-#include "ocra/control/TaskManagers/VariableWeightsTaskManager.h"
 
 #include "ocra/control/Model.h"
 #include "ocra/control/Controller.h"

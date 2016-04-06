@@ -116,67 +116,6 @@ void CoMMomentumTaskManager::_init(double damping, const Eigen::VectorXd& weight
 //    setState(newPosition, newVelocity, newAcceleration);
 //}
 
-/** Sets the weight constant for this task
- *
- *  \param weight               Desired weight value
- */
-void CoMMomentumTaskManager::setWeight(double weight)
-{
-    task->setWeight(weight);
-}
-
-void CoMMomentumTaskManager::setWeight(const Eigen::VectorXd& weight)
-{
-    task->setWeight(weight);
-}
-
-/** Gets the weight constant for this task
- *
- *  \return                     The weight for this task
- */
-Eigen::VectorXd CoMMomentumTaskManager::getWeight()
-{
-    return task->getWeight();
-}
-
-///** Sets the stiffness for this task
-// *
-// * \param stiffness             Desired stiffness
-// */
-//void CoMMomentumTaskManager::setStiffness(double stiffness)
-//{
-//    task->setStiffness(stiffness);
-//}
-
-///** Gets the stiffness constant for this task
-// *
-// *  \return                     The stiffness for this task
-// */
-//double CoMMomentumTaskManager::getStiffness()
-//{
-//    Eigen::MatrixXd K = task->getStiffness();
-//    return K(0, 0);
-//}
-
-/** Sets the damping for this task
- *
- * \param damping               Desired damping
- */
-void CoMMomentumTaskManager::setDamping(double damping)
-{
-    task->setDamping(damping);
-}
-
-/** Gets the damping constant for this task
- *
- *  \return                     The damping for this task
- */
-double CoMMomentumTaskManager::getDamping()
-{
-    Eigen::MatrixXd C = task->getDamping();
-    return C(0, 0);
-}
-
 
 const double* CoMMomentumTaskManager::getCurrentState()
 {

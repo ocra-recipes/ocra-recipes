@@ -40,19 +40,9 @@ class SegCartesianTaskManager : public TaskManager
         // Sets the position velocity and acceleration
         void setState(const Eigen::Vector3d& position, const Eigen::Vector3d& velocity, const Eigen::Vector3d& acceleration);
 
-
-        // For objective tasks
-        void setStiffness(double stiffness);
-        double getStiffness();
-        void setDamping(double damping);
-        double getDamping();
-        void setWeight(double weight);
-        void setWeight(const Eigen::VectorXd& weight);
-        Eigen::VectorXd getWeight();
         void setDesiredState();
 
-        // Task error
-        Eigen::VectorXd getTaskError();
+
 
         Eigen::Displacementd getTaskFrameDisplacement();
         Eigen::Twistd getTaskFrameVelocity();

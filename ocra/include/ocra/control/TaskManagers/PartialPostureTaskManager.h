@@ -33,22 +33,10 @@ class PartialPostureTaskManager : public TaskManager
 
         void setPosture(Eigen::VectorXd& q);
         void setPosture(Eigen::VectorXd& q, Eigen::VectorXd& qdot, Eigen::VectorXd& qddot);
-/*
-        void setStiffnessDamping(double stiffness, double damping);
-*/
 
-        void setStiffness(double stiffness);
-        double getStiffness();
-        void setDamping(double damping);
-        double getDamping();
-        void setWeight(double weight);
-        void setWeight(const Eigen::VectorXd& weight);
-        Eigen::VectorXd getWeight();
         void setDesiredState();
 
 
-        void activate();
-        void deactivate();
 
         // Yarp related:
         virtual const double * getCurrentState();

@@ -158,15 +158,129 @@ bool TaskManager::isActivated()
     }
 }
 
+
 Eigen::VectorXd TaskManager::getTaskError()
 {
-    throw std::runtime_error(std::string("[TaskManager::getTaskError()]: getTaskError has not been implemented or is not supported"));
+    if(task) {
+        return task->getError();
+    } else {
+        return Eigen::VectorXd::Zero(0);
+    }
 }
 
 double TaskManager::getTaskErrorNorm()
 {
     return getTaskError().norm();
 }
+
+void TaskManager::setStiffness(double K)
+{
+    if(task) {
+        task->setStiffness(K);
+    }
+}
+
+void TaskManager::setStiffness(const VectorXd& K)
+{
+    if(task) {
+        task->setStiffness(K);
+    }
+}
+
+void TaskManager::setStiffness(const MatrixXd& K)
+{
+    if(task) {
+        task->setStiffness(K);
+    }
+}
+
+double TaskManager::getStiffness()
+{
+    if(task) {
+        // Get the first entry in the stiffness matrix.
+        return getStiffnessMatrix()(0,0);
+    } else {
+        yLog.error() << "Unable to get the stiffness of the task because it does not exist. Returning 0.0";
+        return 0.0;
+    }
+}
+
+Eigen::MatrixXd TaskManager::getStiffnessMatrix()
+{
+    if(task) {
+        return task->getStiffness();
+    } else {
+        yLog.error() << "Unable to get the stiffness of the task because it does not exist. Returning empty matrix";
+        return Eigen::MatrixXd::Zero(0,0);
+    }
+}
+
+void TaskManager::setDamping(double B)
+{
+    if(task) {
+        task->setDamping(B);
+    }
+}
+
+void TaskManager::setDamping(const VectorXd& B)
+{
+    if(task) {
+        task->setDamping(B);
+    }
+}
+
+void TaskManager::setDamping(const MatrixXd& B)
+{
+    if(task) {
+        task->setDamping(B);
+    }
+}
+
+double TaskManager::getDamping()
+{
+    if(task) {
+        // Get the first entry in the stiffness matrix.
+        return getDampingMatrix()(0,0);
+    } else {
+        yLog.error() << "Unable to get the damping coeff of the task because it does not exist. Returning 0.0";
+        return 0.0;
+    }
+}
+
+Eigen::MatrixXd TaskManager::getDampingMatrix()
+{
+    if(task) {
+        return task->getDamping();
+    } else {
+        yLog.error() << "Unable to get the damping coeffs of the task because it does not exist. Returning empty matrix";
+        return Eigen::MatrixXd::Zero(0,0);
+    }
+}
+
+void TaskManager::setWeight(double weight)
+{
+    if(task) {
+        return task->setWeight(weight);
+    }
+}
+
+void TaskManager::setWeight(Eigen::VectorXd& weights)
+{
+    if(task) {
+        return task->setWeight(weights);
+    }
+}
+
+Eigen::VectorXd TaskManager::getWeight()
+{
+    if(task) {
+        return task->getWeight();
+    } else {
+        yLog.error() << "Unable to get the weights of the task because it does not exist. Returning empty vector";
+        return Eigen::VectorXd::Zero(0);
+    }
+}
+
 
 bool TaskManager::openControlPorts()
 {
