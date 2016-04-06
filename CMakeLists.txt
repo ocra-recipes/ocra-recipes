@@ -16,6 +16,11 @@ else()
     set(BUILD_SHARED_LIBS TRUE)
 endif()
 
+
+# TODO: Set to false as a default.
+option(BUILD_TESTS "(Developers Only) Build the various unit tests." TRUE)
+
+
 set(VARS_PREFIX "OcraRecipes")
 
 set(${VARS_PREFIX}_MAJOR_VERSION 1)
@@ -59,6 +64,11 @@ add_subdirectory(ocra)
 add_subdirectory(wocra)
 add_subdirectory(ocra-recipes)
 # add_subdirectory(gocra)
+
+# Build tests if option is activated.
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
 
 # add a target to generate API documentation with Doxygen
 find_package(Doxygen QUIET)

@@ -7,11 +7,6 @@ include_directories(include
                     ${WOCRA_INCLUDE_DIRS}
                     )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-                foreach(dir ${dirs})
-                  message(STATUS "dir='${dir}'")
-                endforeach()
-
 file(GLOB_RECURSE source_files src/*.cpp)
 
 add_library(${PROJECT_NAME} ${source_files})
