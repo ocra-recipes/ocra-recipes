@@ -98,7 +98,7 @@ public:
      *
      *  \return A vector of errors in each DoF of the task.
      */
-    VectorXd getTaskError();
+    Eigen::VectorXd getTaskError();
 
     /*! Gets the current error vector norm of the task.
      *  \warn Only valid for task managers with 1 task, not sets of tasks.
