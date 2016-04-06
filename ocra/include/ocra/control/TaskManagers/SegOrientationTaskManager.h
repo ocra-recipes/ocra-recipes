@@ -43,7 +43,6 @@ class SegOrientationTaskManager: public TaskManager
         const std::string&              segmentName;
 
         ocra::OrientationFeature*        feat;
-        ocra::SegmentFrame*              featFrame;
         ocra::OrientationFeature*        featDes;
         ocra::TargetFrame*               featDesFrame;
 

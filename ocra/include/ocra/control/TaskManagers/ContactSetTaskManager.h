@@ -37,7 +37,6 @@ class ContactSetTaskManager: public TaskManager
         std::string                                                     segmentName;
         std::vector< std::string >                                      names;
         std::vector< std::shared_ptr<ocra::PointContactFeature> >       feats;
-        std::vector< std::shared_ptr<ocra::SegmentFrame> >              featFrames;
 };
 
 }

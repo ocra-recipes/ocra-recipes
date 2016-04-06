@@ -91,7 +91,7 @@ SegOrientationTaskManager::~SegOrientationTaskManager()
  */
 void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFrame, double _stiffness, double _damping, double _weight)
 {
-    featFrame = new ocra::SegmentFrame(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(Eigen::Vector3d::Zero(), _refOrientation_LocalFrame));
+    featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(Eigen::Vector3d::Zero(), _refOrientation_LocalFrame));
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
     feat = new ocra::OrientationFeature(name + ".OrientationFeature", *featFrame);
     featDes = new ocra::OrientationFeature(name + ".OrientationFeature_Des", *featDesFrame);
@@ -114,7 +114,7 @@ void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFra
 
 void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFrame, double _stiffness, double _damping, const Eigen::VectorXd& _weight)
 {
-    featFrame = new ocra::SegmentFrame(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(Eigen::Vector3d::Zero(), _refOrientation_LocalFrame));
+    featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(Eigen::Vector3d::Zero(), _refOrientation_LocalFrame));
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
     feat = new ocra::OrientationFeature(name + ".OrientationFeature", *featFrame);
     featDes = new ocra::OrientationFeature(name + ".OrientationFeature_Des", *featDesFrame);

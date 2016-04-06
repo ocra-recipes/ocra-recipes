@@ -38,9 +38,9 @@ CoMMomentumTaskManager::~CoMMomentumTaskManager()
  */
 void CoMMomentumTaskManager::_init(double damping, double weight)
 {
-    featFrame = new ocra::CoMFrame(name + ".CoMFrame", model);
+    comFeatFrame = new ocra::CoMFrame(name + ".CoMFrame", model);
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
-    feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
+    feat = new ocra::PositionFeature(name + ".PositionFeature", *comFeatFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
     task = ctrl.createTask(name, *feat, *featDes);
@@ -60,9 +60,9 @@ void CoMMomentumTaskManager::_init(double damping, double weight)
 
 void CoMMomentumTaskManager::_init(double damping, const Eigen::VectorXd& weight)
 {
-    featFrame = new ocra::CoMFrame(name + ".CoMFrame", model);
+    comFeatFrame = new ocra::CoMFrame(name + ".CoMFrame", model);
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
-    feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
+    feat = new ocra::PositionFeature(name + ".PositionFeature", *comFeatFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
 
     task = ctrl.createTask(name, *feat, *featDes);
@@ -119,7 +119,7 @@ void CoMMomentumTaskManager::_init(double damping, const Eigen::VectorXd& weight
 
 const double* CoMMomentumTaskManager::getCurrentState()
 {
-    eigenCurrentStateVector << featFrame->getPosition().getTranslation(), featFrame->getVelocity().getLinearVelocity(), featFrame->getAcceleration().getLinearVelocity();
+    eigenCurrentStateVector << comFeatFrame->getPosition().getTranslation(), comFeatFrame->getVelocity().getLinearVelocity(), comFeatFrame->getAcceleration().getLinearVelocity();
     return eigenCurrentStateVector.data();
 }
 

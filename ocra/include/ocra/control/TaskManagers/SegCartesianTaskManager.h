@@ -44,15 +44,6 @@ class SegCartesianTaskManager : public TaskManager
 
 
 
-        Eigen::Displacementd getTaskFrameDisplacement();
-        Eigen::Twistd getTaskFrameVelocity();
-        Eigen::Twistd getTaskFrameAcceleration();
-        Eigen::Vector3d getTaskFramePosition();
-        Eigen::Rotation3d getTaskFrameOrientation();
-        Eigen::Vector3d getTaskFrameLinearVelocity();
-        Eigen::Vector3d getTaskFrameAngularVelocity();
-        Eigen::Vector3d getTaskFrameLinearAcceleration();
-        Eigen::Vector3d getTaskFrameAngularAcceleration();
 
 
         // Yarp related:
@@ -69,7 +60,6 @@ class SegCartesianTaskManager : public TaskManager
         ocra::ECartesianDof              axes;
         ocra::PositionFeature*           feat;
         ocra::PositionFeature*           featDes;
-        ocra::SegmentFrame*              featFrame;
         ocra::TargetFrame*               featDesFrame;
 
         void _init(const Eigen::Vector3d& refPoint_LocalFrame, double stiffness, double damping, double weight);

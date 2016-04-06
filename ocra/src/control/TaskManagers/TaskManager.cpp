@@ -1,9 +1,5 @@
 #include "ocra/control/TaskManagers/TaskManager.h"
 
-
-// #include "ocra/control/Trajectory/MinimumJerkTrajectory.h"
-// #include "ocra/control/Trajectory/LinearInterpolationTrajectory.h"
-
 using namespace ocra;
 
 
@@ -353,6 +349,80 @@ bool TaskManager::parseControlInput(yarp::os::Bottle& input)
     }
     else{return false;}
 }
+
+//////////////////////////////////////////////////////////////////////////////
+//                  Segment Frame Tasks
+//////////////////////////////////////////////////////////////////////////////
+
+Eigen::Displacementd TaskManager::getTaskFrameDisplacement()
+{
+    if(featFrame) {
+        return featFrame->getPosition();
+    } else if (featFrames[0]) {
+        return featFrames[0]->getPosition();
+    } else {
+        yLog.error() << "This is not a valid operation for non segment-based tasks.";
+        return Eigen::Displacementd(0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+    }
+}
+
+Eigen::Twistd TaskManager::getTaskFrameVelocity()
+{
+    if(featFrame) {
+        return featFrame->getVelocity();
+    } else if (featFrames[0]) {
+        return featFrames[0]->getVelocity();
+    } else {
+        yLog.error() << "This is not a valid operation for non segment-based tasks.";
+        return Eigen::Twistd(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    }
+}
+
+Eigen::Twistd TaskManager::getTaskFrameAcceleration()
+{
+    if(featFrame) {
+        return featFrame->getAcceleration();
+    } else if (featFrames[0]) {
+        return featFrames[0]->getAcceleration();
+    } else {
+        yLog.error() << "This is not a valid operation for non segment-based tasks.";
+        return Eigen::Twistd(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    }
+}
+
+Eigen::Vector3d TaskManager::getTaskFramePosition()
+{
+    return getTaskFrameDisplacement().getTranslation();
+}
+
+Eigen::Rotation3d TaskManager::getTaskFrameOrientation()
+{
+    return getTaskFrameDisplacement().getRotation();
+}
+
+Eigen::Vector3d TaskManager::getTaskFrameLinearVelocity()
+{
+    return getTaskFrameVelocity().getLinearVelocity();
+}
+
+Eigen::Vector3d TaskManager::getTaskFrameAngularVelocity()
+{
+    return getTaskFrameVelocity().getAngularVelocity();
+}
+
+Eigen::Vector3d TaskManager::getTaskFrameLinearAcceleration()
+{
+    return getTaskFrameAcceleration().getLinearVelocity();
+}
+
+Eigen::Vector3d TaskManager::getTaskFrameAngularAcceleration()
+{
+    return getTaskFrameAcceleration().getAngularVelocity();
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+
 
 std::string TaskManager::getTaskManagerType()
 {

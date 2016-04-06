@@ -23,7 +23,7 @@ class ContactTaskManager : public TaskManager
 
         ~ContactTaskManager();
 
-        
+
         virtual std::string getTaskManagerType();
 
         VectorXd getTaskError(); // Overrides base class function in this context
@@ -33,7 +33,6 @@ class ContactTaskManager : public TaskManager
         const std::string&          segmentName;
 
         ocra::PointContactFeature*   feat;
-        ocra::SegmentFrame*          featFrame;
 };
 
 }

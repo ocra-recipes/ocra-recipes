@@ -38,24 +38,8 @@ class SegPoseTaskManager : public TaskManager
         void setState(const Eigen::Displacementd& pose);
         void setState(const Eigen::Displacementd& pose, const Eigen::Twistd& velocity, const Eigen::Twistd& acceleration);
 
-        
+
         void setDesiredState();
-
-
-        // Task error
-
-
-        Eigen::Displacementd getTaskFrameDisplacement();
-        Eigen::Twistd getTaskFrameVelocity();
-        Eigen::Twistd getTaskFrameAcceleration();
-        Eigen::Vector3d getTaskFramePosition();
-        Eigen::Rotation3d getTaskFrameOrientation();
-        Eigen::Vector3d getTaskFrameLinearVelocity();
-        Eigen::Vector3d getTaskFrameAngularVelocity();
-        Eigen::Vector3d getTaskFrameLinearAcceleration();
-        Eigen::Vector3d getTaskFrameAngularAcceleration();
-
-
         // Yarp related:
         virtual const double * getCurrentState();
         virtual std::string getTaskManagerType();
@@ -69,7 +53,6 @@ class SegPoseTaskManager : public TaskManager
 
         ocra::DisplacementFeature*       feat;
         ocra::DisplacementFeature*       featDes;
-        ocra::SegmentFrame*              featFrame;
         ocra::TargetFrame*               featDesFrame;
 
         void _init(const Eigen::Displacementd& ref_LocalFrame, double stiffness, double damping, double weight);

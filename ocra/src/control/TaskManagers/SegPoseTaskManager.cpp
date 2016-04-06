@@ -187,7 +187,7 @@ SegPoseTaskManager::~SegPoseTaskManager()
  */
 void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, double _stiffness, double _damping, double _weight)
 {
-    featFrame = new ocra::SegmentFrame(name + ".SegmentFrame", model, model.SegmentName(segmentName), _ref_LocalFrame);
+    featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), _ref_LocalFrame);
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
     feat = new ocra::DisplacementFeature(name + ".DisplacementFeature", *featFrame, axes);
     featDes = new ocra::DisplacementFeature(name + ".DisplacementFeature_Des", *featDesFrame, axes);
@@ -213,7 +213,7 @@ void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, doub
 
 void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, double _stiffness, double _damping, const Eigen::VectorXd& _weight)
 {
-    featFrame = new ocra::SegmentFrame(name + ".SegmentFrame", model, model.SegmentName(segmentName), _ref_LocalFrame);
+    featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), _ref_LocalFrame);
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
     feat = new ocra::DisplacementFeature(name + ".DisplacementFeature", *featFrame, axes);
     featDes = new ocra::DisplacementFeature(name + ".DisplacementFeature_Des", *featDesFrame, axes);
@@ -291,51 +291,6 @@ const double* SegPoseTaskManager::getCurrentState()
 std::string SegPoseTaskManager::getTaskManagerType()
 {
     return "SegPoseTaskManager";
-}
-
-Eigen::Displacementd SegPoseTaskManager::getTaskFrameDisplacement()
-{
-    return featFrame->getPosition();
-}
-
-Eigen::Twistd SegPoseTaskManager::getTaskFrameVelocity()
-{
-    return featFrame->getVelocity();
-}
-
-Eigen::Twistd SegPoseTaskManager::getTaskFrameAcceleration()
-{
-    return featFrame->getAcceleration();
-}
-
-Eigen::Vector3d SegPoseTaskManager::getTaskFramePosition()
-{
-    return getTaskFrameDisplacement().getTranslation();
-}
-
-Eigen::Rotation3d SegPoseTaskManager::getTaskFrameOrientation()
-{
-    return getTaskFrameDisplacement().getRotation();
-}
-
-Eigen::Vector3d SegPoseTaskManager::getTaskFrameLinearVelocity()
-{
-    return getTaskFrameVelocity().getLinearVelocity();
-}
-
-Eigen::Vector3d SegPoseTaskManager::getTaskFrameAngularVelocity()
-{
-    return getTaskFrameVelocity().getAngularVelocity();
-}
-
-Eigen::Vector3d SegPoseTaskManager::getTaskFrameLinearAcceleration()
-{
-    return getTaskFrameAcceleration().getLinearVelocity();
-}
-
-Eigen::Vector3d SegPoseTaskManager::getTaskFrameAngularAcceleration()
-{
-    return getTaskFrameAcceleration().getAngularVelocity();
 }
 
 }

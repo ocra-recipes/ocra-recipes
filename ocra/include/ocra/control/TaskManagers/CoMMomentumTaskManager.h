@@ -44,7 +44,7 @@ class CoMMomentumTaskManager: public TaskManager
 
         ocra::ECartesianDof              axes;
         ocra::PositionFeature*           feat;
-        ocra::CoMFrame*                  featFrame;
+        ocra::CoMFrame*                  comFeatFrame;
         ocra::PositionFeature*           featDes;
         ocra::TargetFrame*               featDesFrame;
 

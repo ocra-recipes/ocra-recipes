@@ -193,7 +193,7 @@ SegCartesianTaskManager::~SegCartesianTaskManager()
  */
 void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame, double _stiffness, double _damping, double _weight)
 {
-    featFrame = new ocra::SegmentFrame(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(_taskPoint_LocalFrame));
+    featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(_taskPoint_LocalFrame));
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
@@ -214,7 +214,7 @@ void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame
 
 void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame, double _stiffness, double _damping, const Eigen::VectorXd& _weight)
 {
-    featFrame = new ocra::SegmentFrame(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(_taskPoint_LocalFrame));
+    featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(_taskPoint_LocalFrame));
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
     feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
     featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
@@ -280,54 +280,6 @@ const double* SegCartesianTaskManager::getCurrentState()
 std::string SegCartesianTaskManager::getTaskManagerType()
 {
     return "SegCartesianTaskManager";
-}
-
-
-
-
-Eigen::Displacementd SegCartesianTaskManager::getTaskFrameDisplacement()
-{
-    return featFrame->getPosition();
-}
-
-Eigen::Twistd SegCartesianTaskManager::getTaskFrameVelocity()
-{
-    return featFrame->getVelocity();
-}
-
-Eigen::Twistd SegCartesianTaskManager::getTaskFrameAcceleration()
-{
-    return featFrame->getAcceleration();
-}
-
-Eigen::Vector3d SegCartesianTaskManager::getTaskFramePosition()
-{
-    return getTaskFrameDisplacement().getTranslation();
-}
-
-Eigen::Rotation3d SegCartesianTaskManager::getTaskFrameOrientation()
-{
-    return getTaskFrameDisplacement().getRotation();
-}
-
-Eigen::Vector3d SegCartesianTaskManager::getTaskFrameLinearVelocity()
-{
-    return getTaskFrameVelocity().getLinearVelocity();
-}
-
-Eigen::Vector3d SegCartesianTaskManager::getTaskFrameAngularVelocity()
-{
-    return getTaskFrameVelocity().getAngularVelocity();
-}
-
-Eigen::Vector3d SegCartesianTaskManager::getTaskFrameLinearAcceleration()
-{
-    return getTaskFrameAcceleration().getLinearVelocity();
-}
-
-Eigen::Vector3d SegCartesianTaskManager::getTaskFrameAngularAcceleration()
-{
-    return getTaskFrameAcceleration().getAngularVelocity();
 }
 
 }

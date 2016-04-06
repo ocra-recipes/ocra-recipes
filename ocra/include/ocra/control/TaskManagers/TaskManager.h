@@ -180,6 +180,22 @@ public:
      */
     Eigen::VectorXd getWeight();
 
+public: /* Segment Frame Based Tasks */
+
+    // TODO: Document...
+    Eigen::Displacementd getTaskFrameDisplacement();
+    Eigen::Twistd getTaskFrameVelocity();
+    Eigen::Twistd getTaskFrameAcceleration();
+    Eigen::Vector3d getTaskFramePosition();
+    Eigen::Rotation3d getTaskFrameOrientation();
+    Eigen::Vector3d getTaskFrameLinearVelocity();
+    Eigen::Vector3d getTaskFrameAngularVelocity();
+    Eigen::Vector3d getTaskFrameLinearAcceleration();
+    Eigen::Vector3d getTaskFrameAngularAcceleration();
+
+
+
+
 public: /*Nested callback classes */
 
     /*! \class RpcMessageCallback
@@ -229,9 +245,10 @@ public: /*Nested callback classes */
         void threadRelease();
     };
 
-public: /* Public virtual methods */
+public: /* Public pure virtual methods */
+    virtual std::string getTaskManagerType() = 0;
 
-    virtual std::string getTaskManagerType();
+public: /* Public pure virtual methods */
     virtual void setDesiredState(){ std::cout << "setDesiredState() Not implemented" << std::endl; }
 
 
@@ -252,8 +269,12 @@ protected: /* Protected methods */
 
 
 protected:
-    std::shared_ptr<ocra::Task>                 task;
-    std::vector< std::shared_ptr<ocra::Task> >  taskVector;
+    std::shared_ptr<Task>                 task;
+    std::vector< std::shared_ptr<Task> >  taskVector;
+
+    std::shared_ptr<SegmentFrame>                   featFrame;
+    std::vector< std::shared_ptr<SegmentFrame> >    featFrames;
+
 
     ocra::Controller&               ctrl;
     const ocra::Model&              model;
