@@ -52,7 +52,7 @@ TrajectoryThread::TrajectoryThread( int period,
 , waypointsHaveBeenSet(false)
 {
     task = std::make_shared<TaskConnection>(taskName);
-    task.openControlPorts();
+    task->openControlPorts();
     init();
 }
 
@@ -68,7 +68,7 @@ terminationStrategy(_terminationStrategy),
 waypointsHaveBeenSet(true)
 {
     task = std::make_shared<TaskConnection>(taskName);
-    task.openControlPorts();
+    task->openControlPorts();
     init();
 }
 
