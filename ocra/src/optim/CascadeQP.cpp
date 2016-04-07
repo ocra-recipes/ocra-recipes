@@ -239,133 +239,133 @@ namespace ocra
   }
 
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////
-  //                                         Solve QLD                                           //
-  /////////////////////////////////////////////////////////////////////////////////////////////////
-
-  int CascadeQP::solveQLD(int i)
-  {
-//     // TAILLE DU PROBLEME
-//     int n = allMatrixPQ[i]->P.cols()() ;                         // NUMBER OF VARIABLES 
-//     int n1= max(allEqualitiesConstraints[i]->M.cols()() , allInequalitiesConstraints[i]->R.cols()());
-//     int nmax = n;                                                   // ROW DIMENSION OF P
-//     int me = allEqualitiesConstraints[i]->M.rows()() ;           // NUMBER OF Equalities CONSTRAINTS
-//     int mi = allInequalitiesConstraints[i]->R.rows()() ;         // NUMBER OF Inequalities CONSTRAINTS
-//     int m = me + mi;                                                // TOTAL NUMBER OF CONSTRAINTS
-//     int mmax = m;                                                   // ROW DIMENSION OF A
-//     int mnn = m+n+n;                                                // MUST BE EQUAL TO M + N + N
+//   /////////////////////////////////////////////////////////////////////////////////////////////////
+//   //                                         Solve QLD                                           //
+//   /////////////////////////////////////////////////////////////////////////////////////////////////
 // 
-//     // SOLUTION
-//     //Solution* s = new Solution;
-//     Solution* s = allSolution[i];
-//     s->y.resize(n);
-//     s->y.setZero();
-// 
-//     // BORNES
-//     cmlDenseVector<double> Yl(n);
-//     Yl.fill(-1.e10) ;
-//     cmlDenseVector<double> Yu(n);
-//     Yu.fill(1.e10) ;
-// 
-// 
-// 
-//     // MATRICES DE CONTRAINTES :
-// 
-//     ///////////////////
-//     //        M      //
-//     // MR = [   ]    //
-//     //        R      //
-//     ///////////////////
-// 
-//     cmlDenseMatrix<double> MR(m,n);
-//     //cmlDenseMatrix<double> MR;
-//     //MR.resize( allEqualitiesConstraints[i]->M.rows()() +  allInequalitiesConstraints[i]->R.rows()(), max(allEqualitiesConstraints[i]->M.cols()() ,  allHierarchyLevel[i]->C.rows()())) ;
-//     //MR.setZero();
-//     int size = max(allHierarchyLevel[i]->A.cols()(),allHierarchyLevel[i]->C.cols()());
-//     //cout << "Matrix P= " << endl << n << endl;
-//     //cout << " Constraints = " << endl << n1 << endl;
-//     //cout << " size = " << endl << size << endl;
-// 
-//    
-//     
-//     // MR_sub1 = M
-//     cmlDSubDenseMatrix MR_sub1(MR);
-//     MR_sub1.rescope( me , allEqualitiesConstraints[i]->M.cols()() , 0 , 0 );
-//     //MR_sub1.rescope( me , n , 0 , 0 );
-//     MR_sub1.copyValuesFrom(allEqualitiesConstraints[i]->M);
-// 
-// 
-//     // MR_sub2 = R
-//     cmlDSubDenseMatrix MR_sub2(MR);
-//     MR_sub2.rescope( mi , n , me, 0 );
-//     MR_sub2.copyValuesFrom(allInequalitiesConstraints[i]->R);
-//     MR_sub2.scalarMultInPlace(-1);
-// 
-// 
-//     ///////////////////
-//     //        N      //
-//     // NS = [   ]    //
-//     //        S      //
-//     ///////////////////
-// 
-//     cmlDenseVector<double> NS(m);
-//     //cmlDenseVector<double> NS;
-//     //NS.resize( allEqualitiesConstraints[i]->M.rows()() +  allInequalitiesConstraints[i]->R.rows()()) ;
-//     //NS.setZero();
-// 
-//     // NS_sub1 = N
-//     cmlDSubDenseVector NS_sub1(NS);
-//     NS_sub1.rescope( me , 0 );
-//     CML_axpy(-1, allEqualitiesConstraints[i]->n, NS_sub1);
-// 
-//     // NS_sub2 = S
-//     cmlDSubDenseVector NS_sub2(NS);
-//     NS_sub2.rescope( mi ,me);
-//     NS_sub2.copyValuesFrom(allInequalitiesConstraints[i]->s);
-// 
-// 
-// 
-//     // SOLVE :
-//     /*cout << "MR_sub1 = " << endl << MR_sub1 << endl;
-//     cout << "MR_sub2 = " << endl << MR_sub2 << endl;
-//     cout << "M= " << endl << allEqualitiesConstraints[i]->M << endl;
-//     cout << "R= " << endl << allInequalitiesConstraints[i]->R << endl;
-//     cout << "P= " << endl << allMatrixPQ[i]->P << endl;
-//     cout << "q= " << endl << allMatrixPQ[i]->q << endl;
-//     cout << "MR = " << endl << MR << endl;
-//     cout << "NS = " << endl << NS << endl;*/
-// 
-//     //cout << "MR = " << endl << MR.cols()() << endl;
-//     //cout << "NS = " << endl << NS.cols()() << endl
-// 
-//     int r = solver.solve(allMatrixPQ[i]->P, allMatrixPQ[i]->q , MR, NS, me, s->y, Yl, Yu, false);
-// 
-//     //for (size_t k=0; k<s->y.getSize(); ++k)   
-//     //cout << s->y[k] << endl;
-// 
-//     //allSolution.push_back(s);
-//     //cout << " SOLUTION : Y = "  << allSolution[i]->y << endl;
-// 
-// 
-// /*    cout << "***********LEVEL " << i << "*************" << endl;
-//     cout << "equalities" << endl;
-//     for (int j=0; j<me; ++j)
-//       cout << j << " : " << (solver.getLagrangeMultipliers())[j] << endl;
-// 
-//     cout << "inequalities" << endl;
-//     for (int j=0; j<mi; ++j)
-//       cout << j << " : " << (solver.getLagrangeMultipliers())[me+j] << endl;
-// 
-//     cout << "lower bound" << endl;
-//     for (int j=0; j<n; ++j)
-//       cout << j << " : " << (solver.getLagrangeMultipliers())[me+mi+j] << endl;
-// 
-//     cout << "upper bound" << endl;
-//     for (int j=0; j<n; ++j)
-//       cout << j << " : " << (solver.getLagrangeMultipliers())[me+mi+n+j] << endl;
-// */
-//     return r;
-  }
+//   int CascadeQP::solveQLD(int i)
+//   {
+// //     // TAILLE DU PROBLEME
+// //     int n = allMatrixPQ[i]->P.cols()() ;                         // NUMBER OF VARIABLES 
+// //     int n1= max(allEqualitiesConstraints[i]->M.cols()() , allInequalitiesConstraints[i]->R.cols()());
+// //     int nmax = n;                                                   // ROW DIMENSION OF P
+// //     int me = allEqualitiesConstraints[i]->M.rows()() ;           // NUMBER OF Equalities CONSTRAINTS
+// //     int mi = allInequalitiesConstraints[i]->R.rows()() ;         // NUMBER OF Inequalities CONSTRAINTS
+// //     int m = me + mi;                                                // TOTAL NUMBER OF CONSTRAINTS
+// //     int mmax = m;                                                   // ROW DIMENSION OF A
+// //     int mnn = m+n+n;                                                // MUST BE EQUAL TO M + N + N
+// // 
+// //     // SOLUTION
+// //     //Solution* s = new Solution;
+// //     Solution* s = allSolution[i];
+// //     s->y.resize(n);
+// //     s->y.setZero();
+// // 
+// //     // BORNES
+// //     cmlDenseVector<double> Yl(n);
+// //     Yl.fill(-1.e10) ;
+// //     cmlDenseVector<double> Yu(n);
+// //     Yu.fill(1.e10) ;
+// // 
+// // 
+// // 
+// //     // MATRICES DE CONTRAINTES :
+// // 
+// //     ///////////////////
+// //     //        M      //
+// //     // MR = [   ]    //
+// //     //        R      //
+// //     ///////////////////
+// // 
+// //     cmlDenseMatrix<double> MR(m,n);
+// //     //cmlDenseMatrix<double> MR;
+// //     //MR.resize( allEqualitiesConstraints[i]->M.rows()() +  allInequalitiesConstraints[i]->R.rows()(), max(allEqualitiesConstraints[i]->M.cols()() ,  allHierarchyLevel[i]->C.rows()())) ;
+// //     //MR.setZero();
+// //     int size = max(allHierarchyLevel[i]->A.cols()(),allHierarchyLevel[i]->C.cols()());
+// //     //cout << "Matrix P= " << endl << n << endl;
+// //     //cout << " Constraints = " << endl << n1 << endl;
+// //     //cout << " size = " << endl << size << endl;
+// // 
+// //    
+// //     
+// //     // MR_sub1 = M
+// //     cmlDSubDenseMatrix MR_sub1(MR);
+// //     MR_sub1.rescope( me , allEqualitiesConstraints[i]->M.cols()() , 0 , 0 );
+// //     //MR_sub1.rescope( me , n , 0 , 0 );
+// //     MR_sub1.copyValuesFrom(allEqualitiesConstraints[i]->M);
+// // 
+// // 
+// //     // MR_sub2 = R
+// //     cmlDSubDenseMatrix MR_sub2(MR);
+// //     MR_sub2.rescope( mi , n , me, 0 );
+// //     MR_sub2.copyValuesFrom(allInequalitiesConstraints[i]->R);
+// //     MR_sub2.scalarMultInPlace(-1);
+// // 
+// // 
+// //     ///////////////////
+// //     //        N      //
+// //     // NS = [   ]    //
+// //     //        S      //
+// //     ///////////////////
+// // 
+// //     cmlDenseVector<double> NS(m);
+// //     //cmlDenseVector<double> NS;
+// //     //NS.resize( allEqualitiesConstraints[i]->M.rows()() +  allInequalitiesConstraints[i]->R.rows()()) ;
+// //     //NS.setZero();
+// // 
+// //     // NS_sub1 = N
+// //     cmlDSubDenseVector NS_sub1(NS);
+// //     NS_sub1.rescope( me , 0 );
+// //     CML_axpy(-1, allEqualitiesConstraints[i]->n, NS_sub1);
+// // 
+// //     // NS_sub2 = S
+// //     cmlDSubDenseVector NS_sub2(NS);
+// //     NS_sub2.rescope( mi ,me);
+// //     NS_sub2.copyValuesFrom(allInequalitiesConstraints[i]->s);
+// // 
+// // 
+// // 
+// //     // SOLVE :
+// //     /*cout << "MR_sub1 = " << endl << MR_sub1 << endl;
+// //     cout << "MR_sub2 = " << endl << MR_sub2 << endl;
+// //     cout << "M= " << endl << allEqualitiesConstraints[i]->M << endl;
+// //     cout << "R= " << endl << allInequalitiesConstraints[i]->R << endl;
+// //     cout << "P= " << endl << allMatrixPQ[i]->P << endl;
+// //     cout << "q= " << endl << allMatrixPQ[i]->q << endl;
+// //     cout << "MR = " << endl << MR << endl;
+// //     cout << "NS = " << endl << NS << endl;*/
+// // 
+// //     //cout << "MR = " << endl << MR.cols()() << endl;
+// //     //cout << "NS = " << endl << NS.cols()() << endl
+// // 
+// //     int r = solver.solve(allMatrixPQ[i]->P, allMatrixPQ[i]->q , MR, NS, me, s->y, Yl, Yu, false);
+// // 
+// //     //for (size_t k=0; k<s->y.getSize(); ++k)   
+// //     //cout << s->y[k] << endl;
+// // 
+// //     //allSolution.push_back(s);
+// //     //cout << " SOLUTION : Y = "  << allSolution[i]->y << endl;
+// // 
+// // 
+// // /*    cout << "***********LEVEL " << i << "*************" << endl;
+// //     cout << "equalities" << endl;
+// //     for (int j=0; j<me; ++j)
+// //       cout << j << " : " << (solver.getLagrangeMultipliers())[j] << endl;
+// // 
+// //     cout << "inequalities" << endl;
+// //     for (int j=0; j<mi; ++j)
+// //       cout << j << " : " << (solver.getLagrangeMultipliers())[me+j] << endl;
+// // 
+// //     cout << "lower bound" << endl;
+// //     for (int j=0; j<n; ++j)
+// //       cout << j << " : " << (solver.getLagrangeMultipliers())[me+mi+j] << endl;
+// // 
+// //     cout << "upper bound" << endl;
+// //     for (int j=0; j<n; ++j)
+// //       cout << j << " : " << (solver.getLagrangeMultipliers())[me+mi+n+j] << endl;
+// // */
+// //     return r;
+//   }
 
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
