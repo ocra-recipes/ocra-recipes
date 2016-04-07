@@ -2,7 +2,6 @@ project(ocra-recipes)
 
 include_directories(BEFORE include)
 include_directories(
-                    ${QUADPROG_INCLUDE_DIRS}
                     ${YARP_INCLUDE_DIRS}
                     ${OCRA_INCLUDE_DIRS}
                     ${WOCRA_INCLUDE_DIRS}
@@ -13,7 +12,6 @@ file(GLOB_RECURSE source_files src/*.cpp)
 add_library(${PROJECT_NAME} ${source_files})
 
 LIST(APPEND link_libs   ${Boost_LIBRARIES}
-                        ${QUADPROG_LIBRARIES}
                         ${YARP_LIBRARIES}
                         ocra-control
                         ocra-optim
