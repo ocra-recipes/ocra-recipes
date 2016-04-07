@@ -65,6 +65,8 @@ add_subdirectory(wocra)
 add_subdirectory(ocra-recipes)
 # add_subdirectory(gocra)
 
+set_property(GLOBAL APPEND PROPERTY PACKAGE_${VARS_PREFIX}_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/include)
+
 # Build tests if option is activated.
 if(BUILD_TESTS)
     add_subdirectory(tests)

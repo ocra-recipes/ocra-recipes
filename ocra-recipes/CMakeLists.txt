@@ -1,6 +1,6 @@
 project(ocra-recipes)
 
-include_directories(BEFORE include)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 include_directories(BEFORE ${OCRA_INCLUDE_DIRS})
 include_directories(
                     ${QUADPROG_INCLUDE_DIRS}
@@ -22,7 +22,7 @@ LIST(APPEND link_libs   ${Boost_LIBRARIES}
 
 target_link_libraries(${PROJECT_NAME} ${link_libs})
 
-install(DIRECTORY include
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include
         DESTINATION ${CMAKE_INSTALL_PREFIX}
         FILES_MATCHING PATTERN *.h*)
 
@@ -31,4 +31,4 @@ install(TARGETS ${PROJECT_NAME}
         DESTINATION lib)
 
 set_property(GLOBAL APPEND PROPERTY ${VARS_PREFIX}_TARGETS ${PROJECT_NAME})
-set_property(GLOBAL APPEND PROPERTY PACKAGE_${VARS_PREFIX}_INCLUDEDIR include)
+# set_property(GLOBAL APPEND PROPERTY PACKAGE_${VARS_PREFIX}_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/include)
