@@ -13,6 +13,7 @@
 
 // includes
 #include "ocra/MathTypes.h"
+#include <iostream>
 
 /** @namespace ocra
 * @brief Optimization-based Robot Controller namespace. 
@@ -23,47 +24,47 @@ namespace ocra
 {
   struct HierarchyLevel
   {
-    Matrix A ;
-    Vector b ;
-    Matrix C ;
-    Vector d ;
+    Eigen::MatrixXd A ;
+    Eigen::VectorXd b ;
+    Eigen::MatrixXd C ;
+    Eigen::VectorXd d ;
   };
 
   struct HierarchyLevel_barre
   {
-    Matrix A_barre ;
-    Vector b_barre ;
-    Matrix C_barre ;
-    Vector d_barre ;
+    Eigen::MatrixXd A_barre ;
+    Eigen::VectorXd b_barre ;
+    Eigen::MatrixXd C_barre ;
+    Eigen::VectorXd d_barre ;
   };
 
 
   struct MatrixPQ
   {
-    Matrix  P ;
-    Vector  q ;
+    Eigen::MatrixXd  P ;
+    Eigen::VectorXd  q ;
   };
 
   struct EqualitiesConstraints
   {
-    Matrix  M ;
-    Vector  n ;
+    Eigen::MatrixXd  M ;
+    Eigen::VectorXd  n ;
   };
 
   struct InequalitiesConstraints
   {
-    Matrix  R ;
-    Vector  s ;
+    Eigen::MatrixXd  R ;
+    Eigen::VectorXd  s ;
   };
 
   struct Solution
   {
-    Vector  y ;
+    Eigen::VectorXd  y ;
   };
 
   struct FinalSolution
   {
-    Vector  yf ;
+    Eigen::VectorXd  yf ;
     int r;
   };
 
