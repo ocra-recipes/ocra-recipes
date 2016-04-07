@@ -42,7 +42,7 @@
 #include <limits>
 #include <sstream>
 #include <stdexcept>
-#include "quadprog/QuadProg++.h"
+#include "ocra/optim/QuadProg++.h"
 //#define TRACE_SOLVER
 namespace QuadProgPP{
 // Utility functions for updating some data needed by the solution method
