@@ -107,8 +107,6 @@ bool TaskManager::deactivate()
 {
     if(task){
         if(isActivated()){taskMode = getTaskMode(task);}
-
-        taskMode = getTaskMode(task);
         task->deactivate();
         return true;
     }
@@ -637,6 +635,12 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_TASK_PORT_NAME";
                 reply.addString(this->getPortName());
+            }break;
+
+            case GET_TASK_ERROR:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_TASK_ERROR";
+                pourEigenVectorIntoBottle(this->getTaskError(), reply);
             }break;
 
             case SET_STIFFNESS:

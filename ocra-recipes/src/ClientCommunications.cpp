@@ -36,7 +36,7 @@ bool ClientCommunications::open(const bool connectToTaskManagers)
             for(auto rpc_i : taskRpcClients)
             {
                 yarp::os::Bottle message, reply;
-                message.addString("getType");
+                message.addInt(ocra::TASK_MESSAGE::GET_TYPE);
                 rpc_i.second->write(message, reply);
                 std::cout << reply.toString() << std::endl;
             }

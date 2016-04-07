@@ -20,7 +20,7 @@
 #include <yarp/os/ConnectionReader.h>
 #include <yarp/os/Time.h>
 
-
+#include <ocra/control/TaskManagers/TaskManagerMessageVocab.h>
 #include <ocra-recipes/MessageVocabulary.h>
 
 namespace ocra_recipes

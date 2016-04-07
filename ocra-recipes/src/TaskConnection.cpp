@@ -9,29 +9,31 @@ TaskConnection::TaskConnection()
 
 TaskConnection::TaskConnection(const std::string& destinationTaskName)
 : taskName(destinationTaskName)
+, controlPortsAreOpen(false)
 {
     std::shared_ptr<ClientCommunications> ccComs = std::make_shared<ClientCommunications>();
     ccComs->open();
     taskRpcServerName = ccComs->getTaskPortName(taskName);
     ccComs->close();
 
-    taskRpcClientName = "/TaskConnection/"+taskName+"/rpc:o";
-    taskRpcClient.open(taskRpcClientName.c_str());
+    this->taskRpcClientName = "/TaskConnection/"+taskName+"/rpc:o";
+    this->taskRpcClient.open(taskRpcClientName.c_str());
 
-    yarp.connect(taskRpcClientName.c_str(), taskRpcServerName.c_str());
+    this->yarp.connect(taskRpcClientName.c_str(), taskRpcServerName.c_str());
 }
 
 TaskConnection::~TaskConnection()
 {
-    taskRpcClient.close();
+    this->taskRpcClient.close();
+    this->closeControlPorts();
 }
 
 bool TaskConnection::activate()
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::ACTIVATE);
-    taskRpcClient.write(message, reply);
-    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() != ocra::TASK_MESSAGE::OCRA_SUCCESS) {
         yLog.error() << "Could not activate " << taskName;
     }
 }
@@ -40,8 +42,8 @@ bool TaskConnection::deactivate()
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::DEACTIVATE);
-    taskRpcClient.write(message, reply);
-    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() != ocra::TASK_MESSAGE::OCRA_SUCCESS) {
         yLog.error() << "Could not deactivate " << taskName;
     }
 }
@@ -50,7 +52,7 @@ std::string TaskConnection::getPortName()
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::GET_TASK_PORT_NAME);
-    taskRpcClient.write(message, reply);
+    this->taskRpcClient.write(message, reply);
     return reply.get(0).asString();
 }
 
@@ -58,7 +60,7 @@ bool TaskConnection::isActivated()
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::GET_ACTIVITY_STATUS);
-    taskRpcClient.write(message, reply);
+    this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() == ocra::TASK_MESSAGE::TASK_IS_ACTIVATED) {
         return true;
     } else {
@@ -69,8 +71,8 @@ bool TaskConnection::isActivated()
 Eigen::VectorXd TaskConnection::getTaskError()
 {
     yarp::os::Bottle message, reply;
-    message.addInt(ocra::TASK_MESSAGE::GET_ACTIVITY_STATUS);
-    taskRpcClient.write(message, reply);
+    message.addInt(ocra::TASK_MESSAGE::GET_TASK_ERROR);
+    this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) {
         int dummy;
         return ocra::pourBottleIntoEigenVector(reply.tail(), dummy);
@@ -81,7 +83,7 @@ Eigen::VectorXd TaskConnection::getTaskError()
 
 double TaskConnection::getTaskErrorNorm()
 {
-
+    return this->getTaskError().norm();
 }
 
 void TaskConnection::setStiffness(double K)
@@ -101,12 +103,20 @@ void TaskConnection::setStiffness(const MatrixXd& K)
 
 double TaskConnection::getStiffness()
 {
-
+    return this->getStiffnessMatrix()(0,0);
 }
 
 Eigen::MatrixXd TaskConnection::getStiffnessMatrix()
 {
-
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::GET_STIFFNESS);
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) {
+        int dummy;
+        return ocra::pourBottleIntoEigenMatrix(reply.tail(), dummy);
+    } else {
+        return Eigen::MatrixXd::Zero(0,0);
+    }
 }
 
 void TaskConnection::setDamping(double B)
@@ -126,12 +136,20 @@ void TaskConnection::setDamping(const MatrixXd& B)
 
 double TaskConnection::getDamping()
 {
-
+    return this->getStiffnessMatrix()(0,0);
 }
 
 Eigen::MatrixXd TaskConnection::getDampingMatrix()
 {
-
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::GET_DAMPING);
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) {
+        int dummy;
+        return ocra::pourBottleIntoEigenMatrix(reply.tail(), dummy);
+    } else {
+        return Eigen::MatrixXd::Zero(0,0);
+    }
 }
 
 void TaskConnection::setWeight(double weight)
@@ -146,9 +164,38 @@ void TaskConnection::setWeight(Eigen::VectorXd& weights)
 
 Eigen::VectorXd TaskConnection::getWeight()
 {
-
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::GET_WEIGHTS);
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) {
+        int dummy;
+        return ocra::pourBottleIntoEigenVector(reply.tail(), dummy);
+    } else {
+        return Eigen::VectorXd::Zero(0);
+    }
 }
 
+int TaskConnection::getTaskDimension()
+{
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::GET_DIMENSION);
+    this->taskRpcClient.write(message, reply);
+    return reply.get(0).asInt();
+}
+
+int TaskConnection::getTaskStateDimension()
+{
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::GET_STATE_DIMENSION);
+    this->taskRpcClient.write(message, reply);
+    return reply.get(0).asInt();
+}
+
+void TaskConnection::sendDesiredStateAsBottle(yarp::os::Bottle& bottle)
+{
+    if(controlPortsAreOpen)
+        outputPort.write(bottle);
+}
 
 Eigen::Displacementd TaskConnection::getTaskFrameDisplacement()
 {
@@ -201,33 +248,35 @@ bool TaskConnection::openControlPorts()
 
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::OPEN_CONTROL_PORTS);
-    taskRpcClient.write(message, reply);
+    this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) {
         message.clear();
         reply.clear();
         message.addInt(ocra::TASK_MESSAGE::GET_CONTROL_PORT_NAMES);
-        taskRpcClient.write(message, reply);
-        taskOutputPortName = reply.get(0).asString();
-        taskInputPortName = reply.get(1).asString();
+        this->taskRpcClient.write(message, reply);
+        this->taskOutputPortName = reply.get(0).asString();
+        this->taskInputPortName = reply.get(1).asString();
 
-        inputPortName = "/TaskConnection/"+taskName+":i";
-        outputPortName = "/TaskConnection/"+taskName+":o";
+        this->inputPortName = "/TaskConnection/"+this->taskName+":i";
+        this->outputPortName = "/TaskConnection/"+this->taskName+":o";
 
-        portsConnected = portsConnected && inputPort.open(inputPortName.c_str());
-        portsConnected = portsConnected && outputPort.open(outputPortName.c_str());
+        portsConnected = portsConnected && inputPort.open(this->inputPortName.c_str());
+        portsConnected = portsConnected && outputPort.open(this->outputPortName.c_str());
 
-        inpCallback = std::make_shared<inputCallback>(*this);
-        inputPort.setReader(*inpCallback);
+        this->inpCallback = std::make_shared<inputCallback>(*this);
+        inputPort.setReader(*(this->inpCallback));
 
         message.clear();
         reply.clear();
         message.addInt(ocra::TASK_MESSAGE::GET_STATE_DIMENSION);
-        taskRpcClient.write(message, reply);
-        currentStateVector = Eigen::VectorXd::Zero(reply.get(0).asInt());
+        this->taskRpcClient.write(message, reply);
+        this->currentStateVector = Eigen::VectorXd::Zero(reply.get(0).asInt());
 
         if (portsConnected) {
-            portsConnected = portsConnected && yarp.connect(taskOutputPortName.c_str(), inputPortName.c_str());
-            portsConnected = portsConnected && yarp.connect(outputPortName.c_str(), taskInputPortName.c_str());
+            portsConnected = portsConnected && yarp.connect(this->taskOutputPortName.c_str(), this->inputPortName.c_str());
+            portsConnected = portsConnected && yarp.connect(this->outputPortName.c_str(), this->taskInputPortName.c_str());
+
+            this->controlPortsAreOpen = portsConnected;
         } else {
             return false;
         }
@@ -237,6 +286,37 @@ bool TaskConnection::openControlPorts()
 
     return portsConnected;
 }
+
+bool TaskConnection::closeControlPorts()
+{
+    if (this->controlPortsAreOpen) {
+        yarp::os::Bottle message, reply;
+        message.addInt(ocra::TASK_MESSAGE::CLOSE_CONTROL_PORTS);
+        this->taskRpcClient.write(message, reply);
+        if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) {
+            this->inputPort.close();
+            this->outputPort.close();
+            this->controlPortsAreOpen = false;
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+
+}
+
+
+Eigen::VectorXd TaskConnection::getCurrentState()
+{
+    if (this->controlPortsAreOpen) {
+        return this->currentStateVector;
+    } else {
+        return Eigen::VectorXd::Zero(0);
+    }
+}
+
 
 /**************************************************************************************************
                                     Nested PortReader Class
@@ -264,5 +344,5 @@ bool TaskConnection::inputCallback::read(yarp::os::ConnectionReader& connection)
 void TaskConnection::parseInput(yarp::os::Bottle& input)
 {
     for(auto i=0; i<input.size(); ++i)
-        currentStateVector(i) = input.get(i).asDouble();
+        this->currentStateVector(i) = input.get(i).asDouble();
 }

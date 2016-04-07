@@ -27,10 +27,16 @@
 #ifndef TRAJECTORY_THREAD_H
 #define TRAJECTORY_THREAD_H
 
-#include <ocra-recipes/ControlThread.h>
-#include "ocra/control/Trajectory/Trajectories.h"
-#include <yarp/os/Time.h>
 #include <iostream>
+
+#include "ocra/control/Trajectory/Trajectories.h"
+
+#include <yarp/os/Time.h>
+#include <yarp/os/RateThread.h>
+#include <Eigen/Dense>
+#include <Eigen/Lgsm>
+
+#include <ocra-recipes/TaskConnection.h>
 
 namespace ocra_recipes
 {
@@ -50,7 +56,7 @@ enum TERMINATION_STRATEGY
     WAIT_DEACTIVATE
 };
 
-class TrajectoryThread : public ControlThread
+class TrajectoryThread : public yarp::os::RateThread
 {
 
 public:
@@ -59,10 +65,10 @@ public:
     TrajectoryThread(int period, const std::string& taskPortName, const Eigen::MatrixXd& waypoints, const TRAJECTORY_TYPE = MIN_JERK, const TERMINATION_STRATEGY _terminationStrategy = STOP_THREAD);
     ~TrajectoryThread();
 
-    virtual bool ct_threadInit();
-    virtual void ct_threadRelease();
-    virtual void ct_run();
-    virtual std::string getThreadType(){return "TrajectoryThread";}
+    virtual bool threadInit();
+    virtual void threadRelease();
+    virtual void run();
+    // virtual std::string getThreadType(){return "TrajectoryThread";}
 
 
     // Setters
@@ -92,6 +98,10 @@ public:
 
 
 protected:
+
+    std::shared_ptr<TaskConnection> task;
+    int weightDimension;
+
     void init();
 
     bool waypointsHaveBeenSet;
@@ -103,7 +113,7 @@ protected:
     TRAJECTORY_TYPE trajType;
     TERMINATION_STRATEGY terminationStrategy;
 
-    ocra::Trajectory* trajectory;
+    std::shared_ptr<ocra::Trajectory> trajectory;
 
 
     double maximumVariance;

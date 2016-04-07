@@ -34,6 +34,13 @@ private:
     yarp::os::Port inputPort;
     yarp::os::Port outputPort;
 
+    Eigen::VectorXd currentStateVector;
+    bool controlPortsAreOpen;
+
+
+private:
+    void parseInput(yarp::os::Bottle& input);
+
 
 public:
     TaskConnection ();
@@ -158,7 +165,25 @@ public:
      */
     bool openControlPorts();
 
+    /*! If the control ports are open then this will return the current task state vector.
+     *
+     *  \return The task's current state.
+     */
+    Eigen::VectorXd getCurrentState();
 
+    /*! The name of the task we are connected to.
+     *
+     *  \return The name of the task we are connected to.
+     */
+    std::string getTaskName(){return taskName;}
+
+    int getTaskDimension();
+
+    int getTaskStateDimension();
+
+    void sendDesiredStateAsBottle(yarp::os::Bottle& bottle);
+
+    bool closeControlPorts();
 
 
 
@@ -184,15 +209,9 @@ public:
     };
     /************** controlInputCallback *************/
 
-
 private:
     std::shared_ptr<inputCallback> inpCallback;
-    Eigen::VectorXd currentStateVector;
 
-
-private:
-    void parseInput(yarp::os::Bottle& input);
-    
 };
 } /* ocra_recipes */
 

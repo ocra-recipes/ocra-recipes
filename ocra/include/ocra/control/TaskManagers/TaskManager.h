@@ -1,5 +1,5 @@
-#ifndef TASKMANAGERBASE_H
-#define TASKMANAGERBASE_H
+#ifndef TASK_MANAGER_H
+#define TASK_MANAGER_H
 
 #include <memory>
 
@@ -305,9 +305,9 @@ protected:
 
 
 private:
-    std::shared_ptr<RpcMessageCallback> rpcCallback;
-    std::shared_ptr<ControlInputCallback> controlCallback;
-    std::shared_ptr<StateUpdateThread> stateThread;
+    std::shared_ptr<RpcMessageCallback>     rpcCallback;
+    std::shared_ptr<ControlInputCallback>   controlCallback;
+    std::shared_ptr<StateUpdateThread>      stateThread;
 
     TASK_MODE taskMode;
     yarp::os::Log yLog;
@@ -315,4 +315,4 @@ private:
 
 }
 
-#endif // TASKMANAGERBASE_H
+#endif // TASK_MANAGER_H

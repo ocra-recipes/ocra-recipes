@@ -42,22 +42,33 @@ TrajectoryThread::~TrajectoryThread()
 
 }
 
-TrajectoryThread::TrajectoryThread(int period, const std::string& taskPortName, const TRAJECTORY_TYPE trajectoryType, const TERMINATION_STRATEGY _terminationStrategy):
-ControlThread(period, taskPortName),
-trajType(trajectoryType),
-terminationStrategy(_terminationStrategy),
-waypointsHaveBeenSet(false)
+TrajectoryThread::TrajectoryThread( int period,
+                                    const std::string& taskName,
+                                    const TRAJECTORY_TYPE trajectoryType,
+                                    const TERMINATION_STRATEGY _terminationStrategy)
+: RateThread(period)
+, trajType(trajectoryType)
+, terminationStrategy(_terminationStrategy)
+, waypointsHaveBeenSet(false)
 {
+    task = std::make_shared<TaskConnection>(taskName);
+    task.openControlPorts();
     init();
 }
 
-TrajectoryThread::TrajectoryThread(int period, const std::string& taskPortName, const Eigen::MatrixXd& waypoints, const TRAJECTORY_TYPE trajectoryType, const TERMINATION_STRATEGY _terminationStrategy):
-ControlThread(period, taskPortName),
+TrajectoryThread::TrajectoryThread( int period,
+                                    const std::string& taskName,
+                                    const Eigen::MatrixXd& waypoints,
+                                    const TRAJECTORY_TYPE trajectoryType,
+                                    const TERMINATION_STRATEGY _terminationStrategy):
+RateThread(period),
 userWaypoints(waypoints),
 trajType(trajectoryType),
 terminationStrategy(_terminationStrategy),
 waypointsHaveBeenSet(true)
 {
+    task = std::make_shared<TaskConnection>(taskName);
+    task.openControlPorts();
     init();
 }
 
@@ -71,29 +82,30 @@ void TrajectoryThread::init()
     deactivationTimeout = 5.0;
     deactivationLatch = false;
 
-    setThreadType("TrajectoryThread");
+    weightDimension = task->getTaskDimension();
+
 
     switch (trajType)
     {
         case MIN_JERK:
-            trajectory = new ocra::MinimumJerkTrajectory();
+            trajectory = std::make_shared<ocra::MinimumJerkTrajectory>();
             break;
         case LIN_INTERP:
-            trajectory = new ocra::LinearInterpolationTrajectory();
+            trajectory = std::make_shared<ocra::LinearInterpolationTrajectory>();
             break;
         case GAUSSIAN_PROCESS:
             #if USING_SMLT
-            trajectory = new ocra::GaussianProcessTrajectory();
+            trajectory = std::make_shared<ocra::GaussianProcessTrajectory>();
             #else
             std::cout << "You need the SMLT libs to use GAUSSIAN_PROCESS type trajectories. I'm gonna make you a MIN_JERK instead." << std::endl;
             trajType = MIN_JERK;
-            trajectory = new ocra::MinimumJerkTrajectory();
+            trajectory = std::make_shared<ocra::MinimumJerkTrajectory>();
             #endif
             break;
     }
 }
 
-bool TrajectoryThread::ct_threadInit()
+bool TrajectoryThread::threadInit()
 {
     if (trajType==GAUSSIAN_PROCESS)
     {
@@ -109,14 +121,12 @@ bool TrajectoryThread::ct_threadInit()
     }
 }
 
-void TrajectoryThread::ct_threadRelease()
+void TrajectoryThread::threadRelease()
 {
-    delete trajectory;
-    trajectory = NULL;
     std::cout<< "\nTrajectoryThread: Trajectory thread finished.\n";
 }
 
-void TrajectoryThread::ct_run()
+void TrajectoryThread::run()
 {
     if (waypointsHaveBeenSet) {
         if (goalAttained() || deactivationLatch)
@@ -131,10 +141,10 @@ void TrajectoryThread::ct_run()
                     stop();
                     break;
                 case STOP_THREAD_DEACTIVATE:
-                    if(deactivateTask()){
+                    if(task->deactivate()){
                         stop();
                     }else{
-                        std::cout << "[WARNING] Trajectory id = "<< ControlThread::threadId << " for task: " << originalTaskParams.name << " has attained its goal state, but cannot be deactivated." << std::endl;
+                        std::cout << "[WARNING] Trajectory thread for task: " << task->getTaskName() << " has attained its goal state, but cannot be deactivated." << std::endl;
                         yarp::os::Time::delay(1.0); // try again in one second.
                         deactivationDelay += 1.0;
                         if(deactivationDelay >= deactivationTimeout){
@@ -145,18 +155,18 @@ void TrajectoryThread::ct_run()
                     break;
                 case WAIT:
                     if (printWaitingNoticeOnce) {
-                        std::cout << "Trajectory id = "<< ControlThread::threadId << " for task: " << originalTaskParams.name << " has attained its goal state. Awaiting new commands." << std::endl;
+                        std::cout << "Trajectory thread for task: " << task->getTaskName() << " has attained its goal state. Awaiting new commands." << std::endl;
                         printWaitingNoticeOnce = false;
                     }
                     break;
                 case WAIT_DEACTIVATE:
                     if (printWaitingNoticeOnce) {
-                        if(deactivateTask()){
-                            std::cout << "Trajectory id = "<< ControlThread::threadId << " for task: " << originalTaskParams.name << " has attained its goal state. Deactivating task and awaiting new commands." << std::endl;
+                        if(task->deactivate()){
+                            std::cout << "Trajectory thread for task: " << task->getTaskName() << " has attained its goal state. Deactivating task and awaiting new commands." << std::endl;
                             printWaitingNoticeOnce = false;
                             deactivationLatch = true;
                         }else{
-                            std::cout << "Trajectory id = "<< ControlThread::threadId << " for task: " << originalTaskParams.name << " has attained its goal state and is awaiting new commands. [WARNING] Could not deactivate the task." << std::endl;
+                            std::cout << "Trajectory thread for task: " << task->getTaskName() << " has attained its goal state and is awaiting new commands. [WARNING] Could not deactivate the task." << std::endl;
                             yarp::os::Time::delay(1.0); // try again in one second.
                             deactivationDelay += 1.0;
                             if(deactivationDelay >= deactivationTimeout){
@@ -169,8 +179,8 @@ void TrajectoryThread::ct_run()
             }
         }
         else{
-            if (!currentTaskParams.isActive) {
-                activateTask();
+            if (!task->isActivated()) {
+                task->activate();
             }
 
             desStateBottle.clear();
@@ -206,7 +216,7 @@ void TrajectoryThread::ct_run()
             }
 
 
-            outputPort.write(desStateBottle);
+            task->sendDesiredStateAsBottle(desStateBottle);
         }
     }
 }
@@ -224,7 +234,7 @@ Eigen::VectorXd TrajectoryThread::varianceToWeights(Eigen::VectorXd& desiredVari
 
 bool TrajectoryThread::goalAttained()
 {
-    return (goalStateVector - getCurrentState().head(weightDimension)).norm() <= errorThreshold;
+    return (goalStateVector - task->getCurrentState().head(weightDimension)).norm() <= errorThreshold;
 }
 
 void TrajectoryThread::flipWaypoints()
@@ -255,11 +265,11 @@ bool TrajectoryThread::setTrajectoryWaypoints(const Eigen::MatrixXd& userWaypoin
         {
             allWaypoints = Eigen::MatrixXd(weightDimension, _userWaypoints.cols()+1);
 
-            startStateVector = getCurrentState();
+            startStateVector = task->getCurrentState();
             desiredState = Eigen::VectorXd::Zero(startStateVector.size());
 
 
-            allWaypoints.col(0) << currentStateVector.head(weightDimension);
+            allWaypoints.col(0) << task->getCurrentState().head(weightDimension);
             for(int i=0; i<_userWaypoints.cols(); i++)
             {
                 allWaypoints.col(i+1) << _userWaypoints.col(i);
@@ -299,7 +309,7 @@ bool TrajectoryThread::setDisplacement(const Eigen::VectorXd& displacementVector
 {
     if (weightDimension == displacementVector.rows())
     {
-        startStateVector = getCurrentState();
+        startStateVector = task->getCurrentState();
         Eigen::MatrixXd tmpWaypoints = Eigen::MatrixXd::Zero(weightDimension, 2);
         tmpWaypoints.col(0) << startStateVector;
         tmpWaypoints.col(1) << startStateVector + displacementVector;
