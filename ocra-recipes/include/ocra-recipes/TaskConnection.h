@@ -152,8 +152,6 @@ public:
     Eigen::Vector3d getTaskFrameAngularAcceleration();
 
 };
-
-
 } /* ocra_recipes */
 
 #endif // TASK_CONNECTION_H

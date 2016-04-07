@@ -260,7 +260,7 @@ void TaskManager::setWeight(double weight)
     }
 }
 
-void TaskManager::setWeight(Eigen::VectorXd& weights)
+void TaskManager::setWeight(const Eigen::VectorXd& weights)
 {
     if(task) {
         return task->setWeight(weights);
@@ -554,221 +554,446 @@ void TaskManager::StateUpdateThread::threadRelease()
 /**************************************************************************************************
 **************************************************************************************************/
 
-
 void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply)
 {
     int btlSize = input.size();
-    for (int i=0; i<btlSize;)
-    {
-        std::string msgTag = input.get(i).asString();
+    for (auto i=0; i<btlSize; ++i) {
+        switch (input.get(i).asInt()) {
 
-        if(msgTag == "getCurrentState")
-        {
-            updateCurrentStateVector(getCurrentState());
-
-            reply.addString("currentState:");
-            for (int j=0; j < stateDimension; j++){
-                reply.addDouble(currentStateVector[j]);
-            }
-
-            i++;
-        }
-
-        // Stiffness
-        else if(msgTag == "setStiffness")
-        {
-            i++;
-            setStiffness(input.get(i).asDouble());
-            reply.addString("Kp:");
-            reply.addDouble(getStiffness());
-            i++;
-        }
-        else if(msgTag == "getStiffness")
-        {
-            reply.addString("Kp:");
-            reply.addDouble(getStiffness());
-            i++;
-        }
-
-        // Damping
-        else if (msgTag == "setDamping")
-        {
-            i++;
-            setDamping(input.get(i).asDouble());
-            reply.addString("Kd:");
-            reply.addDouble(getDamping());
-            i++;
-        }
-        else if(msgTag == "getDamping")
-        {
-            reply.addString("Kd:");
-            reply.addDouble(getDamping());
-            i++;
-        }
-
-       // Weight
-       else if (msgTag == "setWeight")
-       {
-           i++;
-           Eigen::VectorXd currentWeights = getWeight();
-           for(int j=0; j<currentWeights.size(); j++)
-           {
-               currentWeights(j) = input.get(i).asDouble();
-               i++;
-           }
-           setWeight(currentWeights);
-           reply.addString("Weight:");
-           currentWeights = getWeight();
-           for(int j=0; j<currentWeights.size(); j++)
-           {
-               reply.addDouble(currentWeights(j));
-           }
-       }
-       else if(msgTag == "getWeight")
-       {
-           reply.addString("Weight:");
-           Eigen::VectorXd currentWeights = getWeight();
-           for(int j=0; j<currentWeights.size(); j++)
-           {
-               reply.addDouble(currentWeights(j));
-           }
-           i++;
-       }
-        // Desired State
-        else if (msgTag == "setDesired")
-        {
-            i++;
-            int startIndex = i;
-            int k = 0;
-            while(i<(startIndex + stateDimension))
+            case GET_CURRENT_STATE:
             {
-                newDesiredStateVector[k] = input.get(i).asDouble(); //make sure there are no NULL entries
-                i++; k++;
-            }
-            setDesiredState(); // constructs the appropropriate state inputs
-            reply.addString("Desired:");
-            for (int j=0; j < stateDimension; j++){
-                reply.addDouble(desiredStateVector[j]);
-            }
-            i++;
-        }
-        else if(msgTag == "getDesired")
-        {
-            reply.addString("Desired:");
-            for (int j=0; j < stateDimension; j++){
-                reply.addDouble(desiredStateVector[j]);
-            }
-            i++;
-        }
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_CURRENT_STATE";
+                this->updateCurrentStateVector(this->getCurrentState());
+                pourStdVectorIntoBottle(this->currentStateVector, reply);
+            }break;
 
-        // Activity Status
-        else if (msgTag == "getActivityStatus")
-        {
-            reply.addString("activated");
-            reply.addInt(isActivated());
-            i++;
-        }
+            case GET_STIFFNESS:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_STIFFNESS";
+                pourEigenMatrixIntoBottle(this->getStiffnessMatrix(), reply);
+            }break;
 
-        // Activate
-        else if (msgTag == "activate")
-        {
-            activate();
-            if (isActivated()) {
-                reply.addString("activated");
-            }else{reply.addString("failed");}
+            case GET_DAMPING:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_DAMPING";
+                pourEigenMatrixIntoBottle(this->getDampingMatrix(), reply);
+            }break;
 
-            i++;
-        }
+            case GET_WEIGHTS:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_WEIGHTS";
+                pourEigenVectorIntoBottle(this->getWeight(), reply);
+            }break;
 
-        // Deactivate
-        else if (msgTag == "deactivate")
-        {
-            deactivate();
-            if (!isActivated()) {
-                reply.addString("deactivated");
-            }else{reply.addString("failed");}
-            i++;
-        }
+            case GET_DESIRED:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_DESIRED";
+                pourStdVectorIntoBottle(this->desiredStateVector, reply);
+            }break;
 
-        // State Dimension
-        else if (msgTag == "getDimension")
-        {
-            reply.addString("Dimension:");
-            reply.addInt(stateDimension);
-            i++;
-        }
+            case GET_ACTIVITY_STATUS:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_ACTIVITY_STATUS";
+                if (this->isActivated()) {
+                    reply.addInt(TASK_IS_ACTIVATED);
+                } else {
+                    reply.addInt(TASK_IS_DEACTIVATED);
+                }
 
-        // Help
-        else if (msgTag == "help")
-        {
-            // TODO: Properly print help message to rpc reply
-            // reply.addString(printValidMessageTags());
-            std::cout << printValidMessageTags();
-            i++;
-        }
+            }break;
 
-        // Task Manager Type
-        else if (msgTag == "getType")
-        {
-            reply.addString("Type:");
-            reply.addString(getTaskManagerType());
-            i++;
-        }
+            case GET_DIMENSION:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_DIMENSION";
+                // TODO: Implement.
+            }break;
 
-        // Task Manager Name
-        else if (msgTag == "getName")
-        {
-            reply.addString("Name:");
-            reply.addString(stableName);
-            i++;
-        }
+            case GET_STATE_DIMENSION:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_STATE_DIMENSION";
+                reply.addInt(this->stateDimension);
+            }break;
 
-        // Open high speed control ports
-        else if (msgTag == "openControlPorts")
-        {
-            if(openControlPorts()){
-                reply.addInt(1);
-            }
-            else{
-                reply.addInt(0);
-            }
-            i++;
-        }
-        // Close high speed control ports
-        else if (msgTag == "closeControlPorts")
-        {
-            if(closeControlPorts()){
-                reply.addInt(1);
-            }
-            else{
-                reply.addInt(0);
-            }
-            i++;
-        }
+            case GET_TYPE:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_TYPE";
+                reply.addString(this->getTaskManagerType());
+            }break;
 
-        // Get control port names
-        else if (msgTag == "getControlPortNames")
-        {
-            if (controlPortsOpen) {
-                reply.addString("Control port names:");
-                reply.addString(inputControlPortName);
-                reply.addString(outputControlPortName);
-            }else{
-                reply.addString("[ERROR] Control ports haven't been opened. Use command: openControlPorts");
-            }
-            i++;
-        }
+            case GET_NAME:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_NAME";
+                reply.addString(this->stableName);
+            }break;
 
-        // Fallback
-        else
-        {
-            std::cout << "[WARNING] (TaskManager::parseIncomingMessage): The message tag, " << msgTag << " doesn't exist. Skipping. Use help to see availible options." << std::endl;
+            case GET_CONTROL_PORT_NAMES:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_CONTROL_PORT_NAMES";
+                reply.addString(this->inputControlPortName);
+                reply.addString(this->outputControlPortName);
+            }break;
 
-            reply.addString("invalid_input");
-            i++;
+            case GET_TASK_PORT_NAME:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_TASK_PORT_NAME";
+                reply.addString(this->getPortName());
+            }break;
+
+            case SET_STIFFNESS:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_STIFFNESS";
+                ++i;
+                this->setStiffness(input.get(i).asDouble());
+                reply.addInt(OCRA_SUCCESS);
+            }break;
+
+            case SET_STIFFNESS_VECTOR:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_STIFFNESS_VECTOR";
+                int indexesToSkip;
+                this->setStiffness(pourBottleIntoEigenVector(trimBottle(input, i+1), indexesToSkip) );
+                i += indexesToSkip;
+                reply.addInt(OCRA_SUCCESS);
+            }break;
+
+            case SET_STIFFNESS_MATRIX:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_STIFFNESS_MATRIX";
+                int indexesToSkip;
+                this->setStiffness(pourBottleIntoEigenMatrix(trimBottle(input, i+1), indexesToSkip) );
+                i += indexesToSkip;
+                reply.addInt(OCRA_SUCCESS);
+            }break;
+
+            case SET_DAMPING:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_DAMPING";
+                ++i;
+                this->setDamping(input.get(i).asDouble());
+                reply.addInt(OCRA_SUCCESS);
+            }break;
+
+            case SET_DAMPING_VECTOR:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_DAMPING_VECTOR";
+                int indexesToSkip;
+                this->setDamping(pourBottleIntoEigenVector(trimBottle(input, i+1), indexesToSkip) );
+                i += indexesToSkip;
+                reply.addInt(OCRA_SUCCESS);
+            }break;
+
+            case SET_DAMPING_MATRIX:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_DAMPING_MATRIX";
+                int indexesToSkip;
+                this->setDamping(pourBottleIntoEigenMatrix(trimBottle(input, i+1), indexesToSkip) );
+                i += indexesToSkip;
+                reply.addInt(OCRA_SUCCESS);
+            }break;
+
+            case SET_WEIGHT:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_WEIGHT";
+                ++i;
+                this->setWeight(input.get(i).asDouble());
+                reply.addInt(OCRA_SUCCESS);
+            }break;
+
+            case SET_WEIGHT_VECTOR:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_WEIGHT_VECTOR";
+                int indexesToSkip;
+                this->setWeight(pourBottleIntoEigenVector(trimBottle(input, i+1), indexesToSkip) );
+                i += indexesToSkip;
+                reply.addInt(OCRA_SUCCESS);
+            }break;
+
+            case SET_DESIRED:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_DESIRED";
+
+                int indexesToSkip;
+                std::vector<double> tmpVec = pourBottleIntoStdVector(trimBottle(input, i+1), indexesToSkip);
+                i += indexesToSkip;
+
+                if (this->newDesiredStateVector.size() == tmpVec.size()) {
+                    this->newDesiredStateVector = tmpVec;
+                    reply.addInt(OCRA_SUCCESS);
+                } else {
+                    reply.addInt(OCRA_FAILURE);
+                }
+            }break;
+
+            case ACTIVATE:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: ACTIVATE";
+                if(this->activate()) {
+                    reply.addInt(OCRA_SUCCESS);
+                } else {
+                    reply.addInt(OCRA_FAILURE);
+                }
+            }break;
+
+            case DEACTIVATE:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: DEACTIVATE";
+                if(this->deactivate()) {
+                    reply.addInt(OCRA_SUCCESS);
+                } else {
+                    reply.addInt(OCRA_FAILURE);
+                }
+            }break;
+
+            case OPEN_CONTROL_PORTS:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: OPEN_CONTROL_PORTS";
+                if(openControlPorts()) {
+                    reply.addInt(OCRA_SUCCESS);
+                } else {
+                    reply.addInt(OCRA_FAILURE);
+                }
+            }break;
+
+            case CLOSE_CONTROL_PORTS:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: CLOSE_CONTROL_PORTS";
+                if(closeControlPorts()) {
+                    reply.addInt(OCRA_SUCCESS);
+                } else {
+                    reply.addInt(OCRA_FAILURE);
+                }
+            }break;
+
+            case HELP:
+            {
+                yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: HELP";
+
+            }break;
+
+            default:
+            {
+                yLog.warning() << "Unrecognized request tag.";
+
+            }break;
+
+
         }
     }
 }
+// void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply)
+// {
+//     int btlSize = input.size();
+//     for (int i=0; i<btlSize;)
+//     {
+//         std::string msgTag = input.get(i).asString();
+//
+//         if(msgTag == "getCurrentState")
+//         {
+//             updateCurrentStateVector(getCurrentState());
+//
+//             reply.addString("currentState:");
+//             for (int j=0; j < stateDimension; j++){
+//                 reply.addDouble(currentStateVector[j]);
+//             }
+//
+//             i++;
+//         }
+//
+//         // Stiffness
+//         else if(msgTag == "setStiffness")
+//         {
+//             i++;
+//             setStiffness(input.get(i).asDouble());
+//             reply.addString("Kp:");
+//             reply.addDouble(getStiffness());
+//             i++;
+//         }
+//         else if(msgTag == "getStiffness")
+//         {
+//             reply.addString("Kp:");
+//             reply.addDouble(getStiffness());
+//             i++;
+//         }
+//
+//         // Damping
+//         else if (msgTag == "setDamping")
+//         {
+//             i++;
+//             setDamping(input.get(i).asDouble());
+//             reply.addString("Kd:");
+//             reply.addDouble(getDamping());
+//             i++;
+//         }
+//         else if(msgTag == "getDamping")
+//         {
+//             reply.addString("Kd:");
+//             reply.addDouble(getDamping());
+//             i++;
+//         }
+//
+//        // Weight
+//        else if (msgTag == "setWeight")
+//        {
+//            i++;
+//            Eigen::VectorXd currentWeights = getWeight();
+//            for(int j=0; j<currentWeights.size(); j++)
+//            {
+//                currentWeights(j) = input.get(i).asDouble();
+//                i++;
+//            }
+//            setWeight(currentWeights);
+//            reply.addString("Weight:");
+//            currentWeights = getWeight();
+//            for(int j=0; j<currentWeights.size(); j++)
+//            {
+//                reply.addDouble(currentWeights(j));
+//            }
+//        }
+//        else if(msgTag == "getWeight")
+//        {
+//            reply.addString("Weight:");
+//            Eigen::VectorXd currentWeights = getWeight();
+//            for(int j=0; j<currentWeights.size(); j++)
+//            {
+//                reply.addDouble(currentWeights(j));
+//            }
+//            i++;
+//        }
+//         // Desired State
+//         else if (msgTag == "setDesired")
+//         {
+//             i++;
+//             int startIndex = i;
+//             int k = 0;
+//             while(i<(startIndex + stateDimension))
+//             {
+//                 newDesiredStateVector[k] = input.get(i).asDouble(); //make sure there are no NULL entries
+//                 i++; k++;
+//             }
+//             setDesiredState(); // constructs the appropropriate state inputs
+//             reply.addString("Desired:");
+//             for (int j=0; j < stateDimension; j++){
+//                 reply.addDouble(desiredStateVector[j]);
+//             }
+//             i++;
+//         }
+//         else if(msgTag == "getDesired")
+//         {
+//             reply.addString("Desired:");
+//             for (int j=0; j < stateDimension; j++){
+//                 reply.addDouble(desiredStateVector[j]);
+//             }
+//             i++;
+//         }
+//
+//         // Activity Status
+//         else if (msgTag == "getActivityStatus")
+//         {
+//             reply.addString("activated");
+//             reply.addInt(isActivated());
+//             i++;
+//         }
+//
+//         // Activate
+//         else if (msgTag == "activate")
+//         {
+//             activate();
+//             if (isActivated()) {
+//                 reply.addString("activated");
+//             }else{reply.addString("failed");}
+//
+//             i++;
+//         }
+//
+//         // Deactivate
+//         else if (msgTag == "deactivate")
+//         {
+//             deactivate();
+//             if (!isActivated()) {
+//                 reply.addString("deactivated");
+//             }else{reply.addString("failed");}
+//             i++;
+//         }
+//
+//         // State Dimension
+//         else if (msgTag == "getDimension")
+//         {
+//             reply.addString("Dimension:");
+//             reply.addInt(stateDimension);
+//             i++;
+//         }
+//
+//         // Help
+//         else if (msgTag == "help")
+//         {
+//             // TODO: Properly print help message to rpc reply
+//             // reply.addString(printValidMessageTags());
+//             std::cout << printValidMessageTags();
+//             i++;
+//         }
+//
+//         // Task Manager Type
+//         else if (msgTag == "getType")
+//         {
+//             reply.addString("Type:");
+//             reply.addString(getTaskManagerType());
+//             i++;
+//         }
+//
+//         // Task Manager Name
+//         else if (msgTag == "getName")
+//         {
+//             reply.addString("Name:");
+//             reply.addString(stableName);
+//             i++;
+//         }
+//
+//         // Open high speed control ports
+//         else if (msgTag == "openControlPorts")
+//         {
+//             if(openControlPorts()){
+//                 reply.addInt(1);
+//             }
+//             else{
+//                 reply.addInt(0);
+//             }
+//             i++;
+//         }
+//         // Close high speed control ports
+//         else if (msgTag == "closeControlPorts")
+//         {
+//             if(closeControlPorts()){
+//                 reply.addInt(1);
+//             }
+//             else{
+//                 reply.addInt(0);
+//             }
+//             i++;
+//         }
+//
+//         // Get control port names
+//         else if (msgTag == "getControlPortNames")
+//         {
+//             if (controlPortsOpen) {
+//                 reply.addString("Control port names:");
+//                 reply.addString(inputControlPortName);
+//                 reply.addString(outputControlPortName);
+//             }else{
+//                 reply.addString("[ERROR] Control ports haven't been opened. Use command: openControlPorts");
+//             }
+//             i++;
+//         }
+//
+//         // Fallback
+//         else
+//         {
+//             std::cout << "[WARNING] (TaskManager::parseIncomingMessage): The message tag, " << msgTag << " doesn't exist. Skipping. Use help to see availible options." << std::endl;
+//
+//             reply.addString("invalid_input");
+//             i++;
+//         }
+//     }
+// }
 
 std::string TaskManager::printValidMessageTags()
 {

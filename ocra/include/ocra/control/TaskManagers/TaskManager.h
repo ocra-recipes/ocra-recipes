@@ -6,6 +6,7 @@
 #include "ocra/control/Model.h"
 #include "ocra/control/Controller.h"
 #include "ocra/control/Tasks/OneLevelTask.h"
+#include "ocra/control/TaskManagers/TaskManagerMessageVocab.h"
 #include "ocra/control/Trajectory/Trajectories.h"
 
 #include <Eigen/Dense>
@@ -172,7 +173,7 @@ public:
     /*! Sets the weights for each DoF of a task.
      *  \param weights A vector of weights to apply to each task DoF individually.
      */
-    void setWeight(Eigen::VectorXd& weights);
+    void setWeight(const Eigen::VectorXd& weights);
 
     /*! Gets the weights associated with the task. Often a task will have a single weight but it is still represented as a vector to be applied to each DoF of the task.
      *
@@ -261,7 +262,7 @@ protected: /* Protected methods */
     void updateCurrentStateVector(const double* ptrToFirstIndex);
     void setStateDimension(int taskDimension);
     // For parsing and compiling yarp messages.
-    virtual void parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply);
+    void parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply);
     std::string printValidMessageTags();
     bool openControlPorts();
     bool closeControlPorts();

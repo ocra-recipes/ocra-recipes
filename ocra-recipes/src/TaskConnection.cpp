@@ -30,9 +30,9 @@ TaskConnection::~TaskConnection()
 bool TaskConnection::activate()
 {
     yarp::os::Bottle message, reply;
-    message.addInt(ocra::OCRA_TASK_MANAGER_MESSAGE_TAG::ACTIVATE);
+    message.addInt(ocra::TASK_MESSAGE::ACTIVATE);
     taskRpcClient.write(message, reply);
-    if(reply.get(0).asInt() == ocra::OCRA_TASK_MANAGER_MESSAGE_TAG::OCRA_FAILURE) {
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
         yLog.error() << "Could not activate " << taskName;
     }
 }
@@ -40,9 +40,9 @@ bool TaskConnection::activate()
 bool TaskConnection::deactivate()
 {
     yarp::os::Bottle message, reply;
-    message.addInt(ocra::OCRA_TASK_MANAGER_MESSAGE_TAG::DEACTIVATE);
+    message.addInt(ocra::TASK_MESSAGE::DEACTIVATE);
     taskRpcClient.write(message, reply);
-    if(reply.get(0).asInt() == ocra::OCRA_TASK_MANAGER_MESSAGE_TAG::OCRA_FAILURE) {
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
         yLog.error() << "Could not deactivate " << taskName;
     }
 }
@@ -50,7 +50,7 @@ bool TaskConnection::deactivate()
 std::string TaskConnection::getPortName()
 {
     yarp::os::Bottle message, reply;
-    message.addInt(ocra::OCRA_TASK_MANAGER_MESSAGE_TAG::GET_TASK_PORT_NAME);
+    message.addInt(ocra::TASK_MESSAGE::GET_TASK_PORT_NAME);
     taskRpcClient.write(message, reply);
     return reply.get(0).asString();
 }
@@ -58,9 +58,9 @@ std::string TaskConnection::getPortName()
 bool TaskConnection::isActivated()
 {
     yarp::os::Bottle message, reply;
-    message.addInt(ocra::OCRA_TASK_MANAGER_MESSAGE_TAG::GET_ACTIVITY_STATUS);
+    message.addInt(ocra::TASK_MESSAGE::GET_ACTIVITY_STATUS);
     taskRpcClient.write(message, reply);
-    if(reply.get(0).asInt() == ocra::OCRA_TASK_MANAGER_MESSAGE_TAG::TASK_IS_ACTIVATED) {
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::TASK_IS_ACTIVATED) {
         return true;
     } else {
         return false;
@@ -69,7 +69,15 @@ bool TaskConnection::isActivated()
 
 Eigen::VectorXd TaskConnection::getTaskError()
 {
-
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::GET_ACTIVITY_STATUS);
+    taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) {
+        int dummy;
+        return ocra::pourBottleIntoEigenVector(reply.tail(), dummy);
+    } else {
+        return Eigen::VectorXd::Zero(0);
+    }
 }
 
 double TaskConnection::getTaskErrorNorm()
