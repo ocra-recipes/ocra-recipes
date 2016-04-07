@@ -8,6 +8,7 @@
 
 #include <yarp/os/RpcClient.h>
 #include <yarp/os/Network.h>
+#include <yarp/os/PortReader.h>
 #include <yarp/os/Log.h>
 #include <yarp/os/LogStream.h>
 
@@ -18,11 +19,21 @@ namespace ocra_recipes {
 class TaskConnection {
 
 private:
+    yarp::os::Network yarp;             /*!< Yarp network instance. */
     yarp::os::Log yLog;                 /*!< Yarp logging tool. */
     yarp::os::RpcClient taskRpcClient;  /*!< Task rpc client. */
     std::string taskName;               /*!< Name of the task we are connecting to. */
     std::string taskRpcServerName;      /*!< Name of the rpc server port. */
     std::string taskRpcClientName;      /*!< Name of the rpc client port. */
+
+    std::string taskOutputPortName;
+    std::string taskInputPortName;
+    std::string inputPortName;
+    std::string outputPortName;
+
+    yarp::os::Port inputPort;
+    yarp::os::Port outputPort;
+
 
 public:
     TaskConnection ();
@@ -141,6 +152,16 @@ public:
      */
     Eigen::VectorXd getWeight();
 
+    /*! Opens the high speed task control ports.
+     *
+     *  \return True if the ports open successfully and are connected.
+     */
+    bool openControlPorts();
+
+
+
+
+
     Eigen::Displacementd getTaskFrameDisplacement();
     Eigen::Twistd getTaskFrameVelocity();
     Eigen::Twistd getTaskFrameAcceleration();
@@ -151,6 +172,27 @@ public:
     Eigen::Vector3d getTaskFrameLinearAcceleration();
     Eigen::Vector3d getTaskFrameAngularAcceleration();
 
+    /************** controlInputCallback *************/
+    class inputCallback : public yarp::os::PortReader {
+        private:
+            TaskConnection& tcRef;
+
+        public:
+            inputCallback(TaskConnection& _tcRef);
+
+            virtual bool read(yarp::os::ConnectionReader& connection);
+    };
+    /************** controlInputCallback *************/
+
+
+private:
+    std::shared_ptr<inputCallback> inpCallback;
+    Eigen::VectorXd currentStateVector;
+
+
+private:
+    void parseInput(yarp::os::Bottle& input);
+    
 };
 } /* ocra_recipes */
 

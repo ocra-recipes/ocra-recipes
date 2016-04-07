@@ -605,7 +605,7 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
             case GET_DIMENSION:
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_DIMENSION";
-                // TODO: Implement.
+                reply.addInt(this->getWeight().size());
             }break;
 
             case GET_STATE_DIMENSION:
