@@ -171,6 +171,12 @@ public:
      */
     Eigen::VectorXd getCurrentState();
 
+    /*! Gets the current task state vector via a message over the Rpc port. This should not be used for high speed querying.
+     *
+     *  \return The task's current state.
+     */
+    Eigen::VectorXd getCurrentStateRpc();
+
     /*! The name of the task we are connected to.
      *
      *  \return The name of the task we are connected to.

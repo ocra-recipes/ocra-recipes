@@ -368,15 +368,20 @@ Eigen::VectorXd TaskConnection::getCurrentState()
     if (this->controlPortsAreOpen) {
         return this->currentStateVector;
     } else {
-        yarp::os::Bottle message, reply;
-        message.addInt(ocra::TASK_MESSAGE::GET_CURRENT_STATE);
-        this->taskRpcClient.write(message, reply);
-        if(reply.get(0).asInt() != 0) {
-            int dummy;
-            return ocra::pourBottleIntoEigenVector(reply, dummy);
-        } else {
-            return Eigen::VectorXd::Zero(0);
-        }
+        return this->getCurrentStateRpc();
+    }
+}
+
+Eigen::VectorXd TaskConnection::getCurrentStateRpc()
+{
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::GET_CURRENT_STATE);
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() != 0) {
+        int dummy;
+        return ocra::pourBottleIntoEigenVector(reply, dummy);
+    } else {
+        return Eigen::VectorXd::Zero(0);
     }
 }
 
