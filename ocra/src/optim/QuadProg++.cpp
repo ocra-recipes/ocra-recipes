@@ -42,7 +42,7 @@
 #include <limits>
 #include <sstream>
 #include <stdexcept>
-#include "quadprog/QuadProg++.h"
+#include "ocra/optim/QuadProg++.h"
 //#define TRACE_SOLVER
 namespace QuadProgPP{
 // Utility functions for updating some data needed by the solution method
@@ -86,7 +86,9 @@ double solve_quadprog(const Eigen::MatrixXd& _G,  const Eigen::VectorXd& g0,
    */
   const Eigen::MatrixXd& CE = _CE.transpose();
   const Eigen::MatrixXd& CI = _CI.transpose();
-        Eigen::MatrixXd   G = _G;
+  static Eigen::MatrixXd G(_G.rows(),_G.cols());
+  G.resize(_G.rows(),_G.cols());
+  G = _G;
 
 
   std::ostringstream msg;
@@ -139,8 +141,18 @@ double solve_quadprog(const Eigen::MatrixXd& _G,  const Eigen::VectorXd& g0,
   x.resize(n);
   register int i, j, k, l; /* indices */
   int ip; // this is the index of the constraint to be added to the active set
-  Eigen::MatrixXd R(n, n), J(n, n);
-  Eigen::VectorXd s(m + p), z(n), r(m + p), d(n), np(n), u(m + p), x_old(n), u_old(m + p);
+  static Eigen::MatrixXd R(n, n), J(n, n);
+  R.setZero(n,n);
+  J.resize(n,n);
+  static Eigen::VectorXd s(m + p),z(n),r(m + p),d(n),np(n),u(m + p),x_old(n),u_old(m + p);
+  s.resize(m + p); 
+  z.resize(n);
+  r.resize(m + p); 
+  d.setZero(n);
+  np.resize(n);
+  u.resize(m + p); 
+  x_old.resize(n);
+  u_old.resize(m + p);
   double f_value, psi, c1, c2, sum, ss, R_norm;
   double inf;
   if (std::numeric_limits<double>::has_infinity)
@@ -149,10 +161,14 @@ double solve_quadprog(const Eigen::MatrixXd& _G,  const Eigen::VectorXd& g0,
     inf = 1.0E300;
   double t, t1, t2; /* t is the step lenght, which is the minimum of the partial step length t1
     * and the full step length t2 */
-  Eigen::VectorXi A(m + p), A_old(m + p), iai(m + p);
+  static Eigen::VectorXi A(m + p),A_old(m + p),iai(m + p);
+  A.resize(m + p);
+  A_old.resize(m + p);
+  iai.resize(m + p);
   int q, iq, iter = 0;
   //Vector<bool> iaexcl(m + p);
-  Eigen::VectorXi iaexcl(m + p);
+  static Eigen::VectorXi iaexcl(m + p);
+  iaexcl.resize(m + p);
 
   /* p is the number of equality constraints */
   /* m is the number of inequality constraints */
@@ -183,12 +199,12 @@ double solve_quadprog(const Eigen::MatrixXd& _G,  const Eigen::VectorXd& g0,
   print_matrix("G", G);
 #endif
   /* initialize the matrix R */
-  for (i = 0; i < n; i++)
+  /*for (i = 0; i < n; i++)
   {
     d[i] = 0.0;
     for (j = 0; j < n; j++)
       R(i,j) = 0.0;
-  }
+  }*/
   R_norm = 1.0; /* this variable will hold the norm of the matrix R */
 
   /* compute the inverse of the factorized matrix G^-1, this is the initial value for H */
@@ -214,8 +230,9 @@ double solve_quadprog(const Eigen::MatrixXd& _G,  const Eigen::VectorXd& g0,
    * x = G^-1 * g0
    */
   cholesky_solve(G, x, g0);
-  for (i = 0; i < n; i++)
-    x[i] = -x[i];
+  /*for (i = 0; i < n; i++)
+    x[i] = -x[i];*/
+  x*=-1.0;
   /* and compute the current solution value */
   f_value = 0.5 * scalar_product(g0, x);
 #ifdef TRACE_SOLVER
@@ -761,7 +778,8 @@ void cholesky_decomposition(Eigen::MatrixXd& A)
 void cholesky_solve(const Eigen::MatrixXd& L, Eigen::VectorXd& x, const Eigen::VectorXd& b)
 {
   int n = L.rows();
-  Eigen::VectorXd y(n);
+  static Eigen::VectorXd y(n);
+  y.resize(n);
 
   /* Solve L * y = b */
   forward_elimination(L, y, b);

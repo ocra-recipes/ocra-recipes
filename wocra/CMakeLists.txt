@@ -3,7 +3,6 @@ project(wocra CXX)
 include_directories(${PROJECT_SOURCE_DIR}/include
                     ${OCRA_INCLUDE_DIRS}
                     ${YARP_INCLUDE_DIRS}
-                    ${QUADPROG_INCLUDE_DIRS}
                     )
 file(GLOB_RECURSE wocra_srcs src/*.cpp)
 
@@ -12,9 +11,8 @@ add_library(wocra ${wocra_srcs})
 LIST(APPEND link_libs   ${Boost_LIBRARIES}
                         ${TinyXML_LIBRARIES}
                         ${YARP_LIBRARIES}
-                        ${QUADPROG_LIBRARIES}
-			            ocra-control
-            			ocra-optim
+                        ocra-control
+                        ocra-optim
                         )
 
 set(WOCRA_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")

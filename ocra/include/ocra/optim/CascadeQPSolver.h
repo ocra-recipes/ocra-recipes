@@ -17,7 +17,11 @@
 #include "ocra/optim/LinearFunction.h"
 #include "ocra/optim/QuadraticFunction.h"
 #include "ocra/optim/CascadeQP.h"
+#include <memory>
 
+namespace ocra{
+    typedef std::shared_ptr<LinearConstraint> LinearConstraintPtr;
+}
 /** @namespace ocra
   * @brief Optimization-based Robot Controller namespace. 
   *  a library of classes to write and solve optimization problems dedicated to
@@ -27,86 +31,43 @@ namespace ocra
 {
   /** @class CascadeQPSolver
     *	@brief %CascadeQPSolver class.
-    *	@warning None
     *  
     * Hierarchical solver based on CascadeQP
     */
-  class CascadeQPSolver : public Solver
+  class CascadeQPSolver : public ocra::Solver
   {
-    // ------------------------ structures --------------------------------------
   public:
     struct HierarchyLevelConstraints
     {
-      size_t _m;
-      size_t _p;
-      std::vector<LinearConstraint*> _equalities;
-      std::vector<LinearConstraint*> _inequalities;
+      size_t _m = 0;
+      size_t _p = 0;
+      std::vector<LinearConstraintPtr> _equalities;
+      std::vector<LinearConstraintPtr> _inequalities;
     };
-  protected:
-  private:
 
-    // ------------------------ public static members ---------------------------
-  public:
-
-    // ------------------------ constructors ------------------------------------
-  private:
-  protected:
-  public:
     CascadeQPSolver();
-
-    // ------------------------ public interface --------------------------------
-  public:
     virtual const std::string& getMoreInfo(void) const;
 
-    void addLinearConstraint(LinearConstraint* constraint, size_t hierarchyLevel);
-    bool removeLinearConstraint(LinearConstraint* constraint, size_t hierarchyLevel);
-    void removeLinearConstraint(LinearConstraint* constraint);
+    void addLinearConstraint(LinearConstraintPtr constraint, size_t hierarchyLevel);
+    bool removeLinearConstraint(LinearConstraintPtr constraint, size_t hierarchyLevel);
+    void removeLinearConstraint(LinearConstraintPtr constraint);
 
-    // ------------------------ public methods ----------------------------------
-  public:
+
     void updateSize(void);
 
-    // ------------------------ public static methods ---------------------------
-  public:
-
-    // ------------------------ protected methods -------------------------------
   protected:
-    virtual const Solver::Result& doSolve(void);
+    virtual void doSolve(void);
     virtual void doPrepare(void);       
-
     virtual void recomputeVariable(void);
-
-    // ------------------------ protected static methods ------------------------
-  protected:
-
-    // ------------------------ private methods ---------------------------------
-  private:
+    std::vector<std::shared_ptr<HierarchyLevelConstraints> > _hierarchyLevels;
+    std::vector<std::shared_ptr<HierarchyLevel> > _hierarchyInput;
+    CascadeQP _qp;
     void updateMatrixSize(void);
     void updateLevels(void);
-    //void updateSize(void);
-
-    // ------------------------ private static methods --------------------------
-  private:
- 
-    // ------------------------ protected members -------------------------------
-  protected:
-    std::vector<HierarchyLevelConstraints*> _hierarchyLevels;   //sets of ocra constraints
-    std::vector<HierarchyLevel*> _hierarchyInput;               //input vector for CascadeQP
-    CascadeQP _qp;
-
-    // ------------------------ protected static members ------------------------
-  protected:
-
-    // ------------------------ private members ---------------------------------
-  private:
-
-    // ------------------------ private static members --------------------------
-  private:
-
-    // ------------------------ friendship declarations -------------------------
+private:
+    bool _isPrepared;
   };
 }
 
 #endif	//_OCRABASE_CASCADE_QP_SOLVER_H_
 
-// cmake:sourcegroup=toBeUpdated

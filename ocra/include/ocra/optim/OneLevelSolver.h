@@ -19,7 +19,7 @@
 #include "ocra/control/ControlEnum.h"
 #include "ocra/control/Model.h"
 
-#include "quadprog/QuadProg++.h"
+#include "ocra/optim/QuadProg++.h"
 
 #include <string>
 #include <Eigen/SVD>

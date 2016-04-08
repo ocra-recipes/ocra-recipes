@@ -1,9 +1,6 @@
 project(ocra CXX)
 
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
-include_directories(${QUADPROG_INCLUDE_DIRS}
-                    ${YARP_INCLUDE_DIRS}
-                    )
+include_directories(BEFORE include)
 
 file(GLOB_RECURSE control_srcs src/control/*.cpp)
 file(GLOB_RECURSE optim_srcs src/optim/*.cpp)
@@ -35,7 +32,6 @@ add_library(ocra-control ${control_srcs})
 add_library(ocra-optim ${optim_srcs})
 
 LIST(APPEND link_libs   ${Boost_LIBRARIES}
-                        ${QUADPROG_LIBRARIES}
                         ${YARP_LIBRARIES}
                         ${qpOASES_LIBRARIES}
                         )
