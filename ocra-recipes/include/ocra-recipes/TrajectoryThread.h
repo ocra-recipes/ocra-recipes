@@ -70,6 +70,8 @@ public:
     virtual void threadRelease();
     virtual void run();
     // virtual std::string getThreadType(){return "TrajectoryThread";}
+    void pause();
+    void unpause();
 
 
     // Setters
@@ -139,6 +141,10 @@ protected:
     bool deactivationLatch;
 
     bool isTaskCurrentlyActive;
+    bool isPaused;
+
+    double timeElapsedDuringPause;
+    double pauseTime;
 
 };
 } // namespace ocra_recipes

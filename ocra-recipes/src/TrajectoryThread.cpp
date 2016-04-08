@@ -81,6 +81,8 @@ void TrajectoryThread::init()
     deactivationDelay = 0.0;
     deactivationTimeout = 5.0;
     deactivationLatch = false;
+    isPaused = false;
+    timeElapsedDuringPause = 0.0;
 
     isTaskCurrentlyActive = task->isActivated();
     weightDimension = task->getTaskDimension();
@@ -130,7 +132,7 @@ void TrajectoryThread::threadRelease()
 
 void TrajectoryThread::run()
 {
-    if (waypointsHaveBeenSet) {
+    if (waypointsHaveBeenSet && !isPaused) {
         if (goalAttained() || deactivationLatch)
         {
             switch (terminationStrategy)
@@ -196,10 +198,13 @@ void TrajectoryThread::run()
             }
 
             desStateBottle.clear();
+
+            double relativeTime = yarp::os::Time::now() - timeElapsedDuringPause;
+
             if (trajType==GAUSSIAN_PROCESS)
             {
                 Eigen::MatrixXd desiredState_tmp;
-                trajectory->getDesiredValues(yarp::os::Time::now(), desiredState_tmp, desiredVariance);
+                trajectory->getDesiredValues(relativeTime, desiredState_tmp, desiredVariance);
                 desiredState << desiredState_tmp;
 
 
@@ -220,7 +225,7 @@ void TrajectoryThread::run()
             }
             else
             {
-                desiredState << trajectory->getDesiredValues(yarp::os::Time::now());
+                desiredState << trajectory->getDesiredValues(relativeTime);
                 for(int i=0; i<desiredState.size(); i++)
                 {
                     desStateBottle.addDouble(desiredState(i));
@@ -231,6 +236,18 @@ void TrajectoryThread::run()
             task->sendDesiredStateAsBottle(desStateBottle);
         }
     }
+}
+
+void TrajectoryThread::pause()
+{
+    isPaused = true;
+    pauseTime = yarp::os::Time::now();
+}
+
+void TrajectoryThread::unpause()
+{
+    isPaused = false;
+    timeElapsedDuringPause = yarp::os::Time::now() - pauseTime;
 }
 
 
