@@ -411,7 +411,6 @@ bool TaskConnection::inputCallback::read(yarp::os::ConnectionReader& connection)
 
 void TaskConnection::parseInput(yarp::os::Bottle& input)
 {
-    std::cout << "input: " << input.toString() << std::endl;
     for(auto i=0; i<input.size(); ++i)
         this->currentStateVector(i) = input.get(i).asDouble();
 }
