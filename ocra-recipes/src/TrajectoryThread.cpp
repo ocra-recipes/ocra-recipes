@@ -82,6 +82,7 @@ void TrajectoryThread::init()
     deactivationTimeout = 5.0;
     deactivationLatch = false;
 
+    isTaskCurrentlyActive = task->isActivated();
     weightDimension = task->getTaskDimension();
 
 
@@ -123,6 +124,7 @@ bool TrajectoryThread::threadInit()
 
 void TrajectoryThread::threadRelease()
 {
+    // task->closeControlPorts();
     std::cout<< "\nTrajectoryThread: Trajectory thread finished.\n";
 }
 
@@ -142,6 +144,7 @@ void TrajectoryThread::run()
                     break;
                 case STOP_THREAD_DEACTIVATE:
                     if(task->deactivate()){
+                        isTaskCurrentlyActive = task->isActivated();
                         stop();
                     }else{
                         std::cout << "[WARNING] Trajectory thread for task: " << task->getTaskName() << " has attained its goal state, but cannot be deactivated." << std::endl;
@@ -162,6 +165,8 @@ void TrajectoryThread::run()
                 case WAIT_DEACTIVATE:
                     if (printWaitingNoticeOnce) {
                         if(task->deactivate()){
+                            isTaskCurrentlyActive = task->isActivated();
+
                             std::cout << "Trajectory thread for task: " << task->getTaskName() << " has attained its goal state. Deactivating task and awaiting new commands." << std::endl;
                             printWaitingNoticeOnce = false;
                             deactivationLatch = true;
@@ -179,8 +184,9 @@ void TrajectoryThread::run()
             }
         }
         else{
-            if (!task->isActivated()) {
+            if (!isTaskCurrentlyActive) {
                 task->activate();
+                isTaskCurrentlyActive = task->isActivated();
             }
 
             desStateBottle.clear();
@@ -252,6 +258,17 @@ void TrajectoryThread::flipWaypoints()
     goalStateVector = allWaypoints.rightCols(1);
 }
 
+void TrajectoryThread::cycleWaypoints()
+{
+    int nCols = allWaypoints.cols();
+    Eigen::MatrixXd tmp(allWaypoints.rows(), nCols);
+
+    tmp.col(0) = allWaypoints.rightCols(1);
+    tmp.rightCols(nCols-2) = allWaypoints.leftCols(nCols-2);
+    allWaypoints = tmp;
+    goalStateVector = allWaypoints.rightCols(1);
+}
+
 bool TrajectoryThread::setTrajectoryWaypoints(const Eigen::MatrixXd& userWaypoints, bool containsStartingWaypoint)
 {
     Eigen::MatrixXd _userWaypoints = userWaypoints; // Copy waypoints first in case we use allWaypoints as an arg.
@@ -266,6 +283,8 @@ bool TrajectoryThread::setTrajectoryWaypoints(const Eigen::MatrixXd& userWaypoin
             allWaypoints = Eigen::MatrixXd(weightDimension, _userWaypoints.cols()+1);
 
             startStateVector = task->getCurrentState();
+
+            std::cout << "startStateVector\n" << startStateVector << std::endl;
             desiredState = Eigen::VectorXd::Zero(startStateVector.size());
 
 

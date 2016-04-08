@@ -108,6 +108,8 @@ protected:
     Eigen::VectorXd varianceToWeights(Eigen::VectorXd& desiredVariance, const double beta = 1.0);
     // void getTaskWeightDimension();
     void flipWaypoints();
+    void cycleWaypoints();
+
 
     Eigen::MatrixXd userWaypoints;
     TRAJECTORY_TYPE trajType;
@@ -134,6 +136,8 @@ protected:
     double deactivationDelay;
     double deactivationTimeout;
     bool deactivationLatch;
+
+    bool isTaskCurrentlyActive;
 
 };
 } // namespace ocra_recipes

@@ -35,7 +35,9 @@ bool TaskConnection::activate()
     this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() != ocra::TASK_MESSAGE::OCRA_SUCCESS) {
         yLog.error() << "Could not activate " << taskName;
+        return false;
     }
+    return true;
 }
 
 bool TaskConnection::deactivate()
@@ -45,7 +47,9 @@ bool TaskConnection::deactivate()
     this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() != ocra::TASK_MESSAGE::OCRA_SUCCESS) {
         yLog.error() << "Could not deactivate " << taskName;
+        return false;
     }
+    return true;
 }
 
 std::string TaskConnection::getPortName()
@@ -302,8 +306,8 @@ bool TaskConnection::openControlPorts()
         reply.clear();
         message.addInt(ocra::TASK_MESSAGE::GET_CONTROL_PORT_NAMES);
         this->taskRpcClient.write(message, reply);
-        this->taskOutputPortName = reply.get(0).asString();
-        this->taskInputPortName = reply.get(1).asString();
+        this->taskInputPortName = reply.get(0).asString();
+        this->taskOutputPortName = reply.get(1).asString();
 
         this->inputPortName = "/TaskConnection/"+this->taskName+":i";
         this->outputPortName = "/TaskConnection/"+this->taskName+":o";
@@ -325,6 +329,9 @@ bool TaskConnection::openControlPorts()
             portsConnected = portsConnected && yarp.connect(this->outputPortName.c_str(), this->taskInputPortName.c_str());
 
             this->controlPortsAreOpen = portsConnected;
+            if (!this->controlPortsAreOpen) {
+                yLog.error() << "Could not open the control ports!";
+            }
         } else {
             return false;
         }
@@ -361,7 +368,15 @@ Eigen::VectorXd TaskConnection::getCurrentState()
     if (this->controlPortsAreOpen) {
         return this->currentStateVector;
     } else {
-        return Eigen::VectorXd::Zero(0);
+        yarp::os::Bottle message, reply;
+        message.addInt(ocra::TASK_MESSAGE::GET_CURRENT_STATE);
+        this->taskRpcClient.write(message, reply);
+        if(reply.get(0).asInt() != 0) {
+            int dummy;
+            return ocra::pourBottleIntoEigenVector(reply, dummy);
+        } else {
+            return Eigen::VectorXd::Zero(0);
+        }
     }
 }
 
@@ -391,6 +406,7 @@ bool TaskConnection::inputCallback::read(yarp::os::ConnectionReader& connection)
 
 void TaskConnection::parseInput(yarp::os::Bottle& input)
 {
+    std::cout << "input: " << input.toString() << std::endl;
     for(auto i=0; i<input.size(); ++i)
         this->currentStateVector(i) = input.get(i).asDouble();
 }
