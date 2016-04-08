@@ -171,6 +171,8 @@ void TaskManager::setStiffness(double K)
 {
     if(task) {
         task->setStiffness(K);
+    } else {
+        std::cout << "\n\n\n FUUUUUUCK" << std::endl;
     }
 }
 
@@ -647,7 +649,7 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_STIFFNESS";
                 ++i;
-                this->setStiffness(input.get(i).asDouble());
+                setStiffness(input.get(i).asDouble());
                 reply.addInt(OCRA_SUCCESS);
             }break;
 

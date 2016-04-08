@@ -73,9 +73,9 @@ Eigen::VectorXd TaskConnection::getTaskError()
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::GET_TASK_ERROR);
     this->taskRpcClient.write(message, reply);
-    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) {
+    if(reply.get(0).asInt() != 0) {
         int dummy;
-        return ocra::pourBottleIntoEigenVector(reply.tail(), dummy);
+        return ocra::pourBottleIntoEigenVector(reply, dummy);
     } else {
         return Eigen::VectorXd::Zero(0);
     }
@@ -88,17 +88,35 @@ double TaskConnection::getTaskErrorNorm()
 
 void TaskConnection::setStiffness(double K)
 {
-
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::SET_STIFFNESS);
+    message.addDouble(K);
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
+        yLog.error() << "setStiffness() did not work.";
+    }
 }
 
 void TaskConnection::setStiffness(const VectorXd& K)
 {
-
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::SET_STIFFNESS_VECTOR);
+    ocra::pourEigenVectorIntoBottle(K, message);
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
+        yLog.error() << "setStiffness() did not work.";
+    }
 }
 
 void TaskConnection::setStiffness(const MatrixXd& K)
 {
-
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::SET_STIFFNESS_MATRIX);
+    ocra::pourEigenMatrixIntoBottle(K, message);
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
+        yLog.error() << "setStiffness() did not work.";
+    }
 }
 
 double TaskConnection::getStiffness()
@@ -111,9 +129,9 @@ Eigen::MatrixXd TaskConnection::getStiffnessMatrix()
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::GET_STIFFNESS);
     this->taskRpcClient.write(message, reply);
-    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) {
+    if(reply.get(0).asInt() != 0) {
         int dummy;
-        return ocra::pourBottleIntoEigenMatrix(reply.tail(), dummy);
+        return ocra::pourBottleIntoEigenMatrix(reply, dummy);
     } else {
         return Eigen::MatrixXd::Zero(0,0);
     }
@@ -121,17 +139,35 @@ Eigen::MatrixXd TaskConnection::getStiffnessMatrix()
 
 void TaskConnection::setDamping(double B)
 {
-
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::SET_DAMPING);
+    message.addDouble(B);
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
+        yLog.error() << "setDamping() did not work.";
+    }
 }
 
 void TaskConnection::setDamping(const VectorXd& B)
 {
-
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::SET_DAMPING_VECTOR);
+    ocra::pourEigenVectorIntoBottle(B, message);
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
+        yLog.error() << "setDamping() did not work.";
+    }
 }
 
 void TaskConnection::setDamping(const MatrixXd& B)
 {
-
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::SET_DAMPING_MATRIX);
+    ocra::pourEigenMatrixIntoBottle(B, message);
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
+        yLog.error() << "setDamping() did not work.";
+    }
 }
 
 double TaskConnection::getDamping()
@@ -144,9 +180,9 @@ Eigen::MatrixXd TaskConnection::getDampingMatrix()
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::GET_DAMPING);
     this->taskRpcClient.write(message, reply);
-    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) {
+    if(reply.get(0).asInt() != 0) {
         int dummy;
-        return ocra::pourBottleIntoEigenMatrix(reply.tail(), dummy);
+        return ocra::pourBottleIntoEigenMatrix(reply, dummy);
     } else {
         return Eigen::MatrixXd::Zero(0,0);
     }
@@ -154,12 +190,24 @@ Eigen::MatrixXd TaskConnection::getDampingMatrix()
 
 void TaskConnection::setWeight(double weight)
 {
-
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::SET_WEIGHT);
+    message.addDouble(weight);
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
+        yLog.error() << "setDamping() did not work.";
+    }
 }
 
 void TaskConnection::setWeight(Eigen::VectorXd& weights)
 {
-
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::SET_WEIGHT_VECTOR);
+    ocra::pourEigenVectorIntoBottle(weights, message);
+    this->taskRpcClient.write(message, reply);
+    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
+        yLog.error() << "setDamping() did not work.";
+    }
 }
 
 Eigen::VectorXd TaskConnection::getWeight()
@@ -167,9 +215,9 @@ Eigen::VectorXd TaskConnection::getWeight()
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::GET_WEIGHTS);
     this->taskRpcClient.write(message, reply);
-    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) {
+    if(reply.get(0).asInt() != 0) {
         int dummy;
-        return ocra::pourBottleIntoEigenVector(reply.tail(), dummy);
+        return ocra::pourBottleIntoEigenVector(reply, dummy);
     } else {
         return Eigen::VectorXd::Zero(0);
     }

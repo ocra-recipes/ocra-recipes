@@ -97,33 +97,33 @@ inline Eigen::MatrixXd pourBottleIntoEigenMatrix(yarp::os::Bottle bottle, int& i
 inline void pourStdVectorIntoBottle(const std::vector<double>& vec, yarp::os::Bottle& bottle)
 {
     if(vec.size()>0) {
-        bottle.addInt(OCRA_SUCCESS);
+        // bottle.addInt(OCRA_SUCCESS);
         bottle.addInt(vec.size());
         for (auto val : vec) {
             bottle.addDouble(val);
         }
     } else {
-        bottle.addInt(OCRA_FAILURE);
+        bottle.addInt(0);
     }
 }
 
 inline void pourEigenVectorIntoBottle(const Eigen::VectorXd& vec, yarp::os::Bottle& bottle)
 {
     if(vec.size()>0) {
-        bottle.addInt(OCRA_SUCCESS);
+        // bottle.addInt(OCRA_SUCCESS);
         bottle.addInt(vec.size());
         for (auto i=0; i<vec.size(); ++i) {
             bottle.addDouble(vec(i));
         }
     } else {
-        bottle.addInt(OCRA_FAILURE);
+        bottle.addInt(0);
     }
 }
 
 inline void pourEigenMatrixIntoBottle(const Eigen::MatrixXd& mat, yarp::os::Bottle& bottle)
 {
     if(mat.size()>0) {
-        bottle.addInt(OCRA_SUCCESS);
+        // bottle.addInt(OCRA_SUCCESS);
         bottle.addInt(mat.rows());
         bottle.addInt(mat.cols());
         for (auto i=0; i<mat.rows(); ++i) {
@@ -132,7 +132,7 @@ inline void pourEigenMatrixIntoBottle(const Eigen::MatrixXd& mat, yarp::os::Bott
             }
         }
     } else {
-        bottle.addInt(OCRA_FAILURE);
+        bottle.addInt(0);
     }
 }
 
