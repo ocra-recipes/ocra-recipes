@@ -124,7 +124,7 @@ bool TrajectoryThread::threadInit()
 
 void TrajectoryThread::threadRelease()
 {
-    // task->closeControlPorts();
+    task->closeControlPorts();
     std::cout<< "\nTrajectoryThread: Trajectory thread finished.\n";
 }
 
@@ -288,11 +288,9 @@ bool TrajectoryThread::setTrajectoryWaypoints(const Eigen::MatrixXd& userWaypoin
         {
             allWaypoints = Eigen::MatrixXd(weightDimension, _userWaypoints.cols()+1);
 
-            startStateVector = task->getCurrentState();
+            startStateVector = task->getCurrentStateRpc();
 
-            std::cout << "startStateVector\n" << startStateVector << std::endl;
             desiredState = Eigen::VectorXd::Zero(startStateVector.size());
-
 
             allWaypoints.col(0) << task->getCurrentState().head(weightDimension);
             for(int i=0; i<_userWaypoints.cols(); i++)
