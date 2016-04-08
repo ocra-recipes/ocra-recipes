@@ -139,6 +139,12 @@ void TrajectoryThread::run()
                     flipWaypoints();
                     setTrajectoryWaypoints(allWaypoints, true);
                     break;
+
+                case CYCLE:
+                    cycleWaypoints();
+                    setTrajectoryWaypoints(allWaypoints, true);
+                    break;
+
                 case STOP_THREAD:
                     stop();
                     break;
@@ -264,7 +270,7 @@ void TrajectoryThread::cycleWaypoints()
     Eigen::MatrixXd tmp(allWaypoints.rows(), nCols);
 
     tmp.col(0) = allWaypoints.rightCols(1);
-    tmp.rightCols(nCols-2) = allWaypoints.leftCols(nCols-2);
+    tmp.rightCols(nCols-1) = allWaypoints.leftCols(nCols-1);
     allWaypoints = tmp;
     goalStateVector = allWaypoints.rightCols(1);
 }

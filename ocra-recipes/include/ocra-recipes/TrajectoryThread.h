@@ -53,7 +53,8 @@ enum TERMINATION_STRATEGY
     STOP_THREAD,
     WAIT,
     STOP_THREAD_DEACTIVATE,
-    WAIT_DEACTIVATE
+    WAIT_DEACTIVATE,
+    CYCLE
 };
 
 class TrajectoryThread : public yarp::os::RateThread
