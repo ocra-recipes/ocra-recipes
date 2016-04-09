@@ -13,6 +13,7 @@
 
 #include "ocra/optim/CascadeQPStructures.h"
 #include <memory>
+#include <vector>
 
 namespace ocra
 {
