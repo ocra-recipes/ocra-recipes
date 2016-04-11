@@ -23,11 +23,13 @@ ServerCommunications::~ServerCommunications()
 
 bool ServerCommunications::open()
 {
-    rpcServerPort.open(rpcServerPort_Name.c_str());
+    bool res = true;
+    res &= rpcServerPort.open(rpcServerPort_Name.c_str());
     rpcServerPort.setReader(*this);
-    outputPort.open(outputPort_Name.c_str());
+    res &= outputPort.open(outputPort_Name.c_str());
+    return res;
 }
-bool ServerCommunications::close()
+void ServerCommunications::close()
 {
     rpcServerPort.close();
     outputPort.close();
@@ -40,14 +42,12 @@ bool ServerCommunications::read(yarp::os::ConnectionReader& connection)
     if (!input.read(connection)){
         return false;
     }
-    else{
-        parseMessage(input, reply);
-        yarp::os::ConnectionWriter* returnToSender = connection.getWriter();
-        if (returnToSender!=NULL) {
-            reply.write(*returnToSender);
-        }
-        return true;
+    parseMessage(input, reply);
+    yarp::os::ConnectionWriter* returnToSender = connection.getWriter();
+    if (returnToSender!=NULL) {
+        reply.write(*returnToSender);
     }
+    return true;
 }
 
 void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply)

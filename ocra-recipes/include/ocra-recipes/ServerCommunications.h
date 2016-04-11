@@ -37,7 +37,7 @@ public:
     virtual ~ServerCommunications();
 
     bool open();
-    bool close();
+    void close();
 
     virtual bool read(yarp::os::ConnectionReader& connection);
     void parseMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply);
