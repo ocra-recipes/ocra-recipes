@@ -67,7 +67,7 @@ private:
 
     std::shared_ptr<ocra::Model>                     model;
     std::shared_ptr<ocra::Controller>           controller;
-    std::shared_ptr<ocra::OneLevelSolver>   internalSolver;
+    std::shared_ptr<ocra::Solver>           internalSolver;
     std::shared_ptr<ocra::TaskManagerSet>   taskManagerSet;
 
     std::shared_ptr<ServerCommunications>       serverComs;

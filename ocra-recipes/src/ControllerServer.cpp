@@ -48,13 +48,13 @@ bool ControllerServer::initialize()
             case WOCRA_CONTROLLER:
             {
                 bool useReducedProblem = false;
-                controller = std::make_shared<wocra::WocraController>("WocraController", model, internalSolver, useReducedProblem);
+                controller = std::make_shared<wocra::WocraController>("WocraController", model, std::static_pointer_cast<ocra::OneLevelSolver>(internalSolver), useReducedProblem);
             }break;
 
             default:
             {
                 bool useReducedProblem = false;
-                controller = std::make_shared<wocra::WocraController>("WocraController", model, internalSolver, useReducedProblem);
+                controller = std::make_shared<wocra::WocraController>("WocraController", model, std::static_pointer_cast<ocra::OneLevelSolver>(internalSolver), useReducedProblem);
             }break;
         }
         if(controller){
