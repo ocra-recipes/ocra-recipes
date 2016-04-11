@@ -77,11 +77,11 @@ namespace ocra_debug { extern std::ofstream ocra_dbg_5; }
 
 #else // OCRA_DEBUG_LEVEL is defined
 
-#define OCRA_DBG_1(MSG)
-#define OCRA_DBG_2(MSG)
-#define OCRA_DBG_3(MSG)
-#define OCRA_DBG_4(MSG)
-#define OCRA_DBG_5(MSG)
+// // // // // // // // // #define OCRA_DBG_1(MSG)
+// // // // // // // // // #define OCRA_DBG_2(MSG)
+// // // // // // // // // #define OCRA_DBG_3(MSG)
+// // // // // // // // // #define OCRA_DBG_4(MSG)
+// // // // // // // // // #define OCRA_DBG_5(MSG)
 
 #endif // OCRA_DEBUG_LEVEL is defined
 
