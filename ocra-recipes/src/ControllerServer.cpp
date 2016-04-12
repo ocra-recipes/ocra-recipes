@@ -38,7 +38,7 @@ bool ControllerServer::initialize()
 
             default:
             {
-                internalSolver = std::make_shared<ocra::OneLevelSolverWithQuadProg>();
+                internalSolver = std::make_shared<ocra::OneLevelSolverWithQPOASES>();
             }break;
         }
 
@@ -51,6 +51,12 @@ bool ControllerServer::initialize()
                 controller = std::make_shared<wocra::WocraController>("WocraController", model, std::static_pointer_cast<ocra::OneLevelSolver>(internalSolver), useReducedProblem);
             }break;
 
+            case HOCRA_CONTROLLER:
+            {
+                bool useReducedProblem = false;
+                controller = std::make_shared<hocra::HocraController>("HocraController", model, std::static_pointer_cast<ocra::OneLevelSolver>(internalSolver), useReducedProblem);
+            }break;
+            
             default:
             {
                 bool useReducedProblem = false;
