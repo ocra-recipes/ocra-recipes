@@ -5,6 +5,7 @@ include_directories(BEFORE ${OCRA_INCLUDE_DIRS})
 include_directories(
                     ${YARP_INCLUDE_DIRS}
                     ${WOCRA_INCLUDE_DIRS}
+                    ${HOCRA_INCLUDE_DIRS}
                     )
 
 file(GLOB_RECURSE source_files src/*.cpp)
@@ -16,6 +17,7 @@ LIST(APPEND link_libs   ${Boost_LIBRARIES}
                         ocra-control
                         ocra-optim
                         wocra
+                        hocra
                         )
 
 target_link_libraries(${PROJECT_NAME} ${link_libs})

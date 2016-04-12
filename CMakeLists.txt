@@ -36,6 +36,7 @@ set(CMAKE_BUILD_TYPE Release)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE "TRUE")
 
+#find_package(Protobuf REQUIRED)
 find_package(Eigen REQUIRED)
 find_package(EigenLgsm REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
@@ -47,6 +48,7 @@ include_directories(
     ${EigenLgsm_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
     ${YARP_INCLUDE_DIRS}
+    ${Protobuf_INCLUDE_DIRS}
 )
 
 find_package(qpOASES)
@@ -60,6 +62,7 @@ endif()
 
 add_subdirectory(ocra)
 add_subdirectory(wocra)
+add_subdirectory(hocra)
 add_subdirectory(ocra-recipes)
 # add_subdirectory(gocra)
 

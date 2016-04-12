@@ -12,6 +12,7 @@
 
 #include <ocra/optim/OneLevelSolver.h>
 #include <wocra/WocraController.h>
+#include <hocra/HocraController.h>
 
 #include <Eigen/Dense>
 #include <Eigen/Lgsm>
