@@ -77,6 +77,17 @@ inline Eigen::VectorXd pourBottleIntoEigenVector(yarp::os::Bottle bottle, int& i
     return returnVector;
 }
 
+inline Eigen::VectorXi pourBottleIntoEigenVectorXi(yarp::os::Bottle bottle, int& indexesToSkip)
+{
+    int nVals = bottle.get(0).asInt();
+    Eigen::VectorXi returnVector(nVals);
+    for (auto i = 0; i < nVals; ++i) {
+        returnVector(i) = bottle.tail().get(i).asInt();
+    }
+    indexesToSkip = nVals + 1;
+    return returnVector;
+}
+
 inline Eigen::MatrixXd pourBottleIntoEigenMatrix(yarp::os::Bottle bottle, int& indexesToSkip)
 {
     int nRows = bottle.get(0).asInt();
@@ -114,6 +125,19 @@ inline void pourEigenVectorIntoBottle(const Eigen::VectorXd& vec, yarp::os::Bott
         bottle.addInt(vec.size());
         for (auto i=0; i<vec.size(); ++i) {
             bottle.addDouble(vec(i));
+        }
+    } else {
+        bottle.addInt(0);
+    }
+}
+
+inline void pourEigenVectorXiIntoBottle(const Eigen::VectorXi& vec, yarp::os::Bottle& bottle)
+{
+    if(vec.size()>0) {
+        // bottle.addInt(OCRA_SUCCESS);
+        bottle.addInt(vec.size());
+        for (auto i=0; i<vec.size(); ++i) {
+            bottle.addInt(vec(i));
         }
     } else {
         bottle.addInt(0);
