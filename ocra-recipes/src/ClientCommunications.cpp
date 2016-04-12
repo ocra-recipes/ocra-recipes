@@ -7,6 +7,7 @@ int ClientCommunications::CONTROLLER_CLIENT_COUNT = 0;
 
 
 ClientCommunications::ClientCommunications()
+: inputCallback(*this)
 {
     clientNumber = ++ClientCommunications::CONTROLLER_CLIENT_COUNT;
 
@@ -24,6 +25,7 @@ bool ClientCommunications::open(const bool connectToTaskManagers)
     rpcClientPort.open(rpcClientPort_Name.c_str());
     rpcClientPort.setReader(*this);
     inputPort.open(inputPort_Name.c_str());
+    inputPort.setReader(inputCallback);
 
     bool isConOpen = openServerConnections();
     if(isConOpen && connectToTaskManagers)
@@ -32,20 +34,30 @@ bool ClientCommunications::open(const bool connectToTaskManagers)
 
         if(isConOpen)
         {
-            std::cout << "Checking task manager rpc server connections..." << std::endl;
             for(auto rpc_i : taskRpcClients)
             {
                 yarp::os::Bottle message, reply;
                 message.addInt(ocra::TASK_MESSAGE::GET_TYPE);
                 rpc_i.second->write(message, reply);
-                std::cout << reply.toString() << std::endl;
             }
-            std::cout << "All set!" << std::endl;
         }else{
             yLog.error() << "Couldn't connect to the individual task ports.";
         }
     }
     return isConOpen;
+}
+
+std::vector<std::string> ClientCommunications::getTaskTypes()
+{
+    std::vector<std::string> retVec;
+    for(auto rpc_i : taskRpcClients)
+    {
+        yarp::os::Bottle message, reply;
+        message.addInt(ocra::TASK_MESSAGE::GET_TYPE);
+        rpc_i.second->write(message, reply);
+        retVec.push_back(reply.get(0).asString());
+    }
+    return retVec;
 }
 
 bool ClientCommunications::close()
@@ -243,4 +255,42 @@ void ClientCommunications::parseMessage(yarp::os::Bottle& input)
 
         }
     }
+}
+
+
+ClientCommunications::InputCallback::InputCallback(ClientCommunications& comsRef)
+: coms(comsRef)
+{
+    //
+}
+
+bool ClientCommunications::InputCallback::read(yarp::os::ConnectionReader& connection)
+{
+    yarp::os::Bottle input;
+    if (input.read(connection)){
+        return coms.parseInput(input);
+    }
+    else{
+        return false;
+    }
+}
+
+bool ClientCommunications::parseInput(yarp::os::Bottle& input)
+{
+    int btlSize = input.size();
+    for (auto i=0; i<btlSize; ++i) {
+        switch (input.get(i).asInt()) {
+
+            case REMOVE_TASK_PORT:
+            {
+                ++i;
+                yLog.info() << "Removing task " << input.get(i).asString();
+                close(input.get(i).asString());
+            }break;
+
+            default:
+            break;
+        }
+    }
+    return true;
 }
