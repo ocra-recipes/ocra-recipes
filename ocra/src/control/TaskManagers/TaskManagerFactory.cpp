@@ -319,23 +319,12 @@ Eigen::VectorXi TaskManagerFactory::stringToVectorXi(const char * valueString)
 void TaskManagerFactory::printTaskArguments()
 {
     int nTasks = tmOptsVector.size();
-    for (int i=0; i<nTasks; i++)
+    int i = 1;
+    for (auto tmOpts : tmOptsVector)
     {
-        std::cout << "\n=== Task " << i+1 << " of " << nTasks << " ===" << std::endl << std::endl;
-        std::cout << "Task name:\n" << tmOptsVector[i].taskName << std::endl << std::endl;
-        std::cout << "Task type:\n" << tmOptsVector[i].taskType << std::endl << std::endl;
-        std::cout << "Segment:\n" << tmOptsVector[i].segment << std::endl << std::endl;
-        std::cout << "kp:\n" << tmOptsVector[i].kp << std::endl << std::endl;
-        std::cout << "kd:\n" << tmOptsVector[i].kd << std::endl << std::endl;
-        std::cout << "weight:\n" << tmOptsVector[i].weight << std::endl << std::endl;
-        std::cout << "weights:\n" << tmOptsVector[i].weightVector.transpose() << std::endl << std::endl;
-        std::cout << "axes:\n" << tmOptsVector[i].axes << std::endl << std::endl;
-        std::cout << "offset:\n";
-        for(int j=0; j<tmOptsVector[i].offset.size(); j++){std::cout << tmOptsVector[i].offset[j].transpose() << std::endl;}std::cout << std::endl;
-        std::cout << "jointIndexes:\n" << tmOptsVector[i].jointIndexes.transpose() << std::endl << std::endl;
-        std::cout << "desired:\n" << tmOptsVector[i].desired.transpose() << std::endl << std::endl;
-
-
+        std::cout << "\n=== Task " << i << " of " << nTasks << " ===" << std::endl << std::endl;
+        std::cout << tmOpts;
+        ++i;
     }
 }
 
@@ -380,7 +369,7 @@ const char * TaskManagerFactory::getDisplacementArgs(TiXmlElement* xmlElem)
             }
         }
 
-        
+
         return dispString.c_str();
     }
 }
