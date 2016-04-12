@@ -9,7 +9,10 @@ using namespace ocra;
  * \param model                 ocra model to setup the task
  * \param taskName              Name of the task
  */
-TaskManager::TaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, bool _usesYarpPorts)
+TaskManager::TaskManager(ocra::Controller& _ctrl,
+                         const ocra::Model& _model,
+                         const std::string& _taskName,
+                         bool _usesYarpPorts)
 : ctrl(_ctrl)
 , model(_model)
 , name(_taskName)
@@ -46,6 +49,16 @@ TaskManager::~TaskManager()
 
 
     std::cout << "\t--> Destroying " << stableName << std::endl;
+}
+int TaskManager::getTaskHierarchyLevel()
+{
+    return task->getHierarchyLevel();
+}
+void TaskManager::setTaskHierarchyLevel(int level)
+{
+    std::cout << "\033[1;31m["<<name<<"]\033[0m Setting hierarchy level to "<<level<< std::endl;
+    task->setHierarchyLevel(level);
+    return;
 }
 
 bool TaskManager::activate()

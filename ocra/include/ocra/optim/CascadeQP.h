@@ -15,28 +15,18 @@
 #include <memory>
 #include <vector>
 
-namespace ocra
-{
-    typedef std::shared_ptr<HierarchyLevel> HierarchyLevelPtr;
-    typedef std::shared_ptr<HierarchyLevel_barre> HierarchyLevel_barrePtr;
-    typedef std::shared_ptr<EqualitiesConstraints> EqualitiesConstraintsPtr;
-    typedef std::shared_ptr<InequalitiesConstraints> InequalitiesConstraintsPtr;
-    typedef std::shared_ptr<Solution> SolutionPtr;
-    typedef std::shared_ptr<MatrixPQ> MatrixPQPtr;
-}
-
+//#ifdef USE_QPOASES
+#include <qpOASES.hpp>
+//#endif
 /** @namespace ocra
-  * @brief Optimization-based Robot Controller namespace. 
+  * @brief Optimization-based Robot Controller namespace.
   *  a library of classes to write and solve optimization problems dedicated to
-  *  the control of multi-body systems. 
+  *  the control of multi-body systems.
   */
 namespace ocra
 {
   /** @class CascadeQP
-    *	@brief %CascadeQP class.
-    *	@warning Solution is bound by arbitrary big bounds (1e10). If your problem scale
-    * has this order of magnitude, consider changing this bounds
-    *  
+    * @brief %CascadeQP class.
     * This class implements a hierarchical QP Solver based on
     * "Prioritizing linear equality and inequality systems: application to local motion
     * planning for redundant robots"
@@ -45,21 +35,21 @@ namespace ocra
     */
   class CascadeQP
   {
-
+      DEFINE_CLASS_POINTER_TYPEDEFS(CascadeQP)
   public:
     CascadeQP();
     virtual ~CascadeQP();
 
   public:
-    std::size_t addHierarchyLevel(ocra::HierarchyLevelPtr h);
-    std::size_t addHierarchyLevel(const std::vector<HierarchyLevelPtr>& v);
+    std::size_t addHierarchyLevel(ocra::HierarchyLevel::Ptr h);
+    std::size_t addHierarchyLevel(const std::vector<HierarchyLevel::Ptr>& v);
 
     void  clear(void);
     const FinalSolution& solveCascadeQP();
 
     const FinalSolution& getSolution() const;
     const Eigen::VectorXd& getSolutionOfLevel(int i) const;
-    const HierarchyLevel& getHierarchyLevel(int i) const;
+    HierarchyLevel::Ptr getHierarchyLevel(int i) const;
     std::size_t getNumberOfHierarchyLevel() const;
   protected:
     void addHierarchyLevel_barre(int i);
@@ -72,18 +62,16 @@ namespace ocra
     void computeHierarchyLevel_barre(int i);
 
   protected:
-    std::size_t taille;
-   
-    std::vector<SolutionPtr> allSolution;
-    std::vector<HierarchyLevelPtr> allHierarchyLevel;
-    std::vector<HierarchyLevel_barrePtr> allHierarchyLevel_barre;
-    std::vector<MatrixPQPtr> allMatrixPQ;
-    std::vector<EqualitiesConstraintsPtr> allEqualitiesConstraints;
-    std::vector<InequalitiesConstraintsPtr> allInequalitiesConstraints;
+    std::vector<Solution::Ptr> allSolution;
+    std::vector<HierarchyLevel::Ptr> allHierarchyLevel;
+    std::vector<HierarchyLevel_barre::Ptr> allHierarchyLevel_barre;
+    std::vector<MatrixPQ::Ptr> allMatrixPQ;
+    std::vector<EqualitiesConstraints::Ptr> allEqualitiesConstraints;
+    std::vector<InequalitiesConstraints::Ptr> allInequalitiesConstraints;
     std::vector<int> indexConstraintsViolated ;
     std::vector<int> indexConstraintsNotViolated ;
     FinalSolution f;
-    
+
   };
 }
 

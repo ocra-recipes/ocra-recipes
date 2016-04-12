@@ -18,6 +18,19 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <memory>
+/*! Macro function which basically just defines pointer typdefs for classes. Note that normally macros are evil monsters but I think this is a perfect usage case to cut down on repeated code.
+ *  \param Class Just pop this bad boy below the class definition and it will do the rest.
+ */
+ #define DEFINE_CLASS_POINTER_TYPEDEFS(Class) \
+     public : using Ptr = std::shared_ptr<Class>;//  \
+// using shared_ptr    = std::shared_ptr   <Class>;  \
+using unique_ptr    = std::unique_ptr   <Class>;  \
+using weak_ptr      = std::weak_ptr     <Class>;  \
+using const_ptr           = const std::shared_ptr   <Class>;  \
+using const_shared_ptr    = const std::shared_ptr   <Class>;  \
+using const_unique_ptr    = const std::unique_ptr   <Class>;  \
+using const_weak_ptr      = const std::weak_ptr     <Class>;
 
 namespace ocra
 {
@@ -151,4 +164,3 @@ namespace ocra
 #endif
 
 // cmake:sourcegroup=Utils
-

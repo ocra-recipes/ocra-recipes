@@ -13,13 +13,29 @@ namespace ocra
  * \param _damping              Damping constant for task
  * \param _weight               Weight constant for task
  */
-CoMTaskManager::CoMTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, double _weight, bool _usesYarpPorts)
+CoMTaskManager::CoMTaskManager( ocra::Controller& _ctrl,
+                                const ocra::Model& _model,
+                                const std::string& _taskName,
+                                ocra::ECartesianDof _axes,
+                                double _stiffness,
+                                double _damping,
+                                double _weight,
+                                int _hierarchyLevel,
+                                bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_stiffness, _damping, _weight);
 }
 
-CoMTaskManager::CoMTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::VectorXd& _weight, bool _usesYarpPorts)
+CoMTaskManager::CoMTaskManager( ocra::Controller& _ctrl,
+                                const ocra::Model& _model,
+                                const std::string& _taskName,
+                                ocra::ECartesianDof _axes,
+                                double _stiffness,
+                                double _damping,
+                                const Eigen::VectorXd& _weight,
+                                int _hierarchyLevel,
+                                bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_stiffness, _damping, _weight);
@@ -37,18 +53,38 @@ CoMTaskManager::CoMTaskManager(ocra::Controller& _ctrl, const ocra::Model& _mode
  * \param _weight               Weight constant for task
  * \param _posDes               Vector for desired position
  */
-CoMTaskManager::CoMTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, double _weight, Eigen::Vector3d _posDes, bool _usesYarpPorts)
+CoMTaskManager::CoMTaskManager( ocra::Controller& _ctrl,
+                                const ocra::Model& _model,
+                                const std::string& _taskName,
+                                ocra::ECartesianDof _axes,
+                                double _stiffness,
+                                double _damping,
+                                double _weight,
+                                Eigen::Vector3d _posDes,
+                                int _hierarchyLevel,
+                                bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_stiffness, _damping, _weight);
     setState(_posDes);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
-CoMTaskManager::CoMTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _stiffness, double _damping, const Eigen::VectorXd& _weight, Eigen::Vector3d _posDes, bool _usesYarpPorts)
+CoMTaskManager::CoMTaskManager( ocra::Controller& _ctrl,
+                                const ocra::Model& _model,
+                                const std::string& _taskName,
+                                ocra::ECartesianDof _axes,
+                                double _stiffness,
+                                double _damping,
+                                const Eigen::VectorXd& _weight,
+                                Eigen::Vector3d _posDes,
+                                int _hierarchyLevel,
+                                bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_stiffness, _damping, _weight);
     setState(_posDes);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 /** Constructor with initial desired position, velocity and acceleration

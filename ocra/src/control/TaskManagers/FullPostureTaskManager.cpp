@@ -20,13 +20,14 @@ FullPostureTaskManager::FullPostureTaskManager(ocra::Controller& _ctrl,
                                                         double _stiffness,
                                                         double _damping,
                                                         double _weight,
+                                                        int _hierarchyLevel,
                                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
     _init(_fullStateType, _stiffness, _damping, _weight);
     Eigen::VectorXd _init_q = _model.getJointPositions();
     setPosture(_init_q);
-
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 /** Base constructor
@@ -46,13 +47,14 @@ FullPostureTaskManager::FullPostureTaskManager(ocra::Controller& _ctrl,
                                                         double _stiffness,
                                                         double _damping,
                                                         const Eigen::VectorXd& _weight,
+                                                        int _hierarchyLevel,
                                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
     _init(_fullStateType, _stiffness, _damping, _weight);
     Eigen::VectorXd _init_q = _model.getJointPositions();
     setPosture(_init_q);
-
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 /** Constructor with desired joint space posture
  *
@@ -73,11 +75,13 @@ FullPostureTaskManager::FullPostureTaskManager(ocra::Controller& _ctrl,
                                                         double _damping,
                                                         double _weight,
                                                         const Eigen::VectorXd& _init_q,
+                                                        int _hierarchyLevel,
                                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
     _init(_fullStateType, _stiffness, _damping, _weight);
     setPosture(_init_q);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 /** Constructor with desired joint space posture
  *
@@ -98,11 +102,13 @@ FullPostureTaskManager::FullPostureTaskManager(ocra::Controller& _ctrl,
                                                         double _damping,
                                                         const Eigen::VectorXd& _weight,
                                                         const Eigen::VectorXd& _init_q,
+                                                        int _hierarchyLevel,
                                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
     _init(_fullStateType, _stiffness, _damping, _weight);
     setPosture(_init_q);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 FullPostureTaskManager::~FullPostureTaskManager()

@@ -22,6 +22,7 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
                                                             double _stiffness,
                                                             double _damping,
                                                             double _weight,
+                                                            int _hierarchyLevel,
                                                             bool _usesYarpPorts)
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
@@ -37,6 +38,7 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
                                                             double _stiffness,
                                                             double _damping,
                                                             const Eigen::VectorXd& _weight,
+                                                            int _hierarchyLevel,
                                                             bool _usesYarpPorts)
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
@@ -65,6 +67,7 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
                                                             double _stiffness,
                                                             double _damping,
                                                             double _weight,
+                                                            int _hierarchyLevel,
                                                             bool _usesYarpPorts)
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
@@ -81,6 +84,7 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
                                                             double _stiffness,
                                                             double _damping,
                                                             const Eigen::VectorXd& _weight,
+                                                            int _hierarchyLevel,
                                                             bool _usesYarpPorts)
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
@@ -108,6 +112,7 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
                                                             double _damping,
                                                             double _weight,
                                                             const Eigen::Vector3d& _poseDes,
+                                                            int _hierarchyLevel,
                                                             bool _usesYarpPorts)
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
@@ -126,6 +131,7 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
                                                             double _damping,
                                                             const Eigen::VectorXd& _weight,
                                                             const Eigen::Vector3d& _poseDes,
+                                                            int _hierarchyLevel,
                                                             bool _usesYarpPorts)
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
@@ -133,6 +139,7 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
     _init(Eigen::Vector3d::Zero(), _stiffness, _damping, _weight);
     // Have no idea this wrapper needs to be done
     setState(_poseDes);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 /**
  * Constructor with both point on segment and desired pose
@@ -157,12 +164,14 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
                                                             double _damping,
                                                             double _weight,
                                                             const Eigen::Vector3d& _poseDes,
+                                                            int _hierarchyLevel,
                                                             bool _usesYarpPorts)
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
     _init(_segPoint_Local, _stiffness, _damping, _weight);
     setState(_poseDes);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
@@ -175,12 +184,14 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
                                                             double _damping,
                                                             const Eigen::VectorXd& _weight,
                                                             const Eigen::Vector3d& _poseDes,
+                                                            int _hierarchyLevel,
                                                             bool _usesYarpPorts)
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
     _init(_segPoint_Local, _stiffness, _damping, _weight);
     setState(_poseDes);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 SegCartesianTaskManager::~SegCartesianTaskManager()

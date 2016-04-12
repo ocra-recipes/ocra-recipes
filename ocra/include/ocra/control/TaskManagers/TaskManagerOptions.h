@@ -17,6 +17,7 @@ public:
     double kp, kd, weight, mu, margin;
     bool usesYarp, useWeightVectorConstructor;
     int axes;
+    int hierarchyLevel;
     Eigen::VectorXd desired;
     Eigen::VectorXd indexDesired;
     Eigen::VectorXd nameDesired;

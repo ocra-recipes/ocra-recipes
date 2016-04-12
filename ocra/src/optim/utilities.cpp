@@ -1,4 +1,4 @@
-#include "ocra/optim/utilities.h"
+#include "ocra/utilities.h"
 #include "ocra/optim/Variable.h"
 #include "ocra/optim/QuadraticSolver.h"
 

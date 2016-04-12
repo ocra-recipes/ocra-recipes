@@ -47,6 +47,7 @@ public:
      *  \param ctrl A reference to an ocra controller.
      *  \param model A reference to and ocra model.
      *  \param name The name of the task.
+     *  \param name The hierarchy level for Hocra
      *  \param usesYarpPorts Whether or not to use yarp for interprocess communication with the task. True by defualt.
      */
     TaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& name, bool usesYarpPorts=true);
@@ -100,7 +101,13 @@ public:
      *  \return A vector of errors in each DoF of the task.
      */
     Eigen::VectorXd getTaskError();
-
+        /*! Gets the defined Level for a task
+     *  \warn Cannot be changed at runtime .
+     *
+     *  \return The level.
+     */
+    int getTaskHierarchyLevel();
+    void setTaskHierarchyLevel(int level);
     /*! Gets the current error vector norm of the task.
      *  \warn Only valid for task managers with 1 task, not sets of tasks.
      *

@@ -20,6 +20,7 @@ SegOrientationTaskManager::SegOrientationTaskManager(ocra::Controller& _ctrl,
                                                                 double _stiffness,
                                                                 double _damping,
                                                                 double _weight,
+                                                                int _hierarchyLevel,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName)
 {
@@ -33,10 +34,12 @@ SegOrientationTaskManager::SegOrientationTaskManager(ocra::Controller& _ctrl,
                                                                 double _stiffness,
                                                                 double _damping,
                                                                 const Eigen::VectorXd& _weight,
+                                                                int _hierarchyLevel,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName)
 {
     _init(Eigen::Rotation3d::Identity(), _stiffness, _damping, _weight);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 /** Constructor with desired pose
@@ -58,11 +61,13 @@ SegOrientationTaskManager::SegOrientationTaskManager(ocra::Controller& _ctrl,
                                                                 double _damping,
                                                                 double _weight,
                                                                 const Eigen::Rotation3d& _orientationDes,
+                                                                int _hierarchyLevel,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName)
 {
     _init(Eigen::Rotation3d::Identity(), _stiffness, _damping, _weight);
     setOrientation(_orientationDes);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 SegOrientationTaskManager::SegOrientationTaskManager(ocra::Controller& _ctrl,
@@ -73,11 +78,13 @@ SegOrientationTaskManager::SegOrientationTaskManager(ocra::Controller& _ctrl,
                                                                 double _damping,
                                                                 const Eigen::VectorXd& _weight,
                                                                 const Eigen::Rotation3d& _orientationDes,
+                                                                int _hierarchyLevel,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName)
 {
     _init(Eigen::Rotation3d::Identity(), _stiffness, _damping, _weight);
     setOrientation(_orientationDes);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 

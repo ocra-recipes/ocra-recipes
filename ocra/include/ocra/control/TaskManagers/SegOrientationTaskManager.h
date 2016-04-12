@@ -17,13 +17,13 @@ namespace ocra
 class SegOrientationTaskManager: public TaskManager
 {
     public:
-        SegOrientationTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, double weight, bool usesYarpPorts = true);
+        SegOrientationTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, double weight, int hierarchyLevel = -1 , bool usesYarpPorts = true);
 
-        SegOrientationTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = true);
+        SegOrientationTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, const Eigen::VectorXd& weight, int hierarchyLevel = -1 , bool usesYarpPorts = true);
 
-        SegOrientationTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, double weight, const Eigen::Rotation3d& targetPose, bool usesYarpPorts = true);
+        SegOrientationTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, double weight, const Eigen::Rotation3d& targetPose, int hierarchyLevel = -1 , bool usesYarpPorts = true);
 
-        SegOrientationTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, const Eigen::VectorXd& weight, const Eigen::Rotation3d& targetPose, bool usesYarpPorts = true);
+        SegOrientationTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, double stiffness, double damping, const Eigen::VectorXd& weight, const Eigen::Rotation3d& targetPose, int hierarchyLevel = -1 , bool usesYarpPorts = true);
 
         ~SegOrientationTaskManager();
 

@@ -22,10 +22,12 @@ PartialPostureTaskManager::PartialPostureTaskManager(ocra::Controller& _ctrl,
                                                                 double _stiffness,
                                                                 double _damping,
                                                                 double _weight,
+                                                                int _hierarchyLevel,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
     _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 PartialPostureTaskManager::PartialPostureTaskManager(ocra::Controller& _ctrl,
@@ -36,10 +38,12 @@ PartialPostureTaskManager::PartialPostureTaskManager(ocra::Controller& _ctrl,
                                                                 double _stiffness,
                                                                 double _damping,
                                                                 const Eigen::VectorXd& _weight,
+                                                                int _hierarchyLevel,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
     _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 
@@ -64,11 +68,13 @@ PartialPostureTaskManager::PartialPostureTaskManager(ocra::Controller& _ctrl,
                                                                 double _damping,
                                                                 double _weight,
                                                                 Eigen::VectorXd& _init_q,
+                                                                int _hierarchyLevel,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
     _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight);
     setPosture(_init_q);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 PartialPostureTaskManager::PartialPostureTaskManager(ocra::Controller& _ctrl,
@@ -80,11 +86,13 @@ PartialPostureTaskManager::PartialPostureTaskManager(ocra::Controller& _ctrl,
                                                                 double _damping,
                                                                 const Eigen::VectorXd& _weight,
                                                                 Eigen::VectorXd& _init_q,
+                                                                int _hierarchyLevel,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
     _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight);
     setPosture(_init_q);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 PartialPostureTaskManager::~PartialPostureTaskManager()

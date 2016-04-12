@@ -13,7 +13,15 @@ namespace ocra
  * \param _mu                   Coefficient of friction
  * \param _margin               Margin inside the friction cone
  */
-ContactTaskManager::ContactTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, const std::string& _segmentName, Eigen::Displacementd _H_segment_frame, double _mu, double _margin, bool _usesYarpPorts)
+ContactTaskManager::ContactTaskManager( ocra::Controller& _ctrl,
+                                        const ocra::Model& _model,
+                                        const std::string& _taskName,
+                                        const std::string& _segmentName,
+                                        Eigen::Displacementd _H_segment_frame,
+                                        double _mu,
+                                        double _margin,
+                                        int _hierarchyLevel,
+                                        bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), _H_segment_frame);
