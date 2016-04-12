@@ -40,9 +40,9 @@ bool TaskManagerSet::removeTaskManager(const std::string& keyValue)
         taskManagers[keyValue]->deactivate(); // Disconnects from the controller.
 
         // TODO: If it is in the controller then remove it. The problem with this is that some of the objective functions in the task go out of scope and then the solver seg faults when it iterates through its `_problemVariable` children because it does not resize the children and it tries to access a pointer which was deleted with the task. I am too sick of this bug to figure it out today.
-        // if(ctrl->getTasks().find(keyValue) != ctrl->getTasks().end()){
-        //     ctrl->removeTask(keyValue);
-        // }
+        if(ctrl->getTasks().find(keyValue) != ctrl->getTasks().end()){
+            ctrl->removeTask(keyValue);
+        }
 
         // Remove the manager from the set.
         taskManagers.erase(keyValue);
