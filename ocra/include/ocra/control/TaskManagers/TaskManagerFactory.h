@@ -44,7 +44,7 @@ public:
     // bool yarpToXML(yarp::os::Bottle* yarpMessage, char* filePath);
 
 
-
+    std::vector<TaskManagerOptions> getParsedOptionsVector(){return tmOptsVector;}
 
 private:
     std::vector<TaskManagerOptions> tmOptsVector;
