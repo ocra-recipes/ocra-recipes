@@ -243,6 +243,14 @@ int TaskConnection::getTaskStateDimension()
     return reply.get(0).asInt();
 }
 
+std::string TaskConnection::getTaskType()
+{
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::GET_TYPE);
+    this->taskRpcClient.write(message, reply);
+    return reply.get(0).asString();
+}
+
 void TaskConnection::sendDesiredStateAsBottle(yarp::os::Bottle& bottle)
 {
     if(controlPortsAreOpen)

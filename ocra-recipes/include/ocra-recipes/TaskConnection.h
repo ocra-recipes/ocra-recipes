@@ -18,6 +18,11 @@ namespace ocra_recipes {
 
 class TaskConnection {
 
+public:
+    TaskConnection ();
+    TaskConnection (const std::string& destinationTaskName);
+    virtual ~TaskConnection ();
+
 private:
     yarp::os::Network yarp;             /*!< Yarp network instance. */
     yarp::os::Log yLog;                 /*!< Yarp logging tool. */
@@ -43,9 +48,6 @@ private:
 
 
 public:
-    TaskConnection ();
-    TaskConnection (const std::string& destinationTaskName);
-    virtual ~TaskConnection ();
 
     /*! Activates the underlying task(s)
      *  \note \ref `deactivate()` must be called before this function to work properly.
@@ -182,6 +184,13 @@ public:
      *  \return The name of the task we are connected to.
      */
     std::string getTaskName(){return taskName;}
+
+
+    /*! The type of the task we are connected to.
+     *
+     *  \return The type of the task we are connected to.
+     */
+    std::string getTaskType();
 
     int getTaskDimension();
 
