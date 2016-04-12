@@ -44,6 +44,7 @@ public:
         out << "weight:\n" << tmOpts.weight << std::endl << std::endl;
         out << "weights:\n" << tmOpts.weightVector.transpose() << std::endl << std::endl;
         out << "axes:\n" << tmOpts.axes << std::endl << std::endl;
+        out << "hierarchyLevel:\n" << tmOpts.hierarchyLevel << std::endl << std::endl;
         out << "offset:\n";
         for(int j=0; j<tmOpts.offset.size(); j++) {
             out << tmOpts.offset[j].transpose() << std::endl;
