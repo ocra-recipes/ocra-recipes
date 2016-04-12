@@ -53,147 +53,149 @@ bool ServerCommunications::read(yarp::os::ConnectionReader& connection)
 void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottle& reply)
 {
     int btlSize = input.size();
-    for (int i=0; i<btlSize;)
+    for (int i=0; i<btlSize; ++i)
     {
         switch (input.get(i).asInt()) {
             case GET_CONTROLLER_STATUS:
-                {
-                    std::cout << "Got message: GET_CONTROLLER_STATUS." << std::endl;
-                    // reply.addInt(controllerStatus);
-                    ++i;
-                }break;
+            {
+                std::cout << "Got message: GET_CONTROLLER_STATUS." << std::endl;
+                // reply.addInt(controllerStatus);
+            }break;
 
             case GET_WBI_CONFIG_FILE_PATH:
-                {
-                    std::cout << "Got message: GET_WBI_CONFIG_FILE_PATH." << std::endl;
-                    // reply.addString(ctrlOptions.wbiConfigFilePath);
-                    ++i;
-                }break;
+            {
+                std::cout << "Got message: GET_WBI_CONFIG_FILE_PATH." << std::endl;
+                // reply.addString(ctrlOptions.wbiConfigFilePath);
+            }break;
 
             case GET_ROBOT_NAME:
-                {
-                    std::cout << "Got message: GET_ROBOT_NAME." << std::endl;
-                    // reply.addString(ctrlOptions.robotName);
-                    ++i;
-                }break;
+            {
+                std::cout << "Got message: GET_ROBOT_NAME." << std::endl;
+                // reply.addString(ctrlOptions.robotName);
+            }break;
 
             case GET_IS_FLOATING_BASE:
-                {
-                    std::cout << "Got message: GET_IS_FLOATING_BASE." << std::endl;
-                    reply.addInt(!model->hasFixedRoot());
-                    ++i;
-                }break;
+            {
+                std::cout << "Got message: GET_IS_FLOATING_BASE." << std::endl;
+                reply.addInt(!model->hasFixedRoot());
+            }break;
 
             case START_CONTROLLER:
-                {
-                    ++i;
-                    std::cout << "Got message: START_CONTROLLER." << std::endl;
-                    // this->start();
-                    // TODO: make a switch case for if the controller is suspended then resume but if it is stopped then start.
-                }break;
+            {
+                std::cout << "Got message: START_CONTROLLER." << std::endl;
+                // this->start();
+                // TODO: make a switch case for if the controller is suspended then resume but if it is stopped then start.
+            }break;
 
             case STOP_CONTROLLER:
-                {
-                    ++i;
-                    std::cout << "Got message: STOP_CONTROLLER." << std::endl;
-                    // this->stop();
-                }break;
+            {
+                std::cout << "Got message: STOP_CONTROLLER." << std::endl;
+                // this->stop();
+            }break;
 
             case PAUSE_CONTROLLER:
-                {
-                    ++i;
-                    std::cout << "Got message: PAUSE_CONTROLLER." << std::endl;
-                    // this->suspend();
-                    // TODO: Make a custom function that puts the robot in pos mode before suspend.
-                }break;
+            {
+                std::cout << "Got message: PAUSE_CONTROLLER." << std::endl;
+                // this->suspend();
+                // TODO: Make a custom function that puts the robot in pos mode before suspend.
+            }break;
 
-            case ADD_TASK:
+            case ADD_TASKS:
+            {
+                int numberOfTasks = input.get(++i).asInt();
+                ++i;
+                TaskManagerFactory factory;
+                for (int j=0; j<numberOfTasks; ++j)
                 {
-                    ++i;
-                    std::cout << "Got message: ADD_TASK." << std::endl;
-                }break;
+                    int sizeOfOptions;
+                    ocra::TaskManagerOptions tmOpts;
+                    yarp::os::Bottle trimmedBottle = trimBottle(input, i);
+                    if (tmOpts.extractFromBottle(trimmedBottle, sizeOfOptions)) {
+                        factory.addTaskManagerOptions(tmOpts);
+                    }
+                    i += sizeOfOptions;
+                }
+                if(factory.addTaskManagersToSet(controller, model, taskManagerSet)) {
+                    reply.addInt(SUCCESS);
+                } else {
+                    reply.addInt(FAILURE);
+                }
+            }break;
 
-            case ADD_TASK_FROM_FILE:
-                {
-                    ++i;
-                    std::cout << "Got message: ADD_TASK_FROM_FILE." << std::endl;
-                }break;
+            case ADD_TASKS_FROM_FILE:
+            {
+                std::cout << "Got message: ADD_TASK_FROM_FILE." << std::endl;
+            }break;
 
             case REMOVE_TASK:
-                {
-                    ++i;
-                    std::cout << "Got message: REMOVE_TASK." << std::endl;
-                    std::string taskToRemove = input.get(i).asString();
-                    bool taskRemoved = taskManagerSet->removeTaskManager(taskToRemove);
-                    if (taskRemoved) {
-                        reply.addInt(SERVER_COMMUNICATIONS_MESSAGE::SUCCESS);
-                        yarp::os::Bottle outputMessage;
-                        outputMessage.addInt(SERVER_COMMUNICATIONS_MESSAGE::REMOVE_TASK_PORT);
-                        outputMessage.addString(taskToRemove);
-                        outputPort.write(outputMessage);
-                    }else{
-                        reply.addInt(SERVER_COMMUNICATIONS_MESSAGE::FAILURE);
-                    }
-                    ++i;
-                }break;
+            {
+                ++i;
+                std::cout << "Got message: REMOVE_TASK." << std::endl;
+                std::string taskToRemove = input.get(i).asString();
+                bool taskRemoved = taskManagerSet->removeTaskManager(taskToRemove);
+                if (taskRemoved) {
+                    reply.addInt(SERVER_COMMUNICATIONS_MESSAGE::SUCCESS);
+                    yarp::os::Bottle outputMessage;
+                    outputMessage.addInt(SERVER_COMMUNICATIONS_MESSAGE::REMOVE_TASK_PORT);
+                    outputMessage.addString(taskToRemove);
+                    outputPort.write(outputMessage);
+                }else{
+                    reply.addInt(SERVER_COMMUNICATIONS_MESSAGE::FAILURE);
+                }
+                ++i;
+            }break;
 
             case REMOVE_TASKS:
-                {
-                    ++i;
-                    std::cout << "Got message: REMOVE_TASKS." << std::endl;
-                }break;
+            {
+                std::cout << "Got message: REMOVE_TASKS." << std::endl;
+            }break;
 
             case GET_TASK_LIST:
-                {
-                    ++i;
-                    std::cout << "Got message: GET_TASK_LIST." << std::endl;
-                    for(auto taskName : taskManagerSet->getTaskList()){
-                        reply.addString(taskName);
-                    }
-                }break;
+            {
+                std::cout << "Got message: GET_TASK_LIST." << std::endl;
+                for(auto taskName : taskManagerSet->getTaskList()){
+                    reply.addString(taskName);
+                }
+            }break;
 
             case GET_TASK_PORT_LIST:
-                {
-                    ++i;
-                    std::cout << "Got message: GET_TASK_PORT_LIST." << std::endl;
-                    for(auto taskPort : taskManagerSet->getTaskPorts()){
-                        reply.addString(taskPort);
-                    }
-                }break;
+            {
+                std::cout << "Got message: GET_TASK_PORT_LIST." << std::endl;
+                for(auto taskPort : taskManagerSet->getTaskPorts()){
+                    reply.addString(taskPort);
+                }
+            }break;
 
             case GET_TASK_PORT_NAME:
+            {
+                ++i;
+                std::string taskName = input.get(i).asString();
+                std::cout << "Got message: GET_TASK_PORT_NAME." << std::endl;
+                int taskCounter = 0;
+                int taskFoundIndex = -1;
+                for(auto tName : taskManagerSet->getTaskList()){
+                    if (taskName == tName) {
+                        taskFoundIndex = taskCounter;
+                    } else {
+                        ++taskCounter;
+                    }
+                }
+                if (taskFoundIndex >= 0)
                 {
-                    ++i;
-                    std::string taskName = input.get(i).asString();
-                    ++i;
-                    std::cout << "Got message: GET_TASK_PORT_NAME." << std::endl;
-                    int taskCounter = 0;
-                    int taskFoundIndex = -1;
-                    for(auto tName : taskManagerSet->getTaskList()){
-                        if (taskName == tName) {
-                            taskFoundIndex = taskCounter;
-                        } else {
-                            ++taskCounter;
-                        }
-                    }
-                    if (taskFoundIndex >= 0)
-                    {
-                        reply.addString(taskManagerSet->getTaskPorts()[taskFoundIndex]);
-                    }
+                    reply.addString(taskManagerSet->getTaskPorts()[taskFoundIndex]);
+                }
 
-                }break;
+            }break;
 
             case HELP:
-                {
-                    ++i;
-                    std::cout << "Got message: HELP." << std::endl;
-                }break;
+            {
+                std::cout << "Got message: HELP." << std::endl;
+            }break;
 
             default:
-                {
-                    ++i;
-                    std::cout << "Got message: UNKNOWN." << std::endl;
-                }break;
+            {
+                std::cout << "Got message: UNKNOWN." << std::endl;
+            }break;
 
         }
     }

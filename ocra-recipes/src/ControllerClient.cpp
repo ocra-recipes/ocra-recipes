@@ -57,3 +57,78 @@ void ControllerClient::threadRelease()
 {
     release();
 }
+
+bool ControllerClient::removeTask(const std::string& taskName)
+{
+    yarp::os::Bottle request;
+    request.addInt(REMOVE_TASK);
+    request.addString(taskName);
+
+    return (clientComs->queryController(request).get(0).asInt() == SUCCESS);
+}
+
+bool ControllerClient::removeTasks(const std::vector<std::string>& taskNameVector)
+{
+
+}
+
+
+void ControllerClient::addTasks(const std::string& pathToXmlFile, bool overwrite)
+{
+    ocra::TaskManagerFactory factory = ocra::TaskManagerFactory();
+    factory.parseTasksXML(pathToXmlFile);
+    std::vector<ocra::TaskManagerOptions> tmOptsVec = factory.getParsedOptionsVector();
+    std::vector<ocra::TaskManagerOptions> addTmOptsVec;
+    std::vector<ocra::TaskManagerOptions> overwriteTmOptsVec;
+    for (auto tmOpts : tmOptsVec) {
+        if(!checkIfTaskExists(tmOpts)) {
+            addTmOptsVec.push_back(tmOpts);
+        } else {
+            if (overwrite) {
+                overwriteTmOptsVec.push_back(tmOpts);
+            }
+        }
+    }
+
+    yarp::os::Bottle request;
+    request.addInt(ADD_TASKS);
+    request.addInt(addTmOptsVec.size());
+    for (auto tmOpts : addTmOptsVec) {
+        tmOpts.putIntoBottle(request);
+    }
+    if(clientComs->queryController(request).get(0).asInt() != SUCCESS)
+    {
+        std::cout << "Didn't work." << std::endl;
+    }
+    // Code to send the tm opts to the server.
+}
+
+bool ControllerClient::checkIfTaskExists(ocra::TaskManagerOptions& tmOpts)
+{
+    std::vector<std::string> tmNames = getTaskNames();
+    for (auto name : tmNames) {
+        if (tmOpts.taskName == name) {
+            TaskConnection tCon(tmOpts.taskName);
+            if (tmOpts.taskType == tCon.getTaskType()) {
+                return true;
+            }
+            else {
+                yLog.warning() << "You are trying to add a task with the same name as another task. I am gonna rename it for you big dummy.";
+                tmOpts.taskName += "_" + std::to_string(clientNumber);
+                return false;
+            }
+        }
+    }
+    return false;
+}
+
+
+std::vector<std::string> ControllerClient::getTaskTypes()
+{
+    return clientComs->getTaskTypes();
+}
+
+std::vector<std::string> ControllerClient::getTaskNames()
+{
+    return clientComs->getTaskNames();
+}

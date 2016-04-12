@@ -2,10 +2,15 @@
 #define CONTROLLER_CLIENT_H
 
 #include <ocra-recipes/ClientCommunications.h>
+#include <ocra-recipes/TaskConnection.h>
 #include <ocra/control/Model.h>
+#include <ocra/control/TaskManagers/TaskManagerFactory.h>
+#include <ocra/control/TaskManagers/TaskManagerOptions.h>
 #include <ocra-recipes/RobotState.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Port.h>
+#include <yarp/os/Log.h>
+#include <yarp/os/LogStream.h>
 #include <yarp/os/RateThread.h>
 #include <yarp/os/ResourceFinder.h>
 
@@ -36,6 +41,19 @@ public:
      */
     virtual bool configure(yarp::os::ResourceFinder &rf){return true;};
 
+public:
+    void addTasks(const std::string& pathToXmlFile, bool overwrite);
+    void addTask(ocra::TaskManagerOptions& tmOpts, bool overwrite);
+    bool checkIfTaskExists(ocra::TaskManagerOptions& tmOpts);
+    std::vector<std::string> getTaskTypes();
+    std::vector<std::string> getTaskNames();
+
+    bool removeTask(const std::string& taskName);
+    bool removeTasks(const std::vector<std::string>& taskNameVector);
+
+
+
+
 protected:
     virtual bool initialize(){return true;}
     virtual void release(){/* Do nothing. */}
@@ -55,6 +73,7 @@ private:
     int clientNumber;
 
     yarp::os::Network yarp;
+    yarp::os::Log yLog;
 
     int expectedPeriod;
     static const int DEFAULT_LOOP_PERIOD = 10; // ms

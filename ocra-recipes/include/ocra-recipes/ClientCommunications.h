@@ -40,6 +40,7 @@ public:
     virtual bool read(yarp::os::ConnectionReader& connection);
     void parseMessage(yarp::os::Bottle& input);
 
+    std::vector<std::string> getTaskTypes();
 
 
     yarp::os::Bottle queryController(yarp::os::Bottle& requestBottle);
@@ -58,6 +59,25 @@ public:
 
     std::vector<std::string> getTaskNames();
     std::shared_ptr<yarp::os::RpcClient> getTaskClient(const std::string& taskName);
+
+
+    bool parseInput(yarp::os::Bottle& input);
+
+
+    /*! \class ControlInputCallback
+     *  \brief a short description
+     *
+     *  a long description
+     */
+    class InputCallback : public yarp::os::PortReader {
+    private:
+        ClientCommunications& coms;
+
+    public:
+        InputCallback(ClientCommunications& comsRef);
+
+        virtual bool read(yarp::os::ConnectionReader& connection);
+    };
 
 
 private:
@@ -80,6 +100,8 @@ private:
     static constexpr double CONNECTION_TIMEOUT = 20.0;
 
     TaskPortMap taskRpcClients;
+
+    InputCallback inputCallback;
 
 
 };
