@@ -2,7 +2,7 @@
 
 #include "ocra/control/AbsoluteCoordinatesFunction.h"
 
-#include "ocra/optim/utilities.h"
+#include "ocra/utilities.h"
 
 using namespace xde;
 

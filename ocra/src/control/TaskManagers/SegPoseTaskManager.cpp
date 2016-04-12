@@ -14,32 +14,36 @@ namespace ocra
  * \param _damping               Damping constant for task
  * \param _weight                Weight constant for task
  */
-SegPoseTaskManager::SegPoseTaskManager(ocra::Controller& _ctrl,
-                                                    const ocra::Model& _model,
-                                                    const std::string& _taskName,
-                                                    const std::string& _segmentName,
-                                                    ocra::ECartesianDof _axes,
-                                                    double _stiffness,
-                                                    double _damping,
-                                                    double _weight,
-                                                    bool _usesYarpPorts)
+SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
+                                        const ocra::Model& _model,
+                                        const std::string& _taskName,
+                                        const std::string& _segmentName,
+                                        ocra::ECartesianDof _axes,
+                                        double _stiffness,
+                                        double _damping,
+                                        double _weight,
+                                        int _hierarchyLevel,
+                                        bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
     _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
-SegPoseTaskManager::SegPoseTaskManager(ocra::Controller& _ctrl,
-                                                    const ocra::Model& _model,
-                                                    const std::string& _taskName,
-                                                    const std::string& _segmentName,
-                                                    ocra::ECartesianDof _axes,
-                                                    double _stiffness,
-                                                    double _damping,
-                                                    const Eigen::VectorXd& _weight,
-                                                    bool _usesYarpPorts)
+SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
+                                        const ocra::Model& _model,
+                                        const std::string& _taskName,
+                                        const std::string& _segmentName,
+                                        ocra::ECartesianDof _axes,
+                                        double _stiffness,
+                                        double _damping,
+                                        const Eigen::VectorXd& _weight,
+                                        int _hierarchyLevel,
+                                        bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
     _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 /** Constructor with offset frame
@@ -54,34 +58,38 @@ SegPoseTaskManager::SegPoseTaskManager(ocra::Controller& _ctrl,
  * \param _damping               Damping constant for task
  * \param _weight                Weight constant for task
  */
-SegPoseTaskManager::SegPoseTaskManager(ocra::Controller& _ctrl,
-                                                    const ocra::Model& _model,
-                                                    const std::string& _taskName,
-                                                    const std::string& _segmentName,
-                                                    const Eigen::Displacementd& _segFrame_Local,
-                                                    ocra::ECartesianDof _axes,
-                                                    double _stiffness,
-                                                    double _damping,
-                                                    double _weight,
-                                                    bool _usesYarpPorts)
+SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
+                                        const ocra::Model& _model,
+                                        const std::string& _taskName,
+                                        const std::string& _segmentName,
+                                        const Eigen::Displacementd& _segFrame_Local,
+                                        ocra::ECartesianDof _axes,
+                                        double _stiffness,
+                                        double _damping,
+                                        double _weight,
+                                        int _hierarchyLevel,
+                                        bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
     _init(_segFrame_Local, _stiffness, _damping, _weight);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
-SegPoseTaskManager::SegPoseTaskManager(ocra::Controller& _ctrl,
-                                                    const ocra::Model& _model,
-                                                    const std::string& _taskName,
-                                                    const std::string& _segmentName,
-                                                    const Eigen::Displacementd& _segFrame_Local,
-                                                    ocra::ECartesianDof _axes,
-                                                    double _stiffness,
-                                                    double _damping,
-                                                    const Eigen::VectorXd& _weight,
-                                                    bool _usesYarpPorts)
+SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
+                                        const ocra::Model& _model,
+                                        const std::string& _taskName,
+                                        const std::string& _segmentName,
+                                        const Eigen::Displacementd& _segFrame_Local,
+                                        ocra::ECartesianDof _axes,
+                                        double _stiffness,
+                                        double _damping,
+                                        const Eigen::VectorXd& _weight,
+                                        int _hierarchyLevel,
+                                        bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
     _init(_segFrame_Local, _stiffness, _damping, _weight);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 /** Constructor with desired pose
@@ -96,36 +104,40 @@ SegPoseTaskManager::SegPoseTaskManager(ocra::Controller& _ctrl,
  * \param _weight               Weight constant for task
  * \param _poseDes              Initial pose for task
  */
-SegPoseTaskManager::SegPoseTaskManager(ocra::Controller& _ctrl,
-                                                    const ocra::Model& _model,
-                                                    const std::string& _taskName,
-                                                    const std::string& _segmentName,
-                                                    ocra::ECartesianDof _axes,
-                                                    double _stiffness,
-                                                    double _damping,
-                                                    double _weight,
-                                                    const Eigen::Displacementd& _poseDes,
-                                                    bool _usesYarpPorts)
+SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
+                                        const ocra::Model& _model,
+                                        const std::string& _taskName,
+                                        const std::string& _segmentName,
+                                        ocra::ECartesianDof _axes,
+                                        double _stiffness,
+                                        double _damping,
+                                        double _weight,
+                                        const Eigen::Displacementd& _poseDes,
+                                        int _hierarchyLevel,
+                                        bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
     _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight);
     setState(_poseDes);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
-SegPoseTaskManager::SegPoseTaskManager(ocra::Controller& _ctrl,
-                                                    const ocra::Model& _model,
-                                                    const std::string& _taskName,
-                                                    const std::string& _segmentName,
-                                                    ocra::ECartesianDof _axes,
-                                                    double _stiffness,
-                                                    double _damping,
-                                                    const Eigen::VectorXd& _weight,
-                                                    const Eigen::Displacementd& _poseDes,
-                                                    bool _usesYarpPorts)
+SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
+                                        const ocra::Model& _model,
+                                        const std::string& _taskName,
+                                        const std::string& _segmentName,
+                                        ocra::ECartesianDof _axes,
+                                        double _stiffness,
+                                        double _damping,
+                                        const Eigen::VectorXd& _weight,
+                                        const Eigen::Displacementd& _poseDes,
+                                        int _hierarchyLevel,
+                                        bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
     _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight);
     setState(_poseDes);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 /** Constructor with desired pose
@@ -141,38 +153,42 @@ SegPoseTaskManager::SegPoseTaskManager(ocra::Controller& _ctrl,
  * \param _weight               Weight constant for task
  * \param _poseDes              Initial pose for task
  */
-SegPoseTaskManager::SegPoseTaskManager(ocra::Controller& _ctrl,
-                                                    const ocra::Model& _model,
-                                                    const std::string& _taskName,
-                                                    const std::string& _segmentName,
-                                                    const Eigen::Displacementd& _segFrame_Local,
-                                                    ocra::ECartesianDof _axes,
-                                                    double _stiffness,
-                                                    double _damping,
-                                                    double _weight,
-                                                    const Eigen::Displacementd& _poseDes,
-                                                    bool _usesYarpPorts)
+SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
+                                        const ocra::Model& _model,
+                                        const std::string& _taskName,
+                                        const std::string& _segmentName,
+                                        const Eigen::Displacementd& _segFrame_Local,
+                                        ocra::ECartesianDof _axes,
+                                        double _stiffness,
+                                        double _damping,
+                                        double _weight,
+                                        const Eigen::Displacementd& _poseDes,
+                                        int _hierarchyLevel,
+                                        bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
     _init(_segFrame_Local, _stiffness, _damping, _weight);
     setState(_poseDes);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
-SegPoseTaskManager::SegPoseTaskManager(ocra::Controller& _ctrl,
-                                                    const ocra::Model& _model,
-                                                    const std::string& _taskName,
-                                                    const std::string& _segmentName,
-                                                    const Eigen::Displacementd& _segFrame_Local,
-                                                    ocra::ECartesianDof _axes,
-                                                    double _stiffness,
-                                                    double _damping,
-                                                    const Eigen::VectorXd& _weight,
-                                                    const Eigen::Displacementd& _poseDes,
-                                                    bool _usesYarpPorts)
+SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
+                                        const ocra::Model& _model,
+                                        const std::string& _taskName,
+                                        const std::string& _segmentName,
+                                        const Eigen::Displacementd& _segFrame_Local,
+                                        ocra::ECartesianDof _axes,
+                                        double _stiffness,
+                                        double _damping,
+                                        const Eigen::VectorXd& _weight,
+                                        const Eigen::Displacementd& _poseDes,
+                                        int _hierarchyLevel,
+                                        bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
     _init(_segFrame_Local, _stiffness, _damping, _weight);
     setState(_poseDes);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 

@@ -13,16 +13,31 @@ namespace ocra
  * \param _damping              Damping constant for task
  * \param _weight               Weight constant for task
  */
-CoMMomentumTaskManager::CoMMomentumTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _damping, double _weight, bool _usesYarpPorts)
+CoMMomentumTaskManager::CoMMomentumTaskManager(ocra::Controller& _ctrl,
+                                               const ocra::Model& _model,
+                                               const std::string& _taskName,
+                                               ocra::ECartesianDof _axes,
+                                               double _damping,
+                                               double _weight,
+                                               int _hierarchyLevel,
+                                               bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_damping, _weight);
 }
 
-CoMMomentumTaskManager::CoMMomentumTaskManager(ocra::Controller& _ctrl, const ocra::Model& _model, const std::string& _taskName, ocra::ECartesianDof _axes, double _damping, const Eigen::VectorXd& _weight, bool _usesYarpPorts)
+CoMMomentumTaskManager::CoMMomentumTaskManager(ocra::Controller& _ctrl,
+                                               const ocra::Model& _model,
+                                               const std::string& _taskName,
+                                               ocra::ECartesianDof _axes,
+                                               double _damping,
+                                               const Eigen::VectorXd& _weight,
+                                               int _hierarchyLevel,
+                                               bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_damping, _weight);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 
@@ -119,7 +134,9 @@ void CoMMomentumTaskManager::_init(double damping, const Eigen::VectorXd& weight
 
 const double* CoMMomentumTaskManager::getCurrentState()
 {
-    eigenCurrentStateVector << comFeatFrame->getPosition().getTranslation(), comFeatFrame->getVelocity().getLinearVelocity(), comFeatFrame->getAcceleration().getLinearVelocity();
+    eigenCurrentStateVector <<  comFeatFrame->getPosition().getTranslation(),
+                                comFeatFrame->getVelocity().getLinearVelocity(),
+                                comFeatFrame->getAcceleration().getLinearVelocity();
     return eigenCurrentStateVector.data();
 }
 

@@ -46,12 +46,13 @@ namespace ocra
     VectorXd errorDdot;
     VectorXd effort;
     MatrixXd jacobian;
-		Vector3d frictionOffset;
+    Vector3d frictionOffset;
     double frictionCoeff;
     double margin;
     bool useActualMass;
     bool contactActive;
     TYPETASK innerTaskType;
+    int hierarchyLevel;
 
     Pimpl(const Feature& s, const Feature* sdes)
       : feature(s)
@@ -69,6 +70,7 @@ namespace ocra
       , useActualMass(true)
       , contactActive(false)
       , innerTaskType(UNKNOWNTASK)
+      , hierarchyLevel(-1)
     {}
   };
 
@@ -96,7 +98,25 @@ namespace ocra
           std::cout << "[warning] can't change a task's type once it has been set." << std::endl;
       }
   }
-
+  int Task::getHierarchyLevel()
+  {
+    return pimpl->hierarchyLevel;
+  }
+  void Task::setHierarchyLevel(int level)
+  {
+      if( level < 0 )
+      {
+          std::cout << "[warning] Level should be >0 , but you provided "<<level << std::endl;
+          return;
+      }
+      if(getHierarchyLevel() == -1) // TODO: find out why this crashes
+      {
+          pimpl->hierarchyLevel = level;
+      }else{
+          std::cout << "[warning] Can't change a task's level once it has been set." << std::endl;
+      }
+      return;
+  }
   Task::TYPETASK Task::getTaskType()
   {
       return pimpl->innerTaskType;

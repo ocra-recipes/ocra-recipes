@@ -71,7 +71,9 @@ bool TaskManagerFactory::parseTasksXML(TiXmlDocument* newTasksFile)
                             }else{currentTmArgs.kd=0.0;}
                         }
                         if (taskElem->QueryDoubleAttribute("weight", &currentTmArgs.weight)==TIXML_NO_ATTRIBUTE){currentTmArgs.weight=0.0; currentTmArgs.useWeightVectorConstructor=false;}else{currentTmArgs.useWeightVectorConstructor=false;}
-                        //if (taskElem->QueryIntAttribute("axes", &currentTmArgs.axes)==TIXML_NO_ATTRIBUTE){currentTmArgs.axes=ocra::XYZ;}
+                        if (taskElem->QueryIntAttribute("hierarchyLevel", &currentTmArgs.hierarchyLevel)==TIXML_NO_ATTRIBUTE){currentTmArgs.hierarchyLevel=0;}
+
+                       //if (taskElem->QueryIntAttribute("axes", &currentTmArgs.axes)==TIXML_NO_ATTRIBUTE){currentTmArgs.axes=ocra::XYZ;}
                         if (taskElem->QueryDoubleAttribute("mu", &currentTmArgs.mu)==TIXML_NO_ATTRIBUTE){currentTmArgs.mu=1.0;}
                         if (taskElem->QueryDoubleAttribute("margin", &currentTmArgs.margin)==TIXML_NO_ATTRIBUTE){currentTmArgs.margin=0.05;}
                         currentTmArgs.axes=ocra::XYZ;
@@ -537,7 +539,9 @@ void TaskManagerFactory::prepareTaskManagerArguments(std::shared_ptr<ocra::Model
 
 
 
-std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::shared_ptr<ocra::Controller> ctrl, std::shared_ptr<ocra::Model> model, tmOptsIterator tmOptsPtr)
+std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::shared_ptr<ocra::Controller> ctrl,
+                                                                      std::shared_ptr<ocra::Model> model,
+                                                                      tmOptsIterator tmOptsPtr)
 {
 
 
@@ -565,6 +569,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weightVector,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);            }
             else {
                 newTaskManager = std::make_shared<CoMTaskManager>(*ctrl, *model,
@@ -573,6 +578,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weight,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);            }
         }
         else
@@ -585,6 +591,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weightVector,
                                                         tmOptsPtr->desired,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);            }
             else {
                 newTaskManager = std::make_shared<CoMTaskManager>(*ctrl, *model,
@@ -594,6 +601,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weight,
                                                         tmOptsPtr->desired,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);            }
         }
 
@@ -609,6 +617,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                 eigenVectorToDisplacementd(tmOptsPtr->offset),
                                                 tmOptsPtr->mu,
                                                 tmOptsPtr->margin,
+                                                tmOptsPtr->hierarchyLevel,
                                                 tmOptsPtr->usesYarp);
 
         return newTaskManager;
@@ -623,6 +632,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                 eigenVectorToDisplacementd(tmOptsPtr->offset.front()),
                                                 tmOptsPtr->mu,
                                                 tmOptsPtr->margin,
+                                                tmOptsPtr->hierarchyLevel,
                                                 tmOptsPtr->usesYarp);
         return newTaskManager;
     }
@@ -638,6 +648,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weightVector,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
             else {
@@ -647,6 +658,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weight,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
         }
@@ -660,6 +672,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weightVector,
                                                         tmOptsPtr->desired,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
             else {
@@ -670,6 +683,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weight,
                                                         tmOptsPtr->desired,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
         }
@@ -694,6 +708,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                             tmOptsPtr->kp,
                                                             tmOptsPtr->kd,
                                                             tmOptsPtr->weightVector,
+                                                            tmOptsPtr->hierarchyLevel,
                                                             tmOptsPtr->usesYarp);
                 }
                 else {
@@ -704,6 +719,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                             tmOptsPtr->kp,
                                                             tmOptsPtr->kd,
                                                             tmOptsPtr->weight,
+                                                            tmOptsPtr->hierarchyLevel,
                                                             tmOptsPtr->usesYarp);
                 }
             }
@@ -718,6 +734,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                             tmOptsPtr->kd,
                                                             tmOptsPtr->weightVector,
                                                             tmOptsPtr->desired,
+                                                            tmOptsPtr->hierarchyLevel,
                                                             tmOptsPtr->usesYarp);
                 }
                 else {
@@ -729,6 +746,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                             tmOptsPtr->kd,
                                                             tmOptsPtr->weight,
                                                             tmOptsPtr->desired,
+                                                            tmOptsPtr->hierarchyLevel,
                                                             tmOptsPtr->usesYarp);
                 }
             }
@@ -759,6 +777,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weightVector,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
             else {
@@ -770,6 +789,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weight,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
 
@@ -789,6 +809,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weightVector,
                                                         tmOptsPtr->desired.head(3),
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
             else {
@@ -801,6 +822,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weight,
                                                         tmOptsPtr->desired.head(3),
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
 
@@ -822,6 +844,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weightVector,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
             else {
@@ -831,6 +854,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weight,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
 
@@ -853,6 +877,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weightVector,
                                                         Eigen::Rotation3d(tmOptsPtr->desired.tail(4).data()),
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
             else {
@@ -863,6 +888,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weight,
                                                         Eigen::Rotation3d(tmOptsPtr->desired.tail(4).data()),
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
 
@@ -884,6 +910,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weightVector,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
             else {
@@ -895,6 +922,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kp,
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weight,
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp);
             }
 
@@ -914,6 +942,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weightVector,
                                                         eigenVectorToDisplacementd(tmOptsPtr->desired),
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp );
             }
             else {
@@ -926,6 +955,7 @@ std::shared_ptr<TaskManager> TaskManagerFactory::constructTaskManager(std::share
                                                         tmOptsPtr->kd,
                                                         tmOptsPtr->weight,
                                                         eigenVectorToDisplacementd(tmOptsPtr->desired),
+                                                        tmOptsPtr->hierarchyLevel,
                                                         tmOptsPtr->usesYarp );
             }
 

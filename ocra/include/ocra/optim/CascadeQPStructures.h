@@ -11,19 +11,20 @@
 #ifndef _OCRABASE_CASCADE_QP_STRUCTURES_H_
 #define _OCRABASE_CASCADE_QP_STRUCTURES_H_
 
-// includes
 #include "ocra/MathTypes.h"
+#include "ocra/utilities.h"
 #include <iostream>
 
 /** @namespace ocra
-* @brief Optimization-based Robot Controller namespace. 
+* @brief Optimization-based Robot Controller namespace.
 *  a library of classes to write and solve optimization problems dedicated to
-*  the control of multi-body systems. 
+*  the control of multi-body systems.
 */
 namespace ocra
 {
   struct HierarchyLevel
   {
+    DEFINE_CLASS_POINTER_TYPEDEFS(ocra::HierarchyLevel)
     Eigen::MatrixXd A ;
     Eigen::VectorXd b ;
     Eigen::MatrixXd C ;
@@ -32,6 +33,7 @@ namespace ocra
 
   struct HierarchyLevel_barre
   {
+    DEFINE_CLASS_POINTER_TYPEDEFS(HierarchyLevel_barre)
     Eigen::MatrixXd A_barre ;
     Eigen::VectorXd b_barre ;
     Eigen::MatrixXd C_barre ;
@@ -41,29 +43,34 @@ namespace ocra
 
   struct MatrixPQ
   {
+    DEFINE_CLASS_POINTER_TYPEDEFS(MatrixPQ)
     Eigen::MatrixXd  P ;
     Eigen::VectorXd  q ;
   };
 
   struct EqualitiesConstraints
   {
+    DEFINE_CLASS_POINTER_TYPEDEFS(EqualitiesConstraints)
     Eigen::MatrixXd  M ;
     Eigen::VectorXd  n ;
   };
 
   struct InequalitiesConstraints
   {
+    DEFINE_CLASS_POINTER_TYPEDEFS(InequalitiesConstraints)
     Eigen::MatrixXd  R ;
     Eigen::VectorXd  s ;
   };
 
   struct Solution
   {
+    DEFINE_CLASS_POINTER_TYPEDEFS(Solution)
     Eigen::VectorXd  y ;
   };
 
   struct FinalSolution
   {
+    DEFINE_CLASS_POINTER_TYPEDEFS(FinalSolution)
     Eigen::VectorXd  yf ;
     int r;
   };
@@ -77,6 +84,3 @@ namespace ocra
 }
 
 #endif	//_OCRABASE_CASCADE_QP_STRUCTURES_H_
-
-
-// cmake:sourcegroup=toBeUpdated

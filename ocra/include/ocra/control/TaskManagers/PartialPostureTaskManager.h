@@ -19,15 +19,15 @@ namespace ocra
 class PartialPostureTaskManager : public TaskManager
 {
     public:
-        PartialPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight, bool usesYarpPorts = true);
+        PartialPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight, int hierarchyLevel = -1 , bool usesYarpPorts = true);
 
-        PartialPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = false);
+        PartialPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight, int hierarchyLevel = -1 , bool usesYarpPorts = false);
 
         PartialPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight,
-            Eigen::VectorXd& init_q, bool usesYarpPorts = true);
+            Eigen::VectorXd& init_q, int hierarchyLevel = -1 , bool usesYarpPorts = true);
 
         PartialPostureTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight,
-            Eigen::VectorXd& init_q, bool usesYarpPorts = false);
+            Eigen::VectorXd& init_q, int hierarchyLevel = -1 , bool usesYarpPorts = false);
 
         ~PartialPostureTaskManager();
 

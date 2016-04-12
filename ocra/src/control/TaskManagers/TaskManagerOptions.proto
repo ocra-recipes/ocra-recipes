@@ -1,0 +1,10 @@
+
+
+
+
+message TaskManagerOption{
+    optional string name=1;
+    optional int64 timestamp=3;
+    optional string rate=4 [default = "fast"];
+    optional string version=5;
+}

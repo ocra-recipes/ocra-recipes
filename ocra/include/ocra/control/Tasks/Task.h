@@ -27,7 +27,8 @@ namespace ocra
 
     enum TYPETASK { UNKNOWNTASK, ACCELERATIONTASK, TORQUETASK, FORCETASK, COMMOMENTUMTASK };
 
-
+    int getHierarchyLevel();
+    void setHierarchyLevel(int level);
     void update();
     void setTaskType(Task::TYPETASK newTaskType);
     Task::TYPETASK getTaskType();
@@ -68,10 +69,10 @@ namespace ocra
 
     double getFrictionCoeff() const;
     double getMargin() const;
-		const Eigen::Vector3d& getFrictionConstraintOffset() const;
+    const Eigen::Vector3d& getFrictionConstraintOffset() const;
     void setFrictionCoeff(double coeff);
     void setMargin(double margin);
-		void setFrictionConstraintOffset(const Eigen::Vector3d& offset);
+    void setFrictionConstraintOffset(const Eigen::Vector3d& offset);
 
     void setWeight(double weight);
     void setWeight(const Eigen::VectorXd& weight);

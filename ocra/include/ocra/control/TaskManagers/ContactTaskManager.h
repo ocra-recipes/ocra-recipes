@@ -19,7 +19,7 @@ namespace ocra
 class ContactTaskManager : public TaskManager
 {
     public:
-        ContactTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, Eigen::Displacementd H_segment_frame, double mu, double margin, bool usesYarpPorts = true);
+        ContactTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, Eigen::Displacementd H_segment_frame, double mu, double margin, int hierarchyLevel = -1 , bool usesYarpPorts = true);
 
         ~ContactTaskManager();
 

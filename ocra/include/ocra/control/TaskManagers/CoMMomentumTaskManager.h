@@ -17,9 +17,9 @@ namespace ocra
 class CoMMomentumTaskManager: public TaskManager
 {
     public:
-        CoMMomentumTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double damping, double weight, bool usesYarpPorts = true);
+        CoMMomentumTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double damping, double weight, int hierarchyLevel = -1 , bool usesYarpPorts = true);
 
-        CoMMomentumTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = false);
+        CoMMomentumTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double damping, const Eigen::VectorXd& weight, int hierarchyLevel = -1 , bool usesYarpPorts = false);
 
 
         ~CoMMomentumTaskManager();

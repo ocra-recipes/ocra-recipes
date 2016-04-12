@@ -24,7 +24,7 @@
 #include "ocra/optim/Variable.h"
 #include "ocra/optim/Function.h"
 #include "ocra/optim/FunctionInterfaceMapping.h"
-
+#include "ocra/utilities.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 
@@ -32,17 +32,17 @@
 //#include <sstream>
 
 /** @namespace ocra
-  * @brief Optimization-based Robot Controller namespace. 
+  * @brief Optimization-based Robot Controller namespace.
   *  a library of classes to write and solve optimization problems dedicated to
-  *  the control of multi-body systems. 
+  *  the control of multi-body systems.
   */
 namespace ocra
 {
   /** Enumerate the different types of equality/inequality constraints
-    * 
+    *
     * \internal All the equality constraint types must come before the inequality constraint ones and CSTR_LOWER_ZERO
     * must be the first inequality constraint type appearing in this enumeration. isEquality and isInequality rely on
-    * this properties to return the correct value. 
+    * this properties to return the correct value.
     */
 
   //never change this enum
@@ -60,13 +60,13 @@ namespace ocra
   /** @class Constraint
     *	@brief %Constraint class.
     *	@warning None
-    *  
+    *
     * Given a function \f$ f \f$ over \f$ x \in R^n \f$ and possibly over the time \f$ t \f$, we can write a constraint
     * whose most generic expression is \f$ l \le f(x,t) \le u \f$, with \f$ l \f$ and \f$ u \f$ two vectors of size
-    * \f$ m \f$ having their value in \f$ \left(R\cup\left\{-\infty,+\infty\right\}\right)^m \f$ and verifying 
+    * \f$ m \f$ having their value in \f$ \left(R\cup\left\{-\infty,+\infty\right\}\right)^m \f$ and verifying
     * \f$ l \le u \f$. This class is a C++ translation of this mathematical writing, but distinguishes some specific
     * cases, for the ease of use, that are enumerated by eConstraintType :
-    * - \f$ l = u = b \f$, the constraint is treated as an equality to b (which can be 0): CSTR_EQUAL_ZERO and 
+    * - \f$ l = u = b \f$, the constraint is treated as an equality to b (which can be 0): CSTR_EQUAL_ZERO and
     *   CSTR_EQUAL_B,
     * - \f$ l = -\infty \f$ (resp. \f$ u = +\infty \f$), in which case the lower (resp. upper) bound is ignored. The
     *   remaining bound can be 0: CSTR_LOWER_ZERO, CSTR_LOWER_U, CSTR_GREATER_ZERO and CSTR_GREATER_L,
@@ -79,7 +79,7 @@ namespace ocra
     * As a concrete example, if DiagonalLinearFunction derives from LinearFunction that derives from Function, then
     * Constraint<DiagonalLinearFunction> will derive from Constraint<LinearFunction> that will itself derive from
     * Constraint<Function>. Thus a Constraint<DiagonalLinearFunction> is also a Constraint<LinearFunction> for example.
-    * 
+    *
     * A Constraint class inherits from FunctionInterfaceMapping of the interface of Function, an instance of Constraint
     * can be treated as a Function, to directly call methods of function on it. Constraint<T> is however not deriving
     * from Function.
@@ -88,7 +88,7 @@ namespace ocra
     *
     * \internal Constraint<T> and its derived Constraint can inherits from the interface of T, or part of it by
     * specializing FunctionInterfaceMapping for T. Indeed, at each level of the constraint hierarchy, Constraint<T>
-    * derives from FunctionInterfaceMapping<Constraint<T> > that is by default an empty structure but has access to 
+    * derives from FunctionInterfaceMapping<Constraint<T> > that is by default an empty structure but has access to
     * the function f on which the constraint is built. Thus, for a Function class \a AFunction, one can write a
     * specialization FunctionInterfaceMapping<Constraint<AFunction> > whose methods can access f as a AFunction.
     *
@@ -100,11 +100,12 @@ namespace ocra
   class Constraint
     : public Constraint<typename T::functionType_t>
     , public FunctionInterfaceMapping<Constraint<T> >
-  //TODO [mineur] ? Function could be put to T::functionType_t to verify 
+  //TODO [mineur] ? Function could be put to T::functionType_t to verify
   //that functionType_t is defined according to the inheritance tree of Function
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(Constraint<T>);
   private:
-    typedef Constraint<typename T::functionType_t>    BaseConstraint; 
+    typedef Constraint<typename T::functionType_t>    BaseConstraint;
 
     /** copy of Constraint instances is forbidden*/
     //@{
@@ -120,7 +121,7 @@ namespace ocra
       * \param[in] v An optional vector to shift the constraint
       *
       * The following cases arise:
-      *  - Constraint(f, true): the constraint describes \f$ f(x,t) = 0 \f$ (type CSTR_EQUAL_ZERO) 
+      *  - Constraint(f, true): the constraint describes \f$ f(x,t) = 0 \f$ (type CSTR_EQUAL_ZERO)
       *  - Constraint(f, false): the constraint describes \f$ f(x,t) \le 0 \f$ (type CSTR_LOWER_ZERO)
       *  - Constraint(f, true, b): the constraint describes \f$ f(x,t) = b \f$ (type CSTR_EQUAL_B)
       *  - Constraint(f, false, u): the constraint describes \f$ f(x,t) \le u \f$ (type CSTR_LOWER_U)
@@ -136,7 +137,7 @@ namespace ocra
       * \param[in] u Lower bound vector.
       *
       * The following cases arise:
-      *  - Constraint(f): the constraint describes \f$ f(x,t) \ge 0 \f$ (type CSTR_GREATER_ZERO) 
+      *  - Constraint(f): the constraint describes \f$ f(x,t) \ge 0 \f$ (type CSTR_GREATER_ZERO)
       *  - Constraint(f, l): the constraint describes \f$ f(x,t) \ge l \f$ (type CSTR_GREATER_L)
       *  - Constraint(f, l, u): the constraint describes \f$ l \le f(x,t) \le u \f$ (type CSTR_LOWER_AND_GREATER)
       *  - Constraint(f, l, u) with l==VectorXd(): the constraint describes \f$ f(x,t) \le u \f$ (type CSTR_LOWER_U)
@@ -198,7 +199,7 @@ namespace ocra
         delete _slack;
         _f->completelyDetach(*this);
       }
-  
+
       virtual void updateSize(void);
       inline Variable* getSlackVariable(void) {return _slack;}
 
@@ -231,10 +232,10 @@ namespace ocra
     inline virtual const Function& getFunction() const {return _function;}
     //@}
 
-    /** Return true if the ith component of the constraint is valid for the actual value of its function, false 
+    /** Return true if the ith component of the constraint is valid for the actual value of its function, false
       * otherwise. If the parameter is non-positive, it will check for the validity of all the components.
       * Validity of a component is check with respect to the violation tolerance. This tolerance is 1.e-7 by default
-      * and can be changed with setViolationTolerance() 
+      * and can be changed with setViolationTolerance()
       *
       * \param[in] index. Index of the constraint component. If non-positive (as with the default value), all
       * components will be considered
@@ -286,7 +287,7 @@ namespace ocra
     void setU(const VectorXd& u);
 
     /** This method combines setL() and setU().
-      * It is provided to avoid breaking the precondition l<u of setL() or setU(), which could happen by calling 
+      * It is provided to avoid breaking the precondition l<u of setL() or setU(), which could happen by calling
       * sequentially both methods while the new \a l and \a u are perfectly valid.
       * In case \a l or \a u is null (including the case when both are null), the method calls setL() and setU() in the
       * proper order.
@@ -303,7 +304,7 @@ namespace ocra
     /** getters on the datas of Constraint */
     //@{
     eConstraintType getType() const;
-    /** Get the right member of an equality constraint. 
+    /** Get the right member of an equality constraint.
       *
       * \pre isEquality()==true.
       */
@@ -328,8 +329,8 @@ namespace ocra
     void    setViolationTolerance(double tol);
     double  getViolationTolerance() const;
     //@}
- 
-    /* methods related to slack variable, 
+
+    /* methods related to slack variable,
     void makeSlacked();
     void unmakeSlacked();
     inline bool isSlacked() const;
@@ -353,7 +354,7 @@ namespace ocra
   };
 
 
-    
+
 
 
   inline bool Constraint<Function>::isRespected(int index) const
@@ -368,9 +369,9 @@ namespace ocra
         case CSTR_LOWER_U:            return ((getValue().array()-_u.array()) <= _violation).all();       break;
         case CSTR_GREATER_ZERO:       return (getValue().array() >= -_violation).all();                   break;
         case CSTR_GREATER_L:          return ((getValue().array()-_l.array()) >= -_violation).all();      break;
-        case CSTR_LOWER_AND_GREATER:  return ((getValue().array()-_u.array()) <= _violation).all() 
+        case CSTR_LOWER_AND_GREATER:  return ((getValue().array()-_u.array()) <= _violation).all()
                                           && ((getValue().array()-_l.array()) >= -_violation).all();      break;
-        default: 
+        default:
           throw std::runtime_error("[Constraint<T>::isValid] invalid constraint type");
       }
     }
@@ -384,7 +385,7 @@ namespace ocra
         case CSTR_LOWER_U:            return (getValue(index)-_u[index]) <= _violation;     break;
         case CSTR_GREATER_ZERO:       return getValue(index) >= -_violation;                break;
         case CSTR_GREATER_L:          return (getValue(index)-_l[index]) >= -_violation;    break;
-        case CSTR_LOWER_AND_GREATER:  return (getValue(index)-_u[index]) <= _violation 
+        case CSTR_LOWER_AND_GREATER:  return (getValue(index)-_u[index]) <= _violation
                                           && (getValue(index)-_l[index]) >= -_violation;    break;
         default:
           throw std::runtime_error("[Constraint<T>::isValid] invalid constraint type");
@@ -432,10 +433,10 @@ namespace ocra
       switch(_type)
       {
         case CSTR_LOWER_ZERO:         _u = VectorXd::Zero(getDimension());                      //no break here on purpose
-        case CSTR_LOWER_U:            _type = CSTR_LOWER_AND_GREATER; 
+        case CSTR_LOWER_U:            _type = CSTR_LOWER_AND_GREATER;
                                       SubjectBase<EVT_CSTR_CHANGE_BOUNDS_NUMBER>::propagate();  break;
         case CSTR_GREATER_ZERO:       _type = CSTR_GREATER_L;                                   break;
-        case CSTR_GREATER_L:          /*nothing to do*/                                         break;        
+        case CSTR_GREATER_L:          /*nothing to do*/                                         break;
         case CSTR_LOWER_AND_GREATER:  /*nothing to do*/                                         break;
       }
     }
@@ -462,9 +463,9 @@ namespace ocra
       ocra_assert(u.size() == getDimension()  && "u has not the size of the function");
       ocra_assert(
         (
-        _type == CSTR_LOWER_ZERO 
-        || _type == CSTR_LOWER_U       
-        || ( _type == CSTR_GREATER_ZERO && (u.array()>0).all() )      
+        _type == CSTR_LOWER_ZERO
+        || _type == CSTR_LOWER_U
+        || ( _type == CSTR_GREATER_ZERO && (u.array()>0).all() )
         || (_l.size() != 0 && (_l.array()-_violation < u.array()).all())
         )
         && "when there is a lower bound, it must be lower than u");
@@ -485,7 +486,7 @@ namespace ocra
         case CSTR_LOWER_ZERO:         /*nothing to do*/                                         break;
         case CSTR_LOWER_U:            _type = CSTR_LOWER_ZERO;                                  break;
         case CSTR_GREATER_ZERO:       /*nothing to do*/                                         break;
-        case CSTR_GREATER_L:          /*nothing to do*/                                         break;        
+        case CSTR_GREATER_L:          /*nothing to do*/                                         break;
         case CSTR_LOWER_AND_GREATER:  _type = CSTR_GREATER_L;
                                       SubjectBase<EVT_CSTR_CHANGE_BOUNDS_NUMBER>::propagate();  break;
       }
@@ -505,14 +506,14 @@ namespace ocra
         ocra_assert((l.array()-_violation < u.array()).all() && "l must be lower than u");
         switch(_type)
         {
-          case CSTR_LOWER_ZERO:         
-          case CSTR_LOWER_U:            
-          case CSTR_GREATER_ZERO:       
+          case CSTR_LOWER_ZERO:
+          case CSTR_LOWER_U:
+          case CSTR_GREATER_ZERO:
           case CSTR_GREATER_L:          _type = CSTR_LOWER_AND_GREATER;
                                         SubjectBase<EVT_CSTR_CHANGE_BOUNDS_NUMBER>::propagate();  break;
           case CSTR_LOWER_AND_GREATER:  /*nothing to do*/                                         break;
         }
-        _l = l; 
+        _l = l;
         _u = u;
       }
       else
@@ -576,7 +577,7 @@ namespace ocra
     :Constraint<typename T::functionType_t>(function, equality, v)
   {
       //force T to inherit of Function
-                                        //TODO [mineur] ? could be put to T::functionType_t to verify 
+                                        //TODO [mineur] ? could be put to T::functionType_t to verify
                                         //that functionType_t is defined according to the inheritance tree of Function
   }
 
@@ -585,7 +586,7 @@ namespace ocra
     :Constraint<typename T::functionType_t>(function, l, u)
   {
       //force T to inherit of Function
-                                        //TODO [mineur] ? could be put to T::functionType_t to verify 
+                                        //TODO [mineur] ? could be put to T::functionType_t to verify
                                         //that functionType_t is defined according to the inheritance tree of Function
   }
 
@@ -681,4 +682,3 @@ namespace ocra
 #endif	//_OCRABASE_CONSTRAINT_H_
 
 // cmake:sourcegroup=Constraint
-

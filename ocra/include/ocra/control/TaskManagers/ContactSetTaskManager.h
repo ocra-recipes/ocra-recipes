@@ -20,7 +20,7 @@ namespace ocra
 class ContactSetTaskManager: public TaskManager
 {
     public:
-        ContactSetTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, std::vector<Eigen::Displacementd> H_segment_frames, double mu, double margin, bool usesYarpPorts = true);
+        ContactSetTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, const std::string& segmentName, std::vector<Eigen::Displacementd> H_segment_frames, double mu, double margin, int hierarchyLevel = -1 , bool usesYarpPorts = true);
 
         ~ContactSetTaskManager();
 

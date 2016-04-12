@@ -17,21 +17,21 @@ namespace ocra
 class CoMTaskManager: public TaskManager
 {
     public:
-        CoMTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, double weight, bool usesYarpPorts = true);
+        CoMTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, double weight, int hierarchyLevel = -1 , bool usesYarpPorts = true);
 
-        CoMTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, const Eigen::VectorXd& weight, bool usesYarpPorts = false);
-
-        CoMTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, double weight,
-            Eigen::Vector3d posDes, bool usesYarpPorts = true);
-
-        CoMTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, const Eigen::VectorXd& weight,
-            Eigen::Vector3d posDes, bool usesYarpPorts = false);
+        CoMTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, const Eigen::VectorXd& weight, int hierarchyLevel = -1 , bool usesYarpPorts = false);
 
         CoMTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, double weight,
-            Eigen::Vector3d posDes, Eigen::Vector3d velDes, Eigen::Vector3d accDes, bool usesYarpPorts = true);
+            Eigen::Vector3d posDes, int hierarchyLevel = -1 , bool usesYarpPorts = true);
 
         CoMTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, const Eigen::VectorXd& weight,
-            Eigen::Vector3d posDes, Eigen::Vector3d velDes, Eigen::Vector3d accDes, bool usesYarpPorts = false);
+            Eigen::Vector3d posDes, int hierarchyLevel = -1 , bool usesYarpPorts = false);
+
+        CoMTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, double weight,
+            Eigen::Vector3d posDes, Eigen::Vector3d velDes, Eigen::Vector3d accDes, int hierarchyLevel = -1 , bool usesYarpPorts = true);
+
+        CoMTaskManager(ocra::Controller& ctrl, const ocra::Model& model, const std::string& taskName, ocra::ECartesianDof axes, double stiffness, double damping, const Eigen::VectorXd& weight,
+            Eigen::Vector3d posDes, Eigen::Vector3d velDes, Eigen::Vector3d accDes, int hierarchyLevel = -1 , bool usesYarpPorts = false);
 
         ~CoMTaskManager();
 
