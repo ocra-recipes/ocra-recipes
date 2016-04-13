@@ -71,7 +71,7 @@ bool TaskManagerFactory::parseTasksXML(TiXmlDocument* newTasksFile)
                             }else{currentTmArgs.kd=0.0;}
                         }
                         if (taskElem->QueryDoubleAttribute("weight", &currentTmArgs.weight)==TIXML_NO_ATTRIBUTE){currentTmArgs.weight=0.0; currentTmArgs.useWeightVectorConstructor=false;}else{currentTmArgs.useWeightVectorConstructor=false;}
-                        if (taskElem->QueryIntAttribute("hierarchyLevel", &currentTmArgs.hierarchyLevel)==TIXML_NO_ATTRIBUTE){currentTmArgs.hierarchyLevel=0;}
+                        if (taskElem->QueryIntAttribute("hierarchyLevel", &currentTmArgs.hierarchyLevel)==TIXML_NO_ATTRIBUTE){currentTmArgs.hierarchyLevel=-1;}
 
                        //if (taskElem->QueryIntAttribute("axes", &currentTmArgs.axes)==TIXML_NO_ATTRIBUTE){currentTmArgs.axes=ocra::XYZ;}
                         if (taskElem->QueryDoubleAttribute("mu", &currentTmArgs.mu)==TIXML_NO_ATTRIBUTE){currentTmArgs.mu=1.0;}

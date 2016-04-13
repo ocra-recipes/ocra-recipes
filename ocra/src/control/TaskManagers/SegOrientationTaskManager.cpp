@@ -24,7 +24,7 @@ SegOrientationTaskManager::SegOrientationTaskManager(ocra::Controller& _ctrl,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName)
 {
-    _init(Eigen::Rotation3d::Identity(), _stiffness, _damping, _weight);
+    _init(Eigen::Rotation3d::Identity(), _stiffness, _damping, _weight, _hierarchyLevel);
 }
 
 SegOrientationTaskManager::SegOrientationTaskManager(ocra::Controller& _ctrl,
@@ -38,8 +38,7 @@ SegOrientationTaskManager::SegOrientationTaskManager(ocra::Controller& _ctrl,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName)
 {
-    _init(Eigen::Rotation3d::Identity(), _stiffness, _damping, _weight);
-    setTaskHierarchyLevel(_hierarchyLevel);
+    _init(Eigen::Rotation3d::Identity(), _stiffness, _damping, _weight, _hierarchyLevel);
 }
 
 /** Constructor with desired pose
@@ -65,9 +64,8 @@ SegOrientationTaskManager::SegOrientationTaskManager(ocra::Controller& _ctrl,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName)
 {
-    _init(Eigen::Rotation3d::Identity(), _stiffness, _damping, _weight);
+    _init(Eigen::Rotation3d::Identity(), _stiffness, _damping, _weight, _hierarchyLevel);
     setOrientation(_orientationDes);
-    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 SegOrientationTaskManager::SegOrientationTaskManager(ocra::Controller& _ctrl,
@@ -82,9 +80,8 @@ SegOrientationTaskManager::SegOrientationTaskManager(ocra::Controller& _ctrl,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName)
 {
-    _init(Eigen::Rotation3d::Identity(), _stiffness, _damping, _weight);
+    _init(Eigen::Rotation3d::Identity(), _stiffness, _damping, _weight, _hierarchyLevel);
     setOrientation(_orientationDes);
-    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 
@@ -96,7 +93,7 @@ SegOrientationTaskManager::~SegOrientationTaskManager()
 /** Initializer function for the constructor, sets up the frames, parameters, controller and task
  *
  */
-void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFrame, double _stiffness, double _damping, double _weight)
+void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFrame, double _stiffness, double _damping, double _weight, int _hierarchyLevel)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(Eigen::Vector3d::Zero(), _refOrientation_LocalFrame));
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
@@ -109,6 +106,7 @@ void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFra
 
     task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
     task->activateAsObjective();
@@ -119,7 +117,7 @@ void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFra
     setStateDimension(4); //Quaternion only.
 }
 
-void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFrame, double _stiffness, double _damping, const Eigen::VectorXd& _weight)
+void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFrame, double _stiffness, double _damping, const Eigen::VectorXd& _weight, int _hierarchyLevel)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(Eigen::Vector3d::Zero(), _refOrientation_LocalFrame));
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
@@ -132,6 +130,7 @@ void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFra
 
     task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
     task->activateAsObjective();

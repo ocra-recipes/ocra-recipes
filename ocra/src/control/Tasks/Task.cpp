@@ -104,6 +104,7 @@ namespace ocra
   }
   void Task::setHierarchyLevel(int level)
   {
+      std::cout << "\033[1;31m["<<getName()<<"]\033[0m Setting hierarchy level to "<<level<< std::endl;
       if( level < 0 )
       {
           std::cout << "[warning] Level should be >0 , but you provided "<<level << std::endl;

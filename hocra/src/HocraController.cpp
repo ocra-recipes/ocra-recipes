@@ -66,27 +66,31 @@ std::cout << "HocraController::doAddContactSet" << std::endl;
 }
 void HocraController::doAddTask(std::shared_ptr< Task > task)
 {
-std::cout << "HocraController::doAddTask" << std::endl;
+    std::cout << "Adding task "<<task->getName()<<" at level "<<task->getHierarchyLevel() << std::endl;
+
 
 }
 void HocraController::doComputeOutput(VectorXd& tau)
 {
-std::cout << "HocraController::doComputeOutput" << std::endl;
-
+    std::cout << "HocraController::doComputeOutput" << std::endl;
+    throw std::runtime_error("[HocraController::doComputeOutput] not implemented");
 }
 std::shared_ptr< Task > HocraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
 {
-std::cout << "HocraController::doCreateContactTask" << std::endl;
+    std::cout << "HocraController::doCreateContactTask" << std::endl;
+    throw std::runtime_error("[HocraController::doCreateContactTask] not implemented");
 
 }
 std::shared_ptr< Task > HocraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
 {
-std::cout << "HocraController::doCreateTask des" << std::endl;
-//     return std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature, featureDes);
+    std::cout << "HocraController::doCreateTask des" << std::endl;
+    return std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature, featureDes);
+    
 }
 std::shared_ptr< Task > HocraController::doCreateTask(const std::string& name, const Feature& feature) const
 {
     std::cout << "HocraController::doCreateTask" << std::endl;
+    return  std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature);
 //     return std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature);
 }
 

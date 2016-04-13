@@ -624,7 +624,7 @@ void OneLevelTask::checkIfConnectedToController() const
 {
     if (!pimpl->solver)
     {
-        std::string errmsg = std::string("[OneLevelTask::doActivateAsObjective]: task '") + getName() + std::string("' not connected to any solver; Call prior that 'wOcraController::addTask' to connect to the solver inside the controller.\n"); //
+        std::string errmsg = std::string("[OneLevelTask::doActivateAsObjective]: task '") + getName() + std::string("' not connected to any solver; Call prior that 'Controller::addTask' to connect to the solver inside the controller.\n"); //
         throw std::runtime_error(std::string(errmsg));
     }
 }

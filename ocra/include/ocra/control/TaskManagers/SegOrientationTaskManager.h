@@ -48,8 +48,8 @@ class SegOrientationTaskManager: public TaskManager
 
 //        Eigen::Displacementd            _poseDes;
 
-        void _init(Eigen::Rotation3d refOrientation_LocalFrame, double stiffness, double damping, double weight);
-        void _init(Eigen::Rotation3d refOrientation_LocalFrame, double stiffness, double damping, const Eigen::VectorXd& weight);
+        void _init(Eigen::Rotation3d refOrientation_LocalFrame, double stiffness, double damping, double weight, int hierarchyLevel);
+        void _init(Eigen::Rotation3d refOrientation_LocalFrame, double stiffness, double damping, const Eigen::VectorXd& weight, int hierarchyLevel);
 };
 
 }

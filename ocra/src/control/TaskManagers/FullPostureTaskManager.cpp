@@ -24,10 +24,10 @@ FullPostureTaskManager::FullPostureTaskManager(ocra::Controller& _ctrl,
                                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
-    _init(_fullStateType, _stiffness, _damping, _weight);
+    _init(_fullStateType, _stiffness, _damping, _weight, _hierarchyLevel);
     Eigen::VectorXd _init_q = _model.getJointPositions();
     setPosture(_init_q);
-    setTaskHierarchyLevel(_hierarchyLevel);
+
 }
 
 /** Base constructor
@@ -51,10 +51,10 @@ FullPostureTaskManager::FullPostureTaskManager(ocra::Controller& _ctrl,
                                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
-    _init(_fullStateType, _stiffness, _damping, _weight);
+    _init(_fullStateType, _stiffness, _damping, _weight, _hierarchyLevel);
     Eigen::VectorXd _init_q = _model.getJointPositions();
     setPosture(_init_q);
-    setTaskHierarchyLevel(_hierarchyLevel);
+
 }
 /** Constructor with desired joint space posture
  *
@@ -79,9 +79,9 @@ FullPostureTaskManager::FullPostureTaskManager(ocra::Controller& _ctrl,
                                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
-    _init(_fullStateType, _stiffness, _damping, _weight);
+    _init(_fullStateType, _stiffness, _damping, _weight, _hierarchyLevel);
     setPosture(_init_q);
-    setTaskHierarchyLevel(_hierarchyLevel);
+
 }
 /** Constructor with desired joint space posture
  *
@@ -106,9 +106,9 @@ FullPostureTaskManager::FullPostureTaskManager(ocra::Controller& _ctrl,
                                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
-    _init(_fullStateType, _stiffness, _damping, _weight);
+    _init(_fullStateType, _stiffness, _damping, _weight, _hierarchyLevel);
     setPosture(_init_q);
-    setTaskHierarchyLevel(_hierarchyLevel);
+
 }
 
 FullPostureTaskManager::~FullPostureTaskManager()
@@ -121,7 +121,7 @@ FullPostureTaskManager::~FullPostureTaskManager()
 /** Initializer function for constructor, sets up the frames, parameters, controller and task
  *
  */
-void FullPostureTaskManager::_init(int fullStateType, double stiffness, double damping, double weight)
+void FullPostureTaskManager::_init(int fullStateType, double stiffness, double damping, double weight, int _hierarchyLevel)
 {
     featState = new ocra::FullModelState(name + ".FullModelState", model, fullStateType);
     featDesState = new ocra::FullTargetState(name + ".FullTargetState", model, fullStateType);
@@ -131,6 +131,7 @@ void FullPostureTaskManager::_init(int fullStateType, double stiffness, double d
     // The feature initializes as Zero for posture
     task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
 
@@ -143,7 +144,7 @@ void FullPostureTaskManager::_init(int fullStateType, double stiffness, double d
     setStateDimension(task->getDimension());
 }
 
-void FullPostureTaskManager::_init(int fullStateType, double stiffness, double damping, const Eigen::VectorXd& weight)
+void FullPostureTaskManager::_init(int fullStateType, double stiffness, double damping, const Eigen::VectorXd& weight, int _hierarchyLevel)
 {
     featState = new ocra::FullModelState(name + ".FullModelState", model, fullStateType);
     featDesState = new ocra::FullTargetState(name + ".FullTargetState", model, fullStateType);
@@ -153,6 +154,7 @@ void FullPostureTaskManager::_init(int fullStateType, double stiffness, double d
     // The feature initializes as Zero for posture
     task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
 

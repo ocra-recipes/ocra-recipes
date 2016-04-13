@@ -27,7 +27,7 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(Eigen::Vector3d::Zero(), _stiffness, _damping, _weight);
+    _init(Eigen::Vector3d::Zero(), _stiffness, _damping, _weight, _hierarchyLevel);
 }
 
 SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
@@ -43,7 +43,7 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(Eigen::Vector3d::Zero(), _stiffness, _damping, _weight);
+    _init(Eigen::Vector3d::Zero(), _stiffness, _damping, _weight, _hierarchyLevel);
 }
 
 /** Constructor with the specifying the point of reference on the segment to track
@@ -72,7 +72,7 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(_segPoint_Local, _stiffness, _damping, _weight);
+    _init(_segPoint_Local, _stiffness, _damping, _weight, _hierarchyLevel);
 }
 
 SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
@@ -89,7 +89,7 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(_segPoint_Local, _stiffness, _damping, _weight);
+    _init(_segPoint_Local, _stiffness, _damping, _weight, _hierarchyLevel);
 }
 /** Constructor with desired pose
  *
@@ -117,7 +117,7 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(Eigen::Vector3d::Zero(), _stiffness, _damping, _weight);
+    _init(Eigen::Vector3d::Zero(), _stiffness, _damping, _weight, _hierarchyLevel);
     // Have no idea this wrapper needs to be done
     setState(_poseDes);
 }
@@ -136,10 +136,9 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(Eigen::Vector3d::Zero(), _stiffness, _damping, _weight);
+    _init(Eigen::Vector3d::Zero(), _stiffness, _damping, _weight, _hierarchyLevel);
     // Have no idea this wrapper needs to be done
     setState(_poseDes);
-    setTaskHierarchyLevel(_hierarchyLevel);
 }
 /**
  * Constructor with both point on segment and desired pose
@@ -169,9 +168,8 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(_segPoint_Local, _stiffness, _damping, _weight);
+    _init(_segPoint_Local, _stiffness, _damping, _weight, _hierarchyLevel);
     setState(_poseDes);
-    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
@@ -189,9 +187,8 @@ SegCartesianTaskManager::SegCartesianTaskManager(ocra::Controller& _ctrl,
 
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(_segPoint_Local, _stiffness, _damping, _weight);
+    _init(_segPoint_Local, _stiffness, _damping, _weight, _hierarchyLevel);
     setState(_poseDes);
-    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 SegCartesianTaskManager::~SegCartesianTaskManager()
@@ -202,7 +199,7 @@ SegCartesianTaskManager::~SegCartesianTaskManager()
 /** Initializer function for the constructor, sets up the frames, parameters, controller and task
  *
  */
-void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame, double _stiffness, double _damping, double _weight)
+void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame, double _stiffness, double _damping, double _weight, int _hierarchyLevel)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(_taskPoint_LocalFrame));
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
@@ -211,6 +208,7 @@ void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame
 
     task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
     task->activateAsObjective();
@@ -223,7 +221,7 @@ void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame
     setState(model.getSegmentPosition(model.getSegmentIndex(segmentName)).getTranslation());
 }
 
-void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame, double _stiffness, double _damping, const Eigen::VectorXd& _weight)
+void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame, double _stiffness, double _damping, const Eigen::VectorXd& _weight, int _hierarchyLevel)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(_taskPoint_LocalFrame));
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
@@ -232,6 +230,7 @@ void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame
 
     task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
     task->activateAsObjective();

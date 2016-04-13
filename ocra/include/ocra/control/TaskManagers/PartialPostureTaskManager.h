@@ -55,8 +55,8 @@ class PartialPostureTaskManager : public TaskManager
         Eigen::Vector3d                 _accDes;
 */
 
-        void _init(int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight);
-        void _init(int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight);
+        void _init(int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, double weight, int hierarchyLevel);
+        void _init(int fullStateType, Eigen::VectorXi& dofIndices, double stiffness, double damping, const Eigen::VectorXd& weight, int hierarchyLevel);
 };
 
 }

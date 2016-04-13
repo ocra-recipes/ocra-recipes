@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
+#include "ocra/utilities.h"
 
 namespace ocra
 {
@@ -19,6 +20,7 @@ namespace ocra
     : public NamedInstance
     , boost::noncopyable
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(Task)
   protected:
     Task(const std::string& name, const Model& model, const Feature& feature, const Feature& featureDes);
     Task(const std::string& name, const Model& model, const Feature& feature);

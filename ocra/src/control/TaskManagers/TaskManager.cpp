@@ -56,7 +56,6 @@ int TaskManager::getTaskHierarchyLevel()
 }
 void TaskManager::setTaskHierarchyLevel(int level)
 {
-    std::cout << "\033[1;31m["<<name<<"]\033[0m Setting hierarchy level to "<<level<< std::endl;
     task->setHierarchyLevel(level);
     return;
 }

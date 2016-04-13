@@ -24,7 +24,8 @@ CoMTaskManager::CoMTaskManager( ocra::Controller& _ctrl,
                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
-    _init(_stiffness, _damping, _weight);
+    _init(_stiffness, _damping, _weight, _hierarchyLevel);
+
 }
 
 CoMTaskManager::CoMTaskManager( ocra::Controller& _ctrl,
@@ -38,7 +39,8 @@ CoMTaskManager::CoMTaskManager( ocra::Controller& _ctrl,
                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
-    _init(_stiffness, _damping, _weight);
+    _init(_stiffness, _damping, _weight, _hierarchyLevel);
+
 }
 
 
@@ -65,9 +67,9 @@ CoMTaskManager::CoMTaskManager( ocra::Controller& _ctrl,
                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
-    _init(_stiffness, _damping, _weight);
+    _init(_stiffness, _damping, _weight, _hierarchyLevel);
     setState(_posDes);
-    setTaskHierarchyLevel(_hierarchyLevel);
+
 }
 
 CoMTaskManager::CoMTaskManager( ocra::Controller& _ctrl,
@@ -82,9 +84,9 @@ CoMTaskManager::CoMTaskManager( ocra::Controller& _ctrl,
                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
-    _init(_stiffness, _damping, _weight);
+    _init(_stiffness, _damping, _weight, _hierarchyLevel);
     setState(_posDes);
-    setTaskHierarchyLevel(_hierarchyLevel);
+
 }
 
 /** Constructor with initial desired position, velocity and acceleration
@@ -116,7 +118,7 @@ CoMTaskManager::~CoMTaskManager()
 /** Initializer function for the CoMTaskManager constructor, sets up the frames, parameters, controller and task
  *
  */
-void CoMTaskManager::_init(double stiffness, double damping, double weight)
+void CoMTaskManager::_init(double stiffness, double damping, double weight, int _hierarchyLevel)
 {
     comFeatFrame = new ocra::CoMFrame(name + ".CoMFrame", model);
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
@@ -125,6 +127,7 @@ void CoMTaskManager::_init(double stiffness, double damping, double weight)
 
     task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
     task->setStiffness(stiffness);
@@ -138,7 +141,7 @@ void CoMTaskManager::_init(double stiffness, double damping, double weight)
     setState(model.getCoMPosition());
 }
 
-void CoMTaskManager::_init(double stiffness, double damping, const Eigen::VectorXd& weight)
+void CoMTaskManager::_init(double stiffness, double damping, const Eigen::VectorXd& weight, int _hierarchyLevel)
 {
     comFeatFrame = new ocra::CoMFrame(name + ".CoMFrame", model);
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
@@ -147,6 +150,7 @@ void CoMTaskManager::_init(double stiffness, double damping, const Eigen::Vector
 
     task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
     task->setStiffness(stiffness);

@@ -48,8 +48,8 @@ class CoMMomentumTaskManager: public TaskManager
         ocra::PositionFeature*           featDes;
         ocra::TargetFrame*               featDesFrame;
 
-        void _init(double damping, double weight);
-        void _init(double damping, const Eigen::VectorXd& weight);
+        void _init(double damping, double weight, int hierarchyLevel);
+        void _init(double damping, const Eigen::VectorXd& weight, int hierarchyLevel);
 };
 
 }

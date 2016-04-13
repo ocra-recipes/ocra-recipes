@@ -26,8 +26,7 @@ SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight);
-    setTaskHierarchyLevel(_hierarchyLevel);
+    _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight, _hierarchyLevel);
 }
 
 SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
@@ -42,8 +41,7 @@ SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight);
-    setTaskHierarchyLevel(_hierarchyLevel);
+    _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight, _hierarchyLevel);
 }
 
 /** Constructor with offset frame
@@ -71,8 +69,7 @@ SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(_segFrame_Local, _stiffness, _damping, _weight);
-    setTaskHierarchyLevel(_hierarchyLevel);
+    _init(_segFrame_Local, _stiffness, _damping, _weight, _hierarchyLevel);
 }
 
 SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
@@ -88,8 +85,7 @@ SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(_segFrame_Local, _stiffness, _damping, _weight);
-    setTaskHierarchyLevel(_hierarchyLevel);
+    _init(_segFrame_Local, _stiffness, _damping, _weight, _hierarchyLevel);
 }
 
 /** Constructor with desired pose
@@ -117,9 +113,8 @@ SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight);
+    _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight, _hierarchyLevel);
     setState(_poseDes);
-    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
@@ -135,9 +130,8 @@ SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight);
+    _init(Eigen::Displacementd::Identity(), _stiffness, _damping, _weight, _hierarchyLevel);
     setState(_poseDes);
-    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 /** Constructor with desired pose
@@ -167,9 +161,8 @@ SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(_segFrame_Local, _stiffness, _damping, _weight);
+    _init(_segFrame_Local, _stiffness, _damping, _weight, _hierarchyLevel);
     setState(_poseDes);
-    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
@@ -186,9 +179,8 @@ SegPoseTaskManager::SegPoseTaskManager( ocra::Controller& _ctrl,
                                         bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName), axes(_axes)
 {
-    _init(_segFrame_Local, _stiffness, _damping, _weight);
+    _init(_segFrame_Local, _stiffness, _damping, _weight, _hierarchyLevel);
     setState(_poseDes);
-    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 
@@ -201,7 +193,7 @@ SegPoseTaskManager::~SegPoseTaskManager()
 /** Initializer function for the constructor, sets up the frames, parameters, controller and task
  *
  */
-void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, double _stiffness, double _damping, double _weight)
+void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, double _stiffness, double _damping, double _weight, int _hierarchyLevel)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), _ref_LocalFrame);
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
@@ -210,6 +202,7 @@ void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, doub
 
     task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
     featDesFrame->setPosition(Eigen::Displacementd::Identity());
@@ -227,7 +220,7 @@ void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, doub
     setState(model.getSegmentPosition(model.getSegmentIndex(model.SegmentName(segmentName))));
 }
 
-void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, double _stiffness, double _damping, const Eigen::VectorXd& _weight)
+void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, double _stiffness, double _damping, const Eigen::VectorXd& _weight, int _hierarchyLevel)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), _ref_LocalFrame);
     featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
@@ -236,6 +229,7 @@ void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, doub
 
     task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
     featDesFrame->setPosition(Eigen::Displacementd::Identity());

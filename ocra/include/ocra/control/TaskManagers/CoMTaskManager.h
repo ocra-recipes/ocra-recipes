@@ -60,8 +60,8 @@ class CoMTaskManager: public TaskManager
         ocra::PositionFeature*           featDes;
         ocra::TargetFrame*               featDesFrame;
 
-        void _init(double stiffness, double damping, double weight);
-        void _init(double stiffness, double damping, const Eigen::VectorXd& weight);
+        void _init(double stiffness, double damping, double weight, int hierarchyLevel);
+        void _init(double stiffness, double damping, const Eigen::VectorXd& weight, int hierarchyLevel);
 };
 
 }

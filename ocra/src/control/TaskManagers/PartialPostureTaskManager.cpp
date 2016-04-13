@@ -26,8 +26,7 @@ PartialPostureTaskManager::PartialPostureTaskManager(ocra::Controller& _ctrl,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
-    _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight);
-    setTaskHierarchyLevel(_hierarchyLevel);
+    _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight, _hierarchyLevel);
 }
 
 PartialPostureTaskManager::PartialPostureTaskManager(ocra::Controller& _ctrl,
@@ -42,8 +41,7 @@ PartialPostureTaskManager::PartialPostureTaskManager(ocra::Controller& _ctrl,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
-    _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight);
-    setTaskHierarchyLevel(_hierarchyLevel);
+    _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight, _hierarchyLevel);
 }
 
 
@@ -72,9 +70,8 @@ PartialPostureTaskManager::PartialPostureTaskManager(ocra::Controller& _ctrl,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
-    _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight);
+    _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight, _hierarchyLevel);
     setPosture(_init_q);
-    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 PartialPostureTaskManager::PartialPostureTaskManager(ocra::Controller& _ctrl,
@@ -90,9 +87,8 @@ PartialPostureTaskManager::PartialPostureTaskManager(ocra::Controller& _ctrl,
                                                                 bool _usesYarpPorts)
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts)
 {
-    _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight);
+    _init(_fullStateType, _dofIndices, _stiffness, _damping, _weight, _hierarchyLevel);
     setPosture(_init_q);
-    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 PartialPostureTaskManager::~PartialPostureTaskManager()
@@ -104,7 +100,7 @@ PartialPostureTaskManager::~PartialPostureTaskManager()
 /** Initializer function for constructor, sets up the frames, parameters, controller and task
  *
  */
-void PartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& _dofIndices, double _stiffness, double _damping, double _weight)
+void PartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& _dofIndices, double _stiffness, double _damping, double _weight, int _hierarchyLevel)
 {
     featState = new ocra::PartialModelState(name + ".PartialModelState", model, _dofIndices, _fullStateType);
     featDesState = new ocra::PartialTargetState(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
@@ -114,6 +110,7 @@ void PartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& _dofI
     // The feature initializes as Zero for posture
     task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
 
@@ -126,7 +123,7 @@ void PartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& _dofI
     setStateDimension(task->getDimension());
 }
 
-void PartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& _dofIndices, double _stiffness, double _damping, const Eigen::VectorXd& _weight)
+void PartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& _dofIndices, double _stiffness, double _damping, const Eigen::VectorXd& _weight, int _hierarchyLevel)
 {
     featState = new ocra::PartialModelState(name + ".PartialModelState", model, _dofIndices, _fullStateType);
     featDesState = new ocra::PartialTargetState(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
@@ -136,6 +133,7 @@ void PartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& _dofI
     // The feature initializes as Zero for posture
     task = ctrl.createTask(name, *feat, *featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
 

@@ -55,8 +55,8 @@ class SegPoseTaskManager : public TaskManager
         ocra::DisplacementFeature*       featDes;
         ocra::TargetFrame*               featDesFrame;
 
-        void _init(const Eigen::Displacementd& ref_LocalFrame, double stiffness, double damping, double weight);
-        void _init(const Eigen::Displacementd& ref_LocalFrame, double stiffness, double damping, const Eigen::VectorXd& weight);
+        void _init(const Eigen::Displacementd& ref_LocalFrame, double stiffness, double damping, double weight, int hierarchyLevel);
+        void _init(const Eigen::Displacementd& ref_LocalFrame, double stiffness, double damping, const Eigen::VectorXd& weight, int hierarchyLevel);
 };
 
 }

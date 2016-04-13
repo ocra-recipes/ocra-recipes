@@ -55,8 +55,8 @@ class FullPostureTaskManager : public TaskManager
         ocra::FullStateFeature*          featDes;
         ocra::FullTargetState*           featDesState;
 
-        void _init(int fullStateType, double stiffness, double damping, double weight);
-        void _init(int fullStateType, double stiffness, double damping, const Eigen::VectorXd& weight);
+        void _init(int fullStateType, double stiffness, double damping, double weight, int hierarchyLevel);
+        void _init(int fullStateType, double stiffness, double damping, const Eigen::VectorXd& weight, int hierarchyLevel);
 };
 
 }

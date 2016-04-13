@@ -62,8 +62,8 @@ class SegCartesianTaskManager : public TaskManager
         ocra::PositionFeature*           featDes;
         ocra::TargetFrame*               featDesFrame;
 
-        void _init(const Eigen::Vector3d& refPoint_LocalFrame, double stiffness, double damping, double weight);
-        void _init(const Eigen::Vector3d& refPoint_LocalFrame, double stiffness, double damping, const Eigen::VectorXd& weight);
+        void _init(const Eigen::Vector3d& refPoint_LocalFrame, double stiffness, double damping, double weight, int hierarchyLevel);
+        void _init(const Eigen::Vector3d& refPoint_LocalFrame, double stiffness, double damping, const Eigen::VectorXd& weight, int hierarchyLevel);
 };
 
 }
