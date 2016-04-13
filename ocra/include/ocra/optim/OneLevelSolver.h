@@ -55,6 +55,7 @@ typedef Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> Matr
  */
 class OneLevelSolver: public ocra::Solver
 {
+    DEFINE_CLASS_POINTER_TYPEDEFS(OneLevelSolver)
 public:
     OneLevelSolver();
     virtual ~OneLevelSolver();

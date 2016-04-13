@@ -24,6 +24,7 @@ CoMMomentumTaskManager::CoMMomentumTaskManager(ocra::Controller& _ctrl,
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), axes(_axes)
 {
     _init(_damping, _weight);
+    setTaskHierarchyLevel(_hierarchyLevel);
 }
 
 CoMMomentumTaskManager::CoMMomentumTaskManager(ocra::Controller& _ctrl,

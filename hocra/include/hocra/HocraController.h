@@ -15,13 +15,11 @@
 #include <ocra/control/Tasks/Task.h>
 #include <ocra/control/Tasks/OneLevelTask.h>
 #include <ocra/control/FullDynamicEquationFunction.h>
-#include <wocra/WocraController.h>
 
 namespace hocra
 
 {
 using namespace ocra;
-using namespace wocra;
 
 /** \addtogroup core
 
@@ -37,24 +35,28 @@ using namespace wocra;
 
  */
 
-class HocraController: public WocraController
+class HocraController: public Controller
 
 {
 
 public:
 
-
-
     HocraController(const std::string& ctrlName, 
                     std::shared_ptr<Model> innerModel, 
                     std::shared_ptr<OneLevelSolver> innerSolver, 
                     bool useReducedProblem);
-
+    virtual void doAddContactSet(const ContactSet& contacts);
+    virtual void doAddTask(std::shared_ptr< Task > task);
+    virtual void doComputeOutput(VectorXd& tau);
+    virtual std::shared_ptr< Task > doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
+    virtual std::shared_ptr< Task > doCreateTask(const std::string& name, const Feature& feature) const;
+    virtual std::shared_ptr< Task > doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
+    virtual ~HocraController(){};
+    
 private:
-
     struct Pimpl;
 
-    boost::shared_ptr<Pimpl> pimpl;
+    std::shared_ptr<Pimpl> pimpl;
 
 
 };

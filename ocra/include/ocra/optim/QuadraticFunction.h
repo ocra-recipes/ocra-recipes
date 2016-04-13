@@ -13,6 +13,7 @@
 // includes
 #include "ocra/optim/Function.h"
 #include "ocra/optim/ocra_assert.h"
+#include "ocra/utilities.h"
 
 /** @namespace ocra
   * @brief Optimization-based Robot Controller namespace. 
@@ -30,6 +31,7 @@ namespace ocra
     */
   class QuadraticFunction : public Function
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(QuadraticFunction)
     // ------------------------ structures --------------------------------------
   public:
     typedef Function  functionType_t;     //< alias on the type of the mother class. Needed to duplicate the function tree.

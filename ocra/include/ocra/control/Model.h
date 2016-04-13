@@ -16,7 +16,7 @@
 #include "ocra/optim/Variable.h"
 #include "ocra/optim/NamedInstance.h"
 #include "ocra/control/ModelContacts.h"
-
+#include "ocra/utilities.h"
 #include <Eigen/Lgsm>
 
 #include <string>
@@ -35,6 +35,7 @@ namespace ocra
     */
   class Model : public ObserverSubject, public NamedInstance
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(Model)
   public:
     Model(const std::string& name, int ndofs, bool freeRoot,
           const std::string& jointTorqueVariableName = "tau",

@@ -25,22 +25,17 @@
   */
 namespace ocra
 {
-  /** @class CascadeQP
-    * @brief %CascadeQP class.
-    * This class implements a hierarchical QP Solver based on
-    * "Prioritizing linear equality and inequality systems: application to local motion
-    * planning for redundant robots"
-    * O. Kanoun, F. Lamiraux, P.-B. Wieber, F. Kanehiro, E. Yoshida, J.-P. Laumond
-    * ICRA 2009
-    */
-  class CascadeQP
-  {
-      DEFINE_CLASS_POINTER_TYPEDEFS(CascadeQP)
-  public:
+/** @class CascadeQP
+  * @brief %CascadeQP class.
+  */
+class CascadeQP
+{
+    DEFINE_CLASS_POINTER_TYPEDEFS(CascadeQP)
+public:
     CascadeQP();
     virtual ~CascadeQP();
 
-  public:
+public:
     std::size_t addHierarchyLevel(ocra::HierarchyLevel::Ptr h);
     std::size_t addHierarchyLevel(const std::vector<HierarchyLevel::Ptr>& v);
 
@@ -51,7 +46,7 @@ namespace ocra
     const Eigen::VectorXd& getSolutionOfLevel(int i) const;
     HierarchyLevel::Ptr getHierarchyLevel(int i) const;
     std::size_t getNumberOfHierarchyLevel() const;
-  protected:
+protected:
     void addHierarchyLevel_barre(int i);
 
     std::size_t initializeHierarchyLevel_barre();
@@ -61,7 +56,7 @@ namespace ocra
     void computeInequalitiesConstraints(int i);
     void computeHierarchyLevel_barre(int i);
 
-  protected:
+protected:
     std::vector<Solution::Ptr> allSolution;
     std::vector<HierarchyLevel::Ptr> allHierarchyLevel;
     std::vector<HierarchyLevel_barre::Ptr> allHierarchyLevel_barre;
@@ -72,7 +67,7 @@ namespace ocra
     std::vector<int> indexConstraintsNotViolated ;
     FinalSolution f;
 
-  };
+};
 }
 
 #endif	//_OCRABASE_CASCADE_QP_H_

@@ -12,6 +12,7 @@
 
 // includes
 #include "ocra/optim/Solver.h"
+#include "ocra/optim/OneLevelSolver.h"
 #include "ocra/optim/Constraint.h"
 #include "ocra/optim/QuadraticFunction.h"
 #include "ocra/optim/CascadeQP.h"
@@ -59,6 +60,7 @@ protected:
     virtual void recomputeVariable(void);
     std::vector<HierarchyLevelConstraints::Ptr > _hierarchyLevels;
     std::vector<HierarchyLevel::Ptr > _hierarchyInput;
+    std::vector<OneLevelSolver> allSolvers;
     CascadeQP _qp;
     void updateMatrixSize(void);
     void updateLevels(void);

@@ -54,7 +54,7 @@ namespace ocra
 class OneLevelTask: public Task
 
 {
-
+    DEFINE_CLASS_POINTER_TYPEDEFS(OneLevelTask)
 public:
 
     // enum TYPETASK { UNKNOWNTASK, ACCELERATIONTASK, TORQUETASK, FORCETASK, COMMOMENTUMTASK };
