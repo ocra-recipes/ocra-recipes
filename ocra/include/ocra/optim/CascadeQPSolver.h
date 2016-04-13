@@ -17,7 +17,10 @@
 #include "ocra/optim/QuadraticFunction.h"
 #include "ocra/optim/CascadeQP.h"
 #include "ocra/optim/CascadeQPStructures.h"
+#include <ocra/control/Tasks/Task.h>
+
 #include <memory>
+#include <map>
 
 /** @namespace ocra
   * @brief Optimization-based Robot Controller namespace.
@@ -34,38 +37,23 @@ namespace ocra
 class CascadeQPSolver : public ocra::Solver
 {
 public:
-    struct HierarchyLevelConstraints
-    {
-        DEFINE_CLASS_POINTER_TYPEDEFS(HierarchyLevelConstraints)
-        size_t _m = 0;
-        size_t _p = 0;
-        std::vector<LinearConstraint::Ptr> _equalities;
-        std::vector<LinearConstraint::Ptr> _inequalities;
-    };
+    DEFINE_CLASS_POINTER_TYPEDEFS(CascadeQPSolver)
 
     CascadeQPSolver();
-    virtual const std::string& getMoreInfo(void) const;
 
-    void addLinearConstraint(LinearConstraint::Ptr constraint, size_t hierarchyLevel);
-    bool removeLinearConstraint(LinearConstraint::Ptr constraint, size_t hierarchyLevel);
-    void removeLinearConstraint(LinearConstraint::Ptr constraint);
-
-
-    void updateSize(void);
-
+    void addTask(Task::Ptr task);
+    void addSolver(OneLevelSolver::Ptr solver,int level);
+    virtual std::string toString() const;
 protected:
     virtual void doSolve(void);
     virtual void doPrepare(void);
     virtual void doConclude();
-    virtual void recomputeVariable(void);
-    std::vector<HierarchyLevelConstraints::Ptr > _hierarchyLevels;
-    std::vector<HierarchyLevel::Ptr > _hierarchyInput;
-    std::vector<OneLevelSolver> allSolvers;
-    CascadeQP _qp;
-    void updateMatrixSize(void);
-    void updateLevels(void);
-private:
-    bool _isPrepared;
+    virtual void printValuesAtSolution();
+    
+    
+    std::map<int,OneLevelSolver::Ptr > solvermap;
+    CascadeQP cqp;
+    std::map<int,std::vector<Task::Ptr> > taskmap;
 };
 }
 

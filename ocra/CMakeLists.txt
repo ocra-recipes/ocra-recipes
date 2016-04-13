@@ -1,6 +1,6 @@
 project(ocra CXX)
 
-include_directories(BEFORE include)
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 
 file(GLOB_RECURSE control_srcs src/control/*.cpp)
 file(GLOB_RECURSE optim_srcs src/optim/*.cpp)

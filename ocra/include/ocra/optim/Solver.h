@@ -68,6 +68,7 @@ namespace ocra
     : public ObserverSubject
     , virtual public NamedInstance
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(Solver)
   protected: // restricted access to automap
     const std::vector<int>& findMapping(Variable& var);
 
@@ -103,7 +104,6 @@ namespace ocra
     virtual const std::string& getMoreInfo() const;
 
     virtual void printValuesAtSolution() = 0;
-
     /** Returns the state of the solver (e.g. matrices) as a string. */
     virtual std::string toString() const = 0;
 

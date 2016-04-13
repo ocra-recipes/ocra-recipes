@@ -6,10 +6,10 @@ using namespace ocra;
 
 struct HocraController::Pimpl
 {
-    std::shared_ptr<Model>          innerModel;
-    std::vector<std::shared_ptr<OneLevelSolver> > innerSolver;
+    Model::Ptr          innerModel;
+    OneLevelSolver::Ptr levelSolver;
     bool                            reducedProblem;
-
+    CascadeQPSolver cascadeQPSolver;
 
     // EQUALITY CONSTRAINT OF THE DYNAMIC EQUATION
     ocra::EqualZeroConstraintPtr< ocra::FullDynamicEquationFunction >      dynamicEquation;
@@ -24,10 +24,10 @@ struct HocraController::Pimpl
     ObjectivePtr<ocra::QuadraticFunction>     minFcObjective;
 
 
-    Pimpl(std::shared_ptr<Model> m, std::shared_ptr<OneLevelSolver> s, bool useReducedProblem)
+    Pimpl(Model::Ptr m, OneLevelSolver::Ptr s, bool useReducedProblem)
 
         : innerModel(m)
-
+        , levelSolver(s)
         , reducedProblem(useReducedProblem)
         , dynamicEquation( new ocra::FullDynamicEquationFunction(*m) )
 
@@ -51,47 +51,46 @@ struct HocraController::Pimpl
 
 };
 
-HocraController::HocraController(const std::string& ctrlName, 
-                                 std::shared_ptr< Model > innerModel, 
-                                 std::shared_ptr< OneLevelSolver > innerSolver, 
-                                 bool useReducedProblem): 
-Controller(ctrlName, *innerModel), 
-pimpl( new Pimpl(innerModel, innerSolver, useReducedProblem) )
+HocraController::HocraController(const std::string& ctrlName,
+                                 Model::Ptr innerModel,
+                                 OneLevelSolver::Ptr levelSolver,
+                                 bool useReducedProblem):
+Controller(ctrlName, *innerModel),
+pimpl( new Pimpl(innerModel, levelSolver, useReducedProblem) )
 {
-    //pimpl->solver.push_back(std::shared_ptr<OneLevelSolver>(innerModel));
+    std::cout <<"Constructing Hocra Controller"<<std::endl; 
 }
 void HocraController::doAddContactSet(const ContactSet& contacts)
 {
-std::cout << "HocraController::doAddContactSet" << std::endl;
+    std::cout << "HocraController::doAddContactSet" << std::endl;
 }
-void HocraController::doAddTask(std::shared_ptr< Task > task)
+void HocraController::doAddTask(Task::Ptr task)
 {
     std::cout << "Adding task "<<task->getName()<<" at level "<<task->getHierarchyLevel() << std::endl;
-
-
+    pimpl->cascadeQPSolver.addTask(task);
+    pimpl->cascadeQPSolver.addSolver(pimpl->levelSolver,task->getHierarchyLevel());
 }
 void HocraController::doComputeOutput(VectorXd& tau)
 {
     std::cout << "HocraController::doComputeOutput" << std::endl;
     throw std::runtime_error("[HocraController::doComputeOutput] not implemented");
 }
-std::shared_ptr< Task > HocraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+Task::Ptr HocraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
 {
     std::cout << "HocraController::doCreateContactTask" << std::endl;
     throw std::runtime_error("[HocraController::doCreateContactTask] not implemented");
 
 }
-std::shared_ptr< Task > HocraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+Task::Ptr HocraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
 {
     std::cout << "HocraController::doCreateTask des" << std::endl;
     return std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature, featureDes);
-    
+
 }
-std::shared_ptr< Task > HocraController::doCreateTask(const std::string& name, const Feature& feature) const
+Task::Ptr HocraController::doCreateTask(const std::string& name, const Feature& feature) const
 {
     std::cout << "HocraController::doCreateTask" << std::endl;
     return  std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature);
-//     return std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature);
 }
 
 }

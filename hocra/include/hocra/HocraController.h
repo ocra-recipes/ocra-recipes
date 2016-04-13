@@ -41,16 +41,13 @@ class HocraController: public Controller
 
 public:
 
-    HocraController(const std::string& ctrlName, 
-                    std::shared_ptr<Model> innerModel, 
-                    std::shared_ptr<OneLevelSolver> innerSolver, 
-                    bool useReducedProblem);
+    HocraController(const std::string& ctrlName, Model::Ptr innerModel, OneLevelSolver::Ptr innerSolver, bool useReducedProblem);
     virtual void doAddContactSet(const ContactSet& contacts);
-    virtual void doAddTask(std::shared_ptr< Task > task);
+    virtual void doAddTask(Task::Ptr task);
     virtual void doComputeOutput(VectorXd& tau);
-    virtual std::shared_ptr< Task > doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
-    virtual std::shared_ptr< Task > doCreateTask(const std::string& name, const Feature& feature) const;
-    virtual std::shared_ptr< Task > doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
+    Task::Ptr doCreateContactTask(const std::string& name, const ocra::PointContactFeature& feature, double mu, double margin) const;
+    Task::Ptr doCreateTask(const std::string& name, const ocra::Feature& feature) const;
+    Task::Ptr doCreateTask(const std::string& name, const ocra::Feature& feature, const ocra::Feature& featureDes) const;
     virtual ~HocraController(){};
     
 private:

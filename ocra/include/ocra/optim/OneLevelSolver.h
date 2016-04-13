@@ -76,7 +76,8 @@ public:
     virtual void setObjectiveLevel(ocra::QuadraticObjective& obj, int level);
 
     virtual std::string toString() const;
-
+    /** retuns a pointer to a new instance, very usefull in Hocra */
+    virtual OneLevelSolver::Ptr clone() const = 0;
 protected:
 
     virtual void doPrepare();
@@ -135,7 +136,9 @@ protected:
  */
 class OneLevelSolverWithQuadProg: public OneLevelSolver
 {
+    DEFINE_CLASS_POINTER_TYPEDEFS(OneLevelSolverWithQuadProg)
 public:
+    virtual OneLevelSolver::Ptr clone() const{ return OneLevelSolverWithQuadProg::Ptr();}
     OneLevelSolverWithQuadProg();
     virtual ~OneLevelSolverWithQuadProg();
 
@@ -164,7 +167,10 @@ protected:
  * \f}
  */
 class OneLevelSolverWithQPOASES: public OneLevelSolver
-{
+{    
+    DEFINE_CLASS_POINTER_TYPEDEFS(OneLevelSolverWithQPOASES)
+public: 
+    virtual OneLevelSolver::Ptr clone() const{ return OneLevelSolverWithQPOASES::Ptr();}
 public:
     OneLevelSolverWithQPOASES();
     virtual ~OneLevelSolverWithQPOASES(){};
@@ -223,6 +229,9 @@ protected:
  */
 class OneLevelSolverWithQLD: public OneLevelSolver
 {
+    DEFINE_CLASS_POINTER_TYPEDEFS(OneLevelSolverWithQLD)
+public: 
+    virtual OneLevelSolver::Ptr clone() const{ return OneLevelSolverWithQLD::Ptr();}
 public:
     OneLevelSolverWithQLD();
     virtual ~OneLevelSolverWithQLD();
