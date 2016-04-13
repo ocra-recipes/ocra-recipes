@@ -68,7 +68,7 @@ void HocraController::doAddTask(Task::Ptr task)
 {
     std::cout << "Adding task "<<task->getName()<<" at level "<<task->getHierarchyLevel() << std::endl;
     pimpl->cascadeQPSolver.addTask(task);
-    pimpl->cascadeQPSolver.addSolver(pimpl->levelSolver,task->getHierarchyLevel());
+    pimpl->cascadeQPSolver.addSolver(pimpl->levelSolver->clone(),task->getHierarchyLevel());
 }
 void HocraController::doComputeOutput(VectorXd& tau)
 {

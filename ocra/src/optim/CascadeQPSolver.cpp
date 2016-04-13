@@ -40,7 +40,7 @@ std::string CascadeQPSolver::toString() const
 void CascadeQPSolver::addSolver(OneLevelSolver::Ptr solver, int level)
 {
    std::cout << "Creating solver " << solver->getName() << std::endl;
-    this->solvermap[level] = solver->clone();
+    this->solvermap[level] = solver;
 }
 void CascadeQPSolver::addTask(Task::Ptr task)
 {

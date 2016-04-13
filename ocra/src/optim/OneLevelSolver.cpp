@@ -13,7 +13,7 @@ OneLevelSolver::OneLevelSolver()
     , ocra::NamedInstance("OneLevelSolver")
     , ni(0),ne(0)
 {
-
+    std::cout << "-- " << getName() << " --" << std::endl;
 }
 
 /** Destructor
@@ -252,7 +252,7 @@ OneLevelSolverWithQuadProg::OneLevelSolverWithQuadProg()
     : ocra::NamedInstance("One Level Solver with QuadProg++ subSolver")
     , OneLevelSolver()
 {
-
+    std::cout << "-- " << getName() << " --" << std::endl;
 }
 
 /** Destructor
@@ -377,7 +377,7 @@ OneLevelSolverWithQPOASES::OneLevelSolverWithQPOASES()
 , OneLevelSolver()
 , _nWSR_every_run(200) // NOTE: totally random value
 {
-    
+    std::cout << "-- " << getName() << " --" << std::endl;
     sqp_options.enableRegularisation = qpOASES::BT_TRUE;
     sqp_options.setToMPC();
     sqp_options.enableEqualities = qpOASES::BT_TRUE;
@@ -589,7 +589,7 @@ OneLevelSolverWithQLD::OneLevelSolverWithQLD()
     , MapXl(NULL,0)
     , MapXu(NULL,0)
 {
-
+    std::cout << "-- " << getName() << " --" << std::endl;
 }
 
 /** Destructor
