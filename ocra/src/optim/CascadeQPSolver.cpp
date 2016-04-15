@@ -64,9 +64,9 @@ CascadeQPSolver::CascadeQPSolver(const std::string& _ctrlName,
 {
     
     internalAddConstraint(own_obj->dynamicEquation.getConstraint());
-    internalRemoveObjective(own_obj->minDdqObjective);
-    internalRemoveObjective(own_obj->minTauObjective);
-    internalRemoveObjective(own_obj->minFcObjective);
+    internalAddObjective(own_obj->minDdqObjective);
+    internalAddObjective(own_obj->minTauObjective);
+    internalAddObjective(own_obj->minFcObjective);
     //std::cout << "CascadeQPSolver constructor" << std::endl;
 }
 
