@@ -323,7 +323,7 @@ namespace ocra
     ocra_assert(false && "not implemented yet");
   }
 
-  std::string FSQPSolver::toString() const
+  std::string FSQPSolver::toString() 
   {
     return "";
   }

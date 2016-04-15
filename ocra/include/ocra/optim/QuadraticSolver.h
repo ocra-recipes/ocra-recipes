@@ -113,7 +113,7 @@ namespace ocra
     /** Get debug info. Don't use these functions in critical loops.
       */
     //@{
-    std::string toString() const;
+    std::string toString();
     virtual MatrixXd getP() const = 0;
     virtual VectorXd getq() const = 0;
     virtual MatrixXd getA() const = 0;

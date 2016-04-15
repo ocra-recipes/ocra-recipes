@@ -39,7 +39,7 @@ namespace ocra
     _result.solution.resize(_problemVariable.getVariable().getSize());
 
     doPrepare();
-
+    
     if (_memory.capacity() > 0)
       _memory.push_back(toString());
 
@@ -61,7 +61,7 @@ namespace ocra
     return _result;
   }
 
-  void Solver::printStatus(std::ostream& os) const
+  void Solver::printStatus(std::ostream& os) 
   {
     //TODO
     os << "Solver status:" << std::endl;

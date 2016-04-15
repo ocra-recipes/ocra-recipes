@@ -15,9 +15,14 @@
 #include "ocra/optim/OneLevelSolver.h"
 #include "ocra/optim/Constraint.h"
 #include "ocra/optim/QuadraticFunction.h"
-#include "ocra/optim/CascadeQP.h"
 #include "ocra/optim/CascadeQPStructures.h"
 #include <ocra/control/Tasks/Task.h>
+#include <ocra/optim/SumOfLinearFunctions.h>
+#include <ocra/optim/FunctionHelpers.h>
+#include <ocra/optim/LinearFunction.h>
+#include <ocra/control/ControlConstraint.h>
+#include <ocra/control/Tasks/OneLevelTask.h>
+#include <ocra/control/FullDynamicEquationFunction.h>
 
 #include <memory>
 #include <map>
@@ -39,21 +44,38 @@ class CascadeQPSolver : public ocra::Solver
 public:
     DEFINE_CLASS_POINTER_TYPEDEFS(CascadeQPSolver)
 
-    CascadeQPSolver();
+    CascadeQPSolver(const std::string& _ctrlName,
+                                 Model::Ptr _innerModel,
+                                 OneLevelSolver::Ptr _levelSolver,
+                                 bool _useReducedProblem);
 
     void addTask(Task::Ptr task);
     void addSolver(OneLevelSolver::Ptr solver,int level);
-    virtual std::string toString() const;
+    OneLevelSolver::Ptr getSolver(int level);
+    virtual std::string toString();
+    const std::map<int,OneLevelSolver::Ptr >& getSolvers();
+    void addHierarchicalContraintsToEachLevels();
+    void updateHierarchicalContraints(int level);
+    int getNumberOfLevelsAbove(int current_level);
 protected:
     virtual void doSolve(void);
     virtual void doPrepare(void);
     virtual void doConclude();
     virtual void printValuesAtSolution();
     
+    struct StandardObjectivesAndConstraints;
+    std::shared_ptr<StandardObjectivesAndConstraints> own_obj;
+    std::vector<int> solverInitialized;
+    std::map<int,std::shared_ptr<StandardObjectivesAndConstraints> > std_obj;
+    OneLevelSolver::Ptr levelSolver;
+    bool useReducedProblem;
+    Model::Ptr innerModel;
     
+    std::map<int,std::vector<EqualZeroConstraintPtr<LinearFunction> > > levelConstraints;
     std::map<int,OneLevelSolver::Ptr > solvermap;
-    CascadeQP cqp;
     std::map<int,std::vector<Task::Ptr> > taskmap;
+    Eigen::MatrixXd _P;
+    Eigen::VectorXd _q;
 };
 }
 

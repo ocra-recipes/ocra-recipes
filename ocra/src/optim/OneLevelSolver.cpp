@@ -13,7 +13,6 @@ OneLevelSolver::OneLevelSolver()
     , ocra::NamedInstance("OneLevelSolver")
     , ni(0),ne(0)
 {
-    std::cout << "-- " << getName() << " --" << std::endl;
 }
 
 /** Destructor
@@ -217,7 +216,7 @@ void OneLevelSolver::setObjectiveLevel(ocra::QuadraticObjective& obj, int level)
  *
  * Actually does nothing.
  */
-std::string OneLevelSolver::toString() const
+std::string OneLevelSolver::toString()
 {
     std::stringstream ss;
     ss<<"-----------------------------------------------\n";
@@ -377,9 +376,9 @@ OneLevelSolverWithQPOASES::OneLevelSolverWithQPOASES()
 , OneLevelSolver()
 , _nWSR_every_run(200) // NOTE: totally random value
 {
-    std::cout << "-- " << getName() << " --" << std::endl;
-    sqp_options.enableRegularisation = qpOASES::BT_TRUE;
+    std::cout << "-- " << getName() << " -- "<<this<< std::endl;
     sqp_options.setToMPC();
+    sqp_options.enableRegularisation = qpOASES::BT_FALSE;
     sqp_options.enableEqualities = qpOASES::BT_TRUE;
 }
 

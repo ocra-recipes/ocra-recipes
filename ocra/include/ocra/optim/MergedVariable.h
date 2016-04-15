@@ -38,7 +38,7 @@ namespace ocra
     void remove(Variable* var);
     VariableMapping* find(Variable* var) const;
 
-    const CompositeVariable& getVariable() const;
+    CompositeVariable& getVariable();
     void setValue(const VectorXd& val) const;
     void recomputeVariable() const;
     bool isVariableUpToDate() const;
