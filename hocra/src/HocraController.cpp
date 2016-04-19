@@ -48,7 +48,7 @@ void HocraController::doComputeOutput(VectorXd& tau)
 Task::Ptr HocraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
 {
     std::cout << "HocraController::doCreateContactTask" << std::endl;
-    throw std::runtime_error("[HocraController::doCreateContactTask] not implemented");
+    return std::make_shared<ocra::OneLevelTask>(name, innerModel, feature);
 
 }
 Task::Ptr HocraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
