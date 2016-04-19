@@ -147,6 +147,7 @@ namespace ocra
   typedef Objective<Function>              GenericObjective;
   typedef Objective<LinearFunction>        LinearObjective;
   typedef Objective<QuadraticFunction>     QuadraticObjective;
+  typedef Objective<SquaredLinearFunction>     SquaredLinearObjective;
 }
 
 
