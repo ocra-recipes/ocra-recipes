@@ -34,6 +34,22 @@
   */
 namespace ocra
 {
+    
+/* 
+struct LevelConstraints
+{
+    std::vector<Function*> _exclusion_constraints;
+    std::map<Function*,EqualZeroConstraintPtr<LinearFunction> > _allowed_constraints;
+};
+    
+class HierarchyConstraints
+{
+    HierarchyConstraints(int level):_level(level){}
+    std::map<int,LevelConstraints> _level_constraints;
+private:
+    const int _level;
+};
+*/
 /** @class CascadeQPSolver
   *	@brief %CascadeQPSolver class.
   *
@@ -41,6 +57,11 @@ namespace ocra
   */
 class CascadeQPSolver : public ocra::Solver
 {
+    static bool has_element(std::vector<const ocra::Function*>& v,const ocra::Function* e)
+    {
+        return std::find(v.begin(),v.end(),e) != v.end();
+    }
+    
 public:
     DEFINE_CLASS_POINTER_TYPEDEFS(CascadeQPSolver)
 
@@ -54,7 +75,6 @@ public:
     OneLevelSolver::Ptr getSolver(int level);
     virtual std::string toString();
     const std::map<int,OneLevelSolver::Ptr >& getSolvers();
-    void addHierarchicalContraintsToEachLevels();
     void updateHierarchicalContraints(int level);
     int getNumberOfLevelsAbove(int current_level);
 protected:
@@ -62,7 +82,7 @@ protected:
     virtual void doPrepare(void);
     virtual void doConclude();
     virtual void printValuesAtSolution();
-    
+    void excludeObjective(int at_level, const ocra::GenericObjective& obj);
     struct StandardObjectivesAndConstraints;
     std::shared_ptr<StandardObjectivesAndConstraints> own_obj;
     std::vector<int> solverInitialized;
@@ -71,11 +91,13 @@ protected:
     bool useReducedProblem;
     Model::Ptr innerModel;
     
-    std::map<int,std::vector<EqualZeroConstraintPtr<LinearFunction> > > levelConstraints;
+private:
+    // NOTE : For each level, it contains a list of the n-1 * m constraints ( Each level can have m tasks, so we need to add m constraints from that level)
+    std::map<int, std::map<int,std::map<Function*,EqualZeroConstraintPtr<LinearFunction> > > > levelConstraints;
+    std::map<int, std::vector<const Function*> > _exclusion_constraints;
     std::map<int,OneLevelSolver::Ptr > solvermap;
     std::map<int,std::vector<Task::Ptr> > taskmap;
-    Eigen::MatrixXd _P;
-    Eigen::VectorXd _q;
+    int highest_hierarchy_level;
 };
 }
 
