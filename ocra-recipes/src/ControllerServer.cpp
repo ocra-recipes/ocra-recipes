@@ -2,7 +2,7 @@
 
 using namespace ocra_recipes;
 
-ControllerServer::ControllerServer(const CONTROLLER_TYPE ctrlType, const SOLVER_TYPE solver, const bool usingInterprocessCommunication)
+ControllerServer::ControllerServer(CONTROLLER_TYPE ctrlType, SOLVER_TYPE solver, bool usingInterprocessCommunication)
 : controllerType(ctrlType)
 , solverType(solver)
 , usingComs(usingInterprocessCommunication)
