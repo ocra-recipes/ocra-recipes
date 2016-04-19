@@ -30,6 +30,7 @@ ContactTaskManager::ContactTaskManager( ocra::Controller& _ctrl,
     task = ctrl.createContactTask(name, *feat, _mu, _margin);
     // Control the acceleration of the contact point
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
+    task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
 
     task->activateAsConstraint();
