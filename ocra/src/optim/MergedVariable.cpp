@@ -74,7 +74,7 @@ namespace ocra
 
   void MergedVariable::recomputeVariable() const
   {
-    _base.clear();
+    ///_base.clear();
 
     BOOST_FOREACH(const map_t::value_type& mapping, _varToMapping)
       _base.addByMerge(*mapping.first);
