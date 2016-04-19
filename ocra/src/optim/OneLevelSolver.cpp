@@ -38,11 +38,11 @@ void OneLevelSolver::printValuesAtSolution()
  *
  * This objective is saved in an internal vector of objectives.
  */
-void OneLevelSolver::addObjective(ocra::QuadraticObjective& obj)
-{
-    internalAddObjective(obj);
-    _objectives.push_back(&obj);
-}
+// void OneLevelSolver::addObjective(ObjectiveType& obj)
+// {
+//     internalAddObjective(obj);
+//     _objectives.push_back(&obj);
+// }
 
 /** Remove a quadratic objective to the controller.
  *
@@ -50,11 +50,11 @@ void OneLevelSolver::addObjective(ocra::QuadraticObjective& obj)
  *
  * This objective is removed from the internal vector of objectives.
  */
-void OneLevelSolver::removeObjective(ocra::QuadraticObjective& obj)
-{
-    internalRemoveObjective(obj);
-    _objectives.erase(std::find(_objectives.begin(), _objectives.end(), &obj));
-}
+// void OneLevelSolver::removeObjective(ObjectiveType& obj)
+// {
+//     internalRemoveObjective(obj);
+//     _objectives.erase(std::find(_objectives.begin(), _objectives.end(), &obj));
+// }
 
 /** Add a linear constraint to the controller.
  *
@@ -196,20 +196,6 @@ void OneLevelSolver::reduceConstraints(const Eigen::MatrixXd& A, const Eigen::Ve
 }
 
 
-/** Set the level of a particular objective registered  in the solver.
- *
- * \param obj The objective instance with a new level
- * \param level the new level
- *
- * Actually, as this solver considers that all tasks have the same level, this function does nothing.
- */
-void OneLevelSolver::setObjectiveLevel(ocra::QuadraticObjective& obj, int level)
-{
-    //std::cout<<"[OneLevelSolver::setObjectiveLevel] Warning: solver doesn't take into account level for task.\n";
-}
-
-
-
 //#include <sstream>
 
 /** I don't really know, I support to write the problem as a string.
@@ -271,16 +257,16 @@ void OneLevelSolverWithQuadProg::updateObjectiveEquations()
     _C.setZero(n(), n());
     _d.setZero(n());
 
-    for(int i=0; i<_objectives.size(); i++)
+    for(auto& obj : _objectives)
     {
 
-        ocra::QuadraticFunction& obj     = _objectives[i]->getFunction();
-        double weight                   = _objectives[i]->getWeight();
+        auto& f     = obj->getFunction();
+        double weight                   = obj->getWeight();
 
-        const std::vector<int>& objMap  = findMapping(obj.getVariable());
+        const std::vector<int>& objMap  = findMapping(f.getVariable());
 
-        ocra::utils::addCompressed2d(   obj.getPi(), _C, objMap, weight);
-        ocra::utils::addCompressedByRow(obj.getqi(), _d, objMap, weight);
+        ocra::utils::addCompressed2d(   f.getPi(), _C, objMap, weight);
+        ocra::utils::addCompressedByRow(f.getqi(), _d, objMap, weight);
 
     }
 
@@ -378,7 +364,7 @@ OneLevelSolverWithQPOASES::OneLevelSolverWithQPOASES()
 {
     std::cout << "-- " << getName() << " -- "<<this<< std::endl;
     sqp_options.setToMPC();
-    sqp_options.enableRegularisation = qpOASES::BT_FALSE;
+    sqp_options.enableRegularisation = qpOASES::BT_TRUE;
     sqp_options.enableEqualities = qpOASES::BT_TRUE;
 }
 
@@ -542,15 +528,15 @@ void OneLevelSolverWithQPOASES::doSolve()
     
     if(!sqp_prob || sqp_prob->getNV() != n() || sqp_prob->getNC() != (ni+ne))
     {
-        std::cout << "Creating NEW Solver with params : n:"<<n()<<" ni:"<<ni<<" ne:"<<ne<<std::endl;
-        sqp_prob.reset(new qpOASES::SQProblem(n(),ni+ne));
+        std::cout << "Creating "<<getName()<<" Solver with params : n:"<<n()<<" ni:"<<ni<<" ne:"<<ne<<std::endl;
+        sqp_prob.reset(new qpOASES::SQProblem(n(),ni+ne,qpOASES::HST_POSDEF));
         sqp_prob->setOptions( sqp_options );
         sqp_prob->setPrintLevel(qpOASES::PL_NONE);
         first_time = true;
     }
     
     
-    sqp_prob->printProperties();
+    //sqp_prob->printProperties();
     qpOASES::returnValue ret;
     nWSR = _nWSR_every_run; 
     if(first_time){
@@ -564,7 +550,7 @@ void OneLevelSolverWithQPOASES::doSolve()
         sqp_prob->getPrimalSolution(_result.solution.data());
 //     else
 //         _result.solution = Eigen::VectorXd::Zero(n());
-    _result.info = ocra::RETURN_SUCCESS;//toOcraRetValue(ret);
+    _result.info = toOcraRetValue(ret);
 }
 
 //#endif
