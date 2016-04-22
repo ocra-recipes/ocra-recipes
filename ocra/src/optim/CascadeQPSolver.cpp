@@ -232,8 +232,12 @@ void CascadeQPSolver::excludeObjective(int at_level, const ocra::GenericObjectiv
 void CascadeQPSolver::addTask(Task::Ptr task)
 {
     const int level = task->getHierarchyLevel();
-    this->taskmap[level].push_back(task);
-        
+    if(task->isActiveAsObjective())
+        this->taskmap[level].push_back(task);
+    else if(task->isActiveAsConstraint())
+        for(auto& tm : taskmap)
+            this->taskmap[level].push_back(task);
+    
     if(std::find(solverInitialized.begin(),solverInitialized.end(),level) == solverInitialized.end())
     {
         //std::cout  << "Initializing constraints and regulation terms at level "<<level << std::endl;
