@@ -172,7 +172,7 @@ namespace ocra
     _invalidatedMP = false;
   }
 
-  std::string QuadraticSolver::toString() const
+  std::string QuadraticSolver::toString()
   {
     std::stringstream ss;
 

@@ -4,62 +4,19 @@
 namespace hocra {
 using namespace ocra;
 
-struct HocraController::Pimpl
+
+
+HocraController::HocraController(const std::string& _ctrlName,
+                                 Model::Ptr _innerModel,
+                                 OneLevelSolver::Ptr _levelSolver,
+                                 bool _useReducedProblem):
+    Controller(_ctrlName, *_innerModel),
+    innerModel(_innerModel),
+    cascadeQPSolver(new CascadeQPSolver(_ctrlName,_innerModel,_levelSolver,_useReducedProblem))
 {
-    Model::Ptr          innerModel;
-    OneLevelSolver::Ptr levelSolver;
-    bool                            reducedProblem;
-    CascadeQPSolver cascadeQPSolver;
-
-    // EQUALITY CONSTRAINT OF THE DYNAMIC EQUATION
-    ocra::EqualZeroConstraintPtr< ocra::FullDynamicEquationFunction >      dynamicEquation;
-
-    // MINIMIZATION TASK FOR WHOLE VARIABLE MINIMIZATION
-    ocra::QuadraticFunction*     minDdqFunction;
-    ocra::QuadraticFunction*     minTauFunction;
-//     FcQuadraticFunction*        minFcFunction;
-
-    ObjectivePtr<ocra::QuadraticFunction>     minDdqObjective;
-    ObjectivePtr<ocra::QuadraticFunction>     minTauObjective;
-    ObjectivePtr<ocra::QuadraticFunction>     minFcObjective;
-
-
-    Pimpl(Model::Ptr m, OneLevelSolver::Ptr s, bool useReducedProblem)
-
-        : innerModel(m)
-        , levelSolver(s)
-        , reducedProblem(useReducedProblem)
-        , dynamicEquation( new ocra::FullDynamicEquationFunction(*m) )
-
-        , minDdqFunction(  new ocra::QuadraticFunction(m->getAccelerationVariable(), Eigen::MatrixXd::Identity(m->nbDofs(), m->nbDofs()), Eigen::VectorXd::Zero(m->nbDofs()), 0) )
-
-        , minTauFunction(  new ocra::QuadraticFunction(m->getJointTorqueVariable(), Eigen::MatrixXd::Identity(m->getJointTorqueVariable().getSize(), m->getJointTorqueVariable().getSize()), Eigen::VectorXd::Zero(m->getJointTorqueVariable().getSize()), 0) )
-
-//         , minFcFunction(   new FcQuadraticFunction(m->getModelContacts().getContactForcesVariable()) )
-
-    {
-        minDdqObjective.set(minDdqFunction);
-        minTauObjective.set(minTauFunction);
-//         minFcObjective.set(minFcFunction);
-        std::cout << "Pimpl Constructor" << std::endl;
-
-    }
-
-    ~Pimpl()
-    {
-    }
-
-};
-
-HocraController::HocraController(const std::string& ctrlName,
-                                 Model::Ptr innerModel,
-                                 OneLevelSolver::Ptr levelSolver,
-                                 bool useReducedProblem):
-Controller(ctrlName, *innerModel),
-pimpl( new Pimpl(innerModel, levelSolver, useReducedProblem) )
-{
-    std::cout <<"Constructing Hocra Controller"<<std::endl; 
+    std::cout <<"Constructing Hocra Controller"<<std::endl;
 }
+
 void HocraController::doAddContactSet(const ContactSet& contacts)
 {
     std::cout << "HocraController::doAddContactSet" << std::endl;
@@ -67,30 +24,43 @@ void HocraController::doAddContactSet(const ContactSet& contacts)
 void HocraController::doAddTask(Task::Ptr task)
 {
     std::cout << "Adding task "<<task->getName()<<" at level "<<task->getHierarchyLevel() << std::endl;
-    pimpl->cascadeQPSolver.addTask(task);
-    pimpl->cascadeQPSolver.addSolver(pimpl->levelSolver->clone(),task->getHierarchyLevel());
+    cascadeQPSolver->addTask(task);
 }
+
 void HocraController::doComputeOutput(VectorXd& tau)
 {
-    std::cout << "HocraController::doComputeOutput" << std::endl;
-    throw std::runtime_error("[HocraController::doComputeOutput] not implemented");
+    auto tasks = getActiveTasks();
+
+    for(auto task : tasks)
+    {
+        task->update();
+    }
+    try {
+        if(!cascadeQPSolver->solve().info)
+        {
+             tau = innerModel->getJointTorqueVariable().getValue();
+        }
+    }catch(const std::exception & e) {
+        std::cerr << e.what() ;
+        throw std::runtime_error("[HocraController::doComputeOutput] Error while computing output");
+    }
 }
 Task::Ptr HocraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
 {
     std::cout << "HocraController::doCreateContactTask" << std::endl;
-    throw std::runtime_error("[HocraController::doCreateContactTask] not implemented");
+    return std::make_shared<ocra::OneLevelTask>(name, innerModel, feature);
 
 }
 Task::Ptr HocraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
 {
     std::cout << "HocraController::doCreateTask des" << std::endl;
-    return std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature, featureDes);
+    return std::make_shared<ocra::OneLevelTask>(name, innerModel, feature, featureDes);
 
 }
 Task::Ptr HocraController::doCreateTask(const std::string& name, const Feature& feature) const
 {
     std::cout << "HocraController::doCreateTask" << std::endl;
-    return  std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature);
+    return  std::make_shared<ocra::OneLevelTask>(name, innerModel, feature);
 }
 
 }

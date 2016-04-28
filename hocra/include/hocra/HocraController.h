@@ -8,13 +8,10 @@
 #include <iostream>
 #include <memory>
 
-#include <ocra/control/Controller.h>
 #include <ocra/optim/CascadeQPSolver.h>
-#include <ocra/control/ControlConstraint.h>
-#include <ocra/optim/QuadraticFunction.h>
-#include <ocra/control/Tasks/Task.h>
+#include <ocra/control/Model.h>
+#include <ocra/control/Controller.h>
 #include <ocra/control/Tasks/OneLevelTask.h>
-#include <ocra/control/FullDynamicEquationFunction.h>
 
 namespace hocra
 
@@ -51,11 +48,8 @@ public:
     virtual ~HocraController(){};
     
 private:
-    struct Pimpl;
-
-    std::shared_ptr<Pimpl> pimpl;
-
-
+    CascadeQPSolver::Ptr cascadeQPSolver;
+    Model::Ptr innerModel;
 };
 
 

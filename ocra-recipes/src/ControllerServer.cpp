@@ -2,7 +2,7 @@
 
 using namespace ocra_recipes;
 
-ControllerServer::ControllerServer(const CONTROLLER_TYPE ctrlType, const SOLVER_TYPE solver, const bool usingInterprocessCommunication)
+ControllerServer::ControllerServer(CONTROLLER_TYPE ctrlType, SOLVER_TYPE solver, bool usingInterprocessCommunication)
 : controllerType(ctrlType)
 , solverType(solver)
 , usingComs(usingInterprocessCommunication)
@@ -28,16 +28,19 @@ bool ControllerServer::initialize()
         {
             case QUADPROG:
             {
+                std::cout << "Using QuadProg++ "<<std::endl;
                 internalSolver = std::make_shared<ocra::OneLevelSolverWithQuadProg>();
             }break;
 
             case QPOASES:
             {
+                std::cout << "Using qpOASES"<<std::endl;
                 internalSolver = std::make_shared<ocra::OneLevelSolverWithQPOASES>();
             }break;
 
             default:
             {
+                std::cout << "Using qpOASES [Default]"<<std::endl;
                 internalSolver = std::make_shared<ocra::OneLevelSolverWithQPOASES>();
             }break;
         }
@@ -47,18 +50,21 @@ bool ControllerServer::initialize()
         {
             case WOCRA_CONTROLLER:
             {
+                std::cout << "Constructing a WOCRA Controller "<<std::endl;
                 bool useReducedProblem = false;
                 controller = std::make_shared<wocra::WocraController>("WocraController", model, std::static_pointer_cast<ocra::OneLevelSolver>(internalSolver), useReducedProblem);
             }break;
 
             case HOCRA_CONTROLLER:
             {
+                std::cout << "Constructing a HOCRA Controller "<<std::endl;
                 bool useReducedProblem = false;
                 controller = std::make_shared<hocra::HocraController>("HocraController", model, std::static_pointer_cast<ocra::OneLevelSolver>(internalSolver), useReducedProblem);
             }break;
             
             default:
             {
+                std::cout << "Constructing a WOCRA Controller [Default]"<<std::endl;
                 bool useReducedProblem = false;
                 controller = std::make_shared<wocra::WocraController>("WocraController", model, std::static_pointer_cast<ocra::OneLevelSolver>(internalSolver), useReducedProblem);
             }break;

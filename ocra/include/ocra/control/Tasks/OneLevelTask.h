@@ -51,6 +51,45 @@ namespace ocra
  *       Furthermore, writting this class helps me to better understand the xde framework.
  */
 
+/** \brief QuadraticFunction dedicated to the minimization of the force of contact (fc) variable.
+
+ *
+
+ */
+class FcQuadraticFunction : public ocra::QuadraticFunction
+{
+public:
+
+    FcQuadraticFunction(ocra::Variable& x)
+    : NamedInstance("Variable Fc Quadratic Function")
+    , ocra::AbilitySet(ocra::PARTIAL_X, ocra::PARTIAL_XX)
+    , CoupledInputOutputSize(false)
+    , QuadraticFunction(x)
+    {
+
+    }
+
+    virtual ~FcQuadraticFunction() {};
+
+    void doUpdateInputSizeBegin() {};
+
+    void updateHessian() const
+    {
+        IFunction<ocra::PARTIAL_XX>::_val[0]->setIdentity(x.getSize(), x.getSize());
+    }
+
+    void updateq() const
+    {
+        _q[0]->setZero(x.getSize());
+    }
+
+    void updater() const
+    {
+        _r[0] = 0;
+    }
+
+};
+
 class OneLevelTask: public Task
 
 {

@@ -1,7 +1,5 @@
 #include "ocra/optim/SquaredLinearFunction.h"
 
-//using namespace xde;      //TODO: we comment that, we should not!!!!
-
 namespace ocra
 {
   SquaredLinearFunction::SquaredLinearFunction(LinearFunction* f)

@@ -48,6 +48,7 @@ ContactSetTaskManager::ContactSetTaskManager(   ocra::Controller& _ctrl,
         taskVector[i] = ctrl.createContactTask(names[i], *feats[i], _mu, _margin);
         // Control the acceleration of the contact point
         taskVector[i]->setTaskType(ocra::Task::ACCELERATIONTASK);
+        taskVector[i]->setHierarchyLevel(_hierarchyLevel);
         ctrl.addTask(taskVector[i]);
 
         taskVector[i]->activateAsConstraint();

@@ -49,7 +49,7 @@ protected:
     virtual void getRobotState(Eigen::VectorXd& q, Eigen::VectorXd& qd, Eigen::Displacementd& H_root, Eigen::Twistd& T_root) = 0;
 
 public:
-    ControllerServer(const CONTROLLER_TYPE ctrlType=WOCRA_CONTROLLER, const SOLVER_TYPE solver=QUADPROG, const bool usingInterprocessCommunication=true);
+    ControllerServer(CONTROLLER_TYPE ctrlType/*=WOCRA_CONTROLLER*/, SOLVER_TYPE solver/*=QUADPROG*/, bool usingInterprocessCommunication=true);
     virtual ~ControllerServer();
 
     bool initialize();

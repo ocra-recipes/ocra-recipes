@@ -93,7 +93,7 @@ namespace ocra
       std::cout << _objectives[i]->getValue() << std::endl;
   }
 
-  std::string NewtonSolver::toString() const
+  std::string NewtonSolver::toString()
   {
     return "non implemented yet";
   }

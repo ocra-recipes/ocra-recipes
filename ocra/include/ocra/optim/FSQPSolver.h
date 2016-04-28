@@ -171,7 +171,7 @@ namespace ocra
     void printValuesAtSolution();
 
     /** Returns the state of the solver (e.g. matrices) as a string. */
-    std::string toString() const;
+    std::string toString();
 
     // ------------------------ public methods ----------------------------------
   public:

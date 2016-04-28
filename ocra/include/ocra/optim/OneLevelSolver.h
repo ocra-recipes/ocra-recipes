@@ -37,7 +37,7 @@ namespace ocra
  */
 
 //typedef ocra::Objective<ocra::SquaredLinearFunction>  SquaredLinearObjective;
-//typedef ocra::Objective<ocra::QuadraticFunction>  QuadraticObjective;
+//typedef ocra::Objective<ocra::QuadraticFunction>  SquaredLinearObjective;
 
 typedef Eigen::Map<Eigen::MatrixXd> MatrixMap;
 typedef Eigen::Map<Eigen::VectorXd> VectorMap;
@@ -56,6 +56,7 @@ typedef Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> Matr
 class OneLevelSolver: public ocra::Solver
 {
     DEFINE_CLASS_POINTER_TYPEDEFS(OneLevelSolver)
+    public: using ObjectiveType = ocra::QuadraticObjective;
 public:
     OneLevelSolver();
     virtual ~OneLevelSolver();
@@ -66,18 +67,30 @@ public:
 //    virtual void removeObjective(SquaredLinearObjective& obj);
 //    virtual void setObjectiveLevel(SquaredLinearObjective& obj, int level)  = 0;
 
-    virtual void addObjective(ocra::QuadraticObjective& obj);
-    virtual void removeObjective(ocra::QuadraticObjective& obj);
+    void addObjective(ObjectiveType& obj)
+    {
+        internalAddObjective(obj);
+        _objectives.push_back(&obj);
+    }
+    void removeObjective(ObjectiveType& obj)
+    {
+        internalRemoveObjective(obj);
+        _objectives.erase(std::find(_objectives.begin(), _objectives.end(), &obj));
+    }
 
     void addConstraint(ocra::LinearConstraint& constraint);
     void removeConstraint(ocra::LinearConstraint& constraint);
 
     void writePerformanceInStream(std::ostream& myOstream, bool addCommaAtEnd);
-    virtual void setObjectiveLevel(ocra::QuadraticObjective& obj, int level);
+    virtual void setObjectiveLevel(ocra::GenericObjective& obj, int level){};
 
-    virtual std::string toString() const;
+    virtual std::string toString();
     /** retuns a pointer to a new instance, very usefull in Hocra */
     virtual OneLevelSolver::Ptr clone() const = 0;
+    const std::vector<ObjectiveType*>& getObjectives(){return _objectives;}
+    const Eigen::MatrixXd& getQuadraticMatrix(){return _C;}
+    const Eigen::VectorXd& getQuadraticVector(){return _d;}
+    
 protected:
 
     virtual void doPrepare();
@@ -93,8 +106,8 @@ protected:
     void reduceConstraints(const Eigen::MatrixXd& A, const Eigen::VectorXd& b, Eigen::MatrixXd& Ar, Eigen::VectorXd& br, double tolerance=1e-6);
 
 
-    //std::vector<SquaredLinearObjective*>    _objectives;
-    std::vector<ocra::QuadraticObjective*>    _objectives;
+    std::vector<ObjectiveType*>    _objectives;
+//     std::vector<ocra::QuadraticObjective*>    _objectives;
 
     std::vector<ocra::LinearConstraint*> _equalityConstraints;         //< set of constraints
     Eigen::MatrixXd _A;
@@ -138,7 +151,7 @@ class OneLevelSolverWithQuadProg: public OneLevelSolver
 {
     DEFINE_CLASS_POINTER_TYPEDEFS(OneLevelSolverWithQuadProg)
 public:
-    virtual OneLevelSolver::Ptr clone() const{ return OneLevelSolverWithQuadProg::Ptr();}
+    virtual OneLevelSolver::Ptr clone() const{ return std::make_shared<OneLevelSolverWithQuadProg>();}
     OneLevelSolverWithQuadProg();
     virtual ~OneLevelSolverWithQuadProg();
 
@@ -170,7 +183,7 @@ class OneLevelSolverWithQPOASES: public OneLevelSolver
 {    
     DEFINE_CLASS_POINTER_TYPEDEFS(OneLevelSolverWithQPOASES)
 public: 
-    virtual OneLevelSolver::Ptr clone() const{ return OneLevelSolverWithQPOASES::Ptr();}
+    virtual OneLevelSolver::Ptr clone() const{ return std::make_shared<OneLevelSolverWithQPOASES>();}
 public:
     OneLevelSolverWithQPOASES();
     virtual ~OneLevelSolverWithQPOASES(){};
@@ -231,7 +244,7 @@ class OneLevelSolverWithQLD: public OneLevelSolver
 {
     DEFINE_CLASS_POINTER_TYPEDEFS(OneLevelSolverWithQLD)
 public: 
-    virtual OneLevelSolver::Ptr clone() const{ return OneLevelSolverWithQLD::Ptr();}
+    virtual OneLevelSolver::Ptr clone() const{ return std::make_shared<OneLevelSolverWithQLD>();}
 public:
     OneLevelSolverWithQLD();
     virtual ~OneLevelSolverWithQLD();

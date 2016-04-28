@@ -69,7 +69,7 @@ namespace ocra
     , virtual public NamedInstance
   {
       DEFINE_CLASS_POINTER_TYPEDEFS(Solver)
-  protected: // restricted access to automap
+  public: // restricted access to automap
     const std::vector<int>& findMapping(Variable& var);
 
     // ------------------------ constructors ------------------------------------
@@ -99,13 +99,13 @@ namespace ocra
     /** Get the last result computed with solve()*/
     const OptimizationResult& getLastResult() const;
 
-    void  printStatus(std::ostream& os) const;
+    void  printStatus(std::ostream& os);
 
     virtual const std::string& getMoreInfo() const;
 
     virtual void printValuesAtSolution() = 0;
     /** Returns the state of the solver (e.g. matrices) as a string. */
-    virtual std::string toString() const = 0;
+    virtual std::string toString() = 0;
 
     /** Sets the number of solver states that will be kept in memory.
       *
@@ -138,15 +138,14 @@ namespace ocra
       */
     void dump(const std::string& file = "") const;
 
-
     // ------------------------ protected methods -------------------------------
-  protected:
-    int n() const {return _problemVariable.getVariable().getSize();}
+  
+    int n(){return _problemVariable.getVariable().getSize();}
 
-    const Variable& getProblemVariable() const {return _problemVariable.getVariable();}
+    Variable& getProblemVariable(){return _problemVariable.getVariable();}
 
     void setVariableValue(const VectorXd& value) {_problemVariable.setValue(value);}
-
+protected:
     /** \internal Three sub-methods called by solve()
       * They are called one after the other so that writing a command at the end of one has the same effect as writing
       * it at the beginning of the next. However, programmers should respect the following convention when deriving

@@ -54,7 +54,7 @@ namespace ocra
     return it != _varToMapping.end() ? it->second.second : 0x0;
   }
 
-  const CompositeVariable& MergedVariable::getVariable() const
+  CompositeVariable& MergedVariable::getVariable()
   {
     if (!_isVariableUpToDate)
       recomputeVariable();
@@ -64,6 +64,8 @@ namespace ocra
 
   void MergedVariable::setValue(const VectorXd& val) const
   {
+      if(val.rows() == 0)
+          return;
     if (!_isVariableUpToDate)
       recomputeVariable();
 
@@ -72,7 +74,7 @@ namespace ocra
 
   void MergedVariable::recomputeVariable() const
   {
-    _base.clear();
+    ///_base.clear();
 
     BOOST_FOREACH(const map_t::value_type& mapping, _varToMapping)
       _base.addByMerge(*mapping.first);
