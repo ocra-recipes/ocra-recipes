@@ -15,7 +15,7 @@ Give a description...
 - hocra (coming soon)
 - solvers
   - quadprog
-  - qpoases (coming soon)
+  - qpoases
 
 ### ocra
 
@@ -41,7 +41,7 @@ This library is a QP (Quadratic Program) based on the QuadProg++ project (http:/
 
 #### qpoases
 
-This is on our wish list.
+Exploits the open-source C++ library qpOASES, which is an implementation of the recently proposed online active set strategy, which was inspired by important observations from the field of parametric quadratic programming (QP). It has several theoretical features that make it particularly suited for model predictive control (MPC) applications but also as a QP solver. [(ref)](https://projects.coin-or.org/qpOASES)
 
 
 ## Dependencies
@@ -112,6 +112,7 @@ export PATH=${PATH}:${OCRA_INSTALL}/bin
 - [x] Ubuntu 12.04
 - [x] Ubuntu 14.04
 - [x] Debian 7
+- [ ] OS X
 
 
 In theory any linux distro should work if the dependencies are met and don't conflict with any system libs/headers. If you manage to build, install and use OCRA in any other platform please let us know and we can add it to the list with any helpful notes you provide along with it.
@@ -121,6 +122,18 @@ In theory any linux distro should work if the dependencies are met and don't con
 Well now that you have `ocra-core` up and running, you probably want to try it out n'est pas? Well mosey on over to the [ocra-wbi-plugins](https://github.com/ocra-recipes/ocra-wbi-plugins) repo and follow the instructions.
 
 Want to contribute? Maybe build a plugin or two? Read the [Contributing  section](#Contributing) for details on how to interface with OCRA and use it for world domination.
+
+### Notes about OS X
+:warning: As a recent feature we added rpath support, therefore, by default the flag `OCRA_ICUB_ENABLE_RPATH` is `OFF`. Change it by configuring `ocra-wbi-plugins` as: `cmake -DOCRA_ICUB_ENABLE_PATH=ON ./`. Once we're sure this ''always'' works it will be `ON` by default. Therefore, if you encounter error messages such as: 
+
+```bash
+dyld library not loaded @rpath/libYarpMath.dylib
+```
+
+This means your project has some issues setting the `RPATH` variable for this library. 
+
+:warning: When using XCode to debug your code, make sure you change your LLVM C++ Language settings manually to C++11, by heading to the `Build Settings` of your project, searching for `C++ Language Dialect` and changing it to `C++11 [-std=c++11]`
+ 
 
 ### Contributing
 
