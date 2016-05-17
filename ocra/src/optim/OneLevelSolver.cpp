@@ -344,9 +344,19 @@ void OneLevelSolverWithQuadProg::updateConstraintEquations()
 void OneLevelSolverWithQuadProg::doSolve()
 {
     // solveRecorder.initializeTime();
-    
+    std::cout << "+++++++++++++++++++++++++++++++++++++" << std::endl;
+    std::cout << "\tSolver Variables" << std::endl;
+    std::cout << "+++++++++++++++++++++++++++++++++++++" << std::endl;
+    std::cout << "======\n_C:\n" << _C << "\n\n";
+    std::cout << "======\n-_d:\n" << -_d << "\n\n";
+    std::cout << "======\n_Atotal:\n" << _Atotal << "\n\n";
+    std::cout << "======\n_btotal:\n" << _btotal << "\n\n";
+    std::cout << "======\n_G:\n" << _G << "\n\n";
+    std::cout << "======\n_G:\n" << _G << "\n\n";
+    std::cout << "======\n_h:\n" << _h << "\n\n";
+
     QuadProgPP::solve_quadprog(_C, -_d, _Atotal, _btotal, _G, _h, Xsolution);
-    
+
     _result.solution = Xsolution;
     _result.info = ocra::RETURN_SUCCESS; //TODO: should be dfined through the result of the QuadProgPP::solve_quadprog
 
@@ -378,7 +388,7 @@ void OneLevelSolverWithQPOASES::updateConstraintEquations()
     _A.setZero(ne, n());
     _lbA.setZero(ne);
     _ubA.setZero(ne);
-    
+
     for (int i=0,idx=0; i<_equalityConstraints.size(); ++i)
     {
         ocra::LinearConstraint* cstr = _equalityConstraints[i];
@@ -395,9 +405,9 @@ void OneLevelSolverWithQPOASES::updateConstraintEquations()
         }
 
     }
-    
+
     _lbA = _ubA;
-    
+
     // UPDATE INEQUALITY CONSTRAINTS
     this->ni = 0;
     for (int i=0; i<_inequalityConstraints.size(); ++i)
@@ -406,7 +416,7 @@ void OneLevelSolverWithQPOASES::updateConstraintEquations()
     _G.setZero(ni, n());
     _lbG.setZero(ni);
     _ubG.setZero(ni);
-    
+
     for (int i=0,idx=0; i<_inequalityConstraints.size(); ++i)
     {
         ocra::LinearConstraint* cstr = _inequalityConstraints[i];
@@ -415,10 +425,10 @@ void OneLevelSolverWithQPOASES::updateConstraintEquations()
         if (dim > 0)
         {
             Eigen::Block<Eigen::MatrixXd > _G_block = _G.block(idx, 0, dim, n());
-            
+
             Eigen::VectorBlock<Eigen::VectorXd> _lbG_segment = _lbG.segment(idx, dim);
             Eigen::VectorBlock<Eigen::VectorXd> _ubG_segment = _ubG.segment(idx, dim);
-            
+
                 // So we have _lbG_segment < _G_block.x < _ubG_segment
             ocra::utils::convert(*cstr,findMapping(cstr->getVariable()),ocra::CSTR_DOUBLE_BOUNDS,_G_block,_ubG_segment,_lbG_segment,1e6);
 
@@ -426,18 +436,18 @@ void OneLevelSolverWithQPOASES::updateConstraintEquations()
         }
 
     }
-    
-    // Verification 
+
+    // Verification
     for(int i=0;i<_lbG.size();i++)
     {
         if(_lbG[i] > _ubG[i])
         {
-     
+
             std::cout << "[ERROR] Lower bound "<<i<<"("<<_lbG[i]<<") higher than upper ("<<_ubG[i]<<")"<<std::endl;
             double tmp = _lbG[i];
             _lbG[i] = _ubG[i];
             _ubG[i] = tmp;
-            
+
         }
     }
     // Combining Matrices
@@ -447,7 +457,7 @@ void OneLevelSolverWithQPOASES::updateConstraintEquations()
         _lbAandG.resize(_lbA.size() + _lbG.size());
         _AandG.resize(_A.rows()+_G.rows(),n());
     }
-    
+
 
     _AandG.topRows(_A.rows())           = _A;
     _AandG.bottomRows(_G.rows())        = _G;
@@ -464,7 +474,7 @@ void OneLevelSolverWithQPOASES::updateConstraintEquations()
         _xu =   1e6 * Eigen::VectorXd::Ones(n()); // X upper bound
 
     }
-    
+
     A = _AandG.data();
     ubA = _ubAandG.data();
     lbA = _lbAandG.data();
@@ -485,14 +495,14 @@ void OneLevelSolverWithQPOASES::updateObjectiveEquations()
 {
     _C.setZero(n(), n());
     _d.setZero(n());
-    
+
     for(int i=0; i<_objectives.size(); i++)
     {
 
         ocra::QuadraticFunction& obj     = _objectives[i]->getFunction();
         double weight                   = _objectives[i]->getWeight();
         const std::vector<int>& objMap  = findMapping(obj.getVariable());
-        
+
         ocra::utils::addCompressed2d(   obj.getPi(), _C, objMap, weight);
         ocra::utils::addCompressedByRow(obj.getqi(), _d, objMap, weight);
 
@@ -501,10 +511,10 @@ void OneLevelSolverWithQPOASES::updateObjectiveEquations()
 
     if(H.size() != _C.rows()*_C.cols())
         H.resize(_C.rows()*_C.cols());
-    
+
     if(_RegTerm.cols() != _C.cols() || _RegTerm.rows() != _C.rows())
         _RegTerm = 1.e-8*Eigen::MatrixXd::Identity(_C.rows(),_C.cols());
-    
+
     Eigen::Map<MatrixXdRm>(H.data(),_C.rows(),_C.cols()) = _C /*+ _RegTerm*/;
     _d *= -1.0; // TODO: Find out why everybody's doing this :/
     g = _d.data();
@@ -525,7 +535,7 @@ eReturnInfo OneLevelSolverWithQPOASES::toOcraRetValue(const qpOASES::returnValue
 void OneLevelSolverWithQPOASES::doSolve()
 {
     static bool first_time;
-    
+
     if(!sqp_prob || sqp_prob->getNV() != n() || sqp_prob->getNC() != (ni+ne))
     {
         std::cout << "Creating "<<getName()<<" Solver with params : n:"<<n()<<" ni:"<<ni<<" ne:"<<ne<<std::endl;
@@ -534,11 +544,11 @@ void OneLevelSolverWithQPOASES::doSolve()
         sqp_prob->setPrintLevel(qpOASES::PL_NONE);
         first_time = true;
     }
-    
-    
+
+
     //sqp_prob->printProperties();
     qpOASES::returnValue ret;
-    nWSR = _nWSR_every_run; 
+    nWSR = _nWSR_every_run;
     if(first_time){
         ret = sqp_prob->init( H.data(),g,A,lb,ub,lbA,ubA, nWSR,NULL);
         if(ret == qpOASES::SUCCESSFUL_RETURN)
