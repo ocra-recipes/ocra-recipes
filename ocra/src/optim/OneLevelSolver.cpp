@@ -352,7 +352,6 @@ void OneLevelSolverWithQuadProg::doSolve()
     std::cout << "======\n_Atotal:\n" << _Atotal << "\n\n";
     std::cout << "======\n_btotal:\n" << _btotal << "\n\n";
     std::cout << "======\n_G:\n" << _G << "\n\n";
-    std::cout << "======\n_G:\n" << _G << "\n\n";
     std::cout << "======\n_h:\n" << _h << "\n\n";
 
     QuadProgPP::solve_quadprog(_C, -_d, _Atotal, _btotal, _G, _h, Xsolution);
