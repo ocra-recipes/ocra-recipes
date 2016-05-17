@@ -145,6 +145,7 @@ HTML and LaTeX files will be generated in the `build/docs/` directory. Open the 
 
  - [Ryan Lober](https://github.com/rlober)
  - [Antoine Hoarau](https://github.com/ahoarau)
+ - [Jorhabib Eljaik](https://github.com/jeljaik)
  - [Silvio Traversaro](https://github.com/traversaro)
 
 
