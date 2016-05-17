@@ -263,7 +263,9 @@ void OneLevelSolverWithQuadProg::updateObjectiveEquations()
         auto& f     = obj->getFunction();
         double weight                   = obj->getWeight();
 
-        const std::vector<int>& objMap  = findMapping(f.getVariable());
+        // const std::vector<int>& objMap  = findMapping(f.getVariable());
+        std::cout << "f.getVariable().getName() = " << f.getVariable().getName() << std::endl;
+        auto objMap  = findMapping(f.getVariable());
 
         ocra::utils::addCompressed2d(   f.getPi(), _C, objMap, weight);
         ocra::utils::addCompressedByRow(f.getqi(), _d, objMap, weight);
@@ -344,15 +346,15 @@ void OneLevelSolverWithQuadProg::updateConstraintEquations()
 void OneLevelSolverWithQuadProg::doSolve()
 {
     // solveRecorder.initializeTime();
-    std::cout << "+++++++++++++++++++++++++++++++++++++" << std::endl;
-    std::cout << "\tSolver Variables" << std::endl;
-    std::cout << "+++++++++++++++++++++++++++++++++++++" << std::endl;
-    std::cout << "======\n_C:\n" << _C << "\n\n";
-    std::cout << "======\n-_d:\n" << -_d << "\n\n";
-    std::cout << "======\n_Atotal:\n" << _Atotal << "\n\n";
-    std::cout << "======\n_btotal:\n" << _btotal << "\n\n";
-    std::cout << "======\n_G:\n" << _G << "\n\n";
-    std::cout << "======\n_h:\n" << _h << "\n\n";
+    // std::cout << "+++++++++++++++++++++++++++++++++++++" << std::endl;
+    // std::cout << "\tSolver Variables" << std::endl;
+    // std::cout << "+++++++++++++++++++++++++++++++++++++" << std::endl;
+    // std::cout << "======\n_C:\n" << _C << "\n\n";
+    // std::cout << "======\n-_d:\n" << -_d << "\n\n";
+    // std::cout << "======\n_Atotal:\n" << _Atotal << "\n\n";
+    // std::cout << "======\n_btotal:\n" << _btotal << "\n\n";
+    // std::cout << "======\n_G:\n" << _G << "\n\n";
+    // std::cout << "======\n_h:\n" << _h << "\n\n";
 
     QuadProgPP::solve_quadprog(_C, -_d, _Atotal, _btotal, _G, _h, Xsolution);
 
