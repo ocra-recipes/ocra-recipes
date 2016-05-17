@@ -264,13 +264,19 @@ void OneLevelSolverWithQuadProg::updateObjectiveEquations()
         double weight                   = obj->getWeight();
 
         // const std::vector<int>& objMap  = findMapping(f.getVariable());
+        std::cout << "f.getName() = " << f.getName() << std::endl;
         std::cout << "f.getVariable().getName() = " << f.getVariable().getName() << std::endl;
         auto objMap  = findMapping(f.getVariable());
 
+        for(auto mp:objMap){
+            std::cout << " " << mp ;
+        }
+        std::cout << std::endl;
         ocra::utils::addCompressed2d(   f.getPi(), _C, objMap, weight);
         ocra::utils::addCompressedByRow(f.getqi(), _d, objMap, weight);
 
     }
+    std::cout << "====" << std::endl;
 
 }
 
