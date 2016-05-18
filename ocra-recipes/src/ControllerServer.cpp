@@ -61,7 +61,7 @@ bool ControllerServer::initialize()
                 bool useReducedProblem = false;
                 controller = std::make_shared<hocra::HocraController>("HocraController", model, std::static_pointer_cast<ocra::OneLevelSolver>(internalSolver), useReducedProblem);
             }break;
-            
+
             default:
             {
                 std::cout << "Constructing a WOCRA Controller [Default]"<<std::endl;
@@ -91,6 +91,7 @@ bool ControllerServer::initialize()
 
 const Eigen::VectorXd& ControllerServer::computeTorques()
 {
+    updateModel();
     computeTorques(tau);
     return tau;
 }
