@@ -95,12 +95,12 @@ bool TaskManagerFactory::parseTasksXML(TiXmlDocument* newTasksFile)
 
                     else if( currentElem == "offset" ){
 
-                        if (taskElem->GetText() != NULL)
+                        if (taskElem->GetText() != NULL){
                             currentTmArgs.offset.push_back(stringToVectorXd(taskElem->GetText()));
-
-                        else
-                            currentTmArgs.offset.push_back(stringToVectorXd(getDisplacementArgs(taskElem)));
-
+                        }
+                        else{
+                            currentTmArgs.offset.push_back(stringToVectorXd(getDisplacementArgs(taskElem).c_str()));
+                        }
                     }
 
                     else if( currentElem == "desired" ){
@@ -109,7 +109,7 @@ bool TaskManagerFactory::parseTasksXML(TiXmlDocument* newTasksFile)
                             currentTmArgs.desired = stringToVectorXd(taskElem->GetText());
 
                         else
-                            currentTmArgs.desired = stringToVectorXd(getDisplacementArgs(taskElem));
+                            currentTmArgs.desired = stringToVectorXd(getDisplacementArgs(taskElem).c_str());
                     }
 
                     else if( currentElem == "segment" ){
@@ -332,7 +332,7 @@ void TaskManagerFactory::printTaskArguments()
 
 
 
-const char * TaskManagerFactory::getDisplacementArgs(TiXmlElement* xmlElem)
+std::string TaskManagerFactory::getDisplacementArgs(TiXmlElement* xmlElem)
 {
     if(xmlElem != NULL)
     {
@@ -371,8 +371,7 @@ const char * TaskManagerFactory::getDisplacementArgs(TiXmlElement* xmlElem)
             }
         }
 
-
-        return dispString.c_str();
+        return dispString;
     }
 }
 

@@ -50,7 +50,7 @@ private:
     std::vector<TaskManagerOptions> tmOptsVector;
     using tmOptsIterator = std::vector<TaskManagerOptions>::iterator;
 
-    const char * getDisplacementArgs(TiXmlElement* xmlElem);
+    std::string getDisplacementArgs(TiXmlElement* xmlElem);
 
     std::shared_ptr<TaskManager> constructTaskManager(std::shared_ptr<ocra::Controller> ctrl, std::shared_ptr<ocra::Model> model, tmOptsIterator tmOptsPtr);
 
