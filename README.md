@@ -112,7 +112,7 @@ export PATH=${PATH}:${OCRA_INSTALL}/bin
 - [x] Ubuntu 12.04
 - [x] Ubuntu 14.04
 - [x] Debian 7
-- [ ] OS X
+- [x] OS X
 
 
 In theory any linux distro should work if the dependencies are met and don't conflict with any system libs/headers. If you manage to build, install and use OCRA in any other platform please let us know and we can add it to the list with any helpful notes you provide along with it.
@@ -130,7 +130,7 @@ Want to contribute? Maybe build a plugin or two? Read the [Contributing  section
 dyld library not loaded @rpath/libYarpMath.dylib
 ```
 
-This means your project has some issues setting the `RPATH` variable for this library. 
+Most likely this variable is still `OFF`.
 
 :warning: When using XCode to debug your code, make sure you change your LLVM C++ Language settings manually to C++11, by heading to the `Build Settings` of your project, searching for `C++ Language Dialect` and changing it to `C++11 [-std=c++11]`
  
