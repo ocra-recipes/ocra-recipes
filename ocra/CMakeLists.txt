@@ -21,10 +21,10 @@ set(OCRA_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "")
 # Check for SMLT
 find_package(SMLT QUIET)
 IF(${SMLT_FOUND})
-    message(STATUS "-- SMLT lib found. Compiling gaussian process trajectory.")
+    message(STATUS "SMLT lib found. Compiling gaussian process trajectory.")
     include_directories(${SMLT_INCLUDE_DIRS})
 ELSE()
-    message(STATUS "-- SMLT lib NOT found. Removing gaussian process trajectory from source list.")
+    message(STATUS "SMLT lib NOT found. Removing gaussian process trajectory from source list.")
     list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Trajectory/GaussianProcessTrajectory.cpp)
 ENDIF()
 
