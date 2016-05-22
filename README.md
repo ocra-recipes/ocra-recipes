@@ -2,8 +2,6 @@ Master : [![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg)](
 -----
 # ocra-recipes
 
-Badass shit...
-
 [Installation instructions](#Installation)
 
 ## Code Structure
