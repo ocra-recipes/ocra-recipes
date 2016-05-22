@@ -2,13 +2,7 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(OcraRecipes)
 
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
-endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 if(APPLE)
     set(BUILD_SHARED_LIBS FALSE)
@@ -17,8 +11,7 @@ else()
 endif()
 
 
-# TODO: Set to false as a default.
-option(BUILD_TESTS "(Developers Only) Build the various unit tests." TRUE)
+option(BUILD_TESTS "(Developers Only) Build the various unit tests." FALSE)
 
 
 set(VARS_PREFIX "OcraRecipes")
@@ -36,29 +29,20 @@ set(CMAKE_BUILD_TYPE Release)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE "TRUE")
 
-#find_package(Protobuf REQUIRED)
 find_package(Eigen REQUIRED)
 find_package(EigenLgsm REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 find_package(TinyXML REQUIRED)
 find_package(YARP REQUIRED)
+find_package(qpOASES REQUIRED)
 
 include_directories(
     ${Eigen_INCLUDE_DIRS}
     ${EigenLgsm_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
     ${YARP_INCLUDE_DIRS}
-    ${Protobuf_INCLUDE_DIRS}
+    ${qpOASES_INCLUDE_DIRS}
 )
-
-find_package(qpOASES)
-if(qpOASES_FOUND)
-    include_directories(${qpOASES_INCLUDE_DIRS})
-    add_definitions(-DUSE_QPOASES)
-else()
-    set(qpOASES_LIBRARIES "")
-endif()
-
 
 add_subdirectory(ocra)
 add_subdirectory(wocra)
