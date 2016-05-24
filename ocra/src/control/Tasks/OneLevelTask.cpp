@@ -20,23 +20,6 @@
 namespace ocra
 {
 
-//
-// class VariableChiFunction : public LinearFunction
-// {
-// public:
-//     VariableChiFunction(Variable& x, int dimension)
-//     : NamedInstance("Variable Chi Linear Function")
-//     , AbilitySet(PARTIAL_X)
-//     , CoupledInputOutputSize(false)
-//     , LinearFunction(x, dimension)
-//     {
-//
-//     }
-//
-//     void doUpdateInputSizeBegin() {};
-//
-//     void doUpdateInputSizeEnd() {};
-// };
 
 
 struct OneLevelTask::Pimpl
