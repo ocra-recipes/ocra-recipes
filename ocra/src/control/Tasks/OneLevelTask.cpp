@@ -12,6 +12,7 @@
 #include "ocra/optim/FunctionHelpers.h"
 #include "ocra/optim/LinearizedCoulombFunction.h"
 #include "ocra/optim/WeightedSquareDistanceFunction.h"
+#include "ocra/optim/VariableChiFunction.h"
 
 // WOCRA INCLUDES
 
@@ -19,23 +20,23 @@
 namespace ocra
 {
 
-
-class VariableChiFunction : public LinearFunction
-{
-public:
-    VariableChiFunction(Variable& x, int dimension)
-    : NamedInstance("Variable Chi Linear Function")
-    , AbilitySet(PARTIAL_X)
-    , CoupledInputOutputSize(false)
-    , LinearFunction(x, dimension)
-    {
-
-    }
-
-    void doUpdateInputSizeBegin() {};
-
-    void doUpdateInputSizeEnd() {};
-};
+//
+// class VariableChiFunction : public LinearFunction
+// {
+// public:
+//     VariableChiFunction(Variable& x, int dimension)
+//     : NamedInstance("Variable Chi Linear Function")
+//     , AbilitySet(PARTIAL_X)
+//     , CoupledInputOutputSize(false)
+//     , LinearFunction(x, dimension)
+//     {
+//
+//     }
+//
+//     void doUpdateInputSizeBegin() {};
+//
+//     void doUpdateInputSizeEnd() {};
+// };
 
 
 struct OneLevelTask::Pimpl
