@@ -8,11 +8,7 @@
 #include "ocra/control/Tasks/OneLevelTask.h"
 
 // OCRA INCLUDES
-#include "ocra/control/Model.h"
-#include "ocra/optim/FunctionHelpers.h"
-#include "ocra/optim/LinearizedCoulombFunction.h"
-#include "ocra/optim/WeightedSquareDistanceFunction.h"
-#include "ocra/optim/VariableChiFunction.h"
+
 
 // WOCRA INCLUDES
 
