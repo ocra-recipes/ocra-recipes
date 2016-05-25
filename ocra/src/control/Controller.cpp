@@ -1,5 +1,5 @@
 #include "ocra/control/Controller.h"
-#include "ocra/control/Tasks/Task.h"
+#include "ocra/control/Task.h"
 #include "ocra/control/Feature.h"
 #include "ocra/control/Model.h"
 #include <map>

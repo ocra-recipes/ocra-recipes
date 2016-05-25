@@ -18,7 +18,7 @@
 #include "ocra/control/Model.h"
 #include "ocra/optim/OneLevelSolver.h"
 // WOCRA INCLUDES
-#include "ocra/control/Tasks/Task.h"#include "ocra/control/ControlConstraint.h"
+#include "ocra/control/Task.h"#include "ocra/control/ControlConstraint.h"
 
 using namespace ocra;
 

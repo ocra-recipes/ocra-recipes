@@ -14,7 +14,7 @@
 #include "ocra/optim/FunctionHelpers.h"
 #include "ocra/optim/SquaredLinearFunction.h"
 #include "ocra/optim/WeightedSquareDistanceFunction.h"
-#include "ocra/control/Tasks/Task.h"
+#include "ocra/control/Task.h"
 #include "ocra/control/ControlFrame.h"
 #include "ocra/optim/OneLevelSolver.h"
 #include "ocra/control/ControlConstraint.h"

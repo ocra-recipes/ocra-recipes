@@ -16,7 +16,7 @@
 #include "ocra/optim/Constraint.h"
 #include "ocra/optim/QuadraticFunction.h"
 #include "ocra/optim/CascadeQPStructures.h"
-#include <ocra/control/Tasks/Task.h>
+#include "ocra/control/Task.h"
 #include <ocra/optim/SumOfLinearFunctions.h>
 #include <ocra/optim/FunctionHelpers.h>
 #include <ocra/optim/LinearFunction.h>

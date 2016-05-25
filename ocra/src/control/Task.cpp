@@ -1,5 +1,5 @@
 // #pragma warning(disable: 4244) // XXX Eigen 3 JacobiSVD
-#include "ocra/control/Tasks/Task.h"
+#include "ocra/control/Task.h"
 
 
 // #pragma warning(default: 4244)
