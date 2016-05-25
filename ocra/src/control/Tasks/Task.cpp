@@ -1,30 +1,29 @@
-#pragma warning(disable: 4244) // XXX Eigen 3 JacobiSVD
+// #pragma warning(disable: 4244) // XXX Eigen 3 JacobiSVD
 #include "ocra/control/Tasks/Task.h"
 
-#include "ocra/control/Feature.h"
-#include "ocra/control/Model.h"
-#pragma warning(default: 4244)
+
+// #pragma warning(default: 4244)
 
 using namespace Eigen;
 
 namespace
 {
-  enum
-  {
-    TASK_DEACTIVATED,
-    TASK_AS_OBJECTIVE,
-    TASK_AS_CONSTRAINT
-  };
+    enum
+    {
+        TASK_DEACTIVATED,
+        TASK_AS_OBJECTIVE,
+        TASK_AS_CONSTRAINT
+    };
 
-  struct GainsWorkspace
-  {
-    JacobiSVD<MatrixXd> svd;
-    VectorXd s;
-    VectorXd kps;
-    VectorXd kds;
+    struct GainsWorkspace
+    {
+        JacobiSVD<MatrixXd> svd;
+        VectorXd s;
+        VectorXd kps;
+        VectorXd kds;
 
-    GainsWorkspace(int n) : svd(n, n), s(n), kps(n), kds(n) {}
-  };
+        GainsWorkspace(int n) : svd(n, n), s(n), kps(n), kds(n) {}
+    };
 }
 
 namespace ocra
@@ -54,7 +53,27 @@ namespace ocra
     TYPETASK innerTaskType;
     int hierarchyLevel;
 
-    Pimpl(const Feature& s, const Feature* sdes)
+    std::shared_ptr<Model> innerModel;
+    std::shared_ptr<OneLevelSolver> solver;
+    const FullDynamicEquationFunction* dynamicEquation;
+    bool useReducedProblem;
+    BaseVariable fcVar;
+    bool taskHasBeenInitialized;
+    LessThanZeroConstraintPtr<LinearizedCoulombFunction> frictionConstraint; // if contact task
+    bool contactForceConstraintHasBeenSavedInSolver;
+    bool contactPointHasBeenSavedInModel;
+    bool frictionConstraintIsRegisteredInConstraint;
+    EqualZeroConstraintPtr<LinearFunction>  ContactForceConstraint;
+
+    bool isRegisteredAsObjective;
+    bool isRegisteredAsConstraint;
+
+
+    LinearFunction*                         innerObjectiveFunction;
+    Objective<SquaredLinearFunction>*       innerTaskAsObjective;
+    EqualZeroConstraintPtr<LinearFunction>  innerTaskAsConstraint;
+
+    Pimpl(const std::string& name, std::shared_ptr<Model> m, const Feature& s, const Feature* sdes)
       : feature(s)
       , featureDes(sdes)
       , mode(TASK_DEACTIVATED)
@@ -64,25 +83,98 @@ namespace ocra
       , B( MatrixXd::Zero(s.getDimension(), s.getDimension()) )
       , K( MatrixXd::Zero(s.getDimension(), s.getDimension()) )
       , weight( VectorXd::Ones(s.getDimension()) )
-			, frictionOffset(Vector3d::Zero())
+	  , frictionOffset(Vector3d::Zero())
       , frictionCoeff(1.)
       , margin(0.)
       , useActualMass(true)
       , contactActive(false)
       , innerTaskType(UNKNOWNTASK)
       , hierarchyLevel(-1)
-    {}
+      , innerModel(m)
+      , solver(0x0)
+      , dynamicEquation(0x0)
+      , useReducedProblem(false)
+      , fcVar(name+".var", s.getDimension())
+//        , weight(1.)
+      , taskHasBeenInitialized(false)
+      , contactForceConstraintHasBeenSavedInSolver(false)
+      , contactPointHasBeenSavedInModel(false)
+      , frictionConstraintIsRegisteredInConstraint(false)
+      , isRegisteredAsObjective(false)
+      , isRegisteredAsConstraint(false)
+      , innerObjectiveFunction(NULL)
+      , innerTaskAsObjective(NULL)
+    {
+        innerTaskAsConstraint.set(NULL);
+
+        if(fcVar.getSize() == 3)
+        {
+//            std::cout<<"CAN BE A CONTACT POINT!!! register friction and contact constraints\n";
+//            registerFrictionConstraint = true;
+            frictionConstraint.set(  new LinearizedCoulombFunction(fcVar, 1., 6, 0.) );
+            ContactForceConstraint.set( new LinearFunction( fcVar, Eigen::MatrixXd::Identity(3,3), VectorXd::Zero(3) ) );
+        }
+        else
+        {
+//            registerFrictionConstraint = false;
+            frictionConstraint.set(NULL);
+            ContactForceConstraint.set(NULL);
+        }
+    }
+    ~Pimpl()
+    {
+        if (innerTaskAsObjective)
+        {
+            delete &innerTaskAsObjective->getFunction();
+            delete innerTaskAsObjective;
+        }
+    }
+    void setAsAccelerationTask()
+    {
+
+        int featn = feature.getDimension();
+        if (useReducedProblem)
+        {
+            innerObjectiveFunction = new VariableChiFunction(dynamicEquation->getActionVariable(), featn);
+        }
+        else
+        {
+            innerObjectiveFunction = new LinearFunction (innerModel->getAccelerationVariable(), Eigen::MatrixXd::Zero(featn, innerModel->nbDofs()), Eigen::VectorXd::Zero(featn));
+        }
+        connectFunctionnWithObjectiveAndConstraint();
+    }
+
+    void setAsTorqueTask()
+    {
+        int featn = feature.getDimension();
+        innerObjectiveFunction = new LinearFunction(innerModel->getJointTorqueVariable(), Eigen::MatrixXd::Zero(featn, innerModel->nbInternalDofs()), Eigen::VectorXd::Zero(featn));
+        connectFunctionnWithObjectiveAndConstraint();
+    }
+
+    void setAsForceTask()
+    {
+        int featn = feature.getDimension();
+        innerObjectiveFunction = new LinearFunction(fcVar, Eigen::MatrixXd::Identity(featn, featn), Eigen::VectorXd::Zero(featn));
+        connectFunctionnWithObjectiveAndConstraint();
+    }
+
+    void connectFunctionnWithObjectiveAndConstraint()
+    {
+        innerTaskAsObjective = new Objective<SquaredLinearFunction>(new SquaredLinearFunction(innerObjectiveFunction));//, weight); // Here, it will manage the SquaredLinearFunction build on a pointer of the function.
+        innerTaskAsConstraint.set(innerObjectiveFunction);      // As as ConstraintPtr, it will manage the new created function innerObjectiveFunction
+    }
+
   };
 
-  Task::Task(const std::string& name, const Model& model, const Feature& feature, const Feature& featureDes)
+  Task::Task(const std::string& name, std::shared_ptr<Model> model, const Feature& feature, const Feature& featureDes)
     : NamedInstance(name)
-    , pimpl(new Pimpl(feature, &featureDes))
+    , pimpl(new Pimpl(name, model, feature, &featureDes))
   {
   }
 
-  Task::Task(const std::string& name, const Model& model, const Feature& feature)
+  Task::Task(const std::string& name, std::shared_ptr<Model> model, const Feature& feature)
     : NamedInstance(name)
-    , pimpl(new Pimpl(feature, 0x0))
+    , pimpl(new Pimpl(name, model, feature, 0x0))
   {
   }
 
@@ -125,8 +217,42 @@ namespace ocra
 
   void Task::update()
   {
-    doUpdate();
+      switch(getTaskType())
+      {
+
+          case(ACCELERATIONTASK):
+          {
+              updateAccelerationTask();
+              break;
+          }
+          case(TORQUETASK):
+          {
+              updateTorqueTask();
+              break;
+          }
+          case(FORCETASK):
+          {
+              updateForceTask();
+              break;
+          }
+          case(COMMOMENTUMTASK):
+          {
+              updateCoMMomentumTask();
+              break;
+          }
+          case(UNKNOWNTASK):
+          {
+              throw std::runtime_error(std::string("[Task::update]: The task type has not been set during creation."));
+              break;
+          }
+          default:
+          {
+              throw std::runtime_error(std::string("[Task::update]: Unhandle case of TYPETASK."));
+              break;
+          }
+      }
   }
+
 
   void Task::activateAsObjective()
   {
@@ -444,6 +570,395 @@ namespace ocra
   {
     return pimpl->featureDes;
   }
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+const Eigen::VectorXd& Task::getComputedForce() const
+{
+    return pimpl->fcVar.getValue();
 }
+
+void Task::disconnectFromController()
+{
+    if (pimpl->isRegisteredAsObjective)
+    {
+        if(pimpl->innerTaskAsObjective != NULL){
+            pimpl->solver->removeObjective(*pimpl->innerTaskAsObjective);
+        }
+    }
+    if (pimpl->isRegisteredAsConstraint)
+    {
+        pimpl->solver->removeConstraint(pimpl->innerTaskAsConstraint);
+    }
+
+    if (pimpl->frictionConstraintIsRegisteredInConstraint)
+    {
+        pimpl->solver->removeConstraint(pimpl->frictionConstraint);
+    }
+    if (pimpl->contactForceConstraintHasBeenSavedInSolver)
+    {
+        pimpl->solver->removeConstraint(pimpl->ContactForceConstraint);
+    }
+
+}
+
+void Task::connectToController(std::shared_ptr<OneLevelSolver> solver, const FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem)
+{
+    pimpl->solver            = solver;
+    pimpl->dynamicEquation   = &dynamicEquation;
+    pimpl->useReducedProblem =  useReducedProblem;
+
+    switch(getTaskType())
+    {
+
+        case(ACCELERATIONTASK):
+        {
+            pimpl->setAsAccelerationTask();
+
+            break;
+        }
+        case(TORQUETASK):
+        {
+            pimpl->setAsTorqueTask();
+            break;
+        }
+        case(FORCETASK):
+        {
+            pimpl->setAsForceTask();
+            break;
+        }
+        case(COMMOMENTUMTASK):
+        {
+            pimpl->setAsAccelerationTask();
+            break;
+        }
+        case(UNKNOWNTASK):
+        {
+            std::string errmsg = std::string("[Task::connectToController]: The task type of '") + getName() + std::string("' has not been set during creation.\nCall prior that 'initAsAccelerationTask', 'initAsTorqueTask' or 'initAsForceTask'\n"); //
+            throw std::runtime_error(std::string(errmsg));
+            break;
+        }
+        default:
+        {
+            throw std::runtime_error(std::string("[Task::connectToController]: Unhandle case of TYPETASK for task ")+getName() );
+            break;
+        }
+    }
+}
+
+
+void Task::addContactPointInModel()
+{
+    //THIS SHOULD BE DONE ONLY ONCE!!!
+    if ( ! pimpl->contactPointHasBeenSavedInModel )
+    {
+        pimpl->innerModel->getModelContacts().addContactPoint(pimpl->fcVar, getFeature());
+        pimpl->contactPointHasBeenSavedInModel = true;
+    }
+
+    if ( pimpl->contactForceConstraintHasBeenSavedInSolver )
+    {
+        pimpl->solver->removeConstraint(pimpl->ContactForceConstraint);
+        pimpl->contactForceConstraintHasBeenSavedInSolver = false;
+    }
+}
+
+void Task::removeContactPointInModel()
+{
+    //    if ( pimpl->contactPointHasBeenSavedInModel )
+//    {
+//        pimpl->model.getModelContacts().removeContactPoint(pimpl->fcVar);
+//        pimpl->contactPointHasBeenSavedInModel = false;
+//    }
+    if ( ! pimpl->contactForceConstraintHasBeenSavedInSolver )
+    {
+        pimpl->solver->addConstraint(pimpl->ContactForceConstraint);
+        pimpl->contactForceConstraintHasBeenSavedInSolver = true;
+    }
+}
+
+
+
+/** Update linear function of the task for the full formalism.
+ *
+ * It computes a desired acceleration \f$ \vec{a}^{des} = - \left( \vec{a}_{ref} + K_p (\vec{p}^{des} - vec{p}) +  K_d (\vec{v}^{des} - vec{v}) \right) \f$ .
+ * Then The linear function is set as follows:
+ *
+ * - if it use the reduced problem:
+ *
+ * \f{align*}{
+ *       \A &= J_{task}  .  \left(  \M^{-1} \J_{\tav}\tp  \right)
+ *     & \b &= \vec{a}^{des} - \left(  J_{task} \M^{-1} ( \g - \n)  \right)
+ * \f}
+ *
+ * see \ref sec_transform_formalism for more information.
+ *
+ * - else:
+ *
+ * \f{align*}{
+ *       \A &= J_{task}
+ *     & \b &= \vec{a}^{des}
+ * \f}
+ */
+void Task::updateAccelerationTask()
+{
+    const MatrixXd& J  = getJacobian();
+    const MatrixXd& Kp = getStiffness();
+    const MatrixXd& Kd = getDamping();
+
+    const VectorXd  accDes = - ( getErrorDdot() + Kp * getError() + Kd * getErrorDot() );
+
+    // std::cout << "\n----\ngetError() = " << getError() << std::endl;
+    // std::cout << "getErrorDot() = " << getErrorDot() << std::endl;
+    // std::cout << "getErrorDdot() = " << getErrorDdot() << std::endl;
+
+    if (pimpl->useReducedProblem)
+    {
+        const Eigen::MatrixXd E2 =        - J * pimpl->dynamicEquation->getInertiaMatrixInverseJchiT();
+        const Eigen::VectorXd f2 = accDes + J * pimpl->dynamicEquation->getInertiaMatrixInverseLinNonLinGrav();
+
+        pimpl->innerObjectiveFunction->changeA(E2);
+        pimpl->innerObjectiveFunction->changeb(f2);
+    }
+    else
+    {
+        pimpl->innerObjectiveFunction->changeA(J);
+        pimpl->innerObjectiveFunction->changeb(accDes);
+    }
+}
+
+
+
+
+void Task::updateTorqueTask()
+{
+    const MatrixXd& J    =   getJacobian();
+    const VectorXd  eff  = - getEffort();
+
+    pimpl->innerObjectiveFunction->changeA(J);
+    pimpl->innerObjectiveFunction->changeb(eff);
+}
+
+
+void Task::updateForceTask()
+{
+    //innerObjectiveFunction->changeA(); //already set in initForceTask
+
+    const VectorXd  eff  = - getEffort();
+
+    pimpl->innerObjectiveFunction->changeb(eff);
+
+}
+
+void Task::updateCoMMomentumTask()
+{
+    const MatrixXd& J  = pimpl->innerModel->getCoMAngularJacobian();
+    const MatrixXd& Kd = getDamping();
+
+    const VectorXd  accDes = - Kd * pimpl->innerModel->getCoMAngularVelocity();
+
+
+    if (pimpl->useReducedProblem)
+    {
+        const Eigen::MatrixXd E2 =        - J * pimpl->dynamicEquation->getInertiaMatrixInverseJchiT();
+        const Eigen::VectorXd f2 = accDes + J * pimpl->dynamicEquation->getInertiaMatrixInverseLinNonLinGrav();
+
+        pimpl->innerObjectiveFunction->changeA(E2);
+        pimpl->innerObjectiveFunction->changeb(f2);
+    }
+    else
+    {
+        pimpl->innerObjectiveFunction->changeA(J);
+        pimpl->innerObjectiveFunction->changeb(accDes);
+    }
+}
+
+
+void Task::checkIfConnectedToController() const
+{
+    if (!pimpl->solver)
+    {
+        std::string errmsg = std::string("[Task::doActivateAsObjective]: task '") + getName() + std::string("' not connected to any solver; Call prior that 'Controller::addTask' to connect to the solver inside the controller.\n"); //
+        throw std::runtime_error(std::string(errmsg));
+    }
+}
+
+
+
+/** Do task activation when it is a contact task.
+ *
+ * When this function is called, it adds a contact point in the model of contact contained in the Model instance,
+ * and it adds in the solver an inequality constraint that represents the limitation of the contact force that must remain inside the cone of friction.
+ */
+void Task::doActivateContactMode()
+{
+    checkIfConnectedToController();
+
+    addContactPointInModel();
+
+    // add friction cone in constraint
+    pimpl->solver->addConstraint(pimpl->frictionConstraint);
+    pimpl->frictionConstraintIsRegisteredInConstraint = true;
+}
+
+
+/** Do task deactivation when it is a contact task.
+ *
+ * When this function is called, it removes the contact point in the model of contact,
+ * and it removes from the solver the friction cone inequality constraint.
+ */
+void Task::doDeactivateContactMode()
+{
+    checkIfConnectedToController();
+
+    removeContactPointInModel();
+
+    // remove friction cone from constraint set
+    pimpl->solver->removeConstraint(pimpl->frictionConstraint);
+    pimpl->frictionConstraintIsRegisteredInConstraint = false;
+}
+
+
+/** For contact task, do the setting of the coefficient of friction.
+ *
+ * The cone of friction constraint is modified to represent a cone with this new coefficient of friction.
+ */
+void Task::doSetFrictionCoeff()
+{
+    pimpl->frictionConstraint.getFunction().setFrictionCoeff(getFrictionCoeff());
+}
+
+/** For contact task, do the setting of the friction margin.
+ *
+ * The cone of friction constraint is modified to represent a friction cone with this new margin.
+ */
+void Task::doSetMargin()
+{
+    pimpl->frictionConstraint.getFunction().setMargin(getMargin());
+}
+
+
+
+
+
+
+
+
+
+/** Do activation of task as an objective.
+ *
+ * It means that the task is not fully completed and a little error may occur.
+ */
+void Task::doActivateAsObjective()
+{
+    checkIfConnectedToController();
+    if(!pimpl->isRegisteredAsObjective)
+    {
+        pimpl->solver->addObjective(*pimpl->innerTaskAsObjective);
+        pimpl->isRegisteredAsObjective = true;
+    }
+
+    if (getTaskType() == FORCETASK)
+    {
+        addContactPointInModel();
+    }
+}
+
+/** Do deactivation of task as an objective.
+ *
+ * objective is no more considered.
+ */
+void Task::doDeactivateAsObjective()
+{
+    checkIfConnectedToController();
+    if(pimpl->isRegisteredAsObjective)
+    {
+        pimpl->solver->removeObjective(*pimpl->innerTaskAsObjective);
+        pimpl->isRegisteredAsObjective = false;
+    }
+    if (getTaskType() == FORCETASK)
+    {
+        removeContactPointInModel();
+    }
+}
+
+/** Do activation of task as a constraint.
+ *
+ * It means that the task should be full completed and no error may occur.
+ * Be aware that stong constraints may lead to system instability (very "sharp" solution that requires lot of energy).
+ */
+void Task::doActivateAsConstraint()
+{
+    checkIfConnectedToController();
+    if(!pimpl->isRegisteredAsConstraint)
+    {
+        pimpl->solver->addConstraint(pimpl->innerTaskAsConstraint);
+        pimpl->isRegisteredAsConstraint = true;
+    }
+    if (getTaskType() == FORCETASK)
+    {
+        addContactPointInModel();
+    }
+}
+
+/** Do deactivation of task as a constraint.
+ *
+ * objective is no more considered.
+ */
+void Task::doDeactivateAsConstraint()
+{
+    checkIfConnectedToController();
+    if(pimpl->isRegisteredAsConstraint)
+    {
+        pimpl->solver->removeConstraint(pimpl->innerTaskAsConstraint);
+        pimpl->isRegisteredAsConstraint = false;
+    }
+    if (getTaskType() == FORCETASK)
+    {
+        removeContactPointInModel();
+    }
+}
+
+
+
+/** Do set the weight of the task.
+ *
+ * The weight in the objective function is modified.
+ *
+ */
+void Task::doSetWeight()
+{
+    if (pimpl->innerTaskAsObjective)
+    {
+         pimpl->innerTaskAsObjective->getFunction().changeWeight(getWeight());
+    }
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // cmake:sourcegroup=Api

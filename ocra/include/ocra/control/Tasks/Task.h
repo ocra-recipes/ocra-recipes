@@ -3,29 +3,41 @@
 
 #include "ocra/optim/NamedInstance.h"
 #include <Eigen/Core>
-#include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include "ocra/utilities.h"
+#include "ocra/control/Feature.h"
+#include "ocra/control/Model.h"
+//
+
+
+
+#include "ocra/optim/FunctionHelpers.h"
+#include "ocra/optim/SquaredLinearFunction.h"
+#include "ocra/optim/WeightedSquareDistanceFunction.h"
+#include "ocra/control/Tasks/Task.h"
+#include "ocra/control/ControlFrame.h"
+#include "ocra/optim/OneLevelSolver.h"
+#include "ocra/control/ControlConstraint.h"
+#include "ocra/optim/LinearizedCoulombFunction.h"
+#include "ocra/optim/VariableChiFunction.h"
+#include "ocra/optim/FcQuadraticFunction.h"
+
+
+
+
 
 namespace ocra
 {
-  class Feature;
-  class Solver;
-  class Model;
-}
 
-namespace ocra
+class Task : public NamedInstance
 {
-  class Task
-    : public NamedInstance
-    , boost::noncopyable
-  {
-      DEFINE_CLASS_POINTER_TYPEDEFS(Task)
-  protected:
-    Task(const std::string& name, const Model& model, const Feature& feature, const Feature& featureDes);
-    Task(const std::string& name, const Model& model, const Feature& feature);
-  public:
-    virtual ~Task() = 0;
+DEFINE_CLASS_POINTER_TYPEDEFS(Task)
+
+public:
+    Task(const std::string& name, std::shared_ptr<Model> model, const Feature& feature, const Feature& featureDes);
+    Task(const std::string& name, std::shared_ptr<Model> model, const Feature& feature);
+    virtual ~Task();
+
 
     enum TYPETASK { UNKNOWNTASK, ACCELERATIONTASK, TORQUETASK, FORCETASK, COMMOMENTUMTASK };
 
@@ -88,30 +100,49 @@ namespace ocra
     const Eigen::VectorXd& getEffort() const;
     const Eigen::MatrixXd& getJacobian() const;
 
-  protected:
+protected:
     const Feature& getFeature() const;
     const Feature* getFeatureDes() const;
 
-  protected:
-    virtual void doActivateAsObjective() = 0;
-    virtual void doActivateAsConstraint() = 0;
-    virtual void doActivateContactMode() = 0;
-    virtual void doDeactivateAsObjective() = 0;
-    virtual void doDeactivateAsConstraint() = 0;
-    virtual void doDeactivateContactMode() = 0;
-    virtual void doSetFrictionCoeff() = 0;
-    virtual void doSetMargin() = 0;
-    virtual void doSetWeight() = 0;
-    virtual void doGetOutput(Eigen::VectorXd& output) const = 0;
-    virtual void doUpdate(){};
+protected:
+    void doActivateAsObjective();
+    void doActivateAsConstraint();
+    void doActivateContactMode();
+    void doDeactivateAsObjective();
+    void doDeactivateAsConstraint();
+    void doDeactivateContactMode();
+    void doSetFrictionCoeff();
+    void doSetMargin();
+    void doSetWeight();
+    void doGetOutput(Eigen::VectorXd& output) const;
 
 
-  private:
+private:
     struct Pimpl;
-    boost::shared_ptr<Pimpl> pimpl;
-  };
-}
+    std::shared_ptr<Pimpl> pimpl;
 
+
+public:
+    const Eigen::VectorXd& getComputedForce() const;
+    void disconnectFromController();
+    void connectToController(std::shared_ptr<OneLevelSolver> _solver, const FullDynamicEquationFunction& dynamicEquation, bool useReducedProblem);
+
+protected:
+    void addContactPointInModel();
+    void removeContactPointInModel();
+
+    void updateAccelerationTask();
+    void updateTorqueTask();
+    void updateForceTask();
+    void updateCoMMomentumTask();
+
+    void checkIfConnectedToController() const;
+
+
+
+
+};
+}
 #endif
 
 // cmake:sourcegroup=Api

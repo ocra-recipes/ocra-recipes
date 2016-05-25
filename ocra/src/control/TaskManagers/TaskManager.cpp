@@ -41,7 +41,7 @@ TaskManager::~TaskManager()
         rpcPort.close();
     }
     // if(task){
-    //     std::dynamic_pointer_cast<OneLevelTask>(task)->disconnectFromController();
+    //     task->disconnectFromController();
     // }
     if(stateThread){
         closeControlPorts();

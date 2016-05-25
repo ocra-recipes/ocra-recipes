@@ -48,19 +48,19 @@ void HocraController::doComputeOutput(VectorXd& tau)
 Task::Ptr HocraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
 {
     std::cout << "HocraController::doCreateContactTask" << std::endl;
-    return std::make_shared<ocra::OneLevelTask>(name, innerModel, feature);
+    return std::make_shared<ocra::Task>(name, innerModel, feature);
 
 }
 Task::Ptr HocraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
 {
     std::cout << "HocraController::doCreateTask des" << std::endl;
-    return std::make_shared<ocra::OneLevelTask>(name, innerModel, feature, featureDes);
+    return std::make_shared<ocra::Task>(name, innerModel, feature, featureDes);
 
 }
 Task::Ptr HocraController::doCreateTask(const std::string& name, const Feature& feature) const
 {
     std::cout << "HocraController::doCreateTask" << std::endl;
-    return  std::make_shared<ocra::OneLevelTask>(name, innerModel, feature);
+    return  std::make_shared<ocra::Task>(name, innerModel, feature);
 }
 
 }

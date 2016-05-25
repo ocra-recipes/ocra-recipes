@@ -5,7 +5,7 @@
 
 #include "ocra/control/Model.h"
 #include "ocra/control/Controller.h"
-#include "ocra/control/Tasks/OneLevelTask.h"
+#include "ocra/control/Tasks/Task.h"
 #include "ocra/control/TaskManagers/TaskManagerMessageVocab.h"
 #include "ocra/control/Trajectory/Trajectories.h"
 

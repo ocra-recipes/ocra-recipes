@@ -52,7 +52,7 @@ namespace ocra
         if (taskManagers.find(keyValue) != taskManagers.end()) {
             //TODO: Deactivate tasks smoothly?
             taskManagers[keyValue]->deactivate();
-            // (std::dynamic_pointer_cast<ocra::OneLevelTask>(taskManagers[keyValue]))->disconnectFromController();
+            // taskManagers[keyValue]->disconnectFromController();
             // delete(taskManagers[keyValue]);
             taskManagers.erase(keyValue);
             return true;
@@ -70,7 +70,7 @@ namespace ocra
         {
             std::cout << " --> " << it->first << std::endl;
             it->second->deactivate();
-            // (std::dynamic_pointer_cast<ocra::OneLevelTask>(it->second))->disconnectFromController();
+            // it->second->disconnectFromController();
 
             // delete(it->second);
         }

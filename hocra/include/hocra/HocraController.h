@@ -11,7 +11,7 @@
 #include <ocra/optim/CascadeQPSolver.h>
 #include <ocra/control/Model.h>
 #include <ocra/control/Controller.h>
-#include <ocra/control/Tasks/OneLevelTask.h>
+#include <ocra/control/Tasks/Task.h>
 
 namespace hocra
 
@@ -46,7 +46,7 @@ public:
     Task::Ptr doCreateTask(const std::string& name, const ocra::Feature& feature) const;
     Task::Ptr doCreateTask(const std::string& name, const ocra::Feature& feature, const ocra::Feature& featureDes) const;
     virtual ~HocraController(){};
-    
+
 private:
     CascadeQPSolver::Ptr cascadeQPSolver;
     Model::Ptr innerModel;

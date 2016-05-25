@@ -135,7 +135,7 @@ struct OneLevelTask::Pimpl
  * \param featureDes  The desired task feature, meaning the goal we want to reach with the \a feature
  */
  OneLevelTask::OneLevelTask(const std::string& taskName, std::shared_ptr<Model> innerModel, const Feature& feature, const Feature& featureDes)
-    : Task(taskName, *innerModel, feature, featureDes)
+    : Task(taskName, innerModel, feature, featureDes)
     , pimpl(new Pimpl(taskName, innerModel, feature))
 {
 
@@ -148,7 +148,7 @@ struct OneLevelTask::Pimpl
  * \param feature     The task feature, meaning what we want to control
  */
  OneLevelTask::OneLevelTask(const std::string& taskName, std::shared_ptr<Model> innerModel, const Feature& feature)
-    : Task(taskName, *innerModel, feature)
+    : Task(taskName, innerModel, feature)
     , pimpl(new Pimpl(taskName, innerModel, feature))
 {
 

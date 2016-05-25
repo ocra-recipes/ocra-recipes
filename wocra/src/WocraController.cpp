@@ -10,7 +10,6 @@
 #include <iostream>
 
 #include "ocra/optim/QuadraticFunction.h"
-#include "ocra/control/Tasks/OneLevelTask.h"
 #include "wocra/Performances.h"
 
 /** \brief Contains all the abstract & concrete classes for robotic control with optimization, based on the ocra framework.
@@ -130,7 +129,7 @@ WocraController::~WocraController()
     for (std::map<std::string, std::shared_ptr<Task>>::const_iterator it = taskMap.begin(); it != taskMap.end(); ++it)
     {
         if(it->second)
-            (std::dynamic_pointer_cast<ocra::OneLevelTask>(it->second))->disconnectFromController();
+            it->second->disconnectFromController();
     }
 
 
@@ -276,8 +275,7 @@ void WocraController::removeConstraint(ocra::ControlConstraint& constraint) cons
 void WocraController::doAddTask(std::shared_ptr<Task> task)
 {
     try {
-        std::shared_ptr<ocra::OneLevelTask> ctask = std::dynamic_pointer_cast<ocra::OneLevelTask>(task);
-        ctask->connectToController(pimpl->innerSolver, pimpl->dynamicEquation, pimpl->reducedProblem);
+        task->connectToController(pimpl->innerSolver, pimpl->dynamicEquation, pimpl->reducedProblem);
     }
     catch(const std::exception & e) {
         std::cerr << e.what() ;
@@ -355,7 +353,7 @@ void WocraController::doAddContactSet(const ContactSet& contacts)
 
  std::shared_ptr<Task> WocraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
 {
-    return std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature, featureDes);
+    return std::make_shared<ocra::Task>(name, pimpl->innerModel, feature, featureDes);
 };
 
 /** Internal implementation inside the createTask method.
@@ -369,7 +367,7 @@ void WocraController::doAddContactSet(const ContactSet& contacts)
  */
  std::shared_ptr<Task> WocraController::doCreateTask(const std::string& name, const Feature& feature) const
 {
-    return std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature);
+    return std::make_shared<ocra::Task>(name, pimpl->innerModel, feature);
 };
 
 /** Internal implementation inside the createContactTask method.
@@ -386,7 +384,7 @@ void WocraController::doAddContactSet(const ContactSet& contacts)
 
  std::shared_ptr<Task> WocraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
 {
-    return std::make_shared<ocra::OneLevelTask>(name, pimpl->innerModel, feature);
+    return std::make_shared<ocra::Task>(name, pimpl->innerModel, feature);
 };
 
 
