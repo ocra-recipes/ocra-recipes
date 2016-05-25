@@ -580,6 +580,20 @@ namespace ocra
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
+
+
+/** I don't really know, I suppose it is for a direct output.
+ *
+ * \param output  The vector instance where to write the output.
+ *
+ * This output is set to zero.
+ */
+void Task::doGetOutput(Eigen::VectorXd& output) const
+{
+    output = Eigen::VectorXd::Zero(getDimension());
+}
+
+
 const Eigen::VectorXd& Task::getComputedForce() const
 {
     return pimpl->fcVar.getValue();
