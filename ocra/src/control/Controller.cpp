@@ -9,14 +9,14 @@
 namespace
 {
   template<class T>
-  class checked_map
+  class TaskMap
   {
   private:
     std::map<std::string, std::shared_ptr<T>> data;
     const std::string id;
 
   public:
-    checked_map(const std::string& id_): id(id_) {}
+    TaskMap(const std::string& id_): id(id_) {}
 
     const std::shared_ptr<T> get(const std::string& name) const
     {
@@ -81,7 +81,7 @@ namespace ocra
     const Model& model;
     VectorXd tau_max;
     VectorXd tau;
-    checked_map<Task> tasks;
+    TaskMap<Task> tasks;
     std::vector<std::shared_ptr<Task>> activeTasks;
     std::string errorMessage;
     double maxTau;
