@@ -38,6 +38,19 @@ namespace ocra
       return (fixedPosition&0x1) + ((fixedPosition>>1)&0x1) + ((fixedPosition>>2)&0x1)
               +(fixedOrientation&0x1) + ((fixedOrientation>>1)&0x1) + ((fixedOrientation>>2)&0x1);
     }
+
+    inline int computeDimensionFor(ECartesianDof cDoF)
+    {
+        if  (cDoF == ECartesianDof::X || cDoF == ECartesianDof::Y || cDoF == ECartesianDof::Z) {
+            return 1;
+        } else if (cDoF == ECartesianDof::XY || cDoF == ECartesianDof::YZ || cDoF == ECartesianDof::XZ) {
+            return 2;
+        } else if (cDoF == ECartesianDof::XYZ) {
+            return 3;
+        } else {
+            return 0;
+        }
+    }
   }
 }
 
