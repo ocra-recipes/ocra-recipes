@@ -43,6 +43,7 @@ namespace ocra
     : public NamedInstance
     , boost::noncopyable
   {
+  DEFINE_CLASS_POINTER_TYPEDEFS(Controller)
   protected:
     Controller(const std::string& name, Model& model);
 
