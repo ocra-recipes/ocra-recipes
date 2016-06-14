@@ -23,6 +23,7 @@ File history:
 #include <vector>
 #include <map>
 #include <memory>
+#include <ocra/utilities.h>
 
 namespace ocra
 {
