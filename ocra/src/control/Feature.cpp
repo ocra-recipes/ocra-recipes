@@ -270,29 +270,34 @@ namespace ocra
   TaskState PositionFeature::getState() const
   {
       TaskState state;
-      state.position = pimpl->controlFrame->getPosition();
-      state.velocity = pimpl->controlFrame->getVelocity();
-      state.acceleration = pimpl->controlFrame->getAcceleration();
-      state.wrench = pimpl->controlFrame->getWrench();
+      state.setPosition(pimpl->controlFrame->getPosition());
+      state.setVelocity(pimpl->controlFrame->getVelocity());
+      state.setAcceleration(pimpl->controlFrame->getAcceleration());
+      state.setWrench(pimpl->controlFrame->getWrench());
 
       return state;
   }
 
   void PositionFeature::setState(const TaskState& newState)
   {
-    //   TargetFrame::Ptr targetFrame = dynamic_cast<TargetFrame::Ptr>(pimpl->controlFrame);
-    // //   if(newState.position.size()>0) {
-    //       targetFrame->setPosition(newState.position);
-    // //   }
-    // //   if(newState.velocity.size()>0) {
-    //       targetFrame->setVelocity(newState.velocity);
-    // //   }
-    // //   if(newState.acceleration.size()>0) {
-    //       targetFrame->setAcceleration(newState.acceleration);
-    // //   }
-    // //   if(newState.wrench.size()>0) {
-    //       targetFrame->setWrench(newState.wrench);
-    //   }
+      try {
+          TargetFrame::Ptr targetFrame = std::dynamic_pointer_cast<TargetFrame>(pimpl->controlFrame);
+          if(newState.hasPosition()) {
+                targetFrame->setPosition(newState.getPosition());
+            }
+            if(newState.hasVelocity()) {
+                targetFrame->setVelocity(newState.getVelocity());
+            }
+            if(newState.hasAcceleration()) {
+                targetFrame->setAcceleration(newState.getAcceleration());
+            }
+            if(newState.hasWrench()) {
+                targetFrame->setWrench(newState.getWrench());
+            }
+      } catch (int errCode) {
+          std::cout << "You cannot set the state of this feature because it is not a desired feature. It must be constructed with a TargetFrame." << errCode << std::endl;
+      }
+    //
   }
 
 

@@ -52,15 +52,15 @@ void CartesianTaskBuilder::setTaskState()
             tmpPosVec(i) = this->options.desired(i);
         }
         // Set the position
-        state.position = Eigen::Displacementd(tmpPosVec, Eigen::Rotation3d::Identity());
+        state.setPosition(Eigen::Displacementd(tmpPosVec, Eigen::Rotation3d::Identity()));
     }else{
         // If the desired position was not given then just get it from the current state of the task.
-        state.position = this->task->getTaskState().position;
+        state.setPosition(this->task->getTaskState().getPosition());
     }
 
     // Set velocity and acceleration to zero.
-    state.velocity = Eigen::Twistd::Zero();
-    state.acceleration = Eigen::Twistd::Zero();
+    state.setVelocity(Eigen::Twistd::Zero());
+    state.setAcceleration(Eigen::Twistd::Zero());
 
     this->task->setDesiredTaskStateDirect(state);
 }
