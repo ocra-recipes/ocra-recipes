@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(OcraRecipes)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated-declarations")
 
 if(APPLE)
     set(BUILD_SHARED_LIBS FALSE)
