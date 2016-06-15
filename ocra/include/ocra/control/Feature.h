@@ -80,6 +80,9 @@ namespace ocra
     virtual const Eigen::MatrixXd& computeJacobian() const = 0;
     virtual const Eigen::MatrixXd& computeProjectedMass() const = 0;
     virtual const Eigen::MatrixXd& computeProjectedMassInverse() const = 0;
+
+    virtual TaskState getState() const = 0;
+    virtual void setState(const TaskState& newState) = 0;
   };
 
 
@@ -121,6 +124,9 @@ namespace ocra
     const Eigen::MatrixXd& computeJacobian() const;
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
+
+    TaskState getState() const;
+    void setState(const TaskState& newState);
 
   private:
     struct Pimpl;
@@ -165,6 +171,9 @@ namespace ocra
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
 
+    TaskState getState() const {TaskState state; return state;}
+    void setState(const TaskState& newState) {};
+
   private:
     struct Pimpl;
     boost::shared_ptr<Pimpl> pimpl;
@@ -206,6 +215,9 @@ namespace ocra
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
 
+    TaskState getState() const {TaskState state; return state;}
+    void setState(const TaskState& newState) {};
+
   private:
     struct Pimpl;
     boost::shared_ptr<Pimpl> pimpl;
@@ -246,6 +258,9 @@ namespace ocra
     const Eigen::MatrixXd& computeJacobian() const;
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
+
+    TaskState getState() const {TaskState state; return state;}
+    void setState(const TaskState& newState) {};
 
   private:
     struct Pimpl;
@@ -335,6 +350,11 @@ namespace ocra
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
 
+
+    TaskState getState() const {TaskState state; return state;}
+    void setState(const TaskState& newState) {};
+
+
   private:
     struct Pimpl;
     boost::shared_ptr<Pimpl> pimpl;
@@ -372,6 +392,11 @@ namespace ocra
     const Eigen::MatrixXd& computeJacobian() const;
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
+
+
+    TaskState getState() const {TaskState state; return state;}
+    void setState(const TaskState& newState) {};
+
 
   private:
     struct Pimpl;

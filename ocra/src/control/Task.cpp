@@ -958,6 +958,24 @@ void Task::doSetWeight()
 }
 
 
+TaskState Task::getTaskState()
+{
+    return getFeature()->getState();
+}
+
+void Task::setDesiredTaskState(const TaskState& newDesiredTaskState)
+{
+    // Implement Trajectory thread here.
+}
+
+void Task::setDesiredTaskStateDirect(const TaskState& newDesiredTaskState)
+{
+    getFeatureDes()->setState(newDesiredTaskState);
+}
+
+
+
+
 
 }
 
