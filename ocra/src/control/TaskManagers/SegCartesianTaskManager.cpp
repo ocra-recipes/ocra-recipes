@@ -202,11 +202,11 @@ SegCartesianTaskManager::~SegCartesianTaskManager()
 void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame, double _stiffness, double _damping, double _weight, int _hierarchyLevel)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(_taskPoint_LocalFrame));
-    featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
-    feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
-    featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
+    featDesFrame = std::make_shared<TargetFrame>(name + ".TargetFrame", model);
+    feat = std::make_shared<PositionFeature>(name + ".PositionFeature", featFrame, axes);
+    featDes = std::make_shared<PositionFeature>(name + ".PositionFeature_Des", featDesFrame, axes);
 
-    task = ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, feat, featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
     task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
@@ -224,11 +224,11 @@ void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame
 void SegCartesianTaskManager::_init(const Eigen::Vector3d& _taskPoint_LocalFrame, double _stiffness, double _damping, const Eigen::VectorXd& _weight, int _hierarchyLevel)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(_taskPoint_LocalFrame));
-    featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
-    feat = new ocra::PositionFeature(name + ".PositionFeature", *featFrame, axes);
-    featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
+    featDesFrame = std::make_shared<TargetFrame>(name + ".TargetFrame", model);
+    feat = std::make_shared<PositionFeature>(name + ".PositionFeature", featFrame, axes);
+    featDes = std::make_shared<PositionFeature>(name + ".PositionFeature_Des", featDesFrame, axes);
 
-    task = ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, feat, featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
     task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);

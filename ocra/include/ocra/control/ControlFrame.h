@@ -16,6 +16,7 @@ File history:
 
 #include "ocra/optim/NamedInstance.h"
 #include "ocra/MathTypes.h"
+#include "ocra/utilities.h"
 #include "Eigen/Lgsm"
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
@@ -42,6 +43,8 @@ namespace ocra
     : public NamedInstance
     , boost::noncopyable
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(ControlFrame)
+
   protected:
     ControlFrame(const std::string& name);
 
@@ -71,6 +74,7 @@ namespace ocra
   class TargetFrame
     : public ControlFrame
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(TargetFrame)
   public:
     TargetFrame(const std::string& name, const Model& model);
 
@@ -99,6 +103,7 @@ namespace ocra
   class SegmentFrame
     : public ControlFrame
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(SegmentFrame)
   public:
     SegmentFrame(const std::string& name, const Model& model, const std::string& segname);
     SegmentFrame(const std::string& name, const Model& model, const std::string& segname, const Eigen::Displacementd& H_local);
@@ -126,6 +131,7 @@ namespace ocra
   class CoMFrame
     : public ControlFrame
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(CoMFrame)
   public:
     CoMFrame(const std::string& name, const Model& model);
 

@@ -3,7 +3,6 @@
 
 #include "ocra/optim/NamedInstance.h"
 #include <Eigen/Core>
-#include <memory>
 #include "ocra/utilities.h"
 #include "ocra/control/Feature.h"
 #include "ocra/control/Model.h"
@@ -15,6 +14,7 @@
 #include "ocra/optim/SquaredLinearFunction.h"
 #include "ocra/optim/WeightedSquareDistanceFunction.h"
 #include "ocra/control/Task.h"
+#include "ocra/control/TaskState.h"
 #include "ocra/control/ControlFrame.h"
 #include "ocra/optim/OneLevelSolver.h"
 #include "ocra/control/ControlConstraint.h"
@@ -34,12 +34,16 @@ class Task : public NamedInstance
 DEFINE_CLASS_POINTER_TYPEDEFS(Task)
 
 public:
-    Task(const std::string& name, std::shared_ptr<Model> model, const Feature& feature, const Feature& featureDes);
-    Task(const std::string& name, std::shared_ptr<Model> model, const Feature& feature);
+    Task(const std::string& name, std::shared_ptr<Model> model, Feature::Ptr feature, Feature::Ptr featureDes);
+    Task(const std::string& name, std::shared_ptr<Model> model, Feature::Ptr feature);
     virtual ~Task();
 
 
     enum TYPETASK { UNKNOWNTASK, ACCELERATIONTASK, TORQUETASK, FORCETASK, COMMOMENTUMTASK };
+
+    TaskState getTaskState();
+    void setDesiredTaskState(const TaskState& newDesiredTaskState);
+    void setDesiredTaskStateDirect(const TaskState& newDesiredTaskState);
 
     int getHierarchyLevel();
     void setHierarchyLevel(int level);
@@ -101,8 +105,8 @@ public:
     const Eigen::MatrixXd& getJacobian() const;
 
 protected:
-    const Feature& getFeature() const;
-    const Feature* getFeatureDes() const;
+    Feature::Ptr getFeature() const;
+    Feature::Ptr getFeatureDes() const;
 
 protected:
     void doActivateAsObjective();

@@ -4,6 +4,7 @@
 #include <ocra/control/TaskBuilders/TaskBuilderOptions.h>
 #include <ocra/control/Model.h>
 #include <ocra/control/Task.h>
+#include <ocra/control/TaskState.h>
 #include <ocra/control/Feature.h>
 #include <ocra/control/ControlFrame.h>
 #include <ocra/utilities.h>
@@ -14,19 +15,19 @@ class TaskBuilder {
 DEFINE_CLASS_POINTER_TYPEDEFS(TaskBuilder)
 
 protected:
-    Task::Ptr _task;
-    Model::Ptr _model;
-    TaskBuilderOptions _options;
+    Task::Ptr task;
+    Model::Ptr model;
+    TaskBuilderOptions options;
 
 protected: // pure virtual functions
     virtual void setTaskType() = 0;
     virtual void setTaskState() = 0;
-    virtual Feature * buildFeature() = 0;
-    virtual Feature * buildFeatureDesired() = 0;
+    virtual Feature::Ptr buildFeature() = 0;
+    virtual Feature::Ptr buildFeatureDesired() = 0;
 
 
 public:
-    TaskBuilder (const TaskBuilderOptions& options, Model::Ptr model);
+    TaskBuilder (const TaskBuilderOptions& taskOptions, Model::Ptr modelPtr);
     virtual ~TaskBuilder ();
 
     void buildTask();

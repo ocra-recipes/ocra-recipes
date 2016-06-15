@@ -58,9 +58,9 @@ class SegCartesianTaskManager : public TaskManager
 
         const std::string&              segmentName;
         ocra::ECartesianDof              axes;
-        ocra::PositionFeature*           feat;
-        ocra::PositionFeature*           featDes;
-        ocra::TargetFrame*               featDesFrame;
+        ocra::PositionFeature::Ptr           feat;
+        ocra::PositionFeature::Ptr           featDes;
+        ocra::TargetFrame::Ptr               featDesFrame;
 
         void _init(const Eigen::Vector3d& refPoint_LocalFrame, double stiffness, double damping, double weight, int hierarchyLevel);
         void _init(const Eigen::Vector3d& refPoint_LocalFrame, double stiffness, double damping, const Eigen::VectorXd& weight, int hierarchyLevel);

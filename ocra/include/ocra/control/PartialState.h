@@ -15,6 +15,7 @@
 
 #include "ocra/optim/NamedInstance.h"
 #include "ocra/control/Model.h"
+#include "ocra/utilities.h"
 #include <Eigen/Core>
 #include <boost/shared_ptr.hpp>
 
@@ -31,6 +32,8 @@ namespace ocra
  */
 class PartialState : public NamedInstance
 {
+    DEFINE_CLASS_POINTER_TYPEDEFS(PartialState)
+
 public:
     PartialState(const std::string& name, const Model& model, const Eigen::VectorXi& selectedDofs, int whichPart);
     virtual ~PartialState() = 0;
@@ -62,6 +65,8 @@ private:
  */
 class PartialModelState: public PartialState
 {
+    DEFINE_CLASS_POINTER_TYPEDEFS(PartialModelState)
+
 public:
     PartialModelState(const std::string& name, const Model& model, const Eigen::VectorXi& selectedDofs, int whichPart);
     virtual ~PartialModelState();
@@ -86,6 +91,8 @@ private:
  */
 class PartialTargetState: public PartialState
 {
+    DEFINE_CLASS_POINTER_TYPEDEFS(PartialTargetState)
+
 public:
     PartialTargetState(const std::string& name, const Model& model, const Eigen::VectorXi& selectedDofs, int whichPart);
     virtual ~PartialTargetState();

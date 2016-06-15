@@ -3,9 +3,9 @@
 using namespace ocra;
 
 
-TaskBuilder::TaskBuilder(const TaskBuilderOptions& options, Model::Ptr model)
-: _options(options)
-, _model(model)
+TaskBuilder::TaskBuilder(const TaskBuilderOptions& taskOptions, Model::Ptr modelPtr)
+: options(taskOptions)
+, model(modelPtr)
 {
 
 }
@@ -17,15 +17,15 @@ TaskBuilder::~TaskBuilder()
 
 void TaskBuilder::buildTask()
 {
-    Feature* feature = buildFeature();
-    Feature* featureDes = buildFeatureDesired();
-    _task = std::make_shared<Task>(_options.taskName, _model, *feature, *featureDes);
+    Feature::Ptr feature = buildFeature();
+    Feature::Ptr featureDes = buildFeatureDesired();
+    this->task = std::make_shared<Task>(this->options.taskName, this->model, feature, featureDes);
     setTaskType();
 }
 
 Task::Ptr TaskBuilder::getTask()
 {
-    return _task;
+    return this->task;
 }
 
 void TaskBuilder::setTaskParameters()
@@ -43,29 +43,29 @@ void TaskBuilder::setTaskParameters()
 
 void TaskBuilder::setTaskAsObjective()
 {
-    _task->activateAsObjective();
+    this->task->activateAsObjective();
 }
 
 void TaskBuilder::setTaskLevel()
 {
-    _task->setHierarchyLevel(_options.hierarchyLevel);
+    this->task->setHierarchyLevel(this->options.hierarchyLevel);
 }
 
 void TaskBuilder::setTaskWeight()
 {
-    if (_options.useWeightVectorConstructor) {
-        _task->setWeight(_options.weightVector);
+    if (this->options.useWeightVectorConstructor) {
+        this->task->setWeight(this->options.weightVector);
     } else {
-        _task->setWeight(_options.weight);
+        this->task->setWeight(this->options.weight);
     }
 }
 
 void TaskBuilder::setTaskStiffness()
 {
-    _task->setStiffness(_options.kp);
+    this->task->setStiffness(this->options.kp);
 }
 
 void TaskBuilder::setTaskDamping()
 {
-    _task->setDamping(_options.kd);
+    this->task->setDamping(this->options.kd);
 }

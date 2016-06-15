@@ -32,7 +32,7 @@ class ContactTaskManager : public TaskManager
 
         const std::string&          segmentName;
 
-        ocra::PointContactFeature*   feat;
+        ocra::PointContactFeature::Ptr   feat;
 };
 
 }

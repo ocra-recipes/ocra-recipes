@@ -123,13 +123,13 @@ FullPostureTaskManager::~FullPostureTaskManager()
  */
 void FullPostureTaskManager::_init(int fullStateType, double stiffness, double damping, double weight, int _hierarchyLevel)
 {
-    featState = new ocra::FullModelState(name + ".FullModelState", model, fullStateType);
-    featDesState = new ocra::FullTargetState(name + ".FullTargetState", model, fullStateType);
-    feat = new ocra::FullStateFeature(name + ".FullStateFeature", *featState);
-    featDes = new ocra::FullStateFeature(name + ".FullStateFeature_Des", *featDesState);
+    featState = std::make_shared<FullModelState>(name + ".FullModelState", model, fullStateType);
+    featDesState = std::make_shared<FullTargetState>(name + ".FullTargetState", model, fullStateType);
+    feat = std::make_shared<FullStateFeature>(name + ".FullStateFeature", featState);
+    featDes = std::make_shared<FullStateFeature>(name + ".FullStateFeature_Des", featDesState);
 
     // The feature initializes as Zero for posture
-    task = ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, feat, featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
     task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
@@ -146,13 +146,13 @@ void FullPostureTaskManager::_init(int fullStateType, double stiffness, double d
 
 void FullPostureTaskManager::_init(int fullStateType, double stiffness, double damping, const Eigen::VectorXd& weight, int _hierarchyLevel)
 {
-    featState = new ocra::FullModelState(name + ".FullModelState", model, fullStateType);
-    featDesState = new ocra::FullTargetState(name + ".FullTargetState", model, fullStateType);
-    feat = new ocra::FullStateFeature(name + ".FullStateFeature", *featState);
-    featDes = new ocra::FullStateFeature(name + ".FullStateFeature_Des", *featDesState);
+    featState = std::make_shared<FullModelState>(name + ".FullModelState", model, fullStateType);
+    featDesState = std::make_shared<FullTargetState>(name + ".FullTargetState", model, fullStateType);
+    feat = std::make_shared<FullStateFeature>(name + ".FullStateFeature", featState);
+    featDes = std::make_shared<FullStateFeature>(name + ".FullStateFeature_Des", featDesState);
 
     // The feature initializes as Zero for posture
-    task = ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, feat, featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
     task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);

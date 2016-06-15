@@ -43,11 +43,11 @@ class PartialPostureTaskManager : public TaskManager
         virtual std::string getTaskManagerType();
 
     private:
-        ocra::PartialStateFeature*           feat;
-        ocra::PartialModelState*             featState;
+        ocra::PartialStateFeature::Ptr           feat;
+        ocra::PartialModelState::Ptr             featState;
 
-        ocra::PartialStateFeature*           featDes;
-        ocra::PartialTargetState*            featDesState;
+        ocra::PartialStateFeature::Ptr           featDes;
+        ocra::PartialTargetState::Ptr            featDesState;
 
 /*
         Eigen::Vector3d                 _posDes;

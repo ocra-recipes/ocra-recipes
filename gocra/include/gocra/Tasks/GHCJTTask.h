@@ -43,8 +43,8 @@ class GHCJTTask: public Task
 public:
 
 
-    GHCJTTask(const std::string& taskName, const Model& innerModel, const Feature& feature, const Feature& featureDes);
-    GHCJTTask(const std::string& taskName, const Model& innerModel, const Feature& feature);
+    GHCJTTask(const std::string& taskName, const Model& innerModel, Feature::Ptr feature, Feature::Ptr featureDes);
+    GHCJTTask(const std::string& taskName, const Model& innerModel, Feature::Ptr feature);
     virtual ~GHCJTTask();
 
 

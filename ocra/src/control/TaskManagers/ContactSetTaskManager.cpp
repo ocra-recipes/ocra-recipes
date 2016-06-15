@@ -32,8 +32,8 @@ ContactSetTaskManager::ContactSetTaskManager(   ocra::Controller& _ctrl,
     feats.resize(numContacts);
     featFrames.resize(numContacts);
     names.resize(numContacts);
-    // feats = new ocra::PointContactFeature*[numContacts];
-    // featFrames = new ocra::SegmentFrame*[numContacts];
+    // feats = std::make_shared<PointContactFeature*[numContacts];
+    // featFrames = std::make_shared<SegmentFrame*[numContacts];
     // names = new std::string[numContacts];
 
     for (int i = 0; i < numContacts; i++)
@@ -43,9 +43,9 @@ ContactSetTaskManager::ContactSetTaskManager(   ocra::Controller& _ctrl,
         names[i] = name_stream.str();
 
         featFrames[i] = std::make_shared<ocra::SegmentFrame>(names[i] + ".SegmentFrame", model, model.SegmentName(segmentName), _H_segment_frames[i]);
-        feats[i] = std::make_shared<ocra::PointContactFeature>(names[i] + ".PointContactFeature", *featFrames[i]);
+        feats[i] = std::make_shared<ocra::PointContactFeature>(names[i] + ".PointContactFeature", featFrames[i]);
 
-        taskVector[i] = ctrl.createContactTask(names[i], *feats[i], _mu, _margin);
+        taskVector[i] = ctrl.createContactTask(names[i], feats[i], _mu, _margin);
         // Control the acceleration of the contact point
         taskVector[i]->setTaskType(ocra::Task::ACCELERATIONTASK);
         taskVector[i]->setHierarchyLevel(_hierarchyLevel);

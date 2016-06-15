@@ -2,11 +2,11 @@
 
 using namespace ocra;
 
-CartesianTaskBuilder::CartesianTaskBuilder(const TaskBuilderOptions& options, Model::Ptr model)
-: TaskBuilder(options, model)
+CartesianTaskBuilder::CartesianTaskBuilder(const TaskBuilderOptions& taskOptions, Model::Ptr modelPtr)
+: TaskBuilder(taskOptions, modelPtr)
 {
-    _axes = ECartesianDof(_options.axes);
-    _nDoF = utils::computeDimensionFor(_axes);
+    this->axes = ECartesianDof(this->options.axes);
+    this->nDoF = utils::computeDimensionFor(this->axes);
 }
 
 CartesianTaskBuilder::~CartesianTaskBuilder()
@@ -14,39 +14,50 @@ CartesianTaskBuilder::~CartesianTaskBuilder()
 
 }
 
-Feature * CartesianTaskBuilder::buildFeature()
+Feature::Ptr CartesianTaskBuilder::buildFeature()
 {
-    std::string featFrameName = _options.taskName + ".SegmentFrame";
-    std::string featName = _options.taskName + ".PositionFeature";
-    std::string segmentName = _model->SegmentName(_options.segment);
+    std::string featFrameName = this->options.taskName + ".SegmentFrame";
+    std::string featName = this->options.taskName + ".PositionFeature";
+    std::string segmentName = this->model->SegmentName(this->options.segment);
 
-    Eigen::VectorXd offsetVectorXd = _options.offset.front();
+    Eigen::VectorXd offsetVectorXd = this->options.offset.front();
     Eigen::Vector3d offsetVector3d = Eigen::Vector3d::Zero();
-    if (offsetVectorXd.size() >= _nDoF) {
-        offsetVector3d = offsetVectorXd.head(_nDoF);
+    if (offsetVectorXd.size() >= this->nDoF) {
+        offsetVector3d = offsetVectorXd.head(this->nDoF);
     }
     Eigen::Displacementd frameOffset = Eigen::Displacementd(offsetVector3d);
-    ControlFrame * featFrame =  new SegmentFrame(featFrameName, *_model, segmentName, frameOffset);
+    ControlFrame::Ptr featFrame =  std::make_shared<SegmentFrame>(featFrameName, *this->model, segmentName, frameOffset);
 
-    return new PositionFeature(featName, *featFrame, _axes);
+    return std::make_shared<PositionFeature>(featName, featFrame, this->axes);
 }
 
-Feature * CartesianTaskBuilder::buildFeatureDesired()
+Feature::Ptr CartesianTaskBuilder::buildFeatureDesired()
 {
-    std::string featDesFrameName = _options.taskName + ".TargetFrame";
-    std::string featDesName = _options.taskName + ".PositionFeatureDesired";
+    std::string featDesFrameName = this->options.taskName + ".TargetFrame";
+    std::string featDesName = this->options.taskName + ".PositionFeatureDesired";
 
-    ControlFrame * featDesFrame = new TargetFrame(featDesFrameName, *_model);
+    ControlFrame::Ptr featDesFrame = std::make_shared<TargetFrame>(featDesFrameName, *this->model);
 
-    return new PositionFeature(featDesName, *featDesFrame, _axes);
+    return std::make_shared<PositionFeature>(featDesName, featDesFrame, this->axes);
 }
 
 void CartesianTaskBuilder::setTaskState()
 {
+    TaskState state;
+    // TODO: This is where the parsing and shit needs to happen.
+    if(this->options.desired.size() == this->nDoF){
+        // state.position = Eigen::Displacementd(this->options.desired);
+    }else{
+        state.position = this->model->getSegmentPosition(this->options.segment);
+    }
 
+
+    state.velocity = Eigen::Twistd::Zero();
+    state.acceleration = Eigen::Twistd::Zero();
+    this->task->setDesiredTaskStateDirect(state);
 }
 
 void CartesianTaskBuilder::setTaskType()
 {
-    _task->setTaskType(Task::ACCELERATIONTASK);
+    this->task->setTaskType(Task::ACCELERATIONTASK);
 }

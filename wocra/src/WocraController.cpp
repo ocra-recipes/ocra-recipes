@@ -310,27 +310,27 @@ void WocraController::doAddContactSet(const ContactSet& contacts)
 //
 // /** Create an WocraTask.
 //  *
-//  * \return an WocraTask instance that is a dynamic_cast of the task returned by ocra::Controller::createTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+//  * \return an WocraTask instance that is a dynamic_cast of the task returned by ocra::Controller::createTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const
 //  */
-// WocraTask& WocraController::createWocraTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+// WocraTask& WocraController::createWocraTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const
 // {
 //     return dynamic_cast<WocraTask&>(createTask(name, feature, featureDes));
 // }
 //
 // /** Create an WocraTask.
 //  *
-//  * \return an WocraTask instance that is a dynamic_cast of the task returned by ocra::Controller::createTask(const std::string& name, const Feature& feature) const
+//  * \return an WocraTask instance that is a dynamic_cast of the task returned by ocra::Controller::createTask(const std::string& name, Feature::Ptr feature) const
 //  */
-// WocraTask& WocraController::createWocraTask(const std::string& name, const Feature& feature) const
+// WocraTask& WocraController::createWocraTask(const std::string& name, Feature::Ptr feature) const
 // {
 //     return dynamic_cast<WocraTask&>(createTask(name, feature));
 // }
 //
 // /** Create an WocraContactTask.
 //  *
-//  * \return an WocraTask instance that is a dynamic_cast of the task returned by ocra::Controller::createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+//  * \return an WocraTask instance that is a dynamic_cast of the task returned by ocra::Controller::createContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const
 //  */
-// WocraTask& WocraController::createWocraContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+// WocraTask& WocraController::createWocraContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const
 // {
 //     return dynamic_cast<WocraTask&>(createContactTask(name, feature, mu, margin));
 // }
@@ -351,7 +351,7 @@ void WocraController::doAddContactSet(const ContactSet& contacts)
  * and is the concrete implementation required by the ocra Controller class.
  */
 
- std::shared_ptr<Task> WocraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+ std::shared_ptr<Task> WocraController::doCreateTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const
 {
     return std::make_shared<ocra::Task>(name, pimpl->innerModel, feature, featureDes);
 };
@@ -365,7 +365,7 @@ void WocraController::doAddContactSet(const ContactSet& contacts)
  * This method is called by the higher level methods #createWocraTask(const std::string&, const Feature&) const
  * and is the concrete implementation required by the ocra Controller class.
  */
- std::shared_ptr<Task> WocraController::doCreateTask(const std::string& name, const Feature& feature) const
+ std::shared_ptr<Task> WocraController::doCreateTask(const std::string& name, Feature::Ptr feature) const
 {
     return std::make_shared<ocra::Task>(name, pimpl->innerModel, feature);
 };
@@ -378,11 +378,11 @@ void WocraController::doAddContactSet(const ContactSet& contacts)
  * \param margin   The margin inside the friction cone
  * \return The pointer to the new created contact task
  *
- * This method is called by the higher level methods #createWocraContactTask(const std::string&, const PointContactFeature&, , double, double) const
+ * This method is called by the higher level methods #createWocraContactTask(const std::string&, PointContactFeature::Ptr, , double, double) const
  * and is the concrete implementation required by the ocra::Controller class.
  */
 
- std::shared_ptr<Task> WocraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+ std::shared_ptr<Task> WocraController::doCreateContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const
 {
     return std::make_shared<ocra::Task>(name, pimpl->innerModel, feature);
 };

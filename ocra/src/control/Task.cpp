@@ -30,8 +30,8 @@ namespace ocra
 {
   struct Task::Pimpl
   {
-    const Feature& feature;
-    const Feature* featureDes;
+    Feature::Ptr feature;
+    Feature::Ptr featureDes;
     int mode;
     GainsWorkspace gainsWorkspace;
     MatrixXd M;
@@ -73,16 +73,16 @@ namespace ocra
     Objective<SquaredLinearFunction>*       innerTaskAsObjective;
     EqualZeroConstraintPtr<LinearFunction>  innerTaskAsConstraint;
 
-    Pimpl(const std::string& name, std::shared_ptr<Model> m, const Feature& s, const Feature* sdes)
+    Pimpl(const std::string& name, std::shared_ptr<Model> m, Feature::Ptr s, Feature::Ptr sdes)
       : feature(s)
       , featureDes(sdes)
       , mode(TASK_DEACTIVATED)
-      , gainsWorkspace(s.getDimension())
-      , M( MatrixXd::Identity(s.getDimension(), s.getDimension()) )
-      , M_inverse( MatrixXd::Identity(s.getDimension(), s.getDimension()) )
-      , B( MatrixXd::Zero(s.getDimension(), s.getDimension()) )
-      , K( MatrixXd::Zero(s.getDimension(), s.getDimension()) )
-      , weight( VectorXd::Ones(s.getDimension()) )
+      , gainsWorkspace(s->getDimension())
+      , M( MatrixXd::Identity(s->getDimension(), s->getDimension()) )
+      , M_inverse( MatrixXd::Identity(s->getDimension(), s->getDimension()) )
+      , B( MatrixXd::Zero(s->getDimension(), s->getDimension()) )
+      , K( MatrixXd::Zero(s->getDimension(), s->getDimension()) )
+      , weight( VectorXd::Ones(s->getDimension()) )
 	  , frictionOffset(Vector3d::Zero())
       , frictionCoeff(1.)
       , margin(0.)
@@ -94,7 +94,7 @@ namespace ocra
       , solver(0x0)
       , dynamicEquation(0x0)
       , useReducedProblem(false)
-      , fcVar(name+".var", s.getDimension())
+      , fcVar(name+".var", s->getDimension())
 //        , weight(1.)
       , taskHasBeenInitialized(false)
       , contactForceConstraintHasBeenSavedInSolver(false)
@@ -132,7 +132,7 @@ namespace ocra
     void setAsAccelerationTask()
     {
 
-        int featn = feature.getDimension();
+        int featn = feature->getDimension();
         if (useReducedProblem)
         {
             innerObjectiveFunction = new VariableChiFunction(dynamicEquation->getActionVariable(), featn);
@@ -146,14 +146,14 @@ namespace ocra
 
     void setAsTorqueTask()
     {
-        int featn = feature.getDimension();
+        int featn = feature->getDimension();
         innerObjectiveFunction = new LinearFunction(innerModel->getJointTorqueVariable(), Eigen::MatrixXd::Zero(featn, innerModel->nbInternalDofs()), Eigen::VectorXd::Zero(featn));
         connectFunctionnWithObjectiveAndConstraint();
     }
 
     void setAsForceTask()
     {
-        int featn = feature.getDimension();
+        int featn = feature->getDimension();
         innerObjectiveFunction = new LinearFunction(fcVar, Eigen::MatrixXd::Identity(featn, featn), Eigen::VectorXd::Zero(featn));
         connectFunctionnWithObjectiveAndConstraint();
     }
@@ -166,13 +166,13 @@ namespace ocra
 
   };
 
-  Task::Task(const std::string& name, std::shared_ptr<Model> model, const Feature& feature, const Feature& featureDes)
+  Task::Task(const std::string& name, std::shared_ptr<Model> model, Feature::Ptr feature, Feature::Ptr featureDes)
     : NamedInstance(name)
-    , pimpl(new Pimpl(name, model, feature, &featureDes))
+    , pimpl(new Pimpl(name, model, feature, featureDes))
   {
   }
 
-  Task::Task(const std::string& name, std::shared_ptr<Model> model, const Feature& feature)
+  Task::Task(const std::string& name, std::shared_ptr<Model> model, Feature::Ptr feature)
     : NamedInstance(name)
     , pimpl(new Pimpl(name, model, feature, 0x0))
   {
@@ -316,14 +316,14 @@ namespace ocra
   void Task::setDesiredMass(double Md)
   {
     pimpl->useActualMass = false;
-    pimpl->M = MatrixXd::Zero(pimpl->feature.getDimension(), pimpl->feature.getDimension());
+    pimpl->M = MatrixXd::Zero(pimpl->feature->getDimension(), pimpl->feature->getDimension());
     pimpl->M.diagonal().setConstant(Md);
   }
 
   void Task::setDesiredMass(const VectorXd& Md)
   {
     pimpl->useActualMass = false;
-    pimpl->M = MatrixXd::Zero(pimpl->feature.getDimension(), pimpl->feature.getDimension());
+    pimpl->M = MatrixXd::Zero(pimpl->feature->getDimension(), pimpl->feature->getDimension());
     pimpl->M.diagonal() = Md;
   }
 
@@ -335,13 +335,13 @@ namespace ocra
 
   void Task::setDamping(double B)
   {
-    pimpl->B = MatrixXd::Zero(pimpl->feature.getDimension(), pimpl->feature.getDimension());
+    pimpl->B = MatrixXd::Zero(pimpl->feature->getDimension(), pimpl->feature->getDimension());
     pimpl->B.diagonal().setConstant(B);
   }
 
   void Task::setDamping(const VectorXd& B)
   {
-    pimpl->B = MatrixXd::Zero(pimpl->feature.getDimension(), pimpl->feature.getDimension());
+    pimpl->B = MatrixXd::Zero(pimpl->feature->getDimension(), pimpl->feature->getDimension());
     pimpl->B.diagonal() = B;
   }
 
@@ -352,13 +352,13 @@ namespace ocra
 
   void Task::setStiffness(double K)
   {
-    pimpl->K = MatrixXd::Zero(pimpl->feature.getDimension(), pimpl->feature.getDimension());
+    pimpl->K = MatrixXd::Zero(pimpl->feature->getDimension(), pimpl->feature->getDimension());
     pimpl->K.diagonal().setConstant(K);
   }
 
   void Task::setStiffness(const VectorXd& K)
   {
-    pimpl->K = MatrixXd::Zero(pimpl->feature.getDimension(), pimpl->feature.getDimension());
+    pimpl->K = MatrixXd::Zero(pimpl->feature->getDimension(), pimpl->feature->getDimension());
     pimpl->K.diagonal() = K;
   }
 
@@ -401,9 +401,9 @@ namespace ocra
     if(pimpl->useActualMass)
     {
       if(pimpl->featureDes)
-        return pimpl->feature.computeProjectedMass(*pimpl->featureDes);
+        return pimpl->feature->computeProjectedMass(*pimpl->featureDes);
       else
-        return pimpl->feature.computeProjectedMass();
+        return pimpl->feature->computeProjectedMass();
     }
     return pimpl->M;
   }
@@ -413,9 +413,9 @@ namespace ocra
     if(pimpl->useActualMass)
     {
       if(pimpl->featureDes)
-        return pimpl->feature.computeProjectedMassInverse(*pimpl->featureDes);
+        return pimpl->feature->computeProjectedMassInverse(*pimpl->featureDes);
       else
-        return pimpl->feature.computeProjectedMassInverse();
+        return pimpl->feature->computeProjectedMassInverse();
     }
     pimpl->M_inverse = pimpl->M.inverse();
     return pimpl->M_inverse;
@@ -436,7 +436,7 @@ namespace ocra
     if(pimpl->contactActive)
       return;
 
-    if((pimpl->feature.getDimension() != 3) && (pimpl->feature.getDimension() != 6))
+    if((pimpl->feature->getDimension() != 3) && (pimpl->feature->getDimension() != 6))
       throw std::runtime_error("[Task::activateContactMode] Contact mode is available only for features with dimension 3 or 6");
 
     if(isActiveAsConstraint() || isActiveAsObjective())
@@ -522,7 +522,7 @@ namespace ocra
 
   int Task::getDimension() const
   {
-    return getFeature().getDimension();
+    return getFeature()->getDimension();
   }
 
   const VectorXd& Task::getOutput() const
@@ -533,40 +533,40 @@ namespace ocra
 
   const VectorXd& Task::getError() const
   {
-    pimpl->error = pimpl->featureDes ? pimpl->feature.computeError(*pimpl->featureDes) : pimpl->feature.computeError();
+    pimpl->error = pimpl->featureDes ? pimpl->feature->computeError(*pimpl->featureDes) : pimpl->feature->computeError();
     return pimpl->error;
   }
 
   const VectorXd& Task::getErrorDot() const
   {
-    pimpl->errorDot = pimpl->featureDes ? pimpl->feature.computeErrorDot(*pimpl->featureDes) : pimpl->feature.computeErrorDot();
+    pimpl->errorDot = pimpl->featureDes ? pimpl->feature->computeErrorDot(*pimpl->featureDes) : pimpl->feature->computeErrorDot();
     return pimpl->errorDot;
   }
 
   const VectorXd& Task::getErrorDdot() const
   {
-    pimpl->errorDdot = pimpl->featureDes ? pimpl->feature.computeAcceleration(*pimpl->featureDes) : pimpl->feature.computeAcceleration();
+    pimpl->errorDdot = pimpl->featureDes ? pimpl->feature->computeAcceleration(*pimpl->featureDes) : pimpl->feature->computeAcceleration();
     return pimpl->errorDdot;
   }
 
   const VectorXd& Task::getEffort() const
   {
-    pimpl->effort = pimpl->featureDes ? pimpl->feature.computeEffort(*pimpl->featureDes) : pimpl->feature.computeEffort();
+    pimpl->effort = pimpl->featureDes ? pimpl->feature->computeEffort(*pimpl->featureDes) : pimpl->feature->computeEffort();
     return pimpl->effort;
   }
 
   const MatrixXd& Task::getJacobian() const
   {
-    pimpl->jacobian = pimpl->featureDes ? pimpl->feature.computeJacobian(*pimpl->featureDes) : pimpl->feature.computeJacobian();
+    pimpl->jacobian = pimpl->featureDes ? pimpl->feature->computeJacobian(*pimpl->featureDes) : pimpl->feature->computeJacobian();
     return pimpl->jacobian;
   }
 
-  const Feature& Task::getFeature() const
+  Feature::Ptr Task::getFeature() const
   {
     return pimpl->feature;
   }
 
-  const Feature* Task::getFeatureDes() const
+  Feature::Ptr Task::getFeatureDes() const
   {
     return pimpl->featureDes;
   }
@@ -673,7 +673,7 @@ void Task::addContactPointInModel()
     //THIS SHOULD BE DONE ONLY ONCE!!!
     if ( ! pimpl->contactPointHasBeenSavedInModel )
     {
-        pimpl->innerModel->getModelContacts().addContactPoint(pimpl->fcVar, getFeature());
+        pimpl->innerModel->getModelContacts().addContactPoint(pimpl->fcVar, *getFeature());
         pimpl->contactPointHasBeenSavedInModel = true;
     }
 

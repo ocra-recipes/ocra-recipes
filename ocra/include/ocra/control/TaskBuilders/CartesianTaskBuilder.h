@@ -9,18 +9,18 @@ class CartesianTaskBuilder : public TaskBuilder {
 DEFINE_CLASS_POINTER_TYPEDEFS(CartesianTaskBuilder)
 
 public:
-    CartesianTaskBuilder (const TaskBuilderOptions& options, Model::Ptr model);
+    CartesianTaskBuilder (const TaskBuilderOptions& taskOptions, Model::Ptr modelPtr);
     virtual ~CartesianTaskBuilder ();
 
 private:
-    ECartesianDof _axes;
-    int _nDoF;
+    ECartesianDof axes;
+    int nDoF;
 
 protected: // pure virtual functions
     virtual void setTaskType();
     virtual void setTaskState();
-    virtual Feature * buildFeature();
-    virtual Feature * buildFeatureDesired();
+    virtual Feature::Ptr buildFeature();
+    virtual Feature::Ptr buildFeatureDesired();
 
 };
 

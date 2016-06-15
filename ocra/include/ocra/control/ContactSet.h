@@ -46,18 +46,18 @@ namespace ocra
     : public NamedInstance
   {
   public:
-    ContactSet(const std::string& name, const Controller& factory, const SegmentFrame& body, double mu, double margin);
+    ContactSet(const std::string& name, const Controller& factory, SegmentFrame::Ptr body, double mu, double margin);
     virtual ~ContactSet();
 
     void addContactFrame(const Eigen::Displacementd& frame);
 
     ContactConstraintFeature& getBodyFeature() const;
     std::shared_ptr<Task> getBodyTask() const;
-    const std::vector<SegmentFrame*>& getPoints() const;
-    const std::vector<PointContactFeature*>& getFeatures() const;
+    const std::vector<SegmentFrame::Ptr>& getPoints() const;
+    const std::vector<PointContactFeature::Ptr>& getFeatures() const;
     const std::vector<std::shared_ptr<Task>>& getTasks() const;
 
-    const SegmentFrame& getBodyFrame() const;
+    SegmentFrame::Ptr getBodyFrame() const;
     double getMu() const;
     double getMargin() const;
     int getNFacets() const;
@@ -68,11 +68,11 @@ namespace ocra
 
   private:
     const Controller& _factory;
-    const SegmentFrame& _body;
-    ContactConstraintFeature* _bodyFeature;
+    const SegmentFrame::Ptr _body;
+    ContactConstraintFeature::Ptr _bodyFeature;
     std::shared_ptr<Task> _bodyTask;
-    std::vector<SegmentFrame*> _points;
-    std::vector<PointContactFeature*> _features;
+    std::vector<SegmentFrame::Ptr> _points;
+    std::vector<PointContactFeature::Ptr> _features;
     std::vector<std::shared_ptr<Task>> _tasks;
     double _mu;
     double _margin;

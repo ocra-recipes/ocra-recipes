@@ -43,10 +43,10 @@ class CoMMomentumTaskManager: public TaskManager
     private:
 
         ocra::ECartesianDof              axes;
-        ocra::PositionFeature*           feat;
-        ocra::CoMFrame*                  comFeatFrame;
-        ocra::PositionFeature*           featDes;
-        ocra::TargetFrame*               featDesFrame;
+        ocra::PositionFeature::Ptr           feat;
+        ocra::CoMFrame::Ptr                  comFeatFrame;
+        ocra::PositionFeature::Ptr           featDes;
+        ocra::TargetFrame::Ptr               featDesFrame;
 
         void _init(double damping, double weight, int hierarchyLevel);
         void _init(double damping, const Eigen::VectorXd& weight, int hierarchyLevel);

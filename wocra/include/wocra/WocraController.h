@@ -57,9 +57,9 @@ public:
     void addConstraint(ocra::ControlConstraint& constraint) const;
     void removeConstraint(ocra::ControlConstraint& constraint) const;
 
-    // WocraTask& createWocraTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
-    // WocraTask& createWocraTask(const std::string& name, const Feature& feature) const;
-    // WocraTask& createWocraContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
+    // WocraTask& createWocraTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const;
+    // WocraTask& createWocraTask(const std::string& name, Feature::Ptr feature) const;
+    // WocraTask& createWocraContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const;
 
 protected:
     virtual void doComputeOutput(Eigen::VectorXd& tau);
@@ -67,9 +67,9 @@ protected:
     virtual void doAddContactSet(const ContactSet& contacts);
 
 protected: // factory
-    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
-    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, const Feature& feature) const;
-    virtual std::shared_ptr<Task> doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
+    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const;
+    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, Feature::Ptr feature) const;
+    virtual std::shared_ptr<Task> doCreateContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const;
 
 
 private:

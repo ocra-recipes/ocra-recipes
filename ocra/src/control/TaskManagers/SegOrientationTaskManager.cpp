@@ -96,15 +96,15 @@ SegOrientationTaskManager::~SegOrientationTaskManager()
 void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFrame, double _stiffness, double _damping, double _weight, int _hierarchyLevel)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(Eigen::Vector3d::Zero(), _refOrientation_LocalFrame));
-    featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
-    feat = new ocra::OrientationFeature(name + ".OrientationFeature", *featFrame);
-    featDes = new ocra::OrientationFeature(name + ".OrientationFeature_Des", *featDesFrame);
+    featDesFrame = std::make_shared<TargetFrame>(name + ".TargetFrame", model);
+    feat = std::make_shared<OrientationFeature>(name + ".OrientationFeature", featFrame);
+    featDes = std::make_shared<OrientationFeature>(name + ".OrientationFeature_Des", featDesFrame);
 
     featDesFrame->setPosition(Eigen::Displacementd::Identity());
     featDesFrame->setVelocity(Eigen::Twistd::Zero());
     featDesFrame->setAcceleration(Eigen::Twistd::Zero());
 
-    task = ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, feat, featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
     task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
@@ -120,15 +120,15 @@ void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFra
 void SegOrientationTaskManager::_init(Eigen::Rotation3d _refOrientation_LocalFrame, double _stiffness, double _damping, const Eigen::VectorXd& _weight, int _hierarchyLevel)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), Eigen::Displacementd(Eigen::Vector3d::Zero(), _refOrientation_LocalFrame));
-    featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
-    feat = new ocra::OrientationFeature(name + ".OrientationFeature", *featFrame);
-    featDes = new ocra::OrientationFeature(name + ".OrientationFeature_Des", *featDesFrame);
+    featDesFrame = std::make_shared<TargetFrame>(name + ".TargetFrame", model);
+    feat = std::make_shared<OrientationFeature>(name + ".OrientationFeature", featFrame);
+    featDes = std::make_shared<OrientationFeature>(name + ".OrientationFeature_Des", featDesFrame);
 
     featDesFrame->setPosition(Eigen::Displacementd::Identity());
     featDesFrame->setVelocity(Eigen::Twistd::Zero());
     featDesFrame->setAcceleration(Eigen::Twistd::Zero());
 
-    task = ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, feat, featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
     task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);

@@ -59,9 +59,9 @@ public:
     //void addConstraint(gOcraConstraint& constraint) const;
     //void removeConstraint(gOcraConstraint& constraint) const;
 
-    GHCJTTask& createGHCJTTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
-    GHCJTTask& createGHCJTTask(const std::string& name, const Feature& feature) const;
-    GHCJTTask& createGHCJTContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
+    GHCJTTask& createGHCJTTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const;
+    GHCJTTask& createGHCJTTask(const std::string& name, Feature::Ptr feature) const;
+    GHCJTTask& createGHCJTContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const;
 
     void setActiveTaskVector();
     void doUpdateAugmentedJacobian();
@@ -88,9 +88,9 @@ protected:
     virtual void doAddContactSet(const ContactSet& contacts);
 
 protected: // factory
-    virtual Task* doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
-    virtual Task* doCreateTask(const std::string& name, const Feature& feature) const;
-    virtual Task* doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
+    virtual Task* doCreateTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const;
+    virtual Task* doCreateTask(const std::string& name, Feature::Ptr feature) const;
+    virtual Task* doCreateContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const;
 
 
 private:

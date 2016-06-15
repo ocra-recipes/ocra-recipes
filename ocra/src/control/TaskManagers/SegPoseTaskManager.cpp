@@ -196,11 +196,11 @@ SegPoseTaskManager::~SegPoseTaskManager()
 void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, double _stiffness, double _damping, double _weight, int _hierarchyLevel)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), _ref_LocalFrame);
-    featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
-    feat = new ocra::DisplacementFeature(name + ".DisplacementFeature", *featFrame, axes);
-    featDes = new ocra::DisplacementFeature(name + ".DisplacementFeature_Des", *featDesFrame, axes);
+    featDesFrame = std::make_shared<TargetFrame>(name + ".TargetFrame", model);
+    feat = std::make_shared<DisplacementFeature>(name + ".DisplacementFeature", featFrame, axes);
+    featDes = std::make_shared<DisplacementFeature>(name + ".DisplacementFeature_Des", featDesFrame, axes);
 
-    task = ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, feat, featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
     task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
@@ -223,11 +223,11 @@ void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, doub
 void SegPoseTaskManager::_init(const Eigen::Displacementd& _ref_LocalFrame, double _stiffness, double _damping, const Eigen::VectorXd& _weight, int _hierarchyLevel)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), _ref_LocalFrame);
-    featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
-    feat = new ocra::DisplacementFeature(name + ".DisplacementFeature", *featFrame, axes);
-    featDes = new ocra::DisplacementFeature(name + ".DisplacementFeature_Des", *featDesFrame, axes);
+    featDesFrame = std::make_shared<TargetFrame>(name + ".TargetFrame", model);
+    feat = std::make_shared<DisplacementFeature>(name + ".DisplacementFeature", featFrame, axes);
+    featDes = std::make_shared<DisplacementFeature>(name + ".DisplacementFeature_Des", featDesFrame, axes);
 
-    task = ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, feat, featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
     task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);

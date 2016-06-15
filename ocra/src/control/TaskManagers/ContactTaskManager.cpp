@@ -25,9 +25,9 @@ ContactTaskManager::ContactTaskManager( ocra::Controller& _ctrl,
     : TaskManager(_ctrl, _model, _taskName, _usesYarpPorts), segmentName(_segmentName)
 {
     featFrame = std::make_shared<SegmentFrame>(name + ".SegmentFrame", model, model.SegmentName(segmentName), _H_segment_frame);
-    feat = new ocra::PointContactFeature(name + ".PointContactFeature", *featFrame);
+    feat = std::make_shared<PointContactFeature>(name + ".PointContactFeature", featFrame);
 
-    task = ctrl.createContactTask(name, *feat, _mu, _margin);
+    task = ctrl.createContactTask(name, feat, _mu, _margin);
     // Control the acceleration of the contact point
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
     task->setHierarchyLevel(_hierarchyLevel);

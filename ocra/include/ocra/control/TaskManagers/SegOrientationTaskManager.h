@@ -42,9 +42,9 @@ class SegOrientationTaskManager: public TaskManager
     private:
         const std::string&              segmentName;
 
-        ocra::OrientationFeature*        feat;
-        ocra::OrientationFeature*        featDes;
-        ocra::TargetFrame*               featDesFrame;
+        ocra::OrientationFeature::Ptr        feat;
+        ocra::OrientationFeature::Ptr        featDes;
+        ocra::TargetFrame::Ptr               featDesFrame;
 
 //        Eigen::Displacementd            _poseDes;
 

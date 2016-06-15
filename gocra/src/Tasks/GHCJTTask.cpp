@@ -141,7 +141,7 @@ struct GHCJTTask::Pimpl
  * \param feature The task feature, meaning what we want to control
  * \param featureDes The desired task feature, meaning the goal we want to reach with the \a feature
  */
-GHCJTTask::GHCJTTask(const std::string& taskName, const Model& innerModel, const Feature& feature, const Feature& featureDes)
+GHCJTTask::GHCJTTask(const std::string& taskName, const Model& innerModel, Feature::Ptr feature, Feature::Ptr featureDes)
     : Task(taskName, innerModel, feature, featureDes)
     , pimpl(new Pimpl(taskName, innerModel, feature))
 {
@@ -154,7 +154,7 @@ GHCJTTask::GHCJTTask(const std::string& taskName, const Model& innerModel, const
  * \param model The ocra::Model on which we will update the dynamic parameters
  * \param feature The task feature, meaning what we want to control
  */
-GHCJTTask::GHCJTTask(const std::string& taskName, const Model& innerModel, const Feature& feature)
+GHCJTTask::GHCJTTask(const std::string& taskName, const Model& innerModel, Feature::Ptr feature)
     : Task(taskName, innerModel, feature)
     , pimpl(new Pimpl(taskName, innerModel, feature))
 {
@@ -174,7 +174,7 @@ void GHCJTTask::connectToController(ocra::OneLevelSolver& solver, SumOfLinearFun
     pimpl->seConstraint = &seConstraint;
 
 
-    int featn = pimpl->feature.getDimension();
+    int featn = pimpl->feature->getDimension();
     pimpl->innerObjectiveFunction = new LinearFunction(pimpl->fcVar, Eigen::MatrixXd::Identity(featn, featn), Eigen::VectorXd::Zero(featn));
     pimpl->regulationObjectiveFunction = new LinearFunction(pimpl->fcVar, Eigen::MatrixXd::Identity(featn, featn),Eigen::VectorXd::Zero(featn));
 
@@ -411,8 +411,8 @@ void GHCJTTask::update()
 
     const MatrixXd& Kp = getStiffness();
     const MatrixXd& Kd = getDamping();
-//    const VectorXd e = pimpl->feature.computeError(*getFeatureDes());
-//    const VectorXd edot = pimpl->feature.computeErrorDot(*getFeatureDes());
+//    const VectorXd e = pimpl->feature->computeError(*getFeatureDes());
+//    const VectorXd edot = pimpl->feature->computeErrorDot(*getFeatureDes());
 //    const VectorXd& e = getFeatureDes() ? getFeature().computeError(*getFeatureDes()) : getFeature().computeError();
 //    const VectorXd& edot = getFeatureDes() ? getFeature().computeErrorDot(*getFeatureDes()) : getFeature().computeErrorDot();
 //    const VectorXd& fd = getFeatureDes() ? getFeature().computeEffort(*getFeatureDes()) : getFeature().computeEffort();
@@ -462,7 +462,7 @@ void GHCJTTask::setPriority(Eigen::MatrixXd& alpha)
 
 int GHCJTTask::getTaskDimension() const
 {
-    return pimpl->feature.getDimension();
+    return pimpl->feature->getDimension();
 }
 
 const std::string& GHCJTTask::getTaskName() const

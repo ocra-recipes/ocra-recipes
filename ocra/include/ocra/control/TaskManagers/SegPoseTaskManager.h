@@ -51,9 +51,9 @@ class SegPoseTaskManager : public TaskManager
         const std::string&              segmentName;
         ocra::ECartesianDof              axes;
 
-        ocra::DisplacementFeature*       feat;
-        ocra::DisplacementFeature*       featDes;
-        ocra::TargetFrame*               featDesFrame;
+        ocra::DisplacementFeature::Ptr       feat;
+        ocra::DisplacementFeature::Ptr       featDes;
+        ocra::TargetFrame::Ptr               featDesFrame;
 
         void _init(const Eigen::Displacementd& ref_LocalFrame, double stiffness, double damping, double weight, int hierarchyLevel);
         void _init(const Eigen::Displacementd& ref_LocalFrame, double stiffness, double damping, const Eigen::VectorXd& weight, int hierarchyLevel);

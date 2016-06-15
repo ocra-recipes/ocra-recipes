@@ -42,9 +42,9 @@ public:
     virtual void doAddContactSet(const ContactSet& contacts);
     virtual void doAddTask(Task::Ptr task);
     virtual void doComputeOutput(VectorXd& tau);
-    Task::Ptr doCreateContactTask(const std::string& name, const ocra::PointContactFeature& feature, double mu, double margin) const;
-    Task::Ptr doCreateTask(const std::string& name, const ocra::Feature& feature) const;
-    Task::Ptr doCreateTask(const std::string& name, const ocra::Feature& feature, const ocra::Feature& featureDes) const;
+    Task::Ptr doCreateContactTask(const std::string& name, ocra::PointContactFeature::Ptr feature, double mu, double margin) const;
+    Task::Ptr doCreateTask(const std::string& name, ocra::Feature::Ptr feature) const;
+    Task::Ptr doCreateTask(const std::string& name, ocra::Feature::Ptr feature, ocra::Feature::Ptr featureDes) const;
     virtual ~HocraController(){};
 
 private:

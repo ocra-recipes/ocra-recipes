@@ -102,13 +102,13 @@ PartialPostureTaskManager::~PartialPostureTaskManager()
  */
 void PartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& _dofIndices, double _stiffness, double _damping, double _weight, int _hierarchyLevel)
 {
-    featState = new ocra::PartialModelState(name + ".PartialModelState", model, _dofIndices, _fullStateType);
-    featDesState = new ocra::PartialTargetState(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
-    feat = new ocra::PartialStateFeature(name + ".PartialStateFeature", *featState);
-    featDes = new ocra::PartialStateFeature(name + ".PartialStateFeature_Des", *featDesState);
+    featState = std::make_shared<PartialModelState>(name + ".PartialModelState", model, _dofIndices, _fullStateType);
+    featDesState = std::make_shared<PartialTargetState>(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
+    feat = std::make_shared<PartialStateFeature>(name + ".PartialStateFeature", featState);
+    featDes = std::make_shared<PartialStateFeature>(name + ".PartialStateFeature_Des", featDesState);
 
     // The feature initializes as Zero for posture
-    task = ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, feat, featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
     task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
@@ -125,13 +125,13 @@ void PartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& _dofI
 
 void PartialPostureTaskManager::_init(int _fullStateType, Eigen::VectorXi& _dofIndices, double _stiffness, double _damping, const Eigen::VectorXd& _weight, int _hierarchyLevel)
 {
-    featState = new ocra::PartialModelState(name + ".PartialModelState", model, _dofIndices, _fullStateType);
-    featDesState = new ocra::PartialTargetState(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
-    feat = new ocra::PartialStateFeature(name + ".PartialStateFeature", *featState);
-    featDes = new ocra::PartialStateFeature(name + ".PartialStateFeature_Des", *featDesState);
+    featState = std::make_shared<PartialModelState>(name + ".PartialModelState", model, _dofIndices, _fullStateType);
+    featDesState = std::make_shared<PartialTargetState>(name + ".PartialTargetState", model, _dofIndices, _fullStateType);
+    feat = std::make_shared<PartialStateFeature>(name + ".PartialStateFeature", featState);
+    featDes = std::make_shared<PartialStateFeature>(name + ".PartialStateFeature_Des", featDesState);
 
     // The feature initializes as Zero for posture
-    task = ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, feat, featDes);
     task->setTaskType(ocra::Task::ACCELERATIONTASK);
     task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);

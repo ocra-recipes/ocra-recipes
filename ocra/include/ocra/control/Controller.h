@@ -100,15 +100,15 @@ namespace ocra
   public: // factory
     //@{
     //! Generic task creation
-    std::shared_ptr<Task> createTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
-    std::shared_ptr<Task> createTask(const std::string& name, const Feature& feature) const;
+    std::shared_ptr<Task> createTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const;
+    std::shared_ptr<Task> createTask(const std::string& name, Feature::Ptr feature) const;
     //@}
 
     //! Creates a contact task
     /*!
     The parameters describe the friction cone parameters for the force applied by the manikin on the environment.
     */
-    std::shared_ptr<Task> createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
+    std::shared_ptr<Task> createContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const;
 
   protected:
     const std::vector<std::shared_ptr<Task>>& getActiveTasks() const;
@@ -122,9 +122,9 @@ namespace ocra
     virtual void doSetMaxJointTorques(const Eigen::VectorXd& tauMax); // Does nothing if not overloaded
 
   protected: // factory
-    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const = 0;
-    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, const Feature& feature) const = 0;
-    virtual std::shared_ptr<Task> doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const = 0;
+    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const = 0;
+    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, Feature::Ptr feature) const = 0;
+    virtual std::shared_ptr<Task> doCreateContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const = 0;
 
   private:
     struct Pimpl;

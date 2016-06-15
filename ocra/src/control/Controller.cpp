@@ -303,7 +303,7 @@ namespace ocra
     return pimpl->maxTau;
   }
 
-  std::shared_ptr<Task> Controller::createTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+  std::shared_ptr<Task> Controller::createTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const
   {
     std::shared_ptr<Task> task(doCreateTask(name, feature, featureDes));
     task->setDesiredMassToActualOne();
@@ -314,7 +314,7 @@ namespace ocra
     return task;
   }
 
-  std::shared_ptr<Task> Controller::createTask(const std::string& name, const Feature& feature) const
+  std::shared_ptr<Task> Controller::createTask(const std::string& name, Feature::Ptr feature) const
   {
     // Task* task = doCreateTask(name, feature);
     std::shared_ptr<Task> task(doCreateTask(name, feature));
@@ -326,8 +326,8 @@ namespace ocra
     return task;
   }
 
-  // Task& Controller::createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
-  std::shared_ptr<Task> Controller::createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+  // Task& Controller::createContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const
+  std::shared_ptr<Task> Controller::createContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const
   {
     // Task* task = doCreateContactTask(name, feature, mu, margin);
     std::shared_ptr<Task> task(doCreateContactTask(name, feature, mu, margin));

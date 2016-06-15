@@ -52,12 +52,12 @@ CoMMomentumTaskManager::~CoMMomentumTaskManager()
  */
 void CoMMomentumTaskManager::_init(double damping, double weight, int _hierarchyLevel)
 {
-    comFeatFrame = new ocra::CoMFrame(name + ".CoMFrame", model);
-    featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
-    feat = new ocra::PositionFeature(name + ".PositionFeature", *comFeatFrame, axes);
-    featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
+    comFeatFrame = std::make_shared<CoMFrame>(name + ".CoMFrame", model);
+    featDesFrame = std::make_shared<TargetFrame>(name + ".TargetFrame", model);
+    feat = std::make_shared<PositionFeature>(name + ".PositionFeature", comFeatFrame, axes);
+    featDes = std::make_shared<PositionFeature>(name + ".PositionFeature_Des", featDesFrame, axes);
 
-    task = ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, feat, featDes);
     task->setTaskType(ocra::Task::COMMOMENTUMTASK);
     task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
@@ -75,12 +75,12 @@ void CoMMomentumTaskManager::_init(double damping, double weight, int _hierarchy
 
 void CoMMomentumTaskManager::_init(double damping, const Eigen::VectorXd& weight, int _hierarchyLevel)
 {
-    comFeatFrame = new ocra::CoMFrame(name + ".CoMFrame", model);
-    featDesFrame = new ocra::TargetFrame(name + ".TargetFrame", model);
-    feat = new ocra::PositionFeature(name + ".PositionFeature", *comFeatFrame, axes);
-    featDes = new ocra::PositionFeature(name + ".PositionFeature_Des", *featDesFrame, axes);
+    comFeatFrame = std::make_shared<CoMFrame>(name + ".CoMFrame", model);
+    featDesFrame = std::make_shared<TargetFrame>(name + ".TargetFrame", model);
+    feat = std::make_shared<PositionFeature>(name + ".PositionFeature", comFeatFrame, axes);
+    featDes = std::make_shared<PositionFeature>(name + ".PositionFeature_Des", featDesFrame, axes);
 
-    task = ctrl.createTask(name, *feat, *featDes);
+    task = ctrl.createTask(name, feat, featDes);
     task->setTaskType(ocra::Task::COMMOMENTUMTASK);
     task->setHierarchyLevel(_hierarchyLevel);
     ctrl.addTask(task);
