@@ -36,7 +36,7 @@ find_package(TinyXML REQUIRED)
 find_package(YARP REQUIRED)
 find_package(qpOASES REQUIRED)
 
-include_directories(
+include_directories( AFTER
     ${Eigen_INCLUDE_DIRS}
     ${EigenLgsm_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
