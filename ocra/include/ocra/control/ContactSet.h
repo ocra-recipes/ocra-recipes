@@ -18,6 +18,20 @@ File history:
 #include <boost/shared_ptr.hpp>
 #include <vector>
 #include <memory>
+#include "ocra/optim/Constraint.h"
+#include "ocra/optim/LinearizedCoulombFunction.h"
+#include "ocra/optim/WeightedSquareDistanceFunction.h"
+#include "ocra/optim/Objective.h"
+
+#include "ocra/control/Model.h"
+#include "ocra/control/ControlFrame.h"
+#include "ocra/control/ControlEnum.h"
+#include "ocra/control/Feature.h"
+#include "ocra/control/Task.h"
+#include "ocra/control/Controller.h"
+
+#include <stdexcept>
+#include <sstream>
 
 namespace ocra
 {

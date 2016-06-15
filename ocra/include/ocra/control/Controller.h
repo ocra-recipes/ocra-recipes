@@ -25,6 +25,14 @@ File history:
 #include <memory>
 #include <ocra/utilities.h>
 
+#include "ocra/control/Controller.h"
+#include "ocra/control/Task.h"
+#include "ocra/control/Feature.h"
+#include "ocra/control/Model.h"
+#include <map>
+#include <fstream>
+#include <iostream>
+
 namespace ocra
 {
   class Task;
