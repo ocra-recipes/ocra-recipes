@@ -44,16 +44,24 @@ Feature::Ptr CartesianTaskBuilder::buildFeatureDesired()
 void CartesianTaskBuilder::setTaskState()
 {
     TaskState state;
-    // TODO: This is where the parsing and shit needs to happen.
+    // Make sure the desired vector is the same size as the number of axes being controlled.
     if(this->options.desired.size() == this->nDoF){
-        // state.position = Eigen::Displacementd(this->options.desired);
+        // Make a temporary 3 dimensional vector and fill it with the desired values
+        Eigen::Vector3d tmpPosVec = Eigen::Vector3d::Zero();
+        for(auto i=0; i<this->nDoF; ++i){
+            tmpPosVec(i) = this->options.desired(i);
+        }
+        // Set the position
+        state.position = Eigen::Displacementd(tmpPosVec, Eigen::Rotation3d::Identity());
     }else{
-        state.position = this->model->getSegmentPosition(this->options.segment);
+        // If the desired position was not given then just get it from the current state of the task.
+        state.position = this->task->getTaskState().position;
     }
 
-
+    // Set velocity and acceleration to zero.
     state.velocity = Eigen::Twistd::Zero();
     state.acceleration = Eigen::Twistd::Zero();
+
     this->task->setDesiredTaskStateDirect(state);
 }
 
