@@ -3,14 +3,14 @@
 using namespace ocra;
 
 TaskState::TaskState()
-: currentPosition(false)
-, currentVelocity(false)
-, currentAcceleration(false)
-, currentQ(false)
-, currentQd(false)
-, currentQdd(false)
-, currentTorque(false)
-, currentWrench(false)
+: containsPosition(false)
+, containsVelocity(false)
+, containsAcceleration(false)
+, containsQ(false)
+, containsQd(false)
+, containsQdd(false)
+, containsTorque(false)
+, containsWrench(false)
 {
     // Do nothing
 }
