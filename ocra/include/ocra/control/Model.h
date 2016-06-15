@@ -100,6 +100,41 @@ namespace ocra
     virtual const Eigen::Vector3d&       getSegmentMomentsOfInertia(int index) const = 0;
     virtual const Eigen::Rotation3d&     getSegmentInertiaAxes(int index) const = 0;
 
+    //segment data
+    const Eigen::Displacementd&  getSegmentPosition(const std::string& segName) const {
+        return getSegmentPosition(getSegmentIndex(segName));
+    }
+    const Eigen::Twistd&         getSegmentVelocity(const std::string& segName) const {
+        return getSegmentVelocity(getSegmentIndex(segName));
+    }
+    const Eigen::Matrix<double,6,Eigen::Dynamic>&     getSegmentJacobian(const std::string& segName) const {
+        return getSegmentJacobian(getSegmentIndex(segName));
+    }
+    const Eigen::Matrix<double,6,Eigen::Dynamic>&     getSegmentJdot(const std::string& segName)     const {
+        return getSegmentJdot(getSegmentIndex(segName));
+    }
+    const Eigen::Twistd&         getSegmentJdotQdot(const std::string& segName) const {
+        return getSegmentJdotQdot(getSegmentIndex(segName));
+    }
+    const Eigen::Matrix<double,6,Eigen::Dynamic>& getJointJacobian(const std::string& segName) const {
+        return getJointJacobian(getSegmentIndex(segName));
+    }
+    double                       getSegmentMass(const std::string& segName) const {
+        return getSegmentMass(getSegmentIndex(segName));
+    }
+    const Eigen::Vector3d&       getSegmentCoM(const std::string& segName) const {
+        return getSegmentCoM(getSegmentIndex(segName));
+    }
+    const Eigen::Matrix<double, 6, 6>& getSegmentMassMatrix(const std::string& segName) const {
+        return getSegmentMassMatrix(getSegmentIndex(segName));
+    }
+    const Eigen::Vector3d&       getSegmentMomentsOfInertia(const std::string& segName) const {
+        return getSegmentMomentsOfInertia(getSegmentIndex(segName));
+    }
+    const Eigen::Rotation3d&     getSegmentInertiaAxes(const std::string& segName) const {
+        return getSegmentInertiaAxes(getSegmentIndex(segName));
+    }
+
     void setJointDamping(const Eigen::VectorXd& damping);
     const Eigen::VectorXd& getJointDamping() const;
 
