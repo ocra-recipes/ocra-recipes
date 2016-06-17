@@ -88,4 +88,4 @@ namespace ocra_debug { extern std::ofstream ocra_dbg_5; }
 
 #endif //_OCRABASE_OCRA_DEBUG_H_
 
-// cmake:sourcegroup=Utils
+// cmake:sourcegroup=utils

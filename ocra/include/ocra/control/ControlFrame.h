@@ -15,8 +15,8 @@ File history:
 #define _OCRA_CONTROL_FRAME_H_
 
 #include "ocra/optim/NamedInstance.h"
-#include "ocra/MathTypes.h"
-#include "ocra/utilities.h"
+#include <ocra/util/MathTypes.h>
+#include <ocra/util/Macros.h>
 #include "Eigen/Lgsm"
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>

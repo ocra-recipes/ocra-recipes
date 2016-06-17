@@ -207,4 +207,4 @@ namespace ocra
 
 #endif //_OCRA_UTILS_UNCOMPRESS_H_
 
-// cmake:sourcegroup=Utils
+// cmake:sourcegroup=utils

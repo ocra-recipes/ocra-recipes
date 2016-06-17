@@ -42,7 +42,7 @@
 # pragma once
 #endif
 
-#include "ocra/MathTypes.h"
+#include <ocra/util/MathTypes.h>
 #include "ocra/optim/ocra_assert.h"
 #include <iostream>
 #include <vector>

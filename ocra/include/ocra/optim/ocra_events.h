@@ -20,4 +20,4 @@ namespace ocra
 
 #endif //_OCRABASE_OCRA_EVENTS_H_
 
-// cmake:sourcegroup=Utils
+// cmake:sourcegroup=utils

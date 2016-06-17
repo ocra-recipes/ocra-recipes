@@ -1,5 +1,4 @@
 #include "ocra/control/controlUtils.h"
-#include "ocra/control/Model.h"
 
 namespace ocra
 {
@@ -80,7 +79,7 @@ namespace ocra
     Eigen::Displacementd projectRotation(const Eigen::Displacementd& H, const Vector3d& n, double& theta)
     {
       Eigen::Displacementd result = H;
-      
+
       const Matrix3d& R = H.getRotation().adjoint();
       //tr(R^t*[n])
       double tr1 = (R(2,1)-R(1,2))*n[0] + (R(0,2)-R(2,0))*n[1] + (R(1,0)-R(0,1))*n[2];

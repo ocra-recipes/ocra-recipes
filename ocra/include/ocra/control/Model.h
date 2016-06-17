@@ -11,12 +11,12 @@
 #define _OCRACONTROL_MODEL_H_
 
 // includes
-#include "ocra/MathTypes.h"
+#include <ocra/util/MathTypes.h>
 #include "ocra/optim/ObserverSubject.h"
 #include "ocra/optim/Variable.h"
 #include "ocra/optim/NamedInstance.h"
 #include "ocra/control/ModelContacts.h"
-#include "ocra/utilities.h"
+#include <ocra/util/Macros.h>
 #include <Eigen/Lgsm>
 
 #include <string>

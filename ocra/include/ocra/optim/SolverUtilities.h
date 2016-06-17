@@ -5,7 +5,7 @@
 # pragma once
 #endif
 
-#include "ocra/MathTypes.h"
+#include <ocra/util/MathTypes.h>
 #include "ocra/optim/Variable.h"
 #include "ocra/optim/Constraint.h"
 #include "ocra/optim/uncompress.h"
@@ -73,7 +73,7 @@ namespace ocra
       };
     }
 
-    /** \internal a sum up of the possible conversion cases. conversion_cases[i][j] returns the eConvertCase value 
+    /** \internal a sum up of the possible conversion cases. conversion_cases[i][j] returns the eConvertCase value
       * corresponding to the ith type of constraint conversion forms (ith element of eConstraintOutput) and the jth
       * element of the constraint types (jth element of eConstraintType).
       */
@@ -122,10 +122,10 @@ namespace ocra
       * e2 = min(e1,e2) for \a minCompressed functions,
       * e2 = max(e1,e2) for \a maxCompressed functions.
       *
-      * Each function has two overloads: 
-      *  - const (MatrixBase&, MatrixBase&, const vector<int>&, double, bool reverseMapping) for which the mapping is 
+      * Each function has two overloads:
+      *  - const (MatrixBase&, MatrixBase&, const vector<int>&, double, bool reverseMapping) for which the mapping is
       * given by the user.
-      *  - const (const Variable&, constVariable& MatrixBase&, MatrixBase&, vector<int>&, double) for which the 
+      *  - const (const Variable&, constVariable& MatrixBase&, MatrixBase&, vector<int>&, double) for which the
       * mapping is computed from the variables (base.getRelativeMappingOf(rel, mapping)) and returned to the user.
       *
       * \internal Having a reversed mapping is possible for the second function prototype too, but was not done yet. It
@@ -133,7 +133,7 @@ namespace ocra
       * names of the variables does not seem very suitable.
       */
     //@{
-      
+
     // const_cast Eigen trick : http://eigen.tuxfamily.org/dox/TopicFunctionTakingEigenTypes.html#TopicPlainFunctionsFailing
 #define DECLARE_UNCOMPRESSED_FUNCTION(functionName) \
     template<class Derived1, class Derived2> \
@@ -176,7 +176,7 @@ namespace ocra
     template<class Derived, class VectorBase1, class VectorBase2>
     void convert(const LinearConstraint& cstr, const std::vector<int>& mapping, eConstraintOutput type,
                  MatrixBase<Derived>& A, VectorBase1& b, VectorBase2& l, double infinity = 0.);
-    
+
     /** Intersects the set described by \a bounds with the one already described by \a bl and \a bu and put the result
       * into \a bl and \a bu.
       * \a bounds must be either a IdentityConstraint or a BoundConstraint

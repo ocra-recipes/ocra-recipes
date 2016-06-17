@@ -11,8 +11,8 @@
 #ifndef _OCRABASE_CASCADE_QP_STRUCTURES_H_
 #define _OCRABASE_CASCADE_QP_STRUCTURES_H_
 
-#include "ocra/MathTypes.h"
-#include "ocra/utilities.h"
+#include <ocra/util/MathTypes.h>
+#include <ocra/util/Macros.h>
 #include <iostream>
 
 /** @namespace ocra

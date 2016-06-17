@@ -13,7 +13,7 @@
 // includes
 #include "ocra/optim/Function.h"
 #include "ocra/optim/ocra_assert.h"
-#include "ocra/utilities.h"
+#include <ocra/util/Macros.h>
 
 /** @namespace ocra
   * @brief Optimization-based Robot Controller namespace. 

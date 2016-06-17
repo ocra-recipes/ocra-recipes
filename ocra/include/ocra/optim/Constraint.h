@@ -24,7 +24,7 @@
 #include "ocra/optim/Variable.h"
 #include "ocra/optim/Function.h"
 #include "ocra/optim/FunctionInterfaceMapping.h"
-#include "ocra/utilities.h"
+#include <ocra/util/Macros.h>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 

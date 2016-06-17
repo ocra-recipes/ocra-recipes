@@ -15,7 +15,7 @@
 
 #include "ocra/optim/NamedInstance.h"
 #include "ocra/control/Model.h"
-#include "ocra/utilities.h"
+#include <ocra/util/Macros.h>
 #include <Eigen/Core>
 #include <boost/shared_ptr.hpp>
 

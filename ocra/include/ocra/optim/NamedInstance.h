@@ -25,4 +25,4 @@ namespace ocra
 
 #endif //_OCRA_NAMED_INSTANCE_H_
 
-// cmake:sourcegroup=Utils
+// cmake:sourcegroup=utils

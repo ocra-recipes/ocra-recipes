@@ -22,7 +22,7 @@ File history:
 #include "ocra/control/FullState.h"
 #include "ocra/control/PartialState.h"
 #include "ocra/control/TaskState.h"
-#include "ocra/utilities.h"
+#include <ocra/util/Macros.h>
 
 #include <Eigen/Lgsm>
 #include <boost/shared_ptr.hpp>

@@ -11,7 +11,7 @@
 #define _OCRABASE_SOLVER_H_
 
 //ocra includes
-#include "ocra/MathTypes.h"
+#include <ocra/util/MathTypes.h>
 #include "ocra/optim/Variable.h"
 #include "ocra/optim/MergedVariable.h"
 #include "ocra/optim/SolverUtilities.h"

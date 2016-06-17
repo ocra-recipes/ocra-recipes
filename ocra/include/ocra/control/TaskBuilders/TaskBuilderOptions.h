@@ -5,7 +5,7 @@
 #include <Eigen/Lgsm>
 #include <yarp/os/Bottle.h>
 #include "ocra/control/TaskManagers/TaskManagerMessageVocab.h"
-#include <ocra/utilities.h>
+#include <ocra/util/Macros.h>
 
 namespace ocra
 {

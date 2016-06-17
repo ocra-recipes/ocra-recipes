@@ -9,8 +9,8 @@
   */
 
 
-#ifndef _OCRA_TYPES_H_
-#define _OCRA_TYPES_H_
+#ifndef OCRA_UTIL_MATH_TYPES_H
+#define OCRA_UTIL_MATH_TYPES_H
 
 #include <Eigen/Dense>
 namespace ocra{using namespace Eigen;}
@@ -18,9 +18,9 @@ namespace ocra{using namespace Eigen;}
 #include <cmath>
 
 /** @namespace ocra
-  * @brief Optimization-based Robot Controller namespace. 
+  * @brief Optimization-based Robot Controller namespace.
   *   a library of classes to write and solve optimization problems dedicated to
-  *   the control of multi-body systems. 
+  *   the control of multi-body systems.
   */
 namespace ocra
 {
@@ -47,5 +47,4 @@ namespace ocra
   inline double rad2deg(const double rad) { return rad / M_PI * 180.; }
 }
 
-#endif  //_OCRA_TYPES_H_
-
+#endif  //OCRA_UTIL_MATH_TYPES_H

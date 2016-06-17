@@ -3,7 +3,7 @@
 
 #include "ocra/optim/NamedInstance.h"
 #include <Eigen/Core>
-#include "ocra/utilities.h"
+#include <ocra/util/Macros.h>
 #include "ocra/control/Feature.h"
 #include "ocra/control/Model.h"
 //

@@ -54,4 +54,4 @@ struct ocra_assertion_fired {};
 #endif // _OCRA_ASSERT_H_
 
 
-// cmake:sourcegroup=Utils
+// cmake:sourcegroup=utils

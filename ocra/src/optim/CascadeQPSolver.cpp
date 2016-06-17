@@ -1,7 +1,7 @@
 #include "ocra/optim/CascadeQPSolver.h"
 
 #include <algorithm>
-#include "ocra/utilities.h"
+#include <ocra/util/Macros.h>
 // #include <boost/range/adaptor/reversed.hpp>
 
 namespace ocra

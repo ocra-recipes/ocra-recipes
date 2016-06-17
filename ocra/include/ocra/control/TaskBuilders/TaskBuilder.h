@@ -7,7 +7,7 @@
 #include <ocra/control/TaskState.h>
 #include <ocra/control/Feature.h>
 #include <ocra/control/ControlFrame.h>
-#include <ocra/utilities.h>
+#include <ocra/util/Macros.h>
 
 namespace ocra {
 

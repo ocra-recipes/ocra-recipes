@@ -11,4 +11,4 @@ namespace ocra_debug
   std::ofstream ocra_dbg_5("ocra_debug_5.txt");
 }
 
-// cmake:sourcegroup=Utils
+// cmake:sourcegroup=utils

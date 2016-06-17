@@ -2,7 +2,7 @@
 #define _OCRA_FULLSTATE_H_
 
 #include "ocra/optim/NamedInstance.h"
-#include "ocra/utilities.h"
+#include <ocra/util/Macros.h>
 #include <Eigen/Core>
 #include <boost/shared_ptr.hpp>
 

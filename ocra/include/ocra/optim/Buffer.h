@@ -95,4 +95,4 @@ namespace ocra
 
 #endif //_OCRABASE_BUFFER_H_
 
-// cmake:sourcegroup=Utils
+// cmake:sourcegroup=utils

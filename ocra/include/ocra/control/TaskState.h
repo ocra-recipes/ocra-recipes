@@ -3,7 +3,7 @@
 
 #include <Eigen/Core>
 #include <Eigen/Lgsm>
-#include "ocra/utilities.h"
+#include <ocra/util/Macros.h>
 
 
 namespace ocra {

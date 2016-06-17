@@ -17,4 +17,4 @@ namespace ocra
   }
 }
 
-// cmake:sourcegroup=Utils
+// cmake:sourcegroup=utils
