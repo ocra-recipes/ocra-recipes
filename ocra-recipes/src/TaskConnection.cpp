@@ -79,7 +79,7 @@ Eigen::VectorXd TaskConnection::getTaskError()
     this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() != 0) {
         int dummy;
-        return ocra::pourBottleIntoEigenVector(reply, dummy);
+        return ocra::util::pourBottleIntoEigenVector(reply, dummy);
     } else {
         return Eigen::VectorXd::Zero(0);
     }
@@ -105,7 +105,7 @@ void TaskConnection::setStiffness(const VectorXd& K)
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::SET_STIFFNESS_VECTOR);
-    ocra::pourEigenVectorIntoBottle(K, message);
+    ocra::util::pourEigenVectorIntoBottle(K, message);
     this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
         yLog.error() << "setStiffness() did not work.";
@@ -116,7 +116,7 @@ void TaskConnection::setStiffness(const MatrixXd& K)
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::SET_STIFFNESS_MATRIX);
-    ocra::pourEigenMatrixIntoBottle(K, message);
+    ocra::util::pourEigenMatrixIntoBottle(K, message);
     this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
         yLog.error() << "setStiffness() did not work.";
@@ -135,7 +135,7 @@ Eigen::MatrixXd TaskConnection::getStiffnessMatrix()
     this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() != 0) {
         int dummy;
-        return ocra::pourBottleIntoEigenMatrix(reply, dummy);
+        return ocra::util::pourBottleIntoEigenMatrix(reply, dummy);
     } else {
         return Eigen::MatrixXd::Zero(0,0);
     }
@@ -156,7 +156,7 @@ void TaskConnection::setDamping(const VectorXd& B)
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::SET_DAMPING_VECTOR);
-    ocra::pourEigenVectorIntoBottle(B, message);
+    ocra::util::pourEigenVectorIntoBottle(B, message);
     this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
         yLog.error() << "setDamping() did not work.";
@@ -167,7 +167,7 @@ void TaskConnection::setDamping(const MatrixXd& B)
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::SET_DAMPING_MATRIX);
-    ocra::pourEigenMatrixIntoBottle(B, message);
+    ocra::util::pourEigenMatrixIntoBottle(B, message);
     this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
         yLog.error() << "setDamping() did not work.";
@@ -186,7 +186,7 @@ Eigen::MatrixXd TaskConnection::getDampingMatrix()
     this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() != 0) {
         int dummy;
-        return ocra::pourBottleIntoEigenMatrix(reply, dummy);
+        return ocra::util::pourBottleIntoEigenMatrix(reply, dummy);
     } else {
         return Eigen::MatrixXd::Zero(0,0);
     }
@@ -207,7 +207,7 @@ void TaskConnection::setWeight(Eigen::VectorXd& weights)
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::SET_WEIGHT_VECTOR);
-    ocra::pourEigenVectorIntoBottle(weights, message);
+    ocra::util::pourEigenVectorIntoBottle(weights, message);
     this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_FAILURE) {
         yLog.error() << "setDamping() did not work.";
@@ -221,7 +221,7 @@ Eigen::VectorXd TaskConnection::getWeight()
     this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() != 0) {
         int dummy;
-        return ocra::pourBottleIntoEigenVector(reply, dummy);
+        return ocra::util::pourBottleIntoEigenVector(reply, dummy);
     } else {
         return Eigen::VectorXd::Zero(0);
     }
@@ -387,7 +387,7 @@ Eigen::VectorXd TaskConnection::getCurrentStateRpc()
     this->taskRpcClient.write(message, reply);
     if(reply.get(0).asInt() != 0) {
         int dummy;
-        return ocra::pourBottleIntoEigenVector(reply, dummy);
+        return ocra::util::pourBottleIntoEigenVector(reply, dummy);
     } else {
         return Eigen::VectorXd::Zero(0);
     }

@@ -109,7 +109,7 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
                 {
                     int sizeOfOptions;
                     ocra::TaskManagerOptions tmOpts;
-                    yarp::os::Bottle trimmedBottle = trimBottle(input, i);
+                    yarp::os::Bottle trimmedBottle = ocra::util::trimBottle(input, i);
                     if (tmOpts.extractFromBottle(trimmedBottle, sizeOfOptions)) {
                         factory.addTaskManagerOptions(tmOpts);
                     }

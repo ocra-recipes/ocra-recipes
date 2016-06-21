@@ -20,7 +20,7 @@ ClientCommunications::~ClientCommunications()
     close();
 }
 
-bool ClientCommunications::open(const bool connectToTaskManagers)
+bool ClientCommunications::open(const bool connectToTasks)
 {
     rpcClientPort.open(rpcClientPort_Name.c_str());
     rpcClientPort.setReader(*this);
@@ -28,9 +28,9 @@ bool ClientCommunications::open(const bool connectToTaskManagers)
     inputPort.setReader(inputCallback);
 
     bool isConOpen = openServerConnections();
-    if(isConOpen && connectToTaskManagers)
+    if(isConOpen && connectToTasks)
     {
-        isConOpen &= openTaskManagerConnections();
+        isConOpen &= openTaskConnections();
 
         if(isConOpen)
         {
@@ -204,7 +204,7 @@ yarp::os::Bottle ClientCommunications::queryController(const std::vector<SERVER_
     return reply;
 }
 
-bool ClientCommunications::openTaskManagerConnections()
+bool ClientCommunications::openTaskConnections()
 {
     std::vector<std::string> taskNames = getTaskNames();
     std::vector<std::string> taskPortNames = getTaskPortNames();

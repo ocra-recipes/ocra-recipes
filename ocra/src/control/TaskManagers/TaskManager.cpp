@@ -576,31 +576,31 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_CURRENT_STATE";
                 this->updateCurrentStateVector(this->getCurrentState());
-                pourStdVectorIntoBottle(this->currentStateVector, reply);
+                util::pourStdVectorIntoBottle(this->currentStateVector, reply);
             }break;
 
             case GET_STIFFNESS:
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_STIFFNESS";
-                pourEigenMatrixIntoBottle(this->getStiffnessMatrix(), reply);
+                util::pourEigenMatrixIntoBottle(this->getStiffnessMatrix(), reply);
             }break;
 
             case GET_DAMPING:
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_DAMPING";
-                pourEigenMatrixIntoBottle(this->getDampingMatrix(), reply);
+                util::pourEigenMatrixIntoBottle(this->getDampingMatrix(), reply);
             }break;
 
             case GET_WEIGHTS:
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_WEIGHTS";
-                pourEigenVectorIntoBottle(this->getWeight(), reply);
+                util::pourEigenVectorIntoBottle(this->getWeight(), reply);
             }break;
 
             case GET_DESIRED:
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_DESIRED";
-                pourStdVectorIntoBottle(this->desiredStateVector, reply);
+                util::pourStdVectorIntoBottle(this->desiredStateVector, reply);
             }break;
 
             case GET_ACTIVITY_STATUS:
@@ -654,7 +654,7 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
             case GET_TASK_ERROR:
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: GET_TASK_ERROR";
-                pourEigenVectorIntoBottle(this->getTaskError(), reply);
+                util::pourEigenVectorIntoBottle(this->getTaskError(), reply);
             }break;
 
             case SET_STIFFNESS:
@@ -669,7 +669,7 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_STIFFNESS_VECTOR";
                 int indexesToSkip;
-                this->setStiffness(pourBottleIntoEigenVector(trimBottle(input, i+1), indexesToSkip) );
+                this->setStiffness(util::pourBottleIntoEigenVector(util::trimBottle(input, i+1), indexesToSkip) );
                 i += indexesToSkip;
                 reply.addInt(OCRA_SUCCESS);
             }break;
@@ -678,7 +678,7 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_STIFFNESS_MATRIX";
                 int indexesToSkip;
-                this->setStiffness(pourBottleIntoEigenMatrix(trimBottle(input, i+1), indexesToSkip) );
+                this->setStiffness(util::pourBottleIntoEigenMatrix(util::trimBottle(input, i+1), indexesToSkip) );
                 i += indexesToSkip;
                 reply.addInt(OCRA_SUCCESS);
             }break;
@@ -695,7 +695,7 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_DAMPING_VECTOR";
                 int indexesToSkip;
-                this->setDamping(pourBottleIntoEigenVector(trimBottle(input, i+1), indexesToSkip) );
+                this->setDamping(util::pourBottleIntoEigenVector(util::trimBottle(input, i+1), indexesToSkip) );
                 i += indexesToSkip;
                 reply.addInt(OCRA_SUCCESS);
             }break;
@@ -704,7 +704,7 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_DAMPING_MATRIX";
                 int indexesToSkip;
-                this->setDamping(pourBottleIntoEigenMatrix(trimBottle(input, i+1), indexesToSkip) );
+                this->setDamping(util::pourBottleIntoEigenMatrix(util::trimBottle(input, i+1), indexesToSkip) );
                 i += indexesToSkip;
                 reply.addInt(OCRA_SUCCESS);
             }break;
@@ -721,7 +721,7 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
             {
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_WEIGHT_VECTOR";
                 int indexesToSkip;
-                this->setWeight(pourBottleIntoEigenVector(trimBottle(input, i+1), indexesToSkip) );
+                this->setWeight(util::pourBottleIntoEigenVector(util::trimBottle(input, i+1), indexesToSkip) );
                 i += indexesToSkip;
                 reply.addInt(OCRA_SUCCESS);
             }break;
@@ -731,7 +731,7 @@ void TaskManager::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::Bottle
                 yLog.info() << " ["<< this->stableName <<"]: " << "Processing request: SET_DESIRED";
 
                 int indexesToSkip;
-                std::vector<double> tmpVec = pourBottleIntoStdVector(trimBottle(input, i+1), indexesToSkip);
+                std::vector<double> tmpVec = util::pourBottleIntoStdVector(util::trimBottle(input, i+1), indexesToSkip);
                 i += indexesToSkip;
 
                 if (this->newDesiredStateVector.size() == tmpVec.size()) {

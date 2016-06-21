@@ -6,6 +6,7 @@
 #include <yarp/os/Bottle.h>
 #include "ocra/control/TaskManagers/TaskManagerMessageVocab.h"
 #include <ocra/util/Macros.h>
+#include <ocra/util/YarpUtilities.h>
 
 namespace ocra
 {

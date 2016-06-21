@@ -20,7 +20,7 @@
 #include <yarp/os/ConnectionReader.h>
 #include <yarp/os/Time.h>
 
-#include <ocra/control/TaskManagers/TaskManagerMessageVocab.h>
+#include <ocra/control/TaskYarpInterfaceVocab.h>
 #include <ocra-recipes/MessageVocabulary.h>
 
 namespace ocra_recipes
@@ -33,7 +33,7 @@ public:
     ClientCommunications();
     virtual ~ClientCommunications();
 
-    bool open(const bool connectToTaskManagers = true);
+    bool open(const bool connectToTasks = true);
     bool close();
     void close(const std::string& taskName);
 
@@ -82,7 +82,7 @@ public:
 
 private:
     bool openServerConnections();
-    bool openTaskManagerConnections();
+    bool openTaskConnections();
 
 private:
     yarp::os::RpcClient rpcClientPort;

@@ -4,7 +4,9 @@
 #include <Eigen/Core>
 #include <Eigen/Lgsm>
 #include <ocra/util/Macros.h>
-
+#include <ocra/util/YarpUtilities.h>
+#include <ocra/control/TaskYarpInterfaceVocab.h>
+#include <yarp/os/Bottle.h>
 
 namespace ocra {
 
@@ -33,6 +35,8 @@ private:
     bool containsQdd;
     bool containsTorque;
     bool containsWrench;
+
+    static const int TASK_STATE_BOTTLE = 12345;
 
 public:
     TaskState();
@@ -64,6 +68,11 @@ public:
     bool hasQdd() const ;
     bool hasTorque() const ;
     bool hasWrench() const ;
+
+
+    bool extractFromBottle(const yarp::os::Bottle& bottle, int& sizeOfOptions);
+    void putIntoBottle(yarp::os::Bottle& bottle);
+
 
 
 };

@@ -32,14 +32,14 @@ bool TaskBuilderOptions::extractFromBottle(yarp::os::Bottle& bottle, int& sizeOf
 
         int indexesToSkip;
 
-        desired = pourBottleIntoEigenVector(trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
-        indexDesired = pourBottleIntoEigenVector(trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
-        nameDesired = pourBottleIntoEigenVector(trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
-        weightVector = pourBottleIntoEigenVector(trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
-        indexWeightVector = pourBottleIntoEigenVector(trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
-        nameWeightVector = pourBottleIntoEigenVector(trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
+        desired = util::pourBottleIntoEigenVector(util::trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
+        indexDesired = util::pourBottleIntoEigenVector(util::trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
+        nameDesired = util::pourBottleIntoEigenVector(util::trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
+        weightVector = util::pourBottleIntoEigenVector(util::trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
+        indexWeightVector = util::pourBottleIntoEigenVector(util::trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
+        nameWeightVector = util::pourBottleIntoEigenVector(util::trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
 
-        jointIndexes = pourBottleIntoEigenVectorXi(trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
+        jointIndexes = util::pourBottleIntoEigenVectorXi(util::trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
 
         int numberOfJointNames = bottle.get(++i).asInt();
         for (auto j = 0; j < numberOfJointNames; ++j) {
@@ -49,7 +49,7 @@ bool TaskBuilderOptions::extractFromBottle(yarp::os::Bottle& bottle, int& sizeOf
 
         int numberOfOffsets = bottle.get(++i).asInt();
         for (auto j = 0; j < numberOfOffsets; ++j) {
-            offset.push_back(pourBottleIntoEigenVector(trimBottle(bottle, i+1), indexesToSkip));
+            offset.push_back(util::pourBottleIntoEigenVector(util::trimBottle(bottle, i+1), indexesToSkip));
             i += indexesToSkip;
         }
         sizeOfOptions = i;
@@ -78,14 +78,14 @@ void TaskBuilderOptions::putIntoBottle(yarp::os::Bottle& bottle)
     bottle.addInt(axes);
     bottle.addInt(hierarchyLevel);
 
-    pourEigenVectorIntoBottle(desired, bottle);
-    pourEigenVectorIntoBottle(indexDesired, bottle);
-    pourEigenVectorIntoBottle(nameDesired, bottle);
-    pourEigenVectorIntoBottle(weightVector, bottle);
-    pourEigenVectorIntoBottle(indexWeightVector, bottle);
-    pourEigenVectorIntoBottle(nameWeightVector, bottle);
+    util::pourEigenVectorIntoBottle(desired, bottle);
+    util::pourEigenVectorIntoBottle(indexDesired, bottle);
+    util::pourEigenVectorIntoBottle(nameDesired, bottle);
+    util::pourEigenVectorIntoBottle(weightVector, bottle);
+    util::pourEigenVectorIntoBottle(indexWeightVector, bottle);
+    util::pourEigenVectorIntoBottle(nameWeightVector, bottle);
 
-    pourEigenVectorXiIntoBottle(jointIndexes, bottle);
+    util::pourEigenVectorXiIntoBottle(jointIndexes, bottle);
 
     bottle.addInt(jointNames.size());
     for(auto name : jointNames){
@@ -94,6 +94,6 @@ void TaskBuilderOptions::putIntoBottle(yarp::os::Bottle& bottle)
 
     bottle.addInt(offset.size());
     for(auto vec : offset) {
-        pourEigenVectorIntoBottle(vec, bottle);
+        util::pourEigenVectorIntoBottle(vec, bottle);
     }
 }
