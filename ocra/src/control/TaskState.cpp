@@ -168,14 +168,14 @@ bool TaskState::extractFromBottle(const yarp::os::Bottle& bottle, int& sizeOfSta
     int i = 0;
     if (bottle.get(i).asInt() == TASK_STATE_BOTTLE)
     {
-        ++i; containsPosition = bottle.get(i).asBool();
-        ++i; containsVelocity = bottle.get(i).asBool();
-        ++i; containsAcceleration = bottle.get(i).asBool();
-        ++i; containsQ = bottle.get(i).asBool();
-        ++i; containsQd = bottle.get(i).asBool();
-        ++i; containsQdd = bottle.get(i).asBool();
-        ++i; containsTorque = bottle.get(i).asBool();
-        ++i; containsWrench = bottle.get(i).asBool();
+        ++i; this->containsPosition = bottle.get(i).asBool();
+        ++i; this->containsVelocity = bottle.get(i).asBool();
+        ++i; this->containsAcceleration = bottle.get(i).asBool();
+        ++i; this->containsQ = bottle.get(i).asBool();
+        ++i; this->containsQd = bottle.get(i).asBool();
+        ++i; this->containsQdd = bottle.get(i).asBool();
+        ++i; this->containsTorque = bottle.get(i).asBool();
+        ++i; this->containsWrench = bottle.get(i).asBool();
         int indexesToSkip;
 
 
