@@ -22,11 +22,11 @@ File history:
 #include <string>
 #include <vector>
 #include <map>
-#include <memory>
 #include <ocra/util/Macros.h>
 
 #include "ocra/control/Controller.h"
 #include "ocra/control/Task.h"
+// #include "ocra/control/TaskYarpInterface.h"
 #include "ocra/control/Feature.h"
 #include "ocra/control/Model.h"
 #include <map>

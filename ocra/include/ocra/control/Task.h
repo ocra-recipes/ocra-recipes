@@ -4,6 +4,7 @@
 #include "ocra/optim/NamedInstance.h"
 #include <Eigen/Core>
 #include <ocra/util/Macros.h>
+#include <ocra/util/StringUtilities.h>
 #include "ocra/control/Feature.h"
 #include "ocra/control/Model.h"
 //
@@ -39,17 +40,40 @@ public:
     virtual ~Task();
 
 
+    enum META_TASK_TYPE {
+        UNKNOWN,
+        POSITION,
+        ORIENTATION,
+        POSE,
+        FORCE,
+        COM,
+        COM_MOMENTUM,
+        PARTIAL_POSTURE,
+        FULL_POSTURE,
+        PARTIAL_TORQUE,
+        FULL_TORQUE
+    };
+
     enum TYPETASK { UNKNOWNTASK, ACCELERATIONTASK, TORQUETASK, FORCETASK, COMMOMENTUMTASK };
 
     TaskState getTaskState();
+    TaskState getDesiredTaskState();
     void setDesiredTaskState(const TaskState& newDesiredTaskState);
     void setDesiredTaskStateDirect(const TaskState& newDesiredTaskState);
 
     int getHierarchyLevel();
     void setHierarchyLevel(int level);
     void update();
+
+    // TODO: Need to rethink this... Basically the way a task error is computed in the controller depends on the TYPETASK enum. Unfortunately, it is useful to know specifically what type of task you have even if it is only a subset of TYPETASK. For example, POSE and PARTIAL_POSTURE are both ACCELERATIONTASK but their internals are quite different. Eventually we need to just use the META_TASK_TYPE representation on the user end but inside the Task class we can have access to the TYPETASK in order to determine the error calculation method.
+
+    void setMetaTaskType(Task::META_TASK_TYPE newMetaTaskType);
+    Task::META_TASK_TYPE getMetaTaskType();
+    std::string getMetaTaskTypeAsString();
+
     void setTaskType(Task::TYPETASK newTaskType);
     Task::TYPETASK getTaskType();
+
     void activateAsObjective();
     void activateAsConstraint();
     void deactivate();

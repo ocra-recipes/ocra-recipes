@@ -76,6 +76,7 @@ namespace ocra
     VectorXd tau_max;
     VectorXd tau;
     TaskMap<Task> tasks;
+    // TaskMap<TaskYarpInterface> taskInterfaces;
     std::vector<std::shared_ptr<Task>> activeTasks;
     std::string errorMessage;
     double maxTau;
@@ -87,6 +88,7 @@ namespace ocra
       , tau_max( VectorXd::Constant(m.nbInternalDofs(), std::numeric_limits<double>::max()) )
       , tau( VectorXd::Constant(m.nbInternalDofs(), 0.) )
       , tasks("tasks")
+    //   , taskInterfaces("taskInterfaces")
       , activeTasks()
       , errorMessage("")
       , maxTau(500.)
@@ -174,6 +176,7 @@ namespace ocra
   {
     pimpl->tasks.add(task->getName(), task);
     doAddTask(task);
+    // pimpl->taskInterfaces.add(task->getName(), std::make_shared<TaskYarpInterface>(task));
   }
 
   void Controller::addTasks(const std::vector<std::shared_ptr<Task>>& tasks)
@@ -184,6 +187,7 @@ namespace ocra
 
   void Controller::removeTask(const std::string& taskName)
   {
+    // pimpl->taskInterfaces.erase(taskName);
     pimpl->tasks.erase(taskName);
   }
 

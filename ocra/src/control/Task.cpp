@@ -51,6 +51,7 @@ namespace ocra
     bool useActualMass;
     bool contactActive;
     TYPETASK innerTaskType;
+    META_TASK_TYPE innerMetaTaskType;
     int hierarchyLevel;
 
     std::shared_ptr<Model> innerModel;
@@ -89,6 +90,7 @@ namespace ocra
       , useActualMass(true)
       , contactActive(false)
       , innerTaskType(UNKNOWNTASK)
+      , innerMetaTaskType(UNKNOWN)
       , hierarchyLevel(-1)
       , innerModel(m)
       , solver(0x0)
@@ -210,9 +212,47 @@ namespace ocra
       }
       return;
   }
+
   Task::TYPETASK Task::getTaskType()
   {
       return pimpl->innerTaskType;
+  }
+
+  void Task::setMetaTaskType(Task::META_TASK_TYPE newMetaTaskType)
+  {
+      if (getMetaTaskType()==UNKNOWN) {
+          pimpl->innerMetaTaskType = newMetaTaskType;
+      }else{
+          std::cout << "[warning] can't change a task's type once it has been set." << std::endl;
+      }
+  }
+
+  Task::META_TASK_TYPE Task::getMetaTaskType()
+  {
+      return pimpl->innerMetaTaskType;
+  }
+
+  std::string Task::getMetaTaskTypeAsString()
+  {
+      Task::META_TASK_TYPE metaType = this->getMetaTaskType();
+      std::string metaTypeString;
+
+      switch (metaType) {
+        case Task::UNKNOWN: {metaTypeString = "UNKNOWN";};
+        case Task::POSITION: {metaTypeString = "POSITION";};
+        case Task::ORIENTATION: {metaTypeString = "ORIENTATION";};
+        case Task::POSE: {metaTypeString = "POSE";};
+        case Task::FORCE: {metaTypeString = "FORCE";};
+        case Task::COM: {metaTypeString = "COM";};
+        case Task::COM_MOMENTUM: {metaTypeString = "COM_MOMENTUM";};
+        case Task::PARTIAL_POSTURE: {metaTypeString = "PARTIAL_POSTURE";};
+        case Task::FULL_POSTURE: {metaTypeString = "FULL_POSTURE";};
+        case Task::PARTIAL_TORQUE: {metaTypeString = "PARTIAL_TORQUE";};
+        case Task::FULL_TORQUE: {metaTypeString = "FULL_TORQUE";};
+        default: {metaTypeString = "UNKNOWN";};
+      }
+
+      return util::convertToLowerCase(metaTypeString);
   }
 
   void Task::update()
@@ -961,6 +1001,11 @@ void Task::doSetWeight()
 TaskState Task::getTaskState()
 {
     return getFeature()->getState();
+}
+
+TaskState Task::getDesiredTaskState()
+{
+    return getFeatureDes()->getState();
 }
 
 void Task::setDesiredTaskState(const TaskState& newDesiredTaskState)
