@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <string>
+#include <Eigen/Dense>
 
 namespace ocra {
     namespace util {
@@ -12,6 +13,13 @@ inline std::string convertToLowerCase(const std::string& originalString)
 {
     std::string newString = originalString;
     std::transform(newString.begin(), newString.end(), newString.begin(), ::tolower);
+    return newString;
+}
+
+inline std::string convertToUpperCase(const std::string& originalString)
+{
+    std::string newString = originalString;
+    std::transform(newString.begin(), newString.end(), newString.begin(), ::toupper);
     return newString;
 }
 
