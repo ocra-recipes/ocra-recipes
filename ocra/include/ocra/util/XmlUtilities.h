@@ -26,15 +26,12 @@ inline std::string getDisplacementArgs(TiXmlElement* xmlElem)
         dispAttributes.push_back("qy");
         dispAttributes.push_back("qz");
 
-        std::vector<std::string>::iterator stIt;
-
-        for (stIt=dispAttributes.begin(); stIt != dispAttributes.end(); stIt++)
+        for (auto attribute : dispAttributes)
         {
             bool haveAlreadyFoundValue = false;
             for (TiXmlAttribute* xmlAttrib=xmlElem->FirstAttribute(); xmlAttrib != NULL; xmlAttrib = xmlAttrib->Next())
             {
-                // std::cout << "stIT " << *stIt  << " xmlAttrib->Value() " << xmlAttrib->Value()<< std::endl;
-                if ( (*stIt == xmlAttrib->Name()) && (!haveAlreadyFoundValue) )
+                if ( (attribute == xmlAttrib->Name()) && (!haveAlreadyFoundValue) )
                 {
                     dispString += xmlAttrib->Value();
                     dispString += " ";
@@ -43,7 +40,7 @@ inline std::string getDisplacementArgs(TiXmlElement* xmlElem)
             }
             if (!haveAlreadyFoundValue) {
                 std::string fallbackString = "0.0 ";
-                if (*stIt == "qw") {
+                if (attribute == "qw") {
                     fallbackString = "1.0 ";
                 }
                 dispString += fallbackString;

@@ -5,8 +5,7 @@ using namespace ocra;
 PoseTaskBuilder::PoseTaskBuilder(const TaskBuilderOptions& taskOptions, Model::Ptr modelPtr)
 : TaskBuilder(taskOptions, modelPtr)
 {
-    this->axes = ECartesianDof(this->options.axes);
-    this->nDoF = utils::computeDimensionFor(this->axes);
+    this->nDoF = utils::computeDimensionFor(this->options.axes);
 }
 
 PoseTaskBuilder::~PoseTaskBuilder()
@@ -19,14 +18,10 @@ Feature::Ptr PoseTaskBuilder::buildFeature()
     std::string featFrameName = this->options.taskName + ".SegmentFrame";
     std::string featName = this->options.taskName + ".DisplacementFeature";
     std::string segmentName = this->model->SegmentName(this->options.segment);
+    
+    ControlFrame::Ptr featFrame =  std::make_shared<SegmentFrame>(featFrameName, *this->model, segmentName, this->options.offset);
 
-    Eigen::Displacementd frameOffset;
-    if (!this->options.offset.empty()) {
-        frameOffset = util::eigenVectorToDisplacementd(this->options.offset.front());
-    }
-    ControlFrame::Ptr featFrame =  std::make_shared<SegmentFrame>(featFrameName, *this->model, segmentName, frameOffset);
-
-    return std::make_shared<DisplacementFeature>(featName, featFrame, this->axes);
+    return std::make_shared<DisplacementFeature>(featName, featFrame, this->options.axes);
 }
 
 Feature::Ptr PoseTaskBuilder::buildFeatureDesired()
@@ -36,7 +31,7 @@ Feature::Ptr PoseTaskBuilder::buildFeatureDesired()
 
     ControlFrame::Ptr featDesFrame = std::make_shared<TargetFrame>(featDesFrameName, *this->model);
 
-    return std::make_shared<DisplacementFeature>(featDesName, featDesFrame, this->axes);
+    return std::make_shared<DisplacementFeature>(featDesName, featDesFrame, this->options.axes);
 }
 
 void PoseTaskBuilder::setTaskState()

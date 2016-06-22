@@ -33,7 +33,7 @@ public:
     Eigen::VectorXd nameWeightVector;
     Eigen::VectorXi jointIndexes;
     std::vector<std::string> jointNames;
-    std::vector<Eigen::VectorXd> offset;
+    Eigen::Displacementd offset;
 
 
     friend std::ostream& operator<<(std::ostream &out, const TaskBuilderOptions& tmOpts)
@@ -47,11 +47,7 @@ public:
         out << "weights:\n" << tmOpts.weightVector.transpose() << std::endl << std::endl;
         out << "axes:\n" << utils::cartesianDofToString(tmOpts.axes) << std::endl << std::endl;
         out << "hierarchyLevel:\n" << tmOpts.hierarchyLevel << std::endl << std::endl;
-        out << "offset:\n";
-        for(int j=0; j<tmOpts.offset.size(); j++) {
-            out << tmOpts.offset[j].transpose() << std::endl;
-        }
-        out << std::endl;
+        out << "offset:\n" << tmOpts.offset << std::endl;
         out << "jointIndexes:\n" << tmOpts.jointIndexes.transpose() << std::endl << std::endl;
         out << "desired:\n" << tmOpts.desired.transpose() << std::endl << std::endl;
         return out;

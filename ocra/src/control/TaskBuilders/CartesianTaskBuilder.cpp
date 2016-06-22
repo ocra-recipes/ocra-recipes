@@ -19,13 +19,7 @@ Feature::Ptr CartesianTaskBuilder::buildFeature()
     std::string featName = this->options.taskName + ".PositionFeature";
     std::string segmentName = this->model->SegmentName(this->options.segment);
 
-    Eigen::VectorXd offsetVectorXd = this->options.offset.front();
-    Eigen::Vector3d offsetVector3d = Eigen::Vector3d::Zero();
-    if (offsetVectorXd.size() >= this->nDoF) {
-        offsetVector3d = offsetVectorXd.head(this->nDoF);
-    }
-    Eigen::Displacementd frameOffset = Eigen::Displacementd(offsetVector3d);
-    ControlFrame::Ptr featFrame =  std::make_shared<SegmentFrame>(featFrameName, *this->model, segmentName, frameOffset);
+    ControlFrame::Ptr featFrame =  std::make_shared<SegmentFrame>(featFrameName, *this->model, segmentName, this->options.offset);
 
     return std::make_shared<PositionFeature>(featName, featFrame, this->options.axes);
 }

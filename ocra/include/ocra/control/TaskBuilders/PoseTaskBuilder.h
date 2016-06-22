@@ -14,7 +14,6 @@ public:
     virtual ~PoseTaskBuilder ();
 
 private:
-    ECartesianDof axes;
     int nDoF;
     const int DISPLACEMENT_VECTOR_SIZE = 7;
 

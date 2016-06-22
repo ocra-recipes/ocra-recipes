@@ -193,10 +193,12 @@ void TaskConstructionManager::parseParamXmlElement(TiXmlElement* paramElement, T
 
 void TaskConstructionManager::parseOffsetXmlElement(TiXmlElement* offsetElement, TaskBuilderOptions& options)
 {
+    // If the offset is written out in the element then convert it to a displacement.
     if (offsetElement->GetText() != NULL) {
-        options.offset.push_back(util::stringToVectorXd(offsetElement->GetText()));
+        options.offset = util::eigenVectorToDisplacementd(util::stringToVectorXd(offsetElement->GetText()));
     } else {
-        options.offset.push_back(util::stringToVectorXd(util::getDisplacementArgs(offsetElement).c_str()));
+        // If the displacement is given by attributes are there then parse them otherwise it will be a no-offset offset...
+        options.offset = util::eigenVectorToDisplacementd(util::stringToVectorXd(util::getDisplacementArgs(offsetElement).c_str()));
     }
 }
 

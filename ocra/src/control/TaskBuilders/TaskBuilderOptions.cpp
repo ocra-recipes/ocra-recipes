@@ -47,11 +47,8 @@ bool TaskBuilderOptions::extractFromBottle(yarp::os::Bottle& bottle, int& sizeOf
         }
 
 
-        int numberOfOffsets = bottle.get(++i).asInt();
-        for (auto j = 0; j < numberOfOffsets; ++j) {
-            offset.push_back(util::pourBottleIntoEigenVector(util::trimBottle(bottle, i+1), indexesToSkip));
-            i += indexesToSkip;
-        }
+        util::pourBottleIntoDisplacementd(util::trimBottle(bottle, i+1), indexesToSkip); i += indexesToSkip;
+
         sizeOfOptions = i;
         return true;
     }
@@ -92,8 +89,5 @@ void TaskBuilderOptions::putIntoBottle(yarp::os::Bottle& bottle)
         bottle.addString(name);
     }
 
-    bottle.addInt(offset.size());
-    for(auto vec : offset) {
-        util::pourEigenVectorIntoBottle(vec, bottle);
-    }
+    util::pourDisplacementdIntoBottle(offset, bottle);
 }
