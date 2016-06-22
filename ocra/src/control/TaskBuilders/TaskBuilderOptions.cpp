@@ -13,7 +13,7 @@ TaskBuilderOptions::~TaskBuilderOptions()
 bool TaskBuilderOptions::extractFromBottle(yarp::os::Bottle& bottle, int& sizeOfOptions)
 {
     int i = 0;
-    if (bottle.get(i).asInt() == TASK_MANAGER_OPTIONS_BOTTLE)
+    if (bottle.get(i).asInt() == TASK_BUILDER_OPTIONS_BOTTLE)
     {
         taskName    = bottle.get(++i).asString();
         taskType    = bottle.get(++i).asString();
@@ -61,7 +61,7 @@ bool TaskBuilderOptions::extractFromBottle(yarp::os::Bottle& bottle, int& sizeOf
 
 void TaskBuilderOptions::putIntoBottle(yarp::os::Bottle& bottle)
 {
-    bottle.addInt(TASK_MANAGER_OPTIONS_BOTTLE);
+    bottle.addInt(TASK_BUILDER_OPTIONS_BOTTLE);
 
     bottle.addString(taskName);
     bottle.addString(taskType);
