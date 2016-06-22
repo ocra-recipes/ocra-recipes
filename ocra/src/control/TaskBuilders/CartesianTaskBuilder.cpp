@@ -5,8 +5,7 @@ using namespace ocra;
 CartesianTaskBuilder::CartesianTaskBuilder(const TaskBuilderOptions& taskOptions, Model::Ptr modelPtr)
 : TaskBuilder(taskOptions, modelPtr)
 {
-    this->axes = ECartesianDof(this->options.axes);
-    this->nDoF = utils::computeDimensionFor(this->axes);
+    this->nDoF = utils::computeDimensionFor(this->options.axes);
 }
 
 CartesianTaskBuilder::~CartesianTaskBuilder()
@@ -28,7 +27,7 @@ Feature::Ptr CartesianTaskBuilder::buildFeature()
     Eigen::Displacementd frameOffset = Eigen::Displacementd(offsetVector3d);
     ControlFrame::Ptr featFrame =  std::make_shared<SegmentFrame>(featFrameName, *this->model, segmentName, frameOffset);
 
-    return std::make_shared<PositionFeature>(featName, featFrame, this->axes);
+    return std::make_shared<PositionFeature>(featName, featFrame, this->options.axes);
 }
 
 Feature::Ptr CartesianTaskBuilder::buildFeatureDesired()
@@ -38,7 +37,7 @@ Feature::Ptr CartesianTaskBuilder::buildFeatureDesired()
 
     ControlFrame::Ptr featDesFrame = std::make_shared<TargetFrame>(featDesFrameName, *this->model);
 
-    return std::make_shared<PositionFeature>(featDesName, featDesFrame, this->axes);
+    return std::make_shared<PositionFeature>(featDesName, featDesFrame, this->options.axes);
 }
 
 void CartesianTaskBuilder::setTaskState()

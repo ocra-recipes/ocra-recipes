@@ -13,7 +13,6 @@ public:
     virtual ~CartesianTaskBuilder ();
 
 private:
-    ECartesianDof axes;
     int nDoF;
 
 protected: // pure virtual functions

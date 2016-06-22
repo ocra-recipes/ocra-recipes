@@ -128,38 +128,49 @@ bool TaskConstructionManager::parseTaskNameAndType(TiXmlElement* xmlTask, TaskBu
 
 void TaskConstructionManager::parseParamXmlElement(TiXmlElement* paramElement, TaskBuilderOptions& options)
 {
-
+    // Parse the stiffness gain
     if (paramElement->QueryDoubleAttribute("kp", &options.kp)==TIXML_NO_ATTRIBUTE) {
         options.kp=0.0;
     }
 
+    // Parse the damping gain
     if (paramElement->QueryDoubleAttribute("kd", &options.kd)==TIXML_NO_ATTRIBUTE) {
         if (options.kp > 0.0) {
             options.kd=2.0*sqrt(options.kp);
         }else{options.kd=0.0;}
     }
 
+    // Parse the scalar weight
     if (paramElement->QueryDoubleAttribute("weight", &options.weight)==TIXML_NO_ATTRIBUTE) {
         options.weight=0.0; options.useWeightVectorConstructor=false;
     } else {
         options.useWeightVectorConstructor=false;
     }
+
+    // Parse the hierarchy level
     if (paramElement->QueryIntAttribute("hierarchyLevel", &options.hierarchyLevel)==TIXML_NO_ATTRIBUTE) {
         options.hierarchyLevel=-1;
     }
 
-//    if (paramElement->QueryIntAttribute("axes", &options.axes)==TIXML_NO_ATTRIBUTE) {
-//        options.axes=ocra::XYZ;
-//    }
+    // Parse the cartesian axes to be controlled. Because ECartesianDof is not a standard type we first get the user's string then convert it to the proper type.
+    std::string axesString;
+    if (paramElement->QueryStringAttribute("axes", &axesString)==TIXML_NO_ATTRIBUTE) {
+        options.axes=ECartesianDof::XYZ;
+    } else {
+        options.axes=utils::cartesianDofFromString(axesString);
+    }
+
+    // Parse the friction coefficient mu
     if (paramElement->QueryDoubleAttribute("mu", &options.mu)==TIXML_NO_ATTRIBUTE) {
         options.mu=1.0;
     }
+
+    // Parse the friction parameter marging
     if (paramElement->QueryDoubleAttribute("margin", &options.margin)==TIXML_NO_ATTRIBUTE) {
         options.margin=0.05;
     }
 
-    options.axes=ocra::XYZ;
-
+    // TODO: Remove...
     if (paramElement->Attribute("usesYarp") != NULL) {
         bool yarpBool;
         std::string yarpString = std::string(paramElement->Attribute("usesYarp"));
@@ -176,6 +187,8 @@ void TaskConstructionManager::parseParamXmlElement(TiXmlElement* paramElement, T
     } else {
         options.usesYarp=true;
     }
+
+
 }
 
 void TaskConstructionManager::parseOffsetXmlElement(TiXmlElement* offsetElement, TaskBuilderOptions& options)

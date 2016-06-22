@@ -27,7 +27,7 @@ bool TaskBuilderOptions::extractFromBottle(yarp::os::Bottle& bottle, int& sizeOf
 
         usesYarp = bottle.get(++i).asBool();;
         useWeightVectorConstructor = bottle.get(++i).asBool();
-        axes = bottle.get(++i).asInt();
+        axes = ECartesianDof(bottle.get(++i).asInt());
         hierarchyLevel = bottle.get(++i).asInt();
 
         int indexesToSkip;
