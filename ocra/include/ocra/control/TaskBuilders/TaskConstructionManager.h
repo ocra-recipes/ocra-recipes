@@ -12,6 +12,9 @@
 #include <ocra/control/Model.h>
 #include <ocra/control/Controller.h>
 #include <ocra/util/Macros.h>
+#include <ocra/util/StringUtilities.h>
+#include <ocra/util/EigenUtilities.h>
+#include <ocra/util/XmlUtilities.h>
 
 
 #include <ocra/control/TaskBuilders/TaskBuilderOptions.h>
@@ -38,11 +41,16 @@ public:
 private:
     std::vector<TaskBuilderOptions> parseTaskOptionsFromXml(TiXmlDocument* newTasksFile);
 
-    Eigen::VectorXd stringToVectorXd(const char * valueString);
-    Eigen::VectorXi stringToVectorXi(const char * valueString);
-    std::string getDisplacementArgs(TiXmlElement* xmlElem);
-    Eigen::Displacementd eigenVectorToDisplacementd(Eigen::VectorXd& eigenVector);
-    std::vector<Eigen::Displacementd> eigenVectorToDisplacementd(std::vector<Eigen::VectorXd>& eigenVector);
+    bool parseTaskXmlElement(TiXmlElement* xmlTask, TaskBuilderOptions& options);
+    bool parseTaskNameAndType(TiXmlElement* xmlTask, TaskBuilderOptions& options);    
+    void parseParamXmlElement(TiXmlElement* currentElem, TaskBuilderOptions& options);
+    void parseOffsetXmlElement(TiXmlElement* offsetElement, TaskBuilderOptions& options);
+    void parseDesiredXmlElement(TiXmlElement* desiredElement, TaskBuilderOptions& options);
+    void parseSegmentXmlElement(TiXmlElement* segmentElement, TaskBuilderOptions& options);
+    void parseJointIndexesXmlElement(TiXmlElement* jointIndexesElement, TaskBuilderOptions& options);
+    void parseJointsXmlElement(TiXmlElement* jointsElement, TaskBuilderOptions& options);
+    void parseWeightsXmlElement(TiXmlElement* weightsElement, TaskBuilderOptions& options);
+
 
 };
 
