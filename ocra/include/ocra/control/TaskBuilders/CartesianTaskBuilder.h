@@ -1,5 +1,5 @@
-#ifndef CARTESIAN_TASK_BUILDER_H
-#define CARTESIAN_TASK_BUILDER_H
+#ifndef OCRA_CONTROL_CARTESIAN_TASK_BUILDER_H
+#define OCRA_CONTROL_CARTESIAN_TASK_BUILDER_H
 
 #include <ocra/control/TaskBuilders/TaskBuilder.h>
 
@@ -26,4 +26,4 @@ protected: // pure virtual functions
 
 } // namespace ocra
 
-#endif //CARTESIAN_TASK_BUILDER_H
+#endif //OCRA_CONTROL_CARTESIAN_TASK_BUILDER_H
