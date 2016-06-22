@@ -86,10 +86,7 @@ std::vector<TaskBuilderOptions> TaskConstructionManager::parseTaskOptionsFromXml
 
 bool TaskConstructionManager::parseTaskXmlElement(TiXmlElement* xmlTask, TaskBuilderOptions& options)
 {
-    if ( (xmlTask->Attribute("name") != NULL) && (xmlTask->Attribute("type") != NULL) ) {
-
-        options.taskName = xmlTask->Attribute("name");
-        options.taskType = xmlTask->Attribute("type");
+    if (parseTaskNameAndType(xmlTask, options)) {
 
         for(TiXmlElement* taskElem = xmlTask->FirstChildElement(); taskElem != NULL; taskElem = taskElem->NextSiblingElement()) {
 
@@ -116,6 +113,17 @@ bool TaskConstructionManager::parseTaskXmlElement(TiXmlElement* xmlTask, TaskBui
         return true;
     }
     return false;
+}
+
+bool TaskConstructionManager::parseTaskNameAndType(TiXmlElement* xmlTask, TaskBuilderOptions& options)
+{
+    if ( (xmlTask->Attribute("name") != NULL) && (xmlTask->Attribute("type") != NULL) ) {
+        options.taskName = xmlTask->Attribute("name");
+        options.taskType = xmlTask->Attribute("type");
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void TaskConstructionManager::parseParamXmlElement(TiXmlElement* paramElement, TaskBuilderOptions& options)
