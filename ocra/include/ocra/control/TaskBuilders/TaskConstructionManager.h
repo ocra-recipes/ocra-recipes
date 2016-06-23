@@ -20,6 +20,11 @@
 #include <ocra/control/TaskBuilders/TaskBuilderOptions.h>
 #include <ocra/control/TaskBuilders/TaskBuilder.h>
 #include <ocra/control/TaskBuilders/CartesianTaskBuilder.h>
+#include <ocra/control/TaskBuilders/PoseTaskBuilder.h>
+#include <ocra/control/TaskBuilders/OrientationTaskBuilder.h>
+#include <ocra/control/TaskBuilders/ComTaskBuilder.h>
+#include <ocra/control/TaskBuilders/FullPostureTaskBuilder.h>
+#include <ocra/control/TaskBuilders/PartialPostureTaskBuilder.h>
 
 namespace ocra {
 
@@ -42,7 +47,7 @@ private:
     std::vector<TaskBuilderOptions> parseTaskOptionsFromXml(TiXmlDocument* newTasksFile);
 
     bool parseTaskXmlElement(TiXmlElement* xmlTask, TaskBuilderOptions& options);
-    bool parseTaskNameAndType(TiXmlElement* xmlTask, TaskBuilderOptions& options);    
+    bool parseTaskNameAndType(TiXmlElement* xmlTask, TaskBuilderOptions& options);
     void parseParamXmlElement(TiXmlElement* currentElem, TaskBuilderOptions& options);
     void parseOffsetXmlElement(TiXmlElement* offsetElement, TaskBuilderOptions& options);
     void parseDesiredXmlElement(TiXmlElement* desiredElement, TaskBuilderOptions& options);

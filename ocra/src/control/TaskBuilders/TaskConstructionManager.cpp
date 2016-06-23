@@ -36,12 +36,18 @@ TaskBuilder::Ptr TaskConstructionManager::getBuilder(TaskBuilderOptions options,
     TaskBuilder::Ptr TaskBldrPtr;
     if (options.taskType=="cartesian") {
         TaskBldrPtr = std::make_shared<CartesianTaskBuilder>(options, model);
-    }
-    // else if (options.taskType=="orientation") {
-    //  TaskBldrPtr = std::make_shared<OrientationTaskBuilder>(options, model);
-    // }
-    else {
-        /* Error message */
+    } else if (options.taskType == "pose") {
+        TaskBldrPtr = std::make_shared<PoseTaskBuilder>(options, model);
+    } else if (options.taskType == "orientation") {
+        TaskBldrPtr = std::make_shared<OrientationTaskBuilder>(options, model);
+    } else if (options.taskType == "com") {
+        TaskBldrPtr = std::make_shared<ComTaskBuilder>(options, model);
+    } else if (options.taskType == "fullposture") {
+        TaskBldrPtr = std::make_shared<FullPostureTaskBuilder>(options, model);
+    } else if (options.taskType == "partialposture") {
+        TaskBldrPtr = std::make_shared<PartialPostureTaskBuilder>(options, model);
+    } else {
+        std::cout << "[ERROR] (TaskConstructionManager::getBuilder): The task type: '" << options.taskType << "' does not exist. Returning NULL." << std::endl;
     }
     return TaskBldrPtr;
 }
@@ -119,7 +125,7 @@ bool TaskConstructionManager::parseTaskNameAndType(TiXmlElement* xmlTask, TaskBu
 {
     if ( (xmlTask->Attribute("name") != NULL) && (xmlTask->Attribute("type") != NULL) ) {
         options.taskName = xmlTask->Attribute("name");
-        options.taskType = xmlTask->Attribute("type");
+        options.taskType = util::convertToLowerCase(xmlTask->Attribute("type"));
         return true;
     } else {
         return false;
