@@ -260,7 +260,6 @@ public: /*Nested callback classes */
 
     private:
         TaskYarpInterface& tmBase;
-        yarp::os::Bottle stateBottle;
 
 
     public:
