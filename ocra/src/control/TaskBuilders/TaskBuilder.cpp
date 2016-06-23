@@ -19,7 +19,11 @@ void TaskBuilder::buildTask()
 {
     Feature::Ptr feature = buildFeature();
     Feature::Ptr featureDes = buildFeatureDesired();
-    this->task = std::make_shared<Task>(this->options.taskName, this->model, feature, featureDes);
+    if (featureDes) {
+        this->task = std::make_shared<Task>(this->options.taskName, this->model, feature, featureDes);
+    } else {
+        this->task = std::make_shared<Task>(this->options.taskName, this->model, feature);
+    }
     setTaskType();
 }
 
@@ -31,7 +35,7 @@ Task::Ptr TaskBuilder::getTask()
 void TaskBuilder::setTaskParameters()
 {
     // Generic to all tasks
-    setTaskAsObjective();
+    setTaskAsObjectiveOrConstraint();
     setTaskLevel();
     setTaskWeight();
     setTaskStiffness();
@@ -41,7 +45,7 @@ void TaskBuilder::setTaskParameters()
     setTaskState();
 }
 
-void TaskBuilder::setTaskAsObjective()
+void TaskBuilder::setTaskAsObjectiveOrConstraint()
 {
     this->task->activateAsObjective();
 }

@@ -25,6 +25,8 @@ protected: // pure virtual functions
     virtual Feature::Ptr buildFeature() = 0;
     virtual Feature::Ptr buildFeatureDesired() = 0;
 
+    // This function is overloaded for cases where the task should be treated as a constraint and not an objective. If not overloaded the base class implementation will be called and set the task to an objective.
+    virtual void setTaskAsObjectiveOrConstraint();
 
 public:
     TaskBuilder (const TaskBuilderOptions& taskOptions, Model::Ptr modelPtr);
@@ -36,7 +38,6 @@ public:
 
 
 private:
-    void setTaskAsObjective();
     void setTaskLevel();
     void setTaskWeight();
     void setTaskStiffness();
