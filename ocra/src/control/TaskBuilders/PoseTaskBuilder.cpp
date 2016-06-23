@@ -5,7 +5,6 @@ using namespace ocra;
 PoseTaskBuilder::PoseTaskBuilder(const TaskBuilderOptions& taskOptions, Model::Ptr modelPtr)
 : TaskBuilder(taskOptions, modelPtr)
 {
-    this->nDoF = utils::computeDimensionFor(this->options.axes);
 }
 
 PoseTaskBuilder::~PoseTaskBuilder()
@@ -18,7 +17,7 @@ Feature::Ptr PoseTaskBuilder::buildFeature()
     std::string featFrameName = this->options.taskName + ".SegmentFrame";
     std::string featName = this->options.taskName + ".DisplacementFeature";
     std::string segmentName = this->model->SegmentName(this->options.segment);
-    
+
     ControlFrame::Ptr featFrame =  std::make_shared<SegmentFrame>(featFrameName, *this->model, segmentName, this->options.offset);
 
     return std::make_shared<DisplacementFeature>(featName, featFrame, this->options.axes);

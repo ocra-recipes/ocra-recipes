@@ -14,7 +14,6 @@ public:
     virtual ~PoseTaskBuilder ();
 
 private:
-    int nDoF;
     const int DISPLACEMENT_VECTOR_SIZE = 7;
 
 protected: // pure virtual functions
