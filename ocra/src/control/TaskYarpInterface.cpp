@@ -249,6 +249,33 @@ Eigen::VectorXd TaskYarpInterface::getWeight()
 }
 
 
+TaskState TaskYarpInterface::getTaskState()
+{
+    return this->task->getTaskState();
+}
+
+TaskState TaskYarpInterface::getDesiredTaskState()
+{
+    return this->task->getDesiredTaskState();
+}
+
+void TaskYarpInterface::setDesiredTaskState(const TaskState& newDesiredTaskState)
+{
+    return this->task->setDesiredTaskState(newDesiredTaskState);
+}
+
+void TaskYarpInterface::setDesiredTaskStateDirect(const TaskState& newDesiredTaskState)
+{
+    return this->task->setDesiredTaskStateDirect(newDesiredTaskState);
+}
+
+void TaskYarpInterface::publishTaskState()
+{
+    stateOutBottle.clear();
+    this->getTaskState().putIntoBottle(stateOutBottle);
+    outputControlPort.write(stateOutBottle);
+}
+
 bool TaskYarpInterface::openControlPorts()
 {
     bool res = true;
@@ -298,38 +325,13 @@ bool TaskYarpInterface::closeControlPorts()
 
 bool TaskYarpInterface::parseControlInput(yarp::os::Bottle& input)
 {
-    // if (input.size() >= stateDimension)
-    // {
-    //     for(int i=0; i<stateDimension; ++i)
-    //     {
-    //         newDesiredStateVector[i] = input.get(i).asDouble(); //make sure there are no NULL entries
-    //     }
-    //     Eigen::VectorXd newWeights = getWeight();
-    //     if (input.size()==(stateDimension + newWeights.size())) {
-    //         int j = 0;
-    //         for(int i = stateDimension; i<(stateDimension + newWeights.size()); ++i)
-    //         {
-    //             newWeights(j) = input.get(i).asDouble(); //make sure there are no NULL entries
-    //             ++j;
-    //         }
-    //         setWeight(newWeights);
-    //     }
-    //
-    //     setDesiredState(); // constructs the appropropriate state inputs
-        return true;
-    // }
-    // else{return false;}
+    TaskState state;
+    int dummyInt;
+    state.extractFromBottle(input, dummyInt);
+    this->setDesiredTaskStateDirect(state);
 }
 
-TaskState TaskYarpInterface::getTaskState()
-{
-    if(task) {
-        return task->getTaskState();
-    } else {
-        TaskState emptyState;
-        return emptyState;
-    }
-}
+
 
 //////////////////////////////////////////////////////////////////////////////
 //                  Segment Frame Tasks
@@ -432,11 +434,10 @@ TaskYarpInterface::ControlInputCallback::ControlInputCallback(TaskYarpInterface&
 
 bool TaskYarpInterface::ControlInputCallback::read(yarp::os::ConnectionReader& connection)
 {
-    yarp::os::Bottle input;
-    if (input.read(connection)){
+    input.clear();
+    if (input.read(connection)) {
         return tmBase.parseControlInput(input);
-    }
-    else{
+    } else {
         return false;
     }
 }
@@ -451,15 +452,15 @@ TaskYarpInterface::StateUpdateThread::StateUpdateThread(int period, TaskYarpInte
 RateThread(period),
 tmBase(tmBaseRef)
 {
-    // Do nothing
 }
 bool TaskYarpInterface::StateUpdateThread::threadInit()
 {
+    std::cout << "StateUpdateThread: Opening.\n";
     return true;
 }
 void TaskYarpInterface::StateUpdateThread::run()
 {
-    // tmBase.updateCurrentStateVector(tmBase.getCurrentState());
+    tmBase.publishTaskState();
 }
 void TaskYarpInterface::StateUpdateThread::threadRelease()
 {
@@ -632,6 +633,7 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
                 bool extractSuccess = state.extractFromBottle(util::trimBottle(input, i+1), indexesToSkip);
                 i += indexesToSkip;
                 if (extractSuccess) {
+                    this->setDesiredTaskState(state);
                     reply.addInt(OCRA_SUCCESS);
                 } else {
                     reply.addInt(OCRA_FAILURE);

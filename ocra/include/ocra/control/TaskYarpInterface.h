@@ -188,7 +188,12 @@ public:
     Eigen::VectorXd getWeight();
 
 
+
     TaskState getTaskState();
+    TaskState getDesiredTaskState();
+    void setDesiredTaskState(const TaskState& newDesiredTaskState);
+    void setDesiredTaskStateDirect(const TaskState& newDesiredTaskState);
+    void publishTaskState();
 
 
 public: /* Segment Frame Based Tasks */
@@ -236,6 +241,7 @@ public: /*Nested callback classes */
 
     private:
         TaskYarpInterface& tmBase;
+        yarp::os::Bottle input;
 
     public:
         ControlInputCallback(TaskYarpInterface& tmBaseRef);
@@ -254,6 +260,8 @@ public: /*Nested callback classes */
 
     private:
         TaskYarpInterface& tmBase;
+        yarp::os::Bottle stateBottle;
+
 
     public:
         StateUpdateThread(int period, TaskYarpInterface& tmBaseRef);
