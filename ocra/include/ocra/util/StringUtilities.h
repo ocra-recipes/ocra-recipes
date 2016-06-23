@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <string>
+#include <vector>
 #include <Eigen/Dense>
 
 namespace ocra {
