@@ -25,6 +25,7 @@
 #include <ocra/control/TaskBuilders/ComTaskBuilder.h>
 #include <ocra/control/TaskBuilders/FullPostureTaskBuilder.h>
 #include <ocra/control/TaskBuilders/PartialPostureTaskBuilder.h>
+#include <ocra/control/TaskBuilders/PointContactTaskBuilder.h>
 
 namespace ocra {
 

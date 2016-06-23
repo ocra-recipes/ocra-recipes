@@ -46,6 +46,8 @@ TaskBuilder::Ptr TaskConstructionManager::getBuilder(TaskBuilderOptions options,
         TaskBldrPtr = std::make_shared<FullPostureTaskBuilder>(options, model);
     } else if (options.taskType == "partialposture") {
         TaskBldrPtr = std::make_shared<PartialPostureTaskBuilder>(options, model);
+    } else if (options.taskType == "pointcontact") {
+        TaskBldrPtr = std::make_shared<PointContactTaskBuilder>(options, model);
     } else {
         std::cout << "[ERROR] (TaskConstructionManager::getBuilder): The task type: '" << options.taskType << "' does not exist. Returning NULL." << std::endl;
     }
