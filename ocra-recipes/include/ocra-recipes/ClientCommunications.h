@@ -22,11 +22,14 @@
 
 #include <ocra/control/TaskYarpInterfaceVocab.h>
 #include <ocra-recipes/MessageVocabulary.h>
+#include <ocra/util/Macros.h>
+
 
 namespace ocra_recipes
 {
 class ClientCommunications : public yarp::os::PortReader
 {
+    DEFINE_CLASS_POINTER_TYPEDEFS(ClientCommunications)
 using TaskPortMap = std::map<std::string, std::shared_ptr<yarp::os::RpcClient> >;
 
 public:

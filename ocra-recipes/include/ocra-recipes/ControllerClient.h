@@ -14,15 +14,20 @@
 #include <yarp/os/RateThread.h>
 #include <yarp/os/ResourceFinder.h>
 
+#include <ocra/util/Macros.h>
+
+
+
 namespace ocra_recipes
 {
 
 class ControllerClient : public yarp::os::RateThread
 {
+DEFINE_CLASS_POINTER_TYPEDEFS(ControllerClient)
 
 public:
     ControllerClient ();
-    ControllerClient (std::shared_ptr<ocra::Model> derivedModelPtr, const int loopPeriod = DEFAULT_LOOP_PERIOD);
+    ControllerClient (ocra::Model::Ptr derivedModelPtr, const int loopPeriod = DEFAULT_LOOP_PERIOD);
     virtual ~ControllerClient ();
 
     // RateThread virtual functions
@@ -59,8 +64,8 @@ protected:
     virtual void release(){/* Do nothing. */}
     virtual void loop() = 0;
 
-    std::shared_ptr<ClientCommunications> clientComs;
-    std::shared_ptr<ocra::Model> model;
+    ClientCommunications::Ptr clientComs;
+    ocra::Model::Ptr model;
 
 private:
 

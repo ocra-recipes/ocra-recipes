@@ -4,11 +4,10 @@
 #include <iostream>
 #include <memory>
 
+#include <ocra/util/Macros.h>
 #include <ocra/control/Controller.h>
 #include <ocra/control/Model.h>
-#include <ocra/control/TaskManagers/TaskManagerSet.h>
-#include <ocra/control/TaskManagers/TaskManagerFactory.h>
-#include <ocra/control/TaskManagers/TaskManagerOptions.h>
+#include <ocra/control/TaskBuilders/TaskConstructionManager.h>
 
 #include <ocra/optim/OneLevelSolver.h>
 #include <wocra/WocraController.h>
@@ -44,6 +43,7 @@ enum SOLVER_TYPE
 
 class ControllerServer
 {
+    DEFINE_CLASS_POINTER_TYPEDEFS(ControllerServer)
 protected:
     virtual std::shared_ptr<Model> loadRobotModel() = 0;
     virtual void getRobotState(Eigen::VectorXd& q, Eigen::VectorXd& qd, Eigen::Displacementd& H_root, Eigen::Twistd& T_root) = 0;
@@ -61,17 +61,16 @@ public:
     const std::shared_ptr<ocra::Model> getRobotModel(){return model;}
 
     bool addTaskManagersFromXmlFile(const std::string& filePath);
-    bool addTaskManagers(ocra::TaskManagerOptions& tmOpts);
+    bool addTaskManagers(std::vector<ocra::TaskBuilderOptions>& tmOpts);
 
 private:
     void updateModel();
 
-    std::shared_ptr<ocra::Model>                     model;
-    std::shared_ptr<ocra::Controller>           controller;
-    std::shared_ptr<ocra::Solver>           internalSolver;
-    std::shared_ptr<ocra::TaskManagerSet>   taskManagerSet;
+    ocra::Model::Ptr                     model;
+    ocra::Controller::Ptr           controller;
+    ocra::Solver::Ptr           internalSolver;
 
-    std::shared_ptr<ServerCommunications>       serverComs;
+    ServerCommunications::Ptr       serverComs;
 
     Eigen::VectorXd            tau;
     RobotState              rState;

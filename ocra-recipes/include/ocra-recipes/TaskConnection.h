@@ -14,9 +14,17 @@
 
 #include <ocra-recipes/ClientCommunications.h>
 
+#include <Eigen/Dense>
+#include <Eigen/Lgsm>
+#include <ocra/util/Macros.h>
+#include <ocra/util/EigenUtilities.h>
+#include <ocra/util/YarpUtilities.h>
+
+
 namespace ocra_recipes {
 
 class TaskConnection {
+DEFINE_CLASS_POINTER_TYPEDEFS(TaskConnection)
 
 public:
     TaskConnection ();

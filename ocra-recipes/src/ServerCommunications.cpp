@@ -7,10 +7,9 @@ ServerCommunications::ServerCommunications()
 {
 }
 
-ServerCommunications::ServerCommunications(std::shared_ptr<ocra::Controller> ctrl, std::shared_ptr<ocra::Model> mdl, std::shared_ptr<TaskManagerSet> tms)
+ServerCommunications::ServerCommunications(ocra::Controller::Ptr ctrl, ocra::Model::Ptr mdl)
 : controller(ctrl)
 , model(mdl)
-, taskManagerSet(tms)
 {
     rpcServerPort_Name = "/ControllerServer/rpc:i";
     outputPort_Name = "/ControllerServer:o";

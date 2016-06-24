@@ -34,6 +34,8 @@
 #include <yarp/os/RpcServer.h>
 
 #include "ocra-recipes/ControllerClient.h"
+#include <ocra/util/Macros.h>
+
 
 
 namespace ocra_recipes
@@ -45,6 +47,7 @@ namespace ocra_recipes
  */
 class ClientManager : public yarp::os::RFModule
 {
+DEFINE_CLASS_POINTER_TYPEDEFS(ClientManager)
 public:
     /*! Constructor which essentially does nothing.
      */

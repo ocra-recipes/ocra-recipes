@@ -30,9 +30,10 @@ namespace ocra_recipes
 {
 class ServerCommunications : public yarp::os::PortReader
 {
+    DEFINE_CLASS_POINTER_TYPEDEFS(ServerCommunications)
 public:
     ServerCommunications();
-    ServerCommunications(std::shared_ptr<ocra::Controller> ctrl, std::shared_ptr<ocra::Model> mdl, std::shared_ptr<TaskManagerSet> tms);
+    ServerCommunications(ocra::Controller::Ptr ctrl, ocra::Model::Ptr mdl);
 
     virtual ~ServerCommunications();
 
@@ -44,9 +45,8 @@ public:
 
 
 private:
-    std::shared_ptr<ocra::Model>                     model;
-    std::shared_ptr<ocra::Controller>           controller;
-    std::shared_ptr<ocra::TaskManagerSet>   taskManagerSet;
+    ocra::Model::Ptr                     model;
+    ocra::Controller::Ptr           controller;
 
     yarp::os::RpcServer rpcServerPort;
     yarp::os::Port         outputPort;

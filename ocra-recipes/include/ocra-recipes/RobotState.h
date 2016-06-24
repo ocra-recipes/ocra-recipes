@@ -10,6 +10,8 @@
 #include <Eigen/Lgsm>
 
 #include <ocra/control/Model.h>
+#include <ocra/util/Macros.h>
+
 
 namespace ocra_recipes
 {
@@ -21,6 +23,7 @@ namespace ocra_recipes
  */
 class RobotState : public yarp::os::Portable
 {
+DEFINE_CLASS_POINTER_TYPEDEFS(RobotState)
 public:
     RobotState ();
     RobotState (const int numberOfDoF);

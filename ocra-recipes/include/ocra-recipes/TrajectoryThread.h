@@ -37,6 +37,8 @@
 #include <Eigen/Lgsm>
 
 #include <ocra-recipes/TaskConnection.h>
+#include <ocra/util/Macros.h>
+
 
 namespace ocra_recipes
 {
@@ -59,6 +61,7 @@ enum TERMINATION_STRATEGY
 
 class TrajectoryThread : public yarp::os::RateThread
 {
+DEFINE_CLASS_POINTER_TYPEDEFS(TrajectoryThread)
 
 public:
     // TrajectoryThread();
