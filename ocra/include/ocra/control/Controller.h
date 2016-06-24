@@ -26,7 +26,7 @@ File history:
 
 #include "ocra/control/Controller.h"
 #include "ocra/control/Task.h"
-// #include "ocra/control/TaskYarpInterface.h"
+#include "ocra/control/TaskYarpInterface.h"
 #include "ocra/control/Feature.h"
 #include "ocra/control/Model.h"
 #include <map>
@@ -71,6 +71,11 @@ namespace ocra
 
     void removeTask(const std::string& taskName);
     void removeTasks(const std::vector<std::string> tasks);
+
+    std::vector<std::string> getTaskNames();
+    std::string getTaskPortName(const std::string& taskName);
+    std::vector<std::string> getTaskPortNames();
+
 
     void addContactSet(const ContactSet& contacts);
     std::shared_ptr<Task> getTask(const std::string& name);

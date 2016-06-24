@@ -69,21 +69,17 @@ bool ControllerServer::initialize()
                 controller = std::make_shared<wocra::WocraController>("WocraController", model, std::static_pointer_cast<ocra::OneLevelSolver>(internalSolver), useReducedProblem);
             }break;
         }
-        if(controller){
-            taskManagerSet = std::make_shared<ocra::TaskManagerSet>(controller, model);
-        }
     }
 
     if(usingComs)
     {
-        serverComs = std::make_shared<ServerCommunications>(controller, model, taskManagerSet);
+        serverComs = std::make_shared<ServerCommunications>(controller, model);
         res &= serverComs->open();
         res &= statesPort.open("/ControllerServer/states:o");
     }
 
     res &= bool(model);
     res &= bool(controller);
-    res &= bool(taskManagerSet);
 
     updateModel();
     return res;
@@ -115,20 +111,12 @@ void ControllerServer::updateModel()
 
 bool ControllerServer::addTaskManagersFromXmlFile(const std::string& filePath)
 {
-    ocra::TaskManagerFactory factory;
-    if(factory.parseTasksXML(filePath))
-        return factory.addTaskManagersToSet(controller, model, taskManagerSet);
-
-    else
-        return false;
+    ocra::TaskConstructionManager factory(model, controller, filePath);
+    return true;
 }
 
-bool ControllerServer::addTaskManagers(ocra::TaskManagerOptions& tmOpts)
+bool ControllerServer::addTaskManagers(std::vector<ocra::TaskBuilderOptions>& taskOptions)
 {
-    ocra::TaskManagerFactory factory;
-    if(factory.addTaskManagerOptions(tmOpts))
-        return factory.addTaskManagersToSet(controller, model, taskManagerSet);
-
-    else
-        return false;
+    ocra::TaskConstructionManager factory(model, controller, taskOptions);
+    return true;
 }

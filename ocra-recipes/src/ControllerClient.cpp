@@ -12,7 +12,7 @@ ControllerClient::ControllerClient()
 
 }
 
-ControllerClient::ControllerClient(std::shared_ptr<ocra::Model> derivedModelPtr, const int loopPeriod)
+ControllerClient::ControllerClient(ocra::Model::Ptr derivedModelPtr, const int loopPeriod)
 : yarp::os::RateThread(loopPeriod)
 , model(derivedModelPtr)
 , expectedPeriod(loopPeriod)
@@ -75,26 +75,26 @@ bool ControllerClient::removeTasks(const std::vector<std::string>& taskNameVecto
 
 void ControllerClient::addTasks(const std::string& pathToXmlFile, bool overwrite)
 {
-    ocra::TaskManagerFactory factory = ocra::TaskManagerFactory();
-    factory.parseTasksXML(pathToXmlFile);
-    std::vector<ocra::TaskManagerOptions> tmOptsVec = factory.getParsedOptionsVector();
-    std::vector<ocra::TaskManagerOptions> addTmOptsVec;
-    std::vector<ocra::TaskManagerOptions> overwriteTmOptsVec;
-    for (auto tmOpts : tmOptsVec) {
-        if(!checkIfTaskExists(tmOpts)) {
-            addTmOptsVec.push_back(tmOpts);
+    ocra::TaskConstructionManager factory = ocra::TaskConstructionManager();
+
+    std::vector<ocra::TaskBuilderOptions> taskOptsVec = factory.parseTaskOptionsFromXml(pathToXmlFile);
+    std::vector<ocra::TaskBuilderOptions> addTaskOptsVec;
+    std::vector<ocra::TaskBuilderOptions> overwriteTaskOptsVec;
+    for (auto taskOpts : taskOptsVec) {
+        if(!checkIfTaskExists(taskOpts)) {
+            addTaskOptsVec.push_back(taskOpts);
         } else {
             if (overwrite) {
-                overwriteTmOptsVec.push_back(tmOpts);
+                overwriteTaskOptsVec.push_back(taskOpts);
             }
         }
     }
 
     yarp::os::Bottle request;
     request.addInt(ADD_TASKS);
-    request.addInt(addTmOptsVec.size());
-    for (auto tmOpts : addTmOptsVec) {
-        tmOpts.putIntoBottle(request);
+    request.addInt(addTaskOptsVec.size());
+    for (auto taskOpts : addTaskOptsVec) {
+        taskOpts.putIntoBottle(request);
     }
     if(clientComs->queryController(request).get(0).asInt() != SUCCESS)
     {
@@ -103,7 +103,7 @@ void ControllerClient::addTasks(const std::string& pathToXmlFile, bool overwrite
     // Code to send the tm opts to the server.
 }
 
-bool ControllerClient::checkIfTaskExists(ocra::TaskManagerOptions& tmOpts)
+bool ControllerClient::checkIfTaskExists(ocra::TaskBuilderOptions& tmOpts)
 {
     std::vector<std::string> tmNames = getTaskNames();
     for (auto name : tmNames) {

@@ -15,24 +15,30 @@ namespace
     const std::shared_ptr<T> get(const std::string& name) const
     {
       typename std::map<std::string, std::shared_ptr<T>>::const_iterator it = data.find(name);
-      if(it == data.end())
-        throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" not found!");
+      if(it == data.end()) {
+          std::cout << "[Controller::"+id+" set]: element with name "+name+" not found!" << std::endl;
+        // throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" not found!");
+        }
       return it->second;
     }
 
     std::shared_ptr<T> get(const std::string& name)
     {
       typename std::map<std::string, std::shared_ptr<T>>::iterator it = data.find(name);
-      if(it == data.end())
-        throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" not found!");
+      if(it == data.end()) {
+          std::cout << "[Controller::"+id+" set]: element with name "+name+" not found!" << std::endl;
+        // throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" not found!");
+        }
       return it->second;
     }
 
     void add(const std::string& name, std::shared_ptr<T> elm)
     {
       typename std::map<std::string, std::shared_ptr<T>>::const_iterator it = data.find(name);
-      if(it != data.end())
-        throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" already registered!");
+      if(it != data.end()) {
+          std::cout << "[Controller::"+id+" set]: element with name "+name+" already registered!" << std::endl;
+        // throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" already registered!");
+        }
       data[name] = elm;
     }
 
@@ -76,7 +82,7 @@ namespace ocra
     VectorXd tau_max;
     VectorXd tau;
     TaskMap<Task> tasks;
-    // TaskMap<TaskYarpInterface> taskInterfaces;
+    TaskMap<TaskYarpInterface> taskInterfaces;
     std::vector<std::shared_ptr<Task>> activeTasks;
     std::string errorMessage;
     double maxTau;
@@ -88,7 +94,7 @@ namespace ocra
       , tau_max( VectorXd::Constant(m.nbInternalDofs(), std::numeric_limits<double>::max()) )
       , tau( VectorXd::Constant(m.nbInternalDofs(), 0.) )
       , tasks("tasks")
-    //   , taskInterfaces("taskInterfaces")
+      , taskInterfaces("taskInterfaces")
       , activeTasks()
       , errorMessage("")
       , maxTau(500.)
@@ -176,7 +182,7 @@ namespace ocra
   {
     pimpl->tasks.add(task->getName(), task);
     doAddTask(task);
-    // pimpl->taskInterfaces.add(task->getName(), std::make_shared<TaskYarpInterface>(task));
+    pimpl->taskInterfaces.add(task->getName(), std::make_shared<TaskYarpInterface>(task));
   }
 
   void Controller::addTasks(const std::vector<std::shared_ptr<Task>>& tasks)
@@ -187,7 +193,7 @@ namespace ocra
 
   void Controller::removeTask(const std::string& taskName)
   {
-    // pimpl->taskInterfaces.erase(taskName);
+    pimpl->taskInterfaces.erase(taskName);
     pimpl->tasks.erase(taskName);
   }
 
@@ -205,6 +211,34 @@ namespace ocra
   std::shared_ptr<Task> Controller::getTask(const std::string& name)
   {
     return pimpl->tasks.get(name);
+  }
+
+  std::vector<std::string> Controller::getTaskNames()
+  {
+    std::vector<std::string> taskNames;
+    for (auto mapItem : pimpl->tasks.getData()) {
+        taskNames.push_back(mapItem.first);
+    }
+    return taskNames;
+  }
+
+  std::string Controller::getTaskPortName(const std::string& taskName)
+  {
+      auto interface = pimpl->taskInterfaces.get(taskName);
+      if (interface) {
+          return interface->getPortName();
+      } else {
+        return "";
+      }
+  }
+
+  std::vector<std::string> Controller::getTaskPortNames()
+  {
+    std::vector<std::string> taskPortNames;
+    for (auto mapItem : pimpl->taskInterfaces.getData()) {
+        taskPortNames.push_back(mapItem.second->getPortName());
+    }
+    return taskPortNames;
   }
 
   const std::shared_ptr<Task> Controller::getTask(const std::string& name) const

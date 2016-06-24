@@ -21,6 +21,23 @@ ELSE()
     list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Trajectory/GaussianProcessTrajectory.cpp)
 ENDIF()
 
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/TaskManager.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/CoMTaskManager.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/CoMMomentumTaskManager.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/ContactTaskManager.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/ContactSetTaskManager.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/FullPostureTaskManager.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/PartialPostureTaskManager.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/SegCartesianTaskManager.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/SegOrientationTaskManager.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/SegPoseTaskManager.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/TaskManagerSet.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/TaskSequence.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/TaskManagerOptions.cpp)
+list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/TaskManagerFactory.cpp)
+
+
+
 add_library(ocra-control ${control_srcs})
 add_library(ocra-optim ${optim_srcs})
 add_library(ocra-util ${util_srcs})

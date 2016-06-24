@@ -3,8 +3,7 @@
 
 #include <iostream>
 
-#include <ocra/control/TaskManagers/TaskManager.h>
-#include <ocra/control/TaskManagers/TaskManagerMessageVocab.h>
+#include <ocra/control/TaskYarpInterfaceVocab.h>
 
 #include <yarp/os/RpcClient.h>
 #include <yarp/os/Network.h>

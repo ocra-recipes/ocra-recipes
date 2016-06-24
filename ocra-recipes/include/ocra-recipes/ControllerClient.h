@@ -4,8 +4,7 @@
 #include <ocra-recipes/ClientCommunications.h>
 #include <ocra-recipes/TaskConnection.h>
 #include <ocra/control/Model.h>
-#include <ocra/control/TaskManagers/TaskManagerFactory.h>
-#include <ocra/control/TaskManagers/TaskManagerOptions.h>
+#include <ocra/control/TaskBuilders/TaskConstructionManager.h>
 #include <ocra-recipes/RobotState.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Port.h>
@@ -48,8 +47,8 @@ public:
 
 public:
     void addTasks(const std::string& pathToXmlFile, bool overwrite);
-    void addTask(ocra::TaskManagerOptions& tmOpts, bool overwrite);
-    bool checkIfTaskExists(ocra::TaskManagerOptions& tmOpts);
+    void addTask(ocra::TaskBuilderOptions& tmOpts, bool overwrite);
+    bool checkIfTaskExists(ocra::TaskBuilderOptions& tmOpts);
     std::vector<std::string> getTaskTypes();
     std::vector<std::string> getTaskNames();
 

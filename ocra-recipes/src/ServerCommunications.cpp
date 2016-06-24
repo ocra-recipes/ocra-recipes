@@ -103,22 +103,20 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
             {
                 int numberOfTasks = input.get(++i).asInt();
                 ++i;
-                TaskManagerFactory factory;
+
+                std::vector<ocra::TaskBuilderOptions> taskOptionsVector;
                 for (int j=0; j<numberOfTasks; ++j)
                 {
-                    int sizeOfOptions;
-                    ocra::TaskManagerOptions tmOpts;
+                    int sizeOfOptions = 0;
                     yarp::os::Bottle trimmedBottle = ocra::util::trimBottle(input, i);
-                    if (tmOpts.extractFromBottle(trimmedBottle, sizeOfOptions)) {
-                        factory.addTaskManagerOptions(tmOpts);
+                    ocra::TaskBuilderOptions taskOptions;
+                    if (taskOptions.extractFromBottle(trimmedBottle, sizeOfOptions)) {
+                        taskOptionsVector.push_back(taskOptions);
                     }
                     i += sizeOfOptions;
                 }
-                if(factory.addTaskManagersToSet(controller, model, taskManagerSet)) {
-                    reply.addInt(SUCCESS);
-                } else {
-                    reply.addInt(FAILURE);
-                }
+                ocra::TaskConstructionManager factory(model, controller, taskOptionsVector);
+                reply.addInt(SUCCESS);
             }break;
 
             case ADD_TASKS_FROM_FILE:
@@ -131,16 +129,16 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
                 ++i;
                 std::cout << "Got message: REMOVE_TASK." << std::endl;
                 std::string taskToRemove = input.get(i).asString();
-                bool taskRemoved = taskManagerSet->removeTaskManager(taskToRemove);
-                if (taskRemoved) {
+                controller->removeTask(taskToRemove);
+                // if (taskRemoved) {
                     reply.addInt(SERVER_COMMUNICATIONS_MESSAGE::SUCCESS);
                     yarp::os::Bottle outputMessage;
                     outputMessage.addInt(SERVER_COMMUNICATIONS_MESSAGE::REMOVE_TASK_PORT);
                     outputMessage.addString(taskToRemove);
                     outputPort.write(outputMessage);
-                }else{
-                    reply.addInt(SERVER_COMMUNICATIONS_MESSAGE::FAILURE);
-                }
+                // }else{
+                //     reply.addInt(SERVER_COMMUNICATIONS_MESSAGE::FAILURE);
+                // }
                 ++i;
             }break;
 
@@ -152,7 +150,7 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
             case GET_TASK_LIST:
             {
                 std::cout << "Got message: GET_TASK_LIST." << std::endl;
-                for(auto taskName : taskManagerSet->getTaskList()){
+                for(auto taskName : controller->getTaskNames()) {
                     reply.addString(taskName);
                 }
             }break;
@@ -160,30 +158,16 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
             case GET_TASK_PORT_LIST:
             {
                 std::cout << "Got message: GET_TASK_PORT_LIST." << std::endl;
-                for(auto taskPort : taskManagerSet->getTaskPorts()){
+                for(auto taskPort : controller->getTaskPortNames()) {
                     reply.addString(taskPort);
                 }
             }break;
 
             case GET_TASK_PORT_NAME:
             {
-                ++i;
-                std::string taskName = input.get(i).asString();
+                std::string taskName = input.get(++i).asString();
                 std::cout << "Got message: GET_TASK_PORT_NAME." << std::endl;
-                int taskCounter = 0;
-                int taskFoundIndex = -1;
-                for(auto tName : taskManagerSet->getTaskList()){
-                    if (taskName == tName) {
-                        taskFoundIndex = taskCounter;
-                    } else {
-                        ++taskCounter;
-                    }
-                }
-                if (taskFoundIndex >= 0)
-                {
-                    reply.addString(taskManagerSet->getTaskPorts()[taskFoundIndex]);
-                }
-
+                reply.addString(controller->getTaskPortName(taskName));
             }break;
 
             case HELP:
