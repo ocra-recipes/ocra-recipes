@@ -3,6 +3,11 @@
 using namespace ocra;
 
 
+TaskConstructionManager::TaskConstructionManager()
+{
+
+}
+
 TaskConstructionManager::TaskConstructionManager(Model::Ptr model, Controller::Ptr controller, std::vector<TaskBuilderOptions> optionsVector)
 {
     addTasksToController(model, controller, optionsVector);
@@ -34,6 +39,8 @@ void TaskConstructionManager::addTasksToController(Model::Ptr model, Controller:
 TaskBuilder::Ptr TaskConstructionManager::getBuilder(TaskBuilderOptions options, Model::Ptr model)
 {
     TaskBuilder::Ptr TaskBldrPtr;
+    correctArticularVariables(options, model);
+
     if (options.taskType=="cartesian") {
         TaskBldrPtr = std::make_shared<CartesianTaskBuilder>(options, model);
     } else if (options.taskType == "pose") {
@@ -293,4 +300,158 @@ void TaskConstructionManager::parseWeightsXmlElement(TiXmlElement* weightsElemen
 {
     options.useWeightVectorConstructor = true;
     options.weightVector = util::stringToVectorXd(weightsElement->GetText());
+}
+
+void TaskConstructionManager::correctArticularVariables(TaskBuilderOptions& options, Model::Ptr model)
+{
+    int sizeDof = model->nbInternalDofs();
+
+    int sizeDesired = options.desired.rows();
+    int sizeIndexDesired = options.indexDesired.rows();
+    int sizeNameDesired = options.nameDesired.rows();
+    int sizeWeightVector = options.weightVector.rows();
+    int sizeIndexWeightVector = options.indexWeightVector.rows();
+    int sizeNameWeightVector = options.nameWeightVector.rows();
+    int sizeJointIndexes = options.jointIndexes.rows();
+    int sizeJointNames = options.jointNames.size();
+
+
+    if ((options.taskType == "fullposture") || (options.taskType == "partialposture"))
+    {
+        int sizeDofConcerned;
+        if(options.taskType == "fullposture")
+        {
+            sizeDofConcerned = sizeDof;
+        }else if(options.taskType == "partialposture"){
+            sizeDofConcerned = sizeIndexDesired+sizeNameDesired;
+        }
+
+        if (sizeDesired == 0)
+        {
+            if(options.taskType == "fullposture")
+            {
+                options.desired = model->getJointPositions();
+            }else if(options.taskType == "partialposture"){
+                options.desired = Eigen::VectorXd::Zero(sizeDofConcerned);
+            }
+        }
+        else
+        {
+            if (sizeDesired == 1)
+            {
+                options.desired = Eigen::VectorXd::Constant(sizeDofConcerned, options.desired[0]);
+            }
+            else if (sizeDesired != sizeDofConcerned)
+            {
+                if(options.taskType == "fullposture")
+                {
+                    options.desired = model->getJointPositions();
+                }else if(options.taskType == "partialposture"){
+                    options.desired = Eigen::VectorXd::Zero(sizeDofConcerned);
+                }
+            }
+        }
+        if (options.useWeightVectorConstructor)
+        {
+            if (sizeWeightVector != sizeDofConcerned)
+            {
+                options.weightVector = Eigen::VectorXd::Constant(sizeDofConcerned, options.weight);
+            }
+        }
+
+
+        if(options.taskType == "fullposture")
+        {
+            if (sizeJointIndexes>0 && sizeJointIndexes == sizeIndexDesired)
+            {
+                for(int i=0; i<sizeJointIndexes; i++)
+                {
+                    if(options.indexDesired(i) != -1000.0)
+                    {
+                        options.desired(options.jointIndexes(i)) = options.indexDesired(i);
+                    }
+                    if (options.useWeightVectorConstructor)
+                    {
+                        if (options.indexWeightVector(i) >= 0.0)
+                        {
+                            options.weightVector(options.jointIndexes(i)) = options.indexWeightVector(i);
+                        }
+                    }
+                }
+            }
+            if (sizeJointNames>0 && sizeJointNames == sizeNameDesired)
+            {
+                for(int i=0; i<sizeJointNames; i++)
+                {
+                    if(options.nameDesired(i) != -1000.0)
+                    {
+                    options.desired(model->getDofIndex(options.jointNames[i])) = options.nameDesired(i);
+                    }
+                    if (options.useWeightVectorConstructor)
+                    {
+                        if (options.nameWeightVector(i) >= 0.0)
+                        {
+                            options.weightVector(model->getDofIndex(options.jointNames[i])) = options.nameWeightVector(i);
+                        }
+                    }
+                }
+            }
+        }
+        else if(options.taskType == "partialposture")
+        {
+            Eigen::VectorXi jointIndexesTemp(sizeDofConcerned);
+            int indexCounter = 0;
+
+            if (sizeJointIndexes>0 && sizeJointIndexes == sizeIndexDesired)
+            {
+                for(int i=0; i<sizeJointIndexes; i++)
+                {
+                    jointIndexesTemp(indexCounter) = options.jointIndexes(i);
+                    if(options.indexDesired(i) != -1000.0)
+                    {
+                        options.desired(indexCounter) = options.indexDesired(i);
+                    }
+                    if (options.useWeightVectorConstructor)
+                    {
+                        if (options.indexWeightVector(i) >= 0.0)
+                        {
+                            options.weightVector(indexCounter) = options.indexWeightVector(i);
+                        }
+                    }
+                    indexCounter++;
+                }
+            }
+            if (sizeJointNames>0 && sizeJointNames == sizeNameDesired)
+            {
+                for(int i=0; i<sizeJointNames; i++)
+                {
+                    jointIndexesTemp(indexCounter) = model->getDofIndex(options.jointNames[i]);
+                    if(options.nameDesired(i) == -1000.0)
+                    {
+                        options.desired(indexCounter) = model->getJointPositions()(model->getDofIndex(options.jointNames[i]));
+                    }
+                    else{
+                        options.desired(indexCounter) = options.nameDesired(i);
+                    }
+                    if (options.useWeightVectorConstructor)
+                    {
+                        if (options.nameWeightVector(i) >= 0.0)
+                        {
+                            options.weightVector(indexCounter) = options.nameWeightVector(i);
+                        }
+                    }
+                    indexCounter++;
+                }
+            }
+            options.jointIndexes.resize(sizeDofConcerned);
+            options.jointIndexes = jointIndexesTemp;
+
+        }
+
+    }
+
+
+
+
+
 }

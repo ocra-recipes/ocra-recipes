@@ -33,6 +33,8 @@ class TaskConstructionManager {
 DEFINE_CLASS_POINTER_TYPEDEFS(TaskConstructionManager)
 
 public:
+    TaskConstructionManager();
+
     TaskConstructionManager(Model::Ptr model, Controller::Ptr controller, std::vector<TaskBuilderOptions> optionsVector);
     TaskConstructionManager(Model::Ptr model, Controller::Ptr controller, const std::string& optionsXmlFilePath);
     virtual ~TaskConstructionManager();
@@ -56,6 +58,7 @@ private:
     void parseJointIndexesXmlElement(TiXmlElement* jointIndexesElement, TaskBuilderOptions& options);
     void parseJointsXmlElement(TiXmlElement* jointsElement, TaskBuilderOptions& options);
     void parseWeightsXmlElement(TiXmlElement* weightsElement, TaskBuilderOptions& options);
+    void correctArticularVariables(TaskBuilderOptions& options, Model::Ptr model);
 
 
 };
