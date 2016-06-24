@@ -103,13 +103,13 @@ public:
     /*! Sets the stiffness, or proportional (Kp) gains, of the task.
      *  \param K The proportional gains to set for each DoF. Creates a diagonal matrix from K.
      */
-    void setStiffness(const VectorXd& K);
+    void setStiffness(const Eigen::VectorXd& K);
 
 
     /*! Sets the stiffness, or proportional (Kp) gains, of the task.
      *  \param K The proportional gains to set for the task. Off diagonal components will create stiffness correlations between the task DoF.
      */
-    void setStiffness(const MatrixXd& K);
+    void setStiffness(const Eigen::MatrixXd& K);
 
     /*! Gets the current stiffness, or proportional (Kp) gain, of the task.
      *
@@ -131,13 +131,13 @@ public:
     /*! Sets the damping, or damping (Kd) gains, of the task.
      *  \param K The damping gains to set for each DoF. Creates a diagonal matrix from K.
      */
-    void setDamping(const VectorXd& B);
+    void setDamping(const Eigen::VectorXd& B);
 
 
     /*! Sets the damping, or damping (Kd) gains, of the task.
      *  \param K The damping gains to set for the task. Off diagonal components will create damping correlations between the task DoF.
      */
-    void setDamping(const MatrixXd& B);
+    void setDamping(const Eigen::MatrixXd& B);
 
     /*! Gets the current damping, or damping (Kd) gain, of the task.
      *

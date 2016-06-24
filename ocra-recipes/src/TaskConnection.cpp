@@ -101,7 +101,7 @@ void TaskConnection::setStiffness(double K)
     }
 }
 
-void TaskConnection::setStiffness(const VectorXd& K)
+void TaskConnection::setStiffness(const Eigen::VectorXd& K)
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::SET_STIFFNESS_VECTOR);
@@ -112,7 +112,7 @@ void TaskConnection::setStiffness(const VectorXd& K)
     }
 }
 
-void TaskConnection::setStiffness(const MatrixXd& K)
+void TaskConnection::setStiffness(const Eigen::MatrixXd& K)
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::SET_STIFFNESS_MATRIX);
@@ -152,7 +152,7 @@ void TaskConnection::setDamping(double B)
     }
 }
 
-void TaskConnection::setDamping(const VectorXd& B)
+void TaskConnection::setDamping(const Eigen::VectorXd& B)
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::SET_DAMPING_VECTOR);
@@ -163,7 +163,7 @@ void TaskConnection::setDamping(const VectorXd& B)
     }
 }
 
-void TaskConnection::setDamping(const MatrixXd& B)
+void TaskConnection::setDamping(const Eigen::MatrixXd& B)
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::SET_DAMPING_MATRIX);
