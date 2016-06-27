@@ -297,7 +297,6 @@ namespace ocra
       } catch (int errCode) {
           std::cout << "You cannot set the state of this feature because it is not a desired feature. It must be constructed with a TargetFrame." << errCode << std::endl;
       }
-    //
   }
 
 
@@ -432,7 +431,37 @@ namespace ocra
 
     return pimpl->Minv;
   }
+  TaskState PointContactFeature::getState() const
+  {
+      TaskState state;
+      state.setPosition(pimpl->controlFrame->getPosition());
+      state.setVelocity(pimpl->controlFrame->getVelocity());
+      state.setAcceleration(pimpl->controlFrame->getAcceleration());
+      state.setWrench(pimpl->controlFrame->getWrench());
 
+      return state;
+  }
+
+  void PointContactFeature::setState(const TaskState& newState)
+  {
+      try {
+          TargetFrame::Ptr targetFrame = std::dynamic_pointer_cast<TargetFrame>(pimpl->controlFrame);
+          if(newState.hasPosition()) {
+                targetFrame->setPosition(newState.getPosition());
+            }
+            if(newState.hasVelocity()) {
+                targetFrame->setVelocity(newState.getVelocity());
+            }
+            if(newState.hasAcceleration()) {
+                targetFrame->setAcceleration(newState.getAcceleration());
+            }
+            if(newState.hasWrench()) {
+                targetFrame->setWrench(newState.getWrench());
+            }
+      } catch (int errCode) {
+          std::cout << "You cannot set the state of this feature because it is not a desired feature. It must be constructed with a TargetFrame." << errCode << std::endl;
+      }
+  }
 
   // --- ORIENTATION --------------------------------------------
 
@@ -618,7 +647,37 @@ namespace ocra
 
     return pimpl->Minv;
   }
+  TaskState OrientationFeature::getState() const
+  {
+      TaskState state;
+      state.setPosition(pimpl->controlFrame->getPosition());
+      state.setVelocity(pimpl->controlFrame->getVelocity());
+      state.setAcceleration(pimpl->controlFrame->getAcceleration());
+      state.setWrench(pimpl->controlFrame->getWrench());
 
+      return state;
+  }
+
+  void OrientationFeature::setState(const TaskState& newState)
+  {
+      try {
+          TargetFrame::Ptr targetFrame = std::dynamic_pointer_cast<TargetFrame>(pimpl->controlFrame);
+          if(newState.hasPosition()) {
+                targetFrame->setPosition(newState.getPosition());
+            }
+            if(newState.hasVelocity()) {
+                targetFrame->setVelocity(newState.getVelocity());
+            }
+            if(newState.hasAcceleration()) {
+                targetFrame->setAcceleration(newState.getAcceleration());
+            }
+            if(newState.hasWrench()) {
+                targetFrame->setWrench(newState.getWrench());
+            }
+      } catch (int errCode) {
+          std::cout << "You cannot set the state of this feature because it is not a desired feature. It must be constructed with a TargetFrame." << errCode << std::endl;
+      }
+  }
 
   // --- DISPLACEMENT -------------------------------------------
 
@@ -908,7 +967,37 @@ namespace ocra
 
     return pimpl->Minv;
   }
+  TaskState DisplacementFeature::getState() const
+  {
+      TaskState state;
+      state.setPosition(pimpl->controlFrame->getPosition());
+      state.setVelocity(pimpl->controlFrame->getVelocity());
+      state.setAcceleration(pimpl->controlFrame->getAcceleration());
+      state.setWrench(pimpl->controlFrame->getWrench());
 
+      return state;
+  }
+
+  void DisplacementFeature::setState(const TaskState& newState)
+  {
+      try {
+          TargetFrame::Ptr targetFrame = std::dynamic_pointer_cast<TargetFrame>(pimpl->controlFrame);
+          if(newState.hasPosition()) {
+                targetFrame->setPosition(newState.getPosition());
+            }
+            if(newState.hasVelocity()) {
+                targetFrame->setVelocity(newState.getVelocity());
+            }
+            if(newState.hasAcceleration()) {
+                targetFrame->setAcceleration(newState.getAcceleration());
+            }
+            if(newState.hasWrench()) {
+                targetFrame->setWrench(newState.getWrench());
+            }
+      } catch (int errCode) {
+          std::cout << "You cannot set the state of this feature because it is not a desired feature. It must be constructed with a TargetFrame." << errCode << std::endl;
+      }
+  }
 
   // --- CONTACT CONSTRAINT FEATURES ----------------------------
 
@@ -1047,7 +1136,37 @@ namespace ocra
 
     return pimpl->Minv;
   }
+  TaskState ContactConstraintFeature::getState() const
+  {
+      TaskState state;
+      state.setPosition(pimpl->controlFrame->getPosition());
+      state.setVelocity(pimpl->controlFrame->getVelocity());
+      state.setAcceleration(pimpl->controlFrame->getAcceleration());
+      state.setWrench(pimpl->controlFrame->getWrench());
 
+      return state;
+  }
+
+  void ContactConstraintFeature::setState(const TaskState& newState)
+  {
+      try {
+          TargetFrame::Ptr targetFrame = std::dynamic_pointer_cast<TargetFrame>(pimpl->controlFrame);
+          if(newState.hasPosition()) {
+                targetFrame->setPosition(newState.getPosition());
+            }
+            if(newState.hasVelocity()) {
+                targetFrame->setVelocity(newState.getVelocity());
+            }
+            if(newState.hasAcceleration()) {
+                targetFrame->setAcceleration(newState.getAcceleration());
+            }
+            if(newState.hasWrench()) {
+                targetFrame->setWrench(newState.getWrench());
+            }
+      } catch (int errCode) {
+          std::cout << "You cannot set the state of this feature because it is not a desired feature. It must be constructed with a TargetFrame." << errCode << std::endl;
+      }
+  }
 
 
 
@@ -1180,6 +1299,33 @@ namespace ocra
     return pimpl->M;
   }
 
+  TaskState FullStateFeature::getState() const
+  {
+      TaskState state;
+      state.setQ(pimpl->state->q());
+      state.setQd(pimpl->state->qdot());
+      state.setQdd(pimpl->state->qddot());
+
+      return state;
+  }
+
+  void FullStateFeature::setState(const TaskState& newState)
+  {
+      try {
+          FullTargetState::Ptr targetState = std::dynamic_pointer_cast<FullTargetState>(pimpl->state);
+          if(newState.hasQ()) {
+                targetState->set_q(newState.getQ());
+            }
+            if(newState.hasQd()) {
+                targetState->set_qdot(newState.getQd());
+            }
+            if(newState.hasQdd()) {
+                targetState->set_qddot(newState.getQdd());
+            }
+      } catch (int errCode) {
+          std::cout << "You cannot set the state of this feature because it is not a desired feature. It must be constructed with a FullTargetState." << errCode << std::endl;
+      }
+  }
 
   // --- PARTIAL - ARTICULAR ------------------------------------
 
@@ -1307,6 +1453,33 @@ namespace ocra
   {
       pimpl->M = pimpl->state->getInertiaMatrixInverse();
       return pimpl->M;
+  }
+  TaskState PartialStateFeature::getState() const
+  {
+      TaskState state;
+      state.setQ(pimpl->state->q());
+      state.setQd(pimpl->state->qdot());
+      state.setQdd(pimpl->state->qddot());
+
+      return state;
+  }
+
+  void PartialStateFeature::setState(const TaskState& newState)
+  {
+      try {
+          PartialTargetState::Ptr targetState = std::dynamic_pointer_cast<PartialTargetState>(pimpl->state);
+          if(newState.hasQ()) {
+                targetState->set_q(newState.getQ());
+            }
+            if(newState.hasQd()) {
+                targetState->set_qdot(newState.getQd());
+            }
+            if(newState.hasQdd()) {
+                targetState->set_qddot(newState.getQdd());
+            }
+      } catch (int errCode) {
+          std::cout << "You cannot set the state of this feature because it is not a desired feature. It must be constructed with a PartialTargetState." << errCode << std::endl;
+      }
   }
 
 }

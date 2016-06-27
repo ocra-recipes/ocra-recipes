@@ -171,8 +171,8 @@ namespace ocra
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
 
-    TaskState getState() const {TaskState state; return state;}
-    void setState(const TaskState& newState) {};
+    TaskState getState() const;
+    void setState(const TaskState& newState);
 
   private:
     struct Pimpl;
@@ -215,8 +215,8 @@ namespace ocra
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
 
-    TaskState getState() const {TaskState state; return state;}
-    void setState(const TaskState& newState) {};
+    TaskState getState() const;
+    void setState(const TaskState& newState);
 
   private:
     struct Pimpl;
@@ -259,8 +259,8 @@ namespace ocra
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
 
-    TaskState getState() const {TaskState state; return state;}
-    void setState(const TaskState& newState) {};
+    TaskState getState() const;
+    void setState(const TaskState& newState);
 
   private:
     struct Pimpl;
@@ -304,8 +304,8 @@ namespace ocra
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
 
 
-    TaskState getState() const {TaskState state; return state;}
-    void setState(const TaskState& newState) {};
+    TaskState getState() const;
+    void setState(const TaskState& newState);
 
 
   private:
@@ -351,8 +351,8 @@ namespace ocra
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
 
 
-    TaskState getState() const {TaskState state; return state;}
-    void setState(const TaskState& newState) {};
+    TaskState getState() const;
+    void setState(const TaskState& newState);
 
 
   private:
@@ -394,8 +394,8 @@ namespace ocra
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
 
 
-    TaskState getState() const {TaskState state; return state;}
-    void setState(const TaskState& newState) {};
+    TaskState getState() const;
+    void setState(const TaskState& newState);
 
 
   private:
