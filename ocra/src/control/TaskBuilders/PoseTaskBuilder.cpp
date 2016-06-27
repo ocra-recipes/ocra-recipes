@@ -37,7 +37,7 @@ void PoseTaskBuilder::setTaskState()
 {
     TaskState state;
     // Make sure the desired vector is the same size as the number of axes being controlled.
-    if(this->options.desired.size() == DISPLACEMENT_VECTOR_SIZE){
+    if(this->options.desired.size() > 0){
         // Set the pose
         state.setPosition(util::eigenVectorToDisplacementd(this->options.desired));
     }else{

@@ -38,14 +38,9 @@ void ComTaskBuilder::setTaskState()
 {
     TaskState state;
     // Make sure the desired vector is the same size as the number of axes being controlled.
-    if(this->options.desired.size() == this->nDoF){
-        // Make a temporary 3 dimensional vector and fill it with the desired values
-        Eigen::Vector3d tmpPosVec = Eigen::Vector3d::Zero();
-        for(auto i=0; i<this->nDoF; ++i){
-            tmpPosVec(i) = this->options.desired(i);
-        }
-        // Set the position
-        state.setPosition(Eigen::Displacementd(tmpPosVec, Eigen::Rotation3d::Identity()));
+    if(this->options.desired.size() > 0){
+        // Set the pose
+        state.setPosition(util::eigenVectorToDisplacementd(this->options.desired));
     }else{
         // If the desired position was not given then just get it from the current state of the task.
         state.setPosition(this->task->getTaskState().getPosition());
