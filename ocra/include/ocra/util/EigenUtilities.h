@@ -14,8 +14,10 @@ inline Eigen::Displacementd eigenVectorToDisplacementd(const Eigen::VectorXd& ei
     Eigen::VectorXd tmpVector = Eigen::VectorXd::Zero(7);
     tmpVector(3) = 1.0;
 
-    if (eigenVector.rows()==3) {
-        tmpVector.head(3) = eigenVector;
+    if (eigenVector.rows()<=3) {
+        for (auto i = 0; i < eigenVector.rows(); ++i) {
+            tmpVector(i) = eigenVector(i);
+        }
     }
     else if (eigenVector.rows()==7) {
         tmpVector = eigenVector;

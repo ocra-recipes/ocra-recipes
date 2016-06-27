@@ -75,6 +75,20 @@ public:
 
 
 
+    friend std::ostream& operator<<(std::ostream &out, const TaskState& state)
+    {
+        out << "getPosition():\n" << state.getPosition() << std::endl << std::endl;
+        out << "getVelocity():\n" << state.getVelocity() << std::endl << std::endl;
+        out << "getAcceleration():\n" << state.getAcceleration() << std::endl << std::endl;
+        out << "getQ():\n" << state.getQ() << std::endl << std::endl;
+        out << "getQd():\n" << state.getQd() << std::endl << std::endl;
+        out << "getQdd():\n" << state.getQdd() << std::endl << std::endl;
+        out << "getTorque():\n" << state.getTorque() << std::endl << std::endl;
+        out << "getWrench():\n" << state.getWrench() << std::endl << std::endl;
+
+        return out;
+    }
+
 };
 
 } // namespace ocra

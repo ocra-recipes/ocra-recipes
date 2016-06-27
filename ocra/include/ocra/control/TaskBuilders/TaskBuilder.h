@@ -8,6 +8,7 @@
 #include <ocra/control/Feature.h>
 #include <ocra/control/ControlFrame.h>
 #include <ocra/util/Macros.h>
+#include <ocra/util/EigenUtilities.h>
 
 namespace ocra {
 
