@@ -36,6 +36,36 @@ inline std::vector<Eigen::Displacementd> eigenVectorToDisplacementd(const std::v
     return dispVec;
 }
 
+inline Eigen::Twistd eigenVectorToTwistd(const Eigen::VectorXd& eigenVector, bool linearOnly=true, bool angularOnly=false)
+{
+    if (eigenVector.size()==6) {
+        return Eigen::Twistd(eigenVector);
+    } else if (eigenVector.size()==3) {
+        if (linearOnly) {
+            return Eigen::Twistd(0,0,0,eigenVector(0),eigenVector(1),eigenVector(2));
+        }
+        if (angularOnly) {
+            return Eigen::Twistd(eigenVector(0),eigenVector(1),eigenVector(2),0,0,0);
+        }
+    }
+    return Eigen::Twistd::Zero();
+}
+
+inline Eigen::Wrenchd eigenVectorToWrenchd(const Eigen::VectorXd& eigenVector, bool linearOnly=true, bool angularOnly=false)
+{
+    if (eigenVector.size()==6) {
+        return Eigen::Wrenchd(eigenVector);
+    } else if (eigenVector.size()==3) {
+        if (linearOnly) {
+            return Eigen::Wrenchd(0,0,0,eigenVector(0),eigenVector(1),eigenVector(2));
+        }
+        if (angularOnly) {
+            return Eigen::Wrenchd(eigenVector(0),eigenVector(1),eigenVector(2),0,0,0);
+        }
+    }
+    return Eigen::Wrenchd::Zero();
+}
+
 
 
 
