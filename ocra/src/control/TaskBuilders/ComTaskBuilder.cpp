@@ -56,4 +56,5 @@ void ComTaskBuilder::setTaskState()
 void ComTaskBuilder::setTaskType()
 {
     this->task->setTaskType(Task::ACCELERATIONTASK);
+    this->task->setMetaTaskType(Task::COM);
 }

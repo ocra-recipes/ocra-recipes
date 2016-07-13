@@ -86,6 +86,7 @@ void TrajectoryThread::init()
 
     isTaskCurrentlyActive = task->isActivated();
     weightDimension = task->getTaskDimension();
+    taskType = task->getTaskType();
 
 
     switch (trajType)
@@ -200,43 +201,48 @@ void TrajectoryThread::run()
             desStateBottle.clear();
 
             double relativeTime = yarp::os::Time::now() - timeElapsedDuringPause;
+            Eigen::MatrixXd desiredState_tmp;
 
             if (trajType==GAUSSIAN_PROCESS)
             {
-                Eigen::MatrixXd desiredState_tmp;
-                trajectory->getDesiredValues(relativeTime, desiredState_tmp, desiredVariance);
-                desiredState << desiredState_tmp;
+                // trajectory->getDesiredValues(relativeTime, desiredState_tmp, desiredVariance);
+                // desiredState << desiredState_tmp;
 
 
-                for(int i=0; i<desiredState.size(); i++)
-                {
-                    desStateBottle.addDouble(desiredState(i));
-                }
-                #if USING_SMLT
-                if(useVarianceModulation)
-                {
-                    Eigen::VectorXd desiredWeights = varianceToWeights(desiredVariance);
-                    for(int i=0; i<desiredWeights.size(); i++)
-                    {
-                        desStateBottle.addDouble(desiredWeights(i));
-                    }
-                }
-                #endif
+                // for(int i=0; i<desiredState.size(); i++)
+                // {
+                //     desStateBottle.addDouble(desiredState(i));
+                // }
+                // #if USING_SMLT
+                // if(useVarianceModulation)
+                // {
+                //     Eigen::VectorXd desiredWeights = varianceToWeights(desiredVariance);
+                //     for(int i=0; i<desiredWeights.size(); i++)
+                //     {
+                //         desStateBottle.addDouble(desiredWeights(i));
+                //     }
+                // }
+                // #endif
             }
             else
             {
-                desiredState << trajectory->getDesiredValues(relativeTime);
-                for(int i=0; i<desiredState.size(); i++)
-                {
-                    desStateBottle.addDouble(desiredState(i));
-                }
+                // desiredState << trajectory->getDesiredValues(relativeTime);
+                // for(int i=0; i<desiredState.size(); i++)
+                // {
+                //     desStateBottle.addDouble(desiredState(i));
+                // }
+                desiredState_tmp = trajectory->getDesiredValues(relativeTime);
             }
 
 
-            task->sendDesiredStateAsBottle(desStateBottle);
+            // task->sendDesiredStateAsBottle(desStateBottle);
+            // ocra::TaskState state = matrixToTaskState(desiredState_tmp);
+            task->setDesiredTaskStateDirect(matrixToTaskState(desiredState_tmp));
         }
     }
 }
+
+
 
 void TrajectoryThread::pause()
 {
@@ -263,7 +269,7 @@ Eigen::VectorXd TrajectoryThread::varianceToWeights(Eigen::VectorXd& desiredVari
 
 bool TrajectoryThread::goalAttained()
 {
-    return (goalStateVector - task->getCurrentState().head(weightDimension)).norm() <= errorThreshold;
+    return (goalStateVector - getCurrentTaskStateAsVector()).norm() <= errorThreshold;
 }
 
 void TrajectoryThread::flipWaypoints()
@@ -305,11 +311,11 @@ bool TrajectoryThread::setTrajectoryWaypoints(const Eigen::MatrixXd& userWaypoin
         {
             allWaypoints = Eigen::MatrixXd(weightDimension, _userWaypoints.cols()+1);
 
-            startStateVector = task->getCurrentStateRpc();
+            // startStateVector = task->getCurrentState();
 
-            desiredState = Eigen::VectorXd::Zero(startStateVector.size());
+            // desiredState = Eigen::VectorXd::Zero(startStateVector.size());
 
-            allWaypoints.col(0) << task->getCurrentState().head(weightDimension);
+            allWaypoints.col(0) << getCurrentTaskStateAsVector();
             for(int i=0; i<_userWaypoints.cols(); i++)
             {
                 allWaypoints.col(i+1) << _userWaypoints.col(i);
@@ -349,7 +355,7 @@ bool TrajectoryThread::setDisplacement(const Eigen::VectorXd& displacementVector
 {
     if (weightDimension == displacementVector.rows())
     {
-        startStateVector = task->getCurrentState();
+        startStateVector = getCurrentTaskStateAsVector();
         Eigen::MatrixXd tmpWaypoints = Eigen::MatrixXd::Zero(weightDimension, 2);
         tmpWaypoints.col(0) << startStateVector;
         tmpWaypoints.col(1) << startStateVector + displacementVector;
@@ -361,7 +367,134 @@ bool TrajectoryThread::setDisplacement(const Eigen::VectorXd& displacementVector
     }
 }
 
+ocra::TaskState TrajectoryThread::matrixToTaskState(const Eigen::MatrixXd& desMat)
+{
+    ocra::TaskState desState;
+    switch (taskType) {
+        case ocra::Task::META_TASK_TYPE::UNKNOWN:
+        {
+            // do nothing
+        }break;
+        case ocra::Task::META_TASK_TYPE::POSITION:
+        {
+            desState.setPosition(ocra::util::eigenVectorToDisplacementd(desMat.col(POS_COL)));
+            desState.setVelocity(ocra::util::eigenVectorToTwistd(desMat.col(VEL_COL)));
+            desState.setAcceleration(ocra::util::eigenVectorToTwistd(desMat.col(ACC_COL)));
+        }break;
+        case ocra::Task::META_TASK_TYPE::ORIENTATION:
+        {
+            desState.setPosition(ocra::util::eigenVectorToDisplacementd(desMat.col(POS_COL)));
+            desState.setVelocity(ocra::util::eigenVectorToTwistd(desMat.col(VEL_COL)));
+            desState.setAcceleration(ocra::util::eigenVectorToTwistd(desMat.col(ACC_COL)));
+        }break;
+        case ocra::Task::META_TASK_TYPE::POSE:
+        {
+            desState.setPosition(ocra::util::eigenVectorToDisplacementd(desMat.col(POS_COL)));
+            desState.setVelocity(ocra::util::eigenVectorToTwistd(desMat.col(VEL_COL)));
+            desState.setAcceleration(ocra::util::eigenVectorToTwistd(desMat.col(ACC_COL)));
+        }break;
+        case ocra::Task::META_TASK_TYPE::FORCE:
+        {
+            desState.setWrench(ocra::util::eigenVectorToWrenchd(desMat.col(POS_COL)));
+        }break;
+        case ocra::Task::META_TASK_TYPE::COM:
+        {
+            desState.setPosition(ocra::util::eigenVectorToDisplacementd(desMat.col(POS_COL)));
+            desState.setVelocity(ocra::util::eigenVectorToTwistd(desMat.col(VEL_COL)));
+            desState.setAcceleration(ocra::util::eigenVectorToTwistd(desMat.col(ACC_COL)));
+        }break;
+        case ocra::Task::META_TASK_TYPE::COM_MOMENTUM:
+        {
+            desState.setPosition(ocra::util::eigenVectorToDisplacementd(desMat.col(POS_COL)));
+            desState.setVelocity(ocra::util::eigenVectorToTwistd(desMat.col(VEL_COL)));
+            desState.setAcceleration(ocra::util::eigenVectorToTwistd(desMat.col(ACC_COL)));
+        }break;
+        case ocra::Task::META_TASK_TYPE::PARTIAL_POSTURE:
+        {
+            desState.setQ(desMat.col(POS_COL));
+            desState.setQd(desMat.col(VEL_COL));
+            desState.setQdd(desMat.col(ACC_COL));
+        }break;
+        case ocra::Task::META_TASK_TYPE::FULL_POSTURE:
+        {
+            desState.setQ(desMat.col(POS_COL));
+            desState.setQd(desMat.col(VEL_COL));
+            desState.setQdd(desMat.col(ACC_COL));
+        }break;
+        case ocra::Task::META_TASK_TYPE::PARTIAL_TORQUE:
+        {
+            desState.setTorque(desMat.col(POS_COL));
+        }break;
+        case ocra::Task::META_TASK_TYPE::FULL_TORQUE:
+        {
+            desState.setTorque(desMat.col(POS_COL));
+        }break;
+        default:
+        {
 
+        }break;
+    }
+
+    return desState;
+}
+
+Eigen::VectorXd TrajectoryThread::getCurrentTaskStateAsVector()
+{
+    Eigen::VectorXd startVector = Eigen::VectorXd::Zero(weightDimension);
+    ocra::TaskState state = task->getTaskState();
+
+    switch (taskType) {
+        case ocra::Task::META_TASK_TYPE::UNKNOWN:
+        {
+            // do nothing
+        }break;
+        case ocra::Task::META_TASK_TYPE::POSITION:
+        {
+            startVector = state.getPosition().getTranslation();
+        }break;
+        case ocra::Task::META_TASK_TYPE::ORIENTATION:
+        {
+
+        }break;
+        case ocra::Task::META_TASK_TYPE::POSE:
+        {
+
+        }break;
+        case ocra::Task::META_TASK_TYPE::FORCE:
+        {
+
+        }break;
+        case ocra::Task::META_TASK_TYPE::COM:
+        {
+
+        }break;
+        case ocra::Task::META_TASK_TYPE::COM_MOMENTUM:
+        {
+
+        }break;
+        case ocra::Task::META_TASK_TYPE::PARTIAL_POSTURE:
+        {
+
+        }break;
+        case ocra::Task::META_TASK_TYPE::FULL_POSTURE:
+        {
+
+        }break;
+        case ocra::Task::META_TASK_TYPE::PARTIAL_TORQUE:
+        {
+
+        }break;
+        case ocra::Task::META_TASK_TYPE::FULL_TORQUE:
+        {
+
+        }break;
+        default:
+        {
+
+        }break;
+    }
+    return startVector;
+}
 
 #if USING_SMLT
 void TrajectoryThread::setMeanWaypoints(std::vector<bool>& isMeanWaypoint)

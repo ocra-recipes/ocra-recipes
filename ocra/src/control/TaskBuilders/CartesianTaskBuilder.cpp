@@ -57,4 +57,5 @@ void CartesianTaskBuilder::setTaskState()
 void CartesianTaskBuilder::setTaskType()
 {
     this->task->setTaskType(Task::ACCELERATIONTASK);
+    this->task->setMetaTaskType(Task::POSITION);
 }

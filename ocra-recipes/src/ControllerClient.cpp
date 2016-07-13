@@ -109,7 +109,7 @@ bool ControllerClient::checkIfTaskExists(ocra::TaskBuilderOptions& tmOpts)
     for (auto name : tmNames) {
         if (tmOpts.taskName == name) {
             TaskConnection tCon(tmOpts.taskName);
-            if (tmOpts.taskType == tCon.getTaskType()) {
+            if (tmOpts.taskType == tCon.getTaskTypeAsString()) {
                 return true;
             }
             else {

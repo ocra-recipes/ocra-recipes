@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <ocra/control/TaskYarpInterfaceVocab.h>
+#include <ocra/control/Task.h>
 
 #include <yarp/os/RpcClient.h>
 #include <yarp/os/Network.h>
@@ -46,7 +47,7 @@ private:
     yarp::os::Port inputPort;
     yarp::os::Port outputPort;
 
-    Eigen::VectorXd currentStateVector;
+    ocra::TaskState currentState;
     bool controlPortsAreOpen;
 
 
@@ -174,18 +175,6 @@ public:
      */
     bool openControlPorts();
 
-    /*! If the control ports are open then this will return the current task state vector.
-     *
-     *  \return The task's current state.
-     */
-    Eigen::VectorXd getCurrentState();
-
-    /*! Gets the current task state vector via a message over the Rpc port. This should not be used for high speed querying.
-     *
-     *  \return The task's current state.
-     */
-    Eigen::VectorXd getCurrentStateRpc();
-
     /*! The name of the task we are connected to.
      *
      *  \return The name of the task we are connected to.
@@ -197,13 +186,15 @@ public:
      *
      *  \return The type of the task we are connected to.
      */
-    std::string getTaskType();
+    ocra::Task::META_TASK_TYPE getTaskType();
+    std::string getTaskTypeAsString();
 
     int getTaskDimension();
 
-    int getTaskStateDimension();
-
-    void sendDesiredStateAsBottle(yarp::os::Bottle& bottle);
+    ocra::TaskState getTaskState();
+    ocra::TaskState getDesiredTaskState();
+    void setDesiredTaskState(const ocra::TaskState& newDesiredTaskState);
+    void setDesiredTaskStateDirect(const ocra::TaskState& newDesiredTaskState);
 
     bool closeControlPorts();
 

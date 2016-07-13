@@ -235,26 +235,65 @@ int TaskConnection::getTaskDimension()
     return reply.get(0).asInt();
 }
 
-int TaskConnection::getTaskStateDimension()
-{
-    yarp::os::Bottle message, reply;
-    message.addInt(ocra::TASK_MESSAGE::GET_STATE_DIMENSION);
-    this->taskRpcClient.write(message, reply);
-    return reply.get(0).asInt();
-}
-
-std::string TaskConnection::getTaskType()
+ocra::Task::META_TASK_TYPE TaskConnection::getTaskType()
 {
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::GET_TYPE);
     this->taskRpcClient.write(message, reply);
+    return ocra::Task::META_TASK_TYPE(reply.get(0).asInt());
+}
+
+std::string TaskConnection::getTaskTypeAsString()
+{
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::GET_TYPE_AS_STRING);
+    this->taskRpcClient.write(message, reply);
     return reply.get(0).asString();
 }
 
-void TaskConnection::sendDesiredStateAsBottle(yarp::os::Bottle& bottle)
+ocra::TaskState TaskConnection::getTaskState()
 {
-    if(controlPortsAreOpen)
+    if (this->controlPortsAreOpen) {
+        return this->currentState;
+    } else {
+        yarp::os::Bottle message, reply;
+        ocra::TaskState state;
+        message.addInt(ocra::TASK_MESSAGE::GET_TASK_STATE);
+        this->taskRpcClient.write(message, reply);
+        int dummy;
+        state.extractFromBottle(reply, dummy);
+        return state;
+    }
+}
+
+ocra::TaskState TaskConnection::getDesiredTaskState()
+{
+    yarp::os::Bottle message, reply;
+    ocra::TaskState state;
+    message.addInt(ocra::TASK_MESSAGE::GET_DESIRED_TASK_STATE);
+    this->taskRpcClient.write(message, reply);
+    int dummy;
+    state.extractFromBottle(reply, dummy);
+    return state;
+}
+
+void TaskConnection::setDesiredTaskState(const ocra::TaskState& newDesiredTaskState)
+{
+    yarp::os::Bottle message, reply;
+    message.addInt(ocra::TASK_MESSAGE::SET_DESIRED_TASK_STATE);
+    newDesiredTaskState.putIntoBottle(message);
+    this->taskRpcClient.write(message, reply);
+}
+
+void TaskConnection::setDesiredTaskStateDirect(const ocra::TaskState& newDesiredTaskState)
+{
+    if(controlPortsAreOpen){
+        yarp::os::Bottle bottle;
+        newDesiredTaskState.putIntoBottle(bottle);
         outputPort.write(bottle);
+    } else {
+        std::cout << "Can't use this method until the control ports have been opened." << std::endl;
+    }
 }
 
 Eigen::Displacementd TaskConnection::getTaskFrameDisplacement()
@@ -326,11 +365,6 @@ bool TaskConnection::openControlPorts()
         this->inpCallback = std::make_shared<inputCallback>(*this);
         inputPort.setReader(*(this->inpCallback));
 
-        message.clear();
-        reply.clear();
-        message.addInt(ocra::TASK_MESSAGE::GET_STATE_DIMENSION);
-        this->taskRpcClient.write(message, reply);
-        this->currentStateVector = Eigen::VectorXd::Zero(reply.get(0).asInt());
 
         if (portsConnected) {
             portsConnected = portsConnected && yarp.connect(this->taskOutputPortName.c_str(), this->inputPortName.c_str());
@@ -371,28 +405,6 @@ bool TaskConnection::closeControlPorts()
 }
 
 
-Eigen::VectorXd TaskConnection::getCurrentState()
-{
-    if (this->controlPortsAreOpen) {
-        return this->currentStateVector;
-    } else {
-        return this->getCurrentStateRpc();
-    }
-}
-
-Eigen::VectorXd TaskConnection::getCurrentStateRpc()
-{
-    yarp::os::Bottle message, reply;
-    message.addInt(ocra::TASK_MESSAGE::GET_CURRENT_STATE);
-    this->taskRpcClient.write(message, reply);
-    if(reply.get(0).asInt() != 0) {
-        int dummy;
-        return ocra::util::pourBottleIntoEigenVector(reply, dummy);
-    } else {
-        return Eigen::VectorXd::Zero(0);
-    }
-}
-
 
 /**************************************************************************************************
                                     Nested PortReader Class
@@ -419,6 +431,6 @@ bool TaskConnection::inputCallback::read(yarp::os::ConnectionReader& connection)
 
 void TaskConnection::parseInput(yarp::os::Bottle& input)
 {
-    for(auto i=0; i<input.size(); ++i)
-        this->currentStateVector(i) = input.get(i).asDouble();
+    int dummy;
+    this->currentState.extractFromBottle(input, dummy);
 }

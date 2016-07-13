@@ -37,7 +37,7 @@ bool ClientCommunications::open(const bool connectToTasks)
             for(auto rpc_i : taskRpcClients)
             {
                 yarp::os::Bottle message, reply;
-                message.addInt(ocra::TASK_MESSAGE::GET_TYPE);
+                message.addInt(ocra::TASK_MESSAGE::GET_TYPE_AS_STRING);
                 rpc_i.second->write(message, reply);
             }
         }else{
@@ -53,7 +53,7 @@ std::vector<std::string> ClientCommunications::getTaskTypes()
     for(auto rpc_i : taskRpcClients)
     {
         yarp::os::Bottle message, reply;
-        message.addInt(ocra::TASK_MESSAGE::GET_TYPE);
+        message.addInt(ocra::TASK_MESSAGE::GET_TYPE_AS_STRING);
         rpc_i.second->write(message, reply);
         retVec.push_back(reply.get(0).asString());
     }

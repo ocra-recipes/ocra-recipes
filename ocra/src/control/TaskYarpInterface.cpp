@@ -475,9 +475,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
     for (auto i=0; i<btlSize; ++i) {
         switch (input.get(i).asInt()) {
 
-            case GET_CURRENT_STATE:
+            case GET_TASK_STATE:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_CURRENT_STATE";
+                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TASK_STATE";
                 TaskState state = this->task->getTaskState();
                 state.putIntoBottle(reply);
             }break;
@@ -500,9 +500,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
                 util::pourEigenVectorIntoBottle(this->getWeight(), reply);
             }break;
 
-            case GET_DESIRED:
+            case GET_DESIRED_TASK_STATE:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_DESIRED";
+                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_DESIRED_TASK_STATE";
                 TaskState state = this->task->getDesiredTaskState();
                 state.putIntoBottle(reply);
             }break;
@@ -525,6 +525,12 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
             }break;
 
             case GET_TYPE:
+            {
+                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TYPE";
+                reply.addInt(this->task->getMetaTaskType());
+            }break;
+
+            case GET_TYPE_AS_STRING:
             {
                 yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TYPE";
                 reply.addString(this->task->getMetaTaskTypeAsString());
@@ -624,9 +630,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
                 reply.addInt(OCRA_SUCCESS);
             }break;
 
-            case SET_DESIRED:
+            case SET_DESIRED_TASK_STATE:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_DESIRED";
+                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_DESIRED_TASK_STATE";
 
                 int indexesToSkip;
                 TaskState state;

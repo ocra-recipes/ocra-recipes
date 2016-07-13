@@ -62,4 +62,5 @@ void PartialPostureTaskBuilder::setTaskState()
 void PartialPostureTaskBuilder::setTaskType()
 {
     this->task->setTaskType(Task::ACCELERATIONTASK);
+    this->task->setMetaTaskType(Task::PARTIAL_POSTURE);
 }

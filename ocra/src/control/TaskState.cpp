@@ -219,7 +219,7 @@ bool TaskState::extractFromBottle(const yarp::os::Bottle& bottle, int& sizeOfSta
 
 }
 
-void TaskState::putIntoBottle(yarp::os::Bottle& bottle)
+void TaskState::putIntoBottle(yarp::os::Bottle& bottle) const
 {
     bottle.addInt(TASK_STATE_BOTTLE);
 
@@ -233,28 +233,28 @@ void TaskState::putIntoBottle(yarp::os::Bottle& bottle)
     bottle.addInt(this->hasWrench());
 
     if (this->hasPosition()) {
-        util::pourDisplacementdIntoBottle(this->position, bottle);
+        util::pourDisplacementdIntoBottle(this->getPosition(), bottle);
     }
     if (this->hasVelocity()) {
-        util::pourTwistdIntoBottle(this->velocity, bottle);
+        util::pourTwistdIntoBottle(this->getVelocity(), bottle);
     }
     if (this->hasAcceleration()) {
-        util::pourTwistdIntoBottle(this->acceleration, bottle);
+        util::pourTwistdIntoBottle(this->getAcceleration(), bottle);
     }
     if (this->hasQ()) {
-        util::pourEigenVectorIntoBottle(this->q, bottle);
+        util::pourEigenVectorIntoBottle(this->getQ(), bottle);
     }
     if (this->hasQd()) {
-        util::pourEigenVectorIntoBottle(this->qd, bottle);
+        util::pourEigenVectorIntoBottle(this->getQd(), bottle);
     }
     if (this->hasQdd()) {
-        util::pourEigenVectorIntoBottle(this->qdd, bottle);
+        util::pourEigenVectorIntoBottle(this->getQdd(), bottle);
     }
     if (this->hasTorque()) {
-        util::pourEigenVectorIntoBottle(this->torque, bottle);
+        util::pourEigenVectorIntoBottle(this->getTorque(), bottle);
     }
     if (this->hasWrench()) {
-        util::pourWrenchdIntoBottle(this->wrench, bottle);
+        util::pourWrenchdIntoBottle(this->getWrench(), bottle);
     }
 
 }

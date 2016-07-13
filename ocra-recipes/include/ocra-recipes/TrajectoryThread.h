@@ -38,6 +38,8 @@
 
 #include <ocra-recipes/TaskConnection.h>
 #include <ocra/util/Macros.h>
+#include <ocra/util/EigenUtilities.h>
+#include <ocra/control/TaskState.h>
 
 
 namespace ocra_recipes
@@ -148,6 +150,17 @@ protected:
 
     double timeElapsedDuringPause;
     double pauseTime;
+
+    ocra::Task::META_TASK_TYPE taskType;
+
+
+private:
+    ocra::TaskState matrixToTaskState(const Eigen::MatrixXd& desMat);
+    const int POS_COL = 0;
+    const int VEL_COL = 1;
+    const int ACC_COL = 2;
+
+    Eigen::VectorXd getCurrentTaskStateAsVector();
 
 };
 } // namespace ocra_recipes

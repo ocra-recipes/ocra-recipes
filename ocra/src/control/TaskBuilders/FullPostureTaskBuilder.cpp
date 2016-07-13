@@ -62,4 +62,5 @@ void FullPostureTaskBuilder::setTaskState()
 void FullPostureTaskBuilder::setTaskType()
 {
     this->task->setTaskType(Task::ACCELERATIONTASK);
+    this->task->setMetaTaskType(Task::FULL_POSTURE);
 }

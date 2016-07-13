@@ -55,4 +55,5 @@ void PoseTaskBuilder::setTaskState()
 void PoseTaskBuilder::setTaskType()
 {
     this->task->setTaskType(Task::ACCELERATIONTASK);
+    this->task->setMetaTaskType(Task::POSE);
 }
