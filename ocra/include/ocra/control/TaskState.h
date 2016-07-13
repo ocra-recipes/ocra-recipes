@@ -71,20 +71,36 @@ public:
 
 
     bool extractFromBottle(const yarp::os::Bottle& bottle, int& sizeOfOptions);
-    void putIntoBottle(yarp::os::Bottle& bottle);
+    void putIntoBottle(yarp::os::Bottle& bottle) const;
 
 
 
     friend std::ostream& operator<<(std::ostream &out, const TaskState& state)
     {
-        out << "getPosition():\n" << state.getPosition() << std::endl << std::endl;
-        out << "getVelocity():\n" << state.getVelocity() << std::endl << std::endl;
-        out << "getAcceleration():\n" << state.getAcceleration() << std::endl << std::endl;
-        out << "getQ():\n" << state.getQ() << std::endl << std::endl;
-        out << "getQd():\n" << state.getQd() << std::endl << std::endl;
-        out << "getQdd():\n" << state.getQdd() << std::endl << std::endl;
-        out << "getTorque():\n" << state.getTorque() << std::endl << std::endl;
-        out << "getWrench():\n" << state.getWrench() << std::endl << std::endl;
+        if(state.hasPosition())
+            out << "getPosition():\n" << state.getPosition() << std::endl << std::endl;
+
+        if(state.hasVelocity())
+            out << "getVelocity():\n" << state.getVelocity() << std::endl << std::endl;
+
+        if(state.hasAcceleration())
+            out << "getAcceleration():\n" << state.getAcceleration() << std::endl << std::endl;
+
+        if(state.hasQ())
+            out << "getQ():\n" << state.getQ() << std::endl << std::endl;
+
+        if(state.hasQd())
+            out << "getQd():\n" << state.getQd() << std::endl << std::endl;
+
+        if(state.hasQdd())
+            out << "getQdd():\n" << state.getQdd() << std::endl << std::endl;
+
+        if(state.hasTorque())
+            out << "getTorque():\n" << state.getTorque() << std::endl << std::endl;
+
+        if(state.hasWrench())
+            out << "getWrench():\n" << state.getWrench() << std::endl << std::endl;
+
 
         return out;
     }
