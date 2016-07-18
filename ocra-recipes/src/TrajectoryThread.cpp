@@ -454,38 +454,48 @@ Eigen::VectorXd TrajectoryThread::getCurrentTaskStateAsVector()
         }break;
         case ocra::Task::META_TASK_TYPE::ORIENTATION:
         {
-
+            Eigen::Rotation3d quat = state.getPosition().getRotation();
+            startVector = Eigen::VectorXd(4);
+            startVector << quat.w(), quat.x(), quat.y(), quat.z();
         }break;
         case ocra::Task::META_TASK_TYPE::POSE:
         {
-
+            Eigen::Displacementd disp = state.getPosition();
+            startVector = Eigen::VectorXd(7);
+            startVector << disp.x(), disp.y(), disp.z(), disp.qw(), disp.qx(), disp.qy(), disp.qz();
         }break;
         case ocra::Task::META_TASK_TYPE::FORCE:
         {
-
+            startVector = state.getWrench();
         }break;
         case ocra::Task::META_TASK_TYPE::COM:
         {
+            startVector = state.getPosition().getTranslation();
 
         }break;
         case ocra::Task::META_TASK_TYPE::COM_MOMENTUM:
         {
+            startVector = state.getPosition().getTranslation();
 
         }break;
         case ocra::Task::META_TASK_TYPE::PARTIAL_POSTURE:
         {
+            startVector = state.getQ();
 
         }break;
         case ocra::Task::META_TASK_TYPE::FULL_POSTURE:
         {
+            startVector = state.getQ();
 
         }break;
         case ocra::Task::META_TASK_TYPE::PARTIAL_TORQUE:
         {
+            startVector = state.getTorque();
 
         }break;
         case ocra::Task::META_TASK_TYPE::FULL_TORQUE:
         {
+            startVector = state.getTorque();
 
         }break;
         default:
