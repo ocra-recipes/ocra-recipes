@@ -49,6 +49,7 @@ private:
 
     ocra::TaskState currentState;
     bool controlPortsAreOpen;
+    bool firstUpdateOfTaskStateHasOccured;
 
 
 private:

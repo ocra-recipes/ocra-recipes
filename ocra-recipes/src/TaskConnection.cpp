@@ -10,6 +10,7 @@ TaskConnection::TaskConnection()
 TaskConnection::TaskConnection(const std::string& destinationTaskName)
 : taskName(destinationTaskName)
 , controlPortsAreOpen(false)
+, firstUpdateOfTaskStateHasOccured(false)
 {
     std::shared_ptr<ClientCommunications> ccComs = std::make_shared<ClientCommunications>();
     ccComs->open();
@@ -253,7 +254,7 @@ std::string TaskConnection::getTaskTypeAsString()
 
 ocra::TaskState TaskConnection::getTaskState()
 {
-    if (this->controlPortsAreOpen) {
+    if (this->controlPortsAreOpen && firstUpdateOfTaskStateHasOccured) {
         return this->currentState;
     } else {
         yarp::os::Bottle message, reply;
@@ -432,5 +433,8 @@ bool TaskConnection::inputCallback::read(yarp::os::ConnectionReader& connection)
 void TaskConnection::parseInput(yarp::os::Bottle& input)
 {
     int dummy;
+    if(!firstUpdateOfTaskStateHasOccured) {
+        firstUpdateOfTaskStateHasOccured = true;
+    }
     this->currentState.extractFromBottle(input, dummy);
 }
