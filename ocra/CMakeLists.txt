@@ -21,6 +21,16 @@ ELSE()
     list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Trajectory/GaussianProcessTrajectory.cpp)
 ENDIF()
 
+# Check for GTTraj
+find_package(GTTraj QUIET)
+IF(${GTTraj_FOUND})
+    message(STATUS "GTTraj lib found. Compiling GTTraj trajectory.")
+    include_directories(${GTTraj_INCLUDE_DIRS})
+ELSE()
+    message(STATUS "GTTraj lib NOT found. Removing gaussian process trajectory from source list.")
+    list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/Trajectory/TimeOptimalTrajectory.cpp)
+ENDIF()
+
 list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/TaskManager.cpp)
 list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/CoMTaskManager.cpp)
 list(REMOVE_ITEM control_srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/control/TaskManagers/CoMMomentumTaskManager.cpp)
