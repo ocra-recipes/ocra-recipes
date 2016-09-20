@@ -8,12 +8,23 @@
 namespace ocra
 {
 
-class TimeOptimalTrajectory : public Trajectory {
+class TimeOptimalTrajectory : public Trajectory
+{
+DEFINE_CLASS_POINTER_TYPEDEFS(TimeOptimalTrajectory)
+
     public:
+        virtual ~TimeOptimalTrajectory();
+
         Eigen::MatrixXd getDesiredValues(double time);
+
     protected:
+        virtual void initializeTrajectory();
+
         double t0;
-        gttraj::Trajectory trajectory;
+        double maxDeviation;
+        double duration;
+        double timeStep;
+        gttraj::Trajectory* trajectory;
 
 };
 

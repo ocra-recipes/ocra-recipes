@@ -28,23 +28,35 @@ namespace ocra
 {
 
 class Trajectory {
+DEFINE_CLASS_POINTER_TYPEDEFS(Trajectory)
+
     public:
         // Constructor function
         Trajectory();
 
-        void setMaxVelocity(double newMaxVel){maximumVelocity = newMaxVel;}
-        double getMaxVelocity(){return maximumVelocity;}
+        void setMaxVelocity(double newMaxVel);
+        void setMaxVelocity(const Eigen::VectorXd& newMaxVel);
+        double getMaxVelocity();
+        Eigen::VectorXd getMaxVelocityVector();
+
+        void setMaxAcceleration(double newMaxAcc);
+        void setMaxAcceleration(const Eigen::VectorXd& newMaxAcc);
+        double getMaxAcceleration();
+        Eigen::VectorXd getMaxAccelerationVector();
+
 
         void setWaypoints(const std::vector<double>& startingDoubleVec, const std::vector<double>& endingDoubleVec, const int waypointSelector=0, bool endsWithQuaternion=false);
         void setWaypoints(const Eigen::VectorXd& startingVector, const Eigen::VectorXd& endingVector, bool endsWithQuaternion=false);
         void setWaypoints(Eigen::Displacementd& startingDisplacement, Eigen::Displacementd& endingDisplacement, bool endsWithQuaternion=true);
         void setWaypoints(Eigen::Rotation3d& startingOrientation, Eigen::Rotation3d& endingOrientation, bool endsWithQuaternion=true);
 
+        void setWaypoints(const std::list<Eigen::VectorXd>& _waypoints, bool _endsWithQuaternion=false);
+
         // set waypoints
         void setWaypoints(Eigen::MatrixXd& waypoints, bool endsWithQuaternion=false);
 
         //Destructor
-        ~Trajectory();
+        virtual ~Trajectory();
 
         // Primary user interface functions
         void setDuration();
@@ -88,10 +100,14 @@ class Trajectory {
     protected:
 
         virtual void initializeTrajectory(){/*do nothing unless overloaded in derived classes.*/};
-
+        
         double maximumVelocity;
+        Eigen::VectorXd maximumVelocityVector;
+        double maximumAcceleration;
+        Eigen::VectorXd maximumAccelerationVector;
 
         //variables
+        std::list<Eigen::VectorXd> waypointList;
         Eigen::MatrixXd waypoints;          /**< the trajectory waypoints */
         int nDoF;                           /**< the number of Degrees of Freedom (DoF) of the trajectory */
         int nWaypoints;                     /**< the total number of waypoints */

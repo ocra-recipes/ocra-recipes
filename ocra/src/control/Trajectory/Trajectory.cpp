@@ -106,7 +106,22 @@ void Trajectory::setWaypoints(Eigen::Rotation3d& startingOrientation, Eigen::Rot
 
 }
 
+void Trajectory::setWaypoints(const std::list<Eigen::VectorXd>& _waypoints, bool _endsWithQuaternion)
+{
+    /**
+    * Initialization function
+    */
+    endsWithQuaternion = _endsWithQuaternion;
+    waypointList   = _waypoints;
+    nDoF        = waypointList.begin()->rows();
+    nWaypoints  = waypointList.size();
+    startTrigger = true;
+    trajectoryFinished = false;
+    //Determine number of non-quaternion DoF
+    nonRotationDof = (endsWithQuaternion) ? (nDoF - QUATERNION_DIM) : nDoF;
 
+    initializeTrajectory();
+}
 
 
 void Trajectory::setWaypoints(Eigen::MatrixXd& _waypoints, bool _endsWithQuaternion)
@@ -128,6 +143,46 @@ void Trajectory::setWaypoints(Eigen::MatrixXd& _waypoints, bool _endsWithQuatern
 
     initializeTrajectory();
 
+}
+
+void Trajectory::setMaxVelocity(double newMaxVel)
+{
+    maximumVelocity = newMaxVel;
+}
+
+void Trajectory::setMaxVelocity(const Eigen::VectorXd& newMaxVel)
+{
+    maximumVelocityVector = newMaxVel;
+}
+
+double Trajectory::getMaxVelocity()
+{
+    return maximumVelocity;
+}
+
+Eigen::VectorXd Trajectory::getMaxVelocityVector()
+{
+    return maximumVelocityVector;
+}
+
+void Trajectory::setMaxAcceleration(double newMaxAcc)
+{
+    maximumAcceleration = newMaxAcc;
+}
+
+void Trajectory::setMaxAcceleration(const Eigen::VectorXd& newMaxAcc)
+{
+    maximumAccelerationVector = newMaxAcc;
+}
+
+double Trajectory::getMaxAcceleration()
+{
+    return maximumAcceleration;
+}
+
+Eigen::VectorXd Trajectory::getMaxAccelerationVector()
+{
+    return maximumAccelerationVector;
 }
 
 void Trajectory::getDesiredValues(double _time, std::vector<double>& _desiredVector)

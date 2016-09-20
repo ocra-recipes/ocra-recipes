@@ -48,7 +48,8 @@ enum TRAJECTORY_TYPE
 {
     MIN_JERK,
     LIN_INTERP,
-    GAUSSIAN_PROCESS
+    GAUSSIAN_PROCESS,
+    TIME_OPTIMAL
 };
 
 enum TERMINATION_STRATEGY
@@ -69,6 +70,7 @@ public:
     // TrajectoryThread();
     TrajectoryThread(int period, const std::string& taskPortName, const TRAJECTORY_TYPE = MIN_JERK, const TERMINATION_STRATEGY _terminationStrategy = STOP_THREAD);
     TrajectoryThread(int period, const std::string& taskPortName, const Eigen::MatrixXd& waypoints, const TRAJECTORY_TYPE = MIN_JERK, const TERMINATION_STRATEGY _terminationStrategy = STOP_THREAD);
+    TrajectoryThread(int period, const std::string& taskPortName, const std::list<Eigen::VectorXd>& waypoints, const TRAJECTORY_TYPE = MIN_JERK, const TERMINATION_STRATEGY _terminationStrategy = STOP_THREAD);
     ~TrajectoryThread();
 
     virtual bool threadInit();
@@ -85,6 +87,7 @@ public:
     bool setDisplacement(double dispDouble);
     bool setDisplacement(const Eigen::VectorXd& displacementVector);
     bool setTrajectoryWaypoints(const Eigen::MatrixXd& userWaypoints, bool containsStartingWaypoint=false);
+    bool setTrajectoryWaypoints(const std::list<Eigen::VectorXd>& waypointList, bool containsStartingWaypoint=false);
     void setTerminationStrategy(const TERMINATION_STRATEGY newTermStrat){terminationStrategy = newTermStrat;}
     void setGoalErrorThreshold(const double newErrorThresh){errorThreshold = newErrorThresh;}
     void setUseVarianceModulation(bool newVarMod){useVarianceModulation = newVarMod;}
@@ -120,6 +123,8 @@ protected:
 
 
     Eigen::MatrixXd userWaypoints;
+    std::list<Eigen::VectorXd> userWaypointList;
+
     TRAJECTORY_TYPE trajType;
     TERMINATION_STRATEGY terminationStrategy;
 
@@ -134,6 +139,7 @@ protected:
     Eigen::VectorXd startStateVector;
     Eigen::VectorXd goalStateVector;
     Eigen::MatrixXd allWaypoints;
+    std::list<Eigen::VectorXd> allWaypointList;
     double errorThreshold;
 
     Eigen::VectorXd desiredState;
