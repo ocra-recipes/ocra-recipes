@@ -63,7 +63,7 @@ public:
     bool addTaskManagersFromXmlFile(const std::string& filePath);
     bool addTaskManagers(std::vector<ocra::TaskBuilderOptions>& tmOpts);
 
-private:
+protected:
     void updateModel();
 
     ocra::Model::Ptr                     model;
