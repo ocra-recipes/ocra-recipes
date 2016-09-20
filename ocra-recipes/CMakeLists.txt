@@ -8,6 +8,19 @@ include_directories(
                     ${HOCRA_INCLUDE_DIRS}
                     )
 
+find_package(SMLT QUIET)
+if(${SMLT_FOUND})
+    include_directories(${SMLT_INCLUDE_DIRS})
+    add_definitions(-DUSING_SMLT=1)
+endif()
+find_package(GTTraj QUIET)
+if(${GTTraj_FOUND})
+    include_directories(${GTTraj_INCLUDE_DIRS})
+    add_definitions(-DUSING_GTTRAJ=1)
+endif()
+
+
+
 file(GLOB_RECURSE source_files src/*.cpp)
 
 add_library(${PROJECT_NAME} ${source_files})
