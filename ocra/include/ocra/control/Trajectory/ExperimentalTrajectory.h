@@ -8,7 +8,10 @@
 namespace ocra
 {
 
-class ExperimentalTrajectory : public Trajectory {
+class ExperimentalTrajectory : public Trajectory
+{
+DEFINE_CLASS_POINTER_TYPEDEFS(ExperimentalTrajectory)
+
     public:
 
         void calculateVarianceParameters();

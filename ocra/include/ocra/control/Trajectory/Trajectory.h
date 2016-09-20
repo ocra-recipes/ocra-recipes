@@ -9,6 +9,10 @@
 
 #include <string>
 #include <fstream>
+#include <list>
+
+#include <ocra/util/Macros.h>
+
 
 #define TRANSLATION_DIM 3
 #define QUATERNION_DIM 4

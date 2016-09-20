@@ -6,7 +6,10 @@
 namespace ocra
 {
 
-class LinearInterpolationTrajectory : public Trajectory {
+class LinearInterpolationTrajectory : public Trajectory
+{
+DEFINE_CLASS_POINTER_TYPEDEFS(LinearInterpolationTrajectory)
+
     public:
         Eigen::MatrixXd getDesiredValues(double time);
 
