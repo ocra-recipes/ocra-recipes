@@ -115,7 +115,7 @@ bool ControllerServer::addTasksFromXmlFile(const std::string& filePath)
     return true;
 }
 
-bool ControllerServer::addTaskManagers(std::vector<ocra::TaskBuilderOptions>& taskOptions)
+bool ControllerServer::addTasks(std::vector<ocra::TaskBuilderOptions>& taskOptions)
 {
     ocra::TaskConstructionManager factory(model, controller, taskOptions);
     return true;

@@ -61,7 +61,7 @@ public:
     const std::shared_ptr<ocra::Model> getRobotModel(){return model;}
 
     bool addTasksFromXmlFile(const std::string& filePath);
-    bool addTaskManagers(std::vector<ocra::TaskBuilderOptions>& tmOpts);
+    bool addTasks(std::vector<ocra::TaskBuilderOptions>& tmOpts);
 
 protected:
     void updateModel();
