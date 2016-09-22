@@ -60,7 +60,7 @@ public:
     const std::shared_ptr<ocra::Controller> getController(){return controller;}
     const std::shared_ptr<ocra::Model> getRobotModel(){return model;}
 
-    bool addTaskManagersFromXmlFile(const std::string& filePath);
+    bool addTasksFromXmlFile(const std::string& filePath);
     bool addTaskManagers(std::vector<ocra::TaskBuilderOptions>& tmOpts);
 
 protected:

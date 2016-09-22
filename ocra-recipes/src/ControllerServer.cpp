@@ -109,7 +109,7 @@ void ControllerServer::updateModel()
     statesPort.write(rState);
 }
 
-bool ControllerServer::addTaskManagersFromXmlFile(const std::string& filePath)
+bool ControllerServer::addTasksFromXmlFile(const std::string& filePath)
 {
     ocra::TaskConstructionManager factory(model, controller, filePath);
     return true;
