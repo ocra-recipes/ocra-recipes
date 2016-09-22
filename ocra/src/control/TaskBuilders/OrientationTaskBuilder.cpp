@@ -44,10 +44,7 @@ void OrientationTaskBuilder::setTaskState()
     }else{
         // If the desired orientation was not given then just get it from the current state of the task.
         Eigen::Rotation3d orientation = this->task->getTaskState().getPosition().getRotation();
-        // std::cout << "\n\n\nOrientation:\n" << std::endl;
-        // std::cout << orientation << std::endl;
         state.setPosition(Eigen::Displacementd(Eigen::Vector3d::Zero(), orientation));
-        // state.setPosition(Eigen::Displacementd::Identity());
     }
 
     // Set velocity and acceleration to zero.
