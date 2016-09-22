@@ -4,6 +4,7 @@ using namespace ocra;
 
 TaskBuilderOptions::TaskBuilderOptions()
 {
+    offset = Eigen::Displacementd::Identity();
 }
 
 TaskBuilderOptions::~TaskBuilderOptions()
