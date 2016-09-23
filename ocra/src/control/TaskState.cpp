@@ -12,9 +12,17 @@ TaskState::TaskState()
 , containsTorque(false)
 , containsWrench(false)
 {
-    // Do nothing
-}
+    position = Eigen::Displacementd::Identity();
+    velocity = Eigen::Twistd(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    acceleration = Eigen::Twistd(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
+    q = Eigen::VectorXd::Zero(1);
+    qd = Eigen::VectorXd::Zero(1);
+    qdd = Eigen::VectorXd::Zero(1);
+    torque = Eigen::VectorXd::Zero(1);
+
+    wrench = Eigen::Wrenchd(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+}
 TaskState::~TaskState()
 {
     // Do nothing
