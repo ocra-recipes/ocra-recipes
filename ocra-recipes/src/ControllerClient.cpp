@@ -42,6 +42,7 @@ ControllerClient::~ControllerClient()
 
 bool ControllerClient::threadInit()
 {
+    clientThreadHasBeenReleased = false;
     if(isReady)
         return initialize();
     else
@@ -56,6 +57,7 @@ void ControllerClient::run()
 void ControllerClient::threadRelease()
 {
     release();
+    clientThreadHasBeenReleased = true;
 }
 
 bool ControllerClient::removeTask(const std::string& taskName)
