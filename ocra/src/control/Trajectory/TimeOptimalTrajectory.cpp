@@ -43,7 +43,7 @@ void TimeOptimalTrajectory::initializeTrajectory()
 	trajectory = new gttraj::Trajectory(path, maxVelocity, maxAcceleration, timeStep);
 	if(trajectory->isValid()) {
 		duration = trajectory->getDuration();
-        std::cout << "Time-optimal duration: " << duration << "(sec)" << std::endl;
+        // std::cout << "Time-optimal duration: " << duration << "(sec)" << std::endl;
     }
 	else {
 		std::cout << "Trajectory generation failed." << std::endl;

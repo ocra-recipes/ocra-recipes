@@ -179,7 +179,6 @@ void TrajectoryThread::run()
                 case CYCLE:
                     cycleWaypoints();
                     if (trajType==TIME_OPTIMAL) {
-                        std::cout << "jwdoaijdwo;iajwd;oijawdo" << std::endl;
                         setTrajectoryWaypoints(allWaypointList, true);
                     } else {
                         setTrajectoryWaypoints(allWaypoints, true);
@@ -406,7 +405,6 @@ bool TrajectoryThread::setTrajectoryWaypoints(const std::list<Eigen::VectorXd>& 
 
         goalStateVector = *allWaypointList.rbegin();
 
-        std::cout << "\n\n\n\n goalStateVector: " << goalStateVector.transpose() << std::endl;
 
         trajectory->setWaypoints(allWaypointList);
 
