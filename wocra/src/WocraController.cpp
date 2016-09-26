@@ -102,6 +102,14 @@ WocraController::WocraController(const std::string& ctrlName, std::shared_ptr<Mo
         pimpl->innerSolver->addObjective(pimpl->minTauObjective);
         pimpl->innerSolver->addObjective(pimpl->minFcObjective);
 
+        // double predictionHorizon = 0.2;
+        // jointLimitConstraint = std::make_shared<ocra::JointLimitConstraint>(*pimpl->innerModel);//, predictionHorizon);
+        // addConstraint(*jointLimitConstraint);
+        // Eigen::VectorXd torqueLims  = Eigen::VectorXd::Constant(pimpl->innerModel->nbInternalDofs(), 2.0);
+        // torqueLimitConstraint = std::make_shared<ocra::TorqueLimitConstraint>(*pimpl->innerModel, torqueLims);//, predictionHorizon);
+        // addConstraint(*torqueLimitConstraint);
+
+
     }
     else
     {

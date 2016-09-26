@@ -19,6 +19,8 @@
 #include "ocra/optim/OneLevelSolver.h"
 // WOCRA INCLUDES
 #include "ocra/control/Task.h"#include "ocra/control/ControlConstraint.h"
+#include "ocra/control/JointLimitConstraint.h"
+#include "ocra/control/TorqueLimitConstraint.h"
 
 using namespace ocra;
 
@@ -75,8 +77,7 @@ protected: // factory
 private:
     struct Pimpl;
     boost::shared_ptr<Pimpl> pimpl;
-
-};
+    std::shared_ptr<ocra::JointLimitConstraint> jointLimitConstraint;    std::shared_ptr<ocra::TorqueLimitConstraint> torqueLimitConstraint;};
 
 /** \} */ // end group core
 

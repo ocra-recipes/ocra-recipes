@@ -55,7 +55,7 @@ public:
     bool removeTask(const std::string& taskName);
     bool removeTasks(const std::vector<std::string>& taskNameVector);
 
-
+    bool hasBeenReleased(){return clientThreadHasBeenReleased;}
 
 
 protected:
@@ -67,7 +67,7 @@ protected:
     ocra::Model::Ptr model;
 
 private:
-
+    bool clientThreadHasBeenReleased;
     bool isReady;
 
     yarp::os::Port statesPort;
