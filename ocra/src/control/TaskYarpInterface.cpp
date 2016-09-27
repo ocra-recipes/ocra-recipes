@@ -13,6 +13,7 @@ TaskYarpInterface::TaskYarpInterface(Task::Ptr taskPtr)
 : task(taskPtr)
 , controlPortsOpen(false)
 , taskMode(TASK_NOT_DEFINED)
+, logMessages(false)
 {
     if(task) {
         portName = "/Task/"+task->getName()+"/rpc:i";
@@ -477,39 +478,51 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case GET_TASK_STATE:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TASK_STATE";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TASK_STATE";
+                }
                 TaskState state = this->task->getTaskState();
                 state.putIntoBottle(reply);
             }break;
 
             case GET_STIFFNESS:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_STIFFNESS";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_STIFFNESS";
+                }
                 util::pourEigenMatrixIntoBottle(this->getStiffnessMatrix(), reply);
             }break;
 
             case GET_DAMPING:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_DAMPING";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_DAMPING";
+                }
                 util::pourEigenMatrixIntoBottle(this->getDampingMatrix(), reply);
             }break;
 
             case GET_WEIGHTS:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_WEIGHTS";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_WEIGHTS";
+                }
                 util::pourEigenVectorIntoBottle(this->getWeight(), reply);
             }break;
 
             case GET_DESIRED_TASK_STATE:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_DESIRED_TASK_STATE";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_DESIRED_TASK_STATE";
+                }
                 TaskState state = this->task->getDesiredTaskState();
                 state.putIntoBottle(reply);
             }break;
 
             case GET_ACTIVITY_STATUS:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_ACTIVITY_STATUS";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_ACTIVITY_STATUS";
+                }
                 if (this->isActivated()) {
                     reply.addInt(TASK_IS_ACTIVATED);
                 } else {
@@ -520,50 +533,66 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case GET_DIMENSION:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_DIMENSION";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_DIMENSION";
+                }
                 reply.addInt(this->getWeight().size());
             }break;
 
             case GET_TYPE:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TYPE";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TYPE";
+                }
                 reply.addInt(this->task->getMetaTaskType());
             }break;
 
             case GET_TYPE_AS_STRING:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TYPE";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TYPE";
+                }
                 reply.addString(this->task->getMetaTaskTypeAsString());
             }break;
 
             case GET_NAME:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_NAME";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_NAME";
+                }
                 reply.addString(this->task->getName());
             }break;
 
             case GET_CONTROL_PORT_NAMES:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_CONTROL_PORT_NAMES";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_CONTROL_PORT_NAMES";
+                }
                 reply.addString(this->inputControlPortName);
                 reply.addString(this->outputControlPortName);
             }break;
 
             case GET_TASK_PORT_NAME:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TASK_PORT_NAME";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TASK_PORT_NAME";
+                }
                 reply.addString(this->getPortName());
             }break;
 
             case GET_TASK_ERROR:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TASK_ERROR";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TASK_ERROR";
+                }
                 util::pourEigenVectorIntoBottle(this->getTaskError(), reply);
             }break;
 
             case SET_STIFFNESS:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_STIFFNESS";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_STIFFNESS";
+                }
                 ++i;
                 setStiffness(input.get(i).asDouble());
                 reply.addInt(OCRA_SUCCESS);
@@ -571,7 +600,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case SET_STIFFNESS_VECTOR:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_STIFFNESS_VECTOR";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_STIFFNESS_VECTOR";
+                }
                 int indexesToSkip;
                 this->setStiffness(util::pourBottleIntoEigenVector(util::trimBottle(input, i+1), indexesToSkip) );
                 i += indexesToSkip;
@@ -580,7 +611,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case SET_STIFFNESS_MATRIX:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_STIFFNESS_MATRIX";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_STIFFNESS_MATRIX";
+                }
                 int indexesToSkip;
                 this->setStiffness(util::pourBottleIntoEigenMatrix(util::trimBottle(input, i+1), indexesToSkip) );
                 i += indexesToSkip;
@@ -589,7 +622,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case SET_DAMPING:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_DAMPING";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_DAMPING";
+                }
                 ++i;
                 this->setDamping(input.get(i).asDouble());
                 reply.addInt(OCRA_SUCCESS);
@@ -597,7 +632,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case SET_DAMPING_VECTOR:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_DAMPING_VECTOR";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_DAMPING_VECTOR";
+                }
                 int indexesToSkip;
                 this->setDamping(util::pourBottleIntoEigenVector(util::trimBottle(input, i+1), indexesToSkip) );
                 i += indexesToSkip;
@@ -606,7 +643,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case SET_DAMPING_MATRIX:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_DAMPING_MATRIX";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_DAMPING_MATRIX";
+                }
                 int indexesToSkip;
                 this->setDamping(util::pourBottleIntoEigenMatrix(util::trimBottle(input, i+1), indexesToSkip) );
                 i += indexesToSkip;
@@ -615,7 +654,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case SET_WEIGHT:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_WEIGHT";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_WEIGHT";
+                }
                 ++i;
                 this->setWeight(input.get(i).asDouble());
                 reply.addInt(OCRA_SUCCESS);
@@ -623,7 +664,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case SET_WEIGHT_VECTOR:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_WEIGHT_VECTOR";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_WEIGHT_VECTOR";
+                }
                 int indexesToSkip;
                 this->setWeight(util::pourBottleIntoEigenVector(util::trimBottle(input, i+1), indexesToSkip) );
                 i += indexesToSkip;
@@ -632,7 +675,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case SET_DESIRED_TASK_STATE:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_DESIRED_TASK_STATE";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_DESIRED_TASK_STATE";
+                }
 
                 int indexesToSkip;
                 TaskState state;
@@ -649,7 +694,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case ACTIVATE:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: ACTIVATE";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: ACTIVATE";
+                }
                 if(this->activate()) {
                     reply.addInt(OCRA_SUCCESS);
                 } else {
@@ -659,7 +706,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case DEACTIVATE:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: DEACTIVATE";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: DEACTIVATE";
+                }
                 if(this->deactivate()) {
                     reply.addInt(OCRA_SUCCESS);
                 } else {
@@ -669,7 +718,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case OPEN_CONTROL_PORTS:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: OPEN_CONTROL_PORTS";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: OPEN_CONTROL_PORTS";
+                }
                 if(openControlPorts()) {
                     reply.addInt(OCRA_SUCCESS);
                 } else {
@@ -679,7 +730,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case CLOSE_CONTROL_PORTS:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: CLOSE_CONTROL_PORTS";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: CLOSE_CONTROL_PORTS";
+                }
                 if(closeControlPorts()) {
                     reply.addInt(OCRA_SUCCESS);
                 } else {
@@ -689,7 +742,9 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 
             case HELP:
             {
-                yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: HELP";
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: HELP";
+                }
 
             }break;
 
