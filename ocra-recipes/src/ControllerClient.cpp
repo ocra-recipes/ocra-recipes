@@ -71,7 +71,7 @@ bool ControllerClient::removeTask(const std::string& taskName)
 
 bool ControllerClient::removeTasks(const std::vector<std::string>& taskNameVector)
 {
-
+    return false;
 }
 
 
