@@ -101,7 +101,8 @@ public:
     bool deactivateTask();
     bool activateTask();
 
-
+    std::string getOutputPortName(){return outputPortName;}
+    std::string getInputPortName(){return inputPortName;}
 
 
     /************** controlInputCallback *************/
