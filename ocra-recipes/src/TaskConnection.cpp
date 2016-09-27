@@ -1,6 +1,7 @@
 #include <ocra-recipes/TaskConnection.h>
 
 using namespace ocra_recipes;
+int TaskConnection::TASK_CONNECTION_COUNT = 0;
 
 TaskConnection::TaskConnection()
 {
@@ -12,12 +13,14 @@ TaskConnection::TaskConnection(const std::string& destinationTaskName)
 , controlPortsAreOpen(false)
 , firstUpdateOfTaskStateHasOccured(false)
 {
+    taskConnectionNumber = ++TaskConnection::TASK_CONNECTION_COUNT;
+
     std::shared_ptr<ClientCommunications> ccComs = std::make_shared<ClientCommunications>();
     ccComs->open();
     taskRpcServerName = ccComs->getTaskPortName(taskName);
     ccComs->close();
 
-    this->taskRpcClientName = "/TaskConnection/"+taskName+"/rpc:o";
+    this->taskRpcClientName = "/TaskConnection/"+std::to_string(taskConnectionNumber)+"/"+taskName+"/rpc:o";
     this->taskRpcClient.open(taskRpcClientName.c_str());
 
     this->yarp.connect(taskRpcClientName.c_str(), taskRpcServerName.c_str());
@@ -357,8 +360,8 @@ bool TaskConnection::openControlPorts()
         this->taskInputPortName = reply.get(0).asString();
         this->taskOutputPortName = reply.get(1).asString();
 
-        this->inputPortName = "/TaskConnection/"+this->taskName+":i";
-        this->outputPortName = "/TaskConnection/"+this->taskName+":o";
+        this->inputPortName = "/TaskConnection/"+std::to_string(taskConnectionNumber)+"/"+this->taskName+":i";
+        this->outputPortName = "/TaskConnection/"+std::to_string(taskConnectionNumber)+"/"+this->taskName+":o";
 
         portsConnected = portsConnected && inputPort.open(this->inputPortName.c_str());
         portsConnected = portsConnected && outputPort.open(this->outputPortName.c_str());

@@ -2,7 +2,7 @@
 #define TASK_CONNECTION_H
 
 #include <iostream>
-
+#include <string>
 #include <ocra/control/TaskYarpInterfaceVocab.h>
 #include <ocra/control/Task.h>
 
@@ -50,6 +50,9 @@ private:
     ocra::TaskState currentState;
     bool controlPortsAreOpen;
     bool firstUpdateOfTaskStateHasOccured;
+
+    static int TASK_CONNECTION_COUNT;
+    int taskConnectionNumber;
 
 
 private:
