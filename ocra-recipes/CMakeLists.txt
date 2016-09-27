@@ -1,4 +1,5 @@
-project(ocra-recipes)
+set(PROJECTNAME ocra-recipes)
+project(${PROJECTNAME})
 
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 include_directories(BEFORE ${OCRA_INCLUDE_DIRS})
@@ -22,8 +23,12 @@ endif()
 
 
 file(GLOB_RECURSE source_files src/*.cpp)
+file(GLOB_RECURSE header_files include/${PROJECTNAME}/*.h )
 
-add_library(${PROJECT_NAME} ${source_files})
+SOURCE_GROUP("Source Files" FILES ${source_files})
+SOURCE_GROUP("Header Files" FILES ${header_files})
+
+add_library(${PROJECT_NAME} ${source_files} ${header_files})
 
 LIST(APPEND link_libs   ${Boost_LIBRARIES}
                         ${YARP_LIBRARIES}
