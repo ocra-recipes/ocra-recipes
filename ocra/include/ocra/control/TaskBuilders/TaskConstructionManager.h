@@ -1,7 +1,7 @@
 /**
  *  \class TaskConstructionManager
  *
- *  \brief This class is used to parse an XML file with the description of a number of tasks. These tasks can be of type: fullposture, cartesian, com, orientation and pointcontact. For a few examples, please refer to ocra-wbi-plugins/ocra-icub-server/app/robots/icubGazeboSim/taskSets/. 
+ *  \brief This class is used to parse an XML file with the description of a number of tasks. These tasks can be of type: fullposture, cartesian, com, orientation and pointcontact. For a few examples, please refer to ocra-wbi-plugins/ocra-icub-server/app/robots/icubGazeboSim/taskSets/.
  *
  *
  *  \author [Ryan Lober](https://github.com/rlober)
@@ -60,6 +60,14 @@ public:
      */
     void addTasksToController(Model::Ptr model, Controller::Ptr controller, std::vector<TaskBuilderOptions> optionsVector);
 
+    /**
+     *  First calls correctArticularVariables on the parsed options of a single task. Depending on the type of this task it will then return a pointer to a task-stype-pecific TaskBuilder class. Examples of these specific classes are: CartesianTaskBuilder, PoseTaskBuilder, OrientationTaskBuilder, ComTaskBuilder, FullPostureTaskBuilder, PartialPostureTaskBuilder and PointContactTaskBuilder.
+     *
+     *  @param options Options for a single task.
+     *  @param model   Robot's OCRA model.
+     *
+     *  @return Pointer to the task-type-specific TaskBuilder.
+     */
     TaskBuilder::Ptr getBuilder(TaskBuilderOptions options, Model::Ptr model);
 
     /**

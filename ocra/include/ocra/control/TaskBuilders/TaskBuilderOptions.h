@@ -1,3 +1,13 @@
+/**
+ *  \class TaskBuilderOptions
+ *
+ *  \brief This class is used to store the "options" that characterize a particular. Examples of these options are Task name, Task type, Segment, kp, kd, weight, weights, axes, hierarchyLevel, offset, jointIndexes and desired. More detailed descriptions are found in the class TaskConstructionManager. For a few examples, please refer to ocra-wbi-plugins/ocra-icub-server/app/robots/icubGazeboSim/taskSets/.
+ *
+ *
+ *  \author [Ryan Lober](https://github.com/rlober)
+ *
+ */
+
 #ifndef TASK_BUILDER_OPTIONS_H
 #define TASK_BUILDER_OPTIONS_H
 
