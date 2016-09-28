@@ -92,11 +92,11 @@ public:
     void setGoalErrorThreshold(const double newErrorThresh){errorThreshold = newErrorThresh;}
     void setUseVarianceModulation(bool newVarMod){useVarianceModulation = newVarMod;}
     // Getters
-    double getDuration(){return trajectory->getDuration();}
 
     // General assesment functions
     bool goalAttained();
 
+    double getDuration(){return trajectory->getDuration();}
     std::list<Eigen::VectorXd> getWaypointList(){return allWaypointList;}
     Eigen::MatrixXd getWaypoints(){return allWaypoints;}
 
