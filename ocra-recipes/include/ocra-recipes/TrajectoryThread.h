@@ -92,6 +92,7 @@ public:
     void setGoalErrorThreshold(const double newErrorThresh){errorThreshold = newErrorThresh;}
     void setUseVarianceModulation(bool newVarMod){useVarianceModulation = newVarMod;}
     // Getters
+    double getDuration(){return trajectory->getDuration();}
 
     // General assesment functions
     bool goalAttained();
