@@ -302,6 +302,8 @@ private:
 
     StateUpdateThread::Ptr      stateThread;
 
+    bool logMessages;
+
 };
 
 }

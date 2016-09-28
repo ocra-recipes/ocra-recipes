@@ -177,6 +177,9 @@ public:
      */
     bool goalAttained();
 
+    std::list<Eigen::VectorXd> getWaypointList(){return allWaypointList;}
+    Eigen::MatrixXd getWaypoints(){return allWaypoints;}
+
     #if USING_SMLT
     // Setters
     void setMeanWaypoints(std::vector<bool>& isMeanWaypoint);
