@@ -177,6 +177,7 @@ public:
      */
     bool goalAttained();
 
+    double getDuration(){return trajectory->getDuration();}
     std::list<Eigen::VectorXd> getWaypointList(){return allWaypointList;}
     Eigen::MatrixXd getWaypoints(){return allWaypoints;}
 

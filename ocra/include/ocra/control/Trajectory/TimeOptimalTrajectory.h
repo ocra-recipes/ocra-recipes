@@ -16,7 +16,9 @@ DEFINE_CLASS_POINTER_TYPEDEFS(TimeOptimalTrajectory)
         virtual ~TimeOptimalTrajectory();
 
         Eigen::MatrixXd getDesiredValues(double time);
+        virtual double getDuration();
 
+        
     protected:
         virtual void initializeTrajectory();
 
@@ -24,7 +26,7 @@ DEFINE_CLASS_POINTER_TYPEDEFS(TimeOptimalTrajectory)
         double maxDeviation;
         double duration;
         double timeStep;
-        gttraj::Trajectory* trajectory;
+        gttraj::Trajectory* gt_trajectory;
 
 };
 

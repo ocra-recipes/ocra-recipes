@@ -81,7 +81,7 @@ DEFINE_CLASS_POINTER_TYPEDEFS(Trajectory)
         void getDesiredValues(double time, Eigen::Rotation3d& orient);
         void getDesiredValues(double time, Eigen::Displacementd& pos, Eigen::Twistd& vel, Eigen::Twistd& acc);
 
-
+        virtual double getDuration(){return pointToPointDuration;}
 
         Eigen::Rotation3d quaternionSlerp(double tau, Eigen::Rotation3d& qStart, Eigen::Rotation3d& qEnd);
 
@@ -100,7 +100,7 @@ DEFINE_CLASS_POINTER_TYPEDEFS(Trajectory)
     protected:
 
         virtual void initializeTrajectory(){/*do nothing unless overloaded in derived classes.*/};
-        
+
         double maximumVelocity;
         Eigen::VectorXd maximumVelocityVector;
         double maximumAcceleration;
