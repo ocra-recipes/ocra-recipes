@@ -89,7 +89,7 @@ public:
      *  If the control ports are open (for the specific task associated to the trajectory) this method will mainly write to a port the new desired task state.
      *  It also handles the trajectory termination strategy. When the goal is reached, there will be 6 possible termination strategies: BACK_AND_FORTH, CYCLE, STOP_THREAD, STOP_THREAD_DEACTIVATE, WAIT, WAIT_DEACTIVATE.
      *   BACK_AND_FORTH: will invert the trajectory waypoints once all of them have been met.
-     *   CYCLE:
+     *   CYCLE: The trajectory will cycle over.
      *   STOP_THREAD: The thread will stop once the trajectory is finished.
      *   STOP_THREAD_DEACTIVATE: The task is first deactivated and then thread is stopped. If the task cannot be deactivated, the thread will wait 1 second before trying once more.
      *   WAIT: The thread will wait for new commands to arrive.
