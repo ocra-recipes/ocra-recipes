@@ -78,7 +78,7 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
                 std::cout << "Got message: GET_IS_FLOATING_BASE." << std::endl;
                 reply.addInt(!model->hasFixedRoot());
             }break;
-
+                
             case START_CONTROLLER:
             {
                 std::cout << "Got message: START_CONTROLLER." << std::endl;
@@ -98,6 +98,12 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
                 // this->suspend();
                 // TODO: Make a custom function that puts the robot in pos mode before suspend.
             }break;
+                
+            case CHANGE_FIXED_LINK:
+            {
+                std::cout << "Got message: CHANGE_FIXED_LINK." << std::endl;
+                //reply.add...
+            }
 
             case ADD_TASKS:
             {

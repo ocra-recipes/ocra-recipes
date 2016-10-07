@@ -2,10 +2,14 @@
 
 using namespace ocra_recipes;
 
-ControllerServer::ControllerServer(CONTROLLER_TYPE ctrlType, SOLVER_TYPE solver, bool usingInterprocessCommunication)
+ControllerServer::ControllerServer(CONTROLLER_TYPE ctrlType,
+                                   SOLVER_TYPE solver,
+                                   bool usingInterprocessCommunication,
+                                   bool useOdometry)
 : controllerType(ctrlType)
 , solverType(solver)
 , usingComs(usingInterprocessCommunication)
+, usingOdometry(useOdometry)
 {
 }
 
@@ -80,8 +84,14 @@ bool ControllerServer::initialize()
 
     res &= bool(model);
     res &= bool(controller);
-
-    updateModel();
+    
+    // WARNING! If useOdometry is true we must call updateModel during initialization explicitly after ControllerServer::initialize()
+    std::cout << "[DEBUG-ODOMETRY] useOdometry is: " << usingOdometry << std::endl;
+    std::cout << "[DEBUG-ODOMETRY] this->useOdometry is: " << this->usingOdometry << std::endl;
+    if (!this->usingOdometry) {
+        updateModel();
+    }
+    
     return res;
 }
 

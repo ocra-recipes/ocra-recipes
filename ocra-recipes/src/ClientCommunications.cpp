@@ -70,6 +70,7 @@ bool ClientCommunications::close()
         rpc_i.second->close();
     }
     taskRpcClients.clear();
+    return true;
 }
 
 void ClientCommunications::close(const std::string& taskName)

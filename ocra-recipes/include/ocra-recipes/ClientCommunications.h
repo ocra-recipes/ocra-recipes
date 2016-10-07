@@ -36,19 +36,79 @@ public:
     ClientCommunications();
     virtual ~ClientCommunications();
 
+    /**
+     *  Opens an RPC port for the client with the format /ControllerClient/<client-number>/rpc:o and an input one with the format /ControllerClient/<client-number>/:i
+     *
+     *  @param[in]   connectToTasks True to automatically connect to task RPC ports. True by default.
+     *
+     *  @return True when the conection to tasks is successful.
+     */
     bool open(const bool connectToTasks = true);
+    
+    /**
+     *  Closes the RPC and input ports opened by this client.
+     *
+     *  @return True after all ports are closed.
+     */
     bool close();
+    
+    /**
+     *  Closes the task-specific RPC ports and deletes this task from the list of current clients.
+     *
+     *  @param taskName Name of the task.
+     */
     void close(const std::string& taskName);
 
+    /**
+     *  Reads and parses (parseMessage()) a message sent by the server.
+     *
+     *  @param connection Source of the message.
+     *
+     *  @return True if the message is parsed succesfully, false otherwise.
+     */
     virtual bool read(yarp::os::ConnectionReader& connection);
+    
+    /**
+     *  The method that does the real parsing. The expected messages from the server are: REMOVE_TASK_PORT or HELP.
+     *
+     *  @param input A bottle containing the message sent by the server.
+     */
     void parseMessage(yarp::os::Bottle& input);
 
+    /**
+     *  Queries the server for the task types as strings.
+     *
+     *  @return A vector of strings containint the task types sent by the server.
+     */
     std::vector<std::string> getTaskTypes();
 
-
+    /**
+     *  Takes a bottled query from the client and sends it to the server via RPC.
+     *
+     *  @param requestBottle Bottled query to be sent to the server.
+     *
+     *  @return A bottled reply from the server.
+     */
     yarp::os::Bottle queryController(yarp::os::Bottle& requestBottle);
+    
+    /**
+     *  Sends a request to the server among one of the predefined messages in ocra_recipes::SERVER_COMMUNICATIONS_MESSAGE.
+     *
+     *  @param request These could be General indicators, controller requests, controller status indicators or task requests. See ocra_recipes::SERVER_COMMUNICATIONS_MESSAGE for more options.
+     *
+     *  @return The reply of the server.
+     */
     yarp::os::Bottle queryController(const SERVER_COMMUNICATIONS_MESSAGE request);
+    
+    /**
+     *  Allows to send a series of messages from ocra_recipes::SERVER_COMMUNICATIONS_MESSAGE.
+     *
+     *  @param requestVector Vector of communication messages to be sent to the server.
+     *
+     *  @return Bottled server reply.
+     */
     yarp::os::Bottle queryController(const std::vector<SERVER_COMMUNICATIONS_MESSAGE> requestVector);
+    
     // void queryController(const SERVER_COMMUNICATIONS_MESSAGE request, yarp::os::Bottle& reply);
 
     // void queryTask(const std::string& taskName, const SERVER_COMMUNICATIONS_MESSAGE request, yarp::os::Bottle& reply);
@@ -57,6 +117,7 @@ public:
     // void queryTasks(const std::vector<SERVER_COMMUNICATIONS_MESSAGE>& requests, std::vector<yarp::os::Bottle&>& replies);
     // void queryTasks(const std::vector<SERVER_COMMUNICATIONS_MESSAGE>& requests, std::vector<yarp::os::Bottle&>& replies);
 
+    // TODO: Finish the documentation for the following methods
     std::vector<std::string> getTaskPortNames();
     std::string getTaskPortName(const std::string& taskName);
 
