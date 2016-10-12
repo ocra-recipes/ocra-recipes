@@ -110,6 +110,10 @@ namespace ocra
     int getErrorFlag() const;
     void setMaxJointTorqueNorm(double maxTau);
     double getMaxJointTorqueNorm() const;
+    void  setFixedLinkForOdometry(std::string newFixedLink);
+    void  setUseOdometry(bool useOdometry) { this->_useOdometry = useOdometry; }
+    void  getFixedLinkForOdometry(std::string& currentFixedLink) { currentFixedLink = this->_fixedLink; }
+      
     //@}
 
   public: // factory
@@ -144,6 +148,8 @@ namespace ocra
   private:
     struct Pimpl;
     boost::shared_ptr<Pimpl> pimpl;
+    bool _useOdometry;
+    std::string _fixedLink;
   };
 }
 

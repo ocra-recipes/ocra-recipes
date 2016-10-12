@@ -294,6 +294,15 @@ namespace ocra
     }
   }
 
+  void Controller::setFixedLinkForOdometry(std::string newFixedLink)
+  {
+      if (this->_useOdometry) {
+          this->_fixedLink = newFixedLink;
+      } else {
+          std::cout << "[ERROR] Controller::setFixedLinkForOdometry. The controller is not aware that  odometry is being used. Do so by calling setUseOdometry() " << std::endl;
+      }
+  }
+    
   void Controller::enableErrorHandling()
   {
     pimpl->handleError = true;

@@ -99,11 +99,19 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
                 // TODO: Make a custom function that puts the robot in pos mode before suspend.
             }break;
                 
-            case CHANGE_FIXED_LINK:
+            case CHANGE_FIXED_LINK_RIGHT:
             {
-                std::cout << "Got message: CHANGE_FIXED_LINK." << std::endl;
-                //reply.add...
+                std::cout << "Got message: CHANGE_FIXED_LINK_RIGHT." << std::endl;
+                //How to I know which
+                this->controller->setFixedLinkForOdometry("r_sole");
             }
+            case CHANGE_FIXED_LINK_LEFT:
+            {
+                std::cout << "Got message: CHANGE_FIXED_LINK_LEFT." << std::endl;
+                //How to I know which
+                this->controller->setFixedLinkForOdometry("l_sole");
+            }
+
 
             case ADD_TASKS:
             {

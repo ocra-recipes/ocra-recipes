@@ -86,8 +86,6 @@ bool ControllerServer::initialize()
     res &= bool(controller);
     
     // WARNING! If useOdometry is true we must call updateModel during initialization explicitly after ControllerServer::initialize()
-    std::cout << "[DEBUG-ODOMETRY] useOdometry is: " << usingOdometry << std::endl;
-    std::cout << "[DEBUG-ODOMETRY] this->useOdometry is: " << this->usingOdometry << std::endl;
     if (!this->usingOdometry) {
         updateModel();
     }

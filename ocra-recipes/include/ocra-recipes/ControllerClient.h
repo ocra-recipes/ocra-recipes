@@ -56,6 +56,7 @@ public:
     bool removeTasks(const std::vector<std::string>& taskNameVector);
 
     bool hasBeenReleased(){return clientThreadHasBeenReleased;}
+    bool changeFixedLink(std::string newFixedLink);
 
 
 protected:

@@ -134,3 +134,20 @@ std::vector<std::string> ControllerClient::getTaskNames()
 {
     return clientComs->getTaskNames();
 }
+
+bool ControllerClient::changeFixedLink(std::string newFixedLink)
+{
+    yarp::os::Bottle request;
+    if (newFixedLink.compare("r_sole") || newFixedLink.compare("right")) {
+        request.addInt(CHANGE_FIXED_LINK_RIGHT);
+        return true;
+    } else {
+        if (newFixedLink.compare("l_sole") || newFixedLink.compare("left")) {
+            request.addInt(CHANGE_FIXED_LINK_LEFT);
+            return true;
+        } else {
+            std::cout << "[ERROR] ControllerClient::changeFixedLink - The new fixed link you specify is not suppoert yet. Please try r_sole, right, l_sole or left." << std::endl;
+        }
+    }
+    return false;
+}
