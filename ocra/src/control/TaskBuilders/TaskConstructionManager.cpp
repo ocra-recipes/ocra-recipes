@@ -27,7 +27,6 @@ void TaskConstructionManager::addTasksToController(Model::Ptr model, Controller:
 {
     for(auto options : optionsVector){
         TaskBuilder::Ptr builder = getBuilder(options, model);
-
         if (builder) {
             builder->buildTask();
             controller->addTask(builder->getTask());
@@ -87,7 +86,7 @@ std::vector<TaskBuilderOptions> TaskConstructionManager::parseTaskOptionsFromXml
     std::vector<TaskBuilderOptions> optionsVector;
 
     if(newTasksFile == NULL) {
-        std::cout << "[ERROR] newTasksFile arguement is NULL" << std::endl;
+        std::cout << "[ERROR] newTasksFile argument is NULL" << std::endl;
     } else {
         for(TiXmlElement* xmlTask = newTasksFile->FirstChildElement("task"); xmlTask != NULL; xmlTask = xmlTask->NextSiblingElement("task")) {
             TaskBuilderOptions options;

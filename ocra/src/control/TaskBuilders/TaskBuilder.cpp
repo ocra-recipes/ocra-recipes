@@ -19,11 +19,15 @@ void TaskBuilder::buildTask()
 {
     Feature::Ptr feature = buildFeature();
     Feature::Ptr featureDes = buildFeatureDesired();
-    if (featureDes) {
+    if (featureDes && feature) {
         this->task = std::make_shared<Task>(this->options.taskName, this->model, feature, featureDes);
     } else {
-        this->task = std::make_shared<Task>(this->options.taskName, this->model, feature);
-    }
+            if (feature)
+                this->task = std::make_shared<Task>(this->options.taskName, this->model, feature);
+            else {
+                std::cout << "[ERROR] TaskBuilder::buildTask() : Neither feature nor featureDes were created" << std::endl;
+            }
+    } 
     setTaskType();
 }
 
