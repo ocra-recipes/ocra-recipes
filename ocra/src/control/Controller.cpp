@@ -296,11 +296,8 @@ namespace ocra
 
   void Controller::setFixedLinkForOdometry(std::string newFixedLink)
   {
-      if (this->_useOdometry) {
-          this->_fixedLink = newFixedLink;
-      } else {
-          std::cout << "[ERROR] Controller::setFixedLinkForOdometry. The controller is not aware that  odometry is being used. Do so by calling setUseOdometry() " << std::endl;
-      }
+      this->_fixedLink = newFixedLink;
+      std::cout << "[DEBUG-JORH] Controller::setFixedLinkForOdometry: Changed _fixedLink = " << newFixedLink.c_str() << std::endl;
   }
     
   void Controller::enableErrorHandling()

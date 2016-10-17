@@ -138,12 +138,24 @@ std::vector<std::string> ControllerClient::getTaskNames()
 bool ControllerClient::changeFixedLink(std::string newFixedLink)
 {
     yarp::os::Bottle request;
-    if (newFixedLink.compare("r_sole") || newFixedLink.compare("right")) {
+    if (!newFixedLink.compare("r_sole") || !newFixedLink.compare("right")) {
         request.addInt(CHANGE_FIXED_LINK_RIGHT);
+        std::cout << "[DEBUG-JORH] ControllerClient::changeFixedLink: Changed fixed link to right sole" << std::endl;
+        if(clientComs->queryController(request).get(0).asInt() != SUCCESS)
+        {
+            std::cout << "[ERROR] Communication with ocra-icub-server didn't work. Requested change to right foot link" << std::endl;
+            return false;
+        }
         return true;
     } else {
-        if (newFixedLink.compare("l_sole") || newFixedLink.compare("left")) {
+        if (!newFixedLink.compare("l_sole") || !newFixedLink.compare("left")) {
             request.addInt(CHANGE_FIXED_LINK_LEFT);
+            std::cout << "[DEBUG-JORH] ControllerClient::changeFixedLink: Changed fixed link to left sole" << std::endl;           
+            if(clientComs->queryController(request).get(0).asInt() != SUCCESS)
+            {
+                std::cout << "[ERROR] Communication with ocra-icub-server didn't work. Requested change to left foot link" << std::endl;
+                return false;
+            }
             return true;
         } else {
             std::cout << "[ERROR] ControllerClient::changeFixedLink - The new fixed link you specify is not suppoert yet. Please try r_sole, right, l_sole or left." << std::endl;

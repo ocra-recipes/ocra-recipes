@@ -102,15 +102,14 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
             case CHANGE_FIXED_LINK_RIGHT:
             {
                 std::cout << "Got message: CHANGE_FIXED_LINK_RIGHT." << std::endl;
-                //How to I know which
                 this->controller->setFixedLinkForOdometry("r_sole");
-            }
+            } break;
+            
             case CHANGE_FIXED_LINK_LEFT:
             {
                 std::cout << "Got message: CHANGE_FIXED_LINK_LEFT." << std::endl;
-                //How to I know which
                 this->controller->setFixedLinkForOdometry("l_sole");
-            }
+            } break;
 
 
             case ADD_TASKS:
