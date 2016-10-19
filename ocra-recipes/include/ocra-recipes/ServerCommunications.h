@@ -26,6 +26,7 @@
 
 
 #include <ocra-recipes/MessageVocabulary.h>
+#include <ocra/util/ErrorsHelper.h>
 
 namespace ocra_recipes
 {

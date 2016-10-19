@@ -135,31 +135,31 @@ std::vector<std::string> ControllerClient::getTaskNames()
     return clientComs->getTaskNames();
 }
 
-bool ControllerClient::changeFixedLink(std::string newFixedLink)
+bool ControllerClient::changeFixedLink(std::string newFixedLink, int isInLeftSupport, int isInRightSupport)
 {
     yarp::os::Bottle request;
     if (!newFixedLink.compare("r_sole") || !newFixedLink.compare("right")) {
         request.addInt(CHANGE_FIXED_LINK_RIGHT);
-        std::cout << "[DEBUG-JORH] ControllerClient::changeFixedLink: Changed fixed link to right sole" << std::endl;
-        if(clientComs->queryController(request).get(0).asInt() != SUCCESS)
-        {
-            std::cout << "[ERROR] Communication with ocra-icub-server didn't work. Requested change to right foot link" << std::endl;
-            return false;
-        }
-        return true;
+        OCRA_INFO("Changed fixed link to right sole");
     } else {
         if (!newFixedLink.compare("l_sole") || !newFixedLink.compare("left")) {
             request.addInt(CHANGE_FIXED_LINK_LEFT);
-            std::cout << "[DEBUG-JORH] ControllerClient::changeFixedLink: Changed fixed link to left sole" << std::endl;           
-            if(clientComs->queryController(request).get(0).asInt() != SUCCESS)
-            {
-                std::cout << "[ERROR] Communication with ocra-icub-server didn't work. Requested change to left foot link" << std::endl;
-                return false;
-            }
-            return true;
+            OCRA_INFO("Changed fixed link to left sole");
         } else {
-            std::cout << "[ERROR] ControllerClient::changeFixedLink - The new fixed link you specify is not suppoert yet. Please try r_sole, right, l_sole or left." << std::endl;
+            OCRA_ERROR("The new fixed link you specify is not supported yet. Please try r_sole, right, l_sole or left.");
+            return false;
         }
     }
-    return false;
+    OCRA_INFO("sending contact state (" << isInLeftSupport <<", " <<isInRightSupport << ")");
+    request.addInt(isInLeftSupport);
+    request.addInt(isInRightSupport);
+
+    
+    if(clientComs->queryController(request).get(0).asInt() != SUCCESS)
+    {
+        OCRA_ERROR("Communication with ocra-icub-server didn't work. Requested change to right foot link");
+        return false;
+    }
+
+    return true;
 }

@@ -113,6 +113,8 @@ namespace ocra
     void  setFixedLinkForOdometry(std::string newFixedLink);
     void  setUseOdometry(bool useOdometry) { this->_useOdometry = useOdometry; }
     void  getFixedLinkForOdometry(std::string& currentFixedLink) { currentFixedLink = this->_fixedLink; }
+    void setContactState(int isInLeftSupport, int isInRightSupport) { this->_isInLeftSupport = isInLeftSupport; this->_isInRightSupport = isInRightSupport;}
+    void getContactState(int& leftSupport, int& rightSupport);
       
     //@}
 
@@ -150,6 +152,8 @@ namespace ocra
     boost::shared_ptr<Pimpl> pimpl;
     bool _useOdometry;
     std::string _fixedLink;
+    int _isInLeftSupport;
+    int _isInRightSupport;
   };
 }
 

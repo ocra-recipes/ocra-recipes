@@ -1,3 +1,6 @@
+#ifndef _ERRORSHELPER_H_
+#define _ERRORSHELPER_H_
+
 #include <iostream>
 
 inline std::string fullMethodName(const std::string& prettyFunction)
@@ -27,7 +30,12 @@ inline std::string fullMethodName(const std::string& prettyFunction)
 //     7 - white
 
 #define OCRA_ERROR(msg) \
-std::cout << "\033[1;93;41m[ERROR]" << __FULL_METHOD_NAME__ << "\033[39;49m" << msg << std::endl;
+std::cout << "\033[1;93;41m[ERROR]" << __FULL_METHOD_NAME__ << "\033[0m" << std::endl << msg << std::endl;
 
 #define OCRA_WARNING(msg) \
-std::cout << "\033[1;97;42m[WARNING]" << __FULL_METHOD_NAME__ << "\033[39;49m" << msg << std::endl;
+std::cout << "\033[1;97;42m[WARNING]" << __FULL_METHOD_NAME__ << "\033[0m" << std::endl << msg << std::endl;
+
+#define OCRA_INFO(msg) \
+std::cout << "\033[1;97;40m[INFO]" << __FULL_METHOD_NAME__ << "\033[0m" << std::endl << msg << std::endl;
+
+#endif

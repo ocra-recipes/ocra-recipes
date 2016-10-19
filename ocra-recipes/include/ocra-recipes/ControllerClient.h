@@ -14,6 +14,7 @@
 #include <yarp/os/ResourceFinder.h>
 
 #include <ocra/util/Macros.h>
+#include <ocra/util/ErrorsHelper.h>
 
 
 
@@ -56,7 +57,7 @@ public:
     bool removeTasks(const std::vector<std::string>& taskNameVector);
 
     bool hasBeenReleased(){return clientThreadHasBeenReleased;}
-    bool changeFixedLink(std::string newFixedLink);
+    bool changeFixedLink(std::string newFixedLink, int isInLeftSupport, int isInRightSupport);
 
 
 protected:

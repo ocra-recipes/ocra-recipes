@@ -88,6 +88,8 @@ bool ControllerServer::initialize()
     // WARNING! If useOdometry is true we must call updateModel during initialization explicitly after ControllerServer::initialize()
     if (!this->usingOdometry) {
         updateModel();
+        // Setting up initial contact state. Both feet on the ground.
+        this->controller->setContactState(1,1);
     }
     
     return res;
