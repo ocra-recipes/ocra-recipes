@@ -20,14 +20,14 @@ ClientCommunications::~ClientCommunications()
     close();
 }
 
-bool ClientCommunications::open(const bool connectToTasks)
+bool ClientCommunications::open(double timeout, bool connectToTasks)
 {
     rpcClientPort.open(rpcClientPort_Name.c_str());
     rpcClientPort.setReader(*this);
     inputPort.open(inputPort_Name.c_str());
     inputPort.setReader(inputCallback);
 
-    bool isConOpen = openServerConnections();
+    bool isConOpen = openServerConnections(timeout);
     if(isConOpen && connectToTasks)
     {
         isConOpen &= openTaskConnections();
@@ -94,7 +94,7 @@ bool ClientCommunications::read(yarp::os::ConnectionReader& connection)
     }
 }
 
-bool ClientCommunications::openServerConnections()
+bool ClientCommunications::openServerConnections(double timeout)
 {
     if (!yarp.checkNetwork()) {
         yLog.error() << "Yarp network isn't running.";
@@ -104,27 +104,27 @@ bool ClientCommunications::openServerConnections()
         bool connected = false;
         double timeDelayed = 0.0;
         double delayTime = 0.1;
-        while(!connected && timeDelayed < CONNECTION_TIMEOUT)
+        while(!connected && timeDelayed < timeout)
         {
             connected = yarp.connect(rpcClientPort_Name.c_str(), "/ControllerServer/rpc:i");
             yarp::os::Time::delay(delayTime);
             timeDelayed += delayTime;
-            if (timeDelayed>= CONNECTION_TIMEOUT) {
+            if (timeDelayed>= timeout) {
                 yLog.error() << "Could not connect to the ocra controller server. Are you sure it is running?";
             }
         }
 
-        connected = false;
-        timeDelayed = 0.0;
-        while(!connected && timeDelayed < CONNECTION_TIMEOUT)
-        {
-            connected = yarp.connect("/ControllerServer:o", inputPort_Name.c_str());
-            yarp::os::Time::delay(delayTime);
-            timeDelayed += delayTime;
-            if (timeDelayed>= CONNECTION_TIMEOUT) {
-                yLog.error() << "Could not connect to the ocra controller port. Are you sure it is running?";
-            }
-        }
+        // connected = false;
+        // timeDelayed = 0.0;
+        // while(!connected && timeDelayed < timeout)
+        // {
+        //     connected = yarp.connect("/ControllerServer:o", inputPort_Name.c_str());
+        //     yarp::os::Time::delay(delayTime);
+        //     timeDelayed += delayTime;
+        //     if (timeDelayed>= timeout) {
+        //         yLog.error() << "Could not connect to the ocra controller port. Are you sure it is running?";
+        //     }
+        // }
         return connected;
     }
 }

@@ -36,7 +36,7 @@ public:
     ClientCommunications();
     virtual ~ClientCommunications();
 
-    bool open(const bool connectToTasks = true);
+    bool open(double timeout = 20.0, bool connectToTasks = true);
     bool close();
     void close(const std::string& taskName);
 
@@ -84,7 +84,7 @@ public:
 
 
 private:
-    bool openServerConnections();
+    bool openServerConnections(double timeout);
     bool openTaskConnections();
 
 private:
@@ -99,8 +99,6 @@ private:
 
     yarp::os::Network yarp;
     yarp::os::Log yLog;
-
-    static constexpr double CONNECTION_TIMEOUT = 20.0;
 
     TaskPortMap taskRpcClients;
 
