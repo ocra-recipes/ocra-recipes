@@ -116,7 +116,9 @@ void ControllerServer::updateModel()
     }else{
         model->setState(rState.H_root, rState.q, rState.T_root, rState.qd);
     }
-    statesPort.write(rState);
+    if (!statesPort.write(rState)) {
+        OCRA_ERROR("Couldn't write robot state for client. Not really doing anything about it, except reporting.");
+    }
 }
 
 bool ControllerServer::addTasksFromXmlFile(const std::string& filePath)
