@@ -86,7 +86,6 @@ bool RobotState::write(yarp::os::ConnectionWriter& connection)
 
 bool RobotState::read(yarp::os::ConnectionReader& connection)
 {
-    std::cout << "This is just a test " << std::endl;
     // Auto-convert text mode interaction
     connection.convertTextMode();
     
