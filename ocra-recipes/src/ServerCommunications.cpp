@@ -8,8 +8,8 @@ ServerCommunications::ServerCommunications()
 }
 
 ServerCommunications::ServerCommunications(ocra::Controller::Ptr ctrl, ocra::Model::Ptr mdl)
-: controller(ctrl)
-, model(mdl)
+: model(mdl),
+  controller(ctrl)
 {
     rpcServerPort_Name = "/ControllerServer/rpc:i";
     outputPort_Name = "/ControllerServer:o";

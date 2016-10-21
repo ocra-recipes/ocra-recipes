@@ -49,7 +49,15 @@ std::ostream& operator<<(std::ostream &out, const RobotState& state)
 
 bool RobotState::write(yarp::os::ConnectionWriter& connection)
 {
+    // Two lists will be transmitted.
+    connection.appendInt(BOTTLE_TAG_LIST);
+    connection.appendInt(2);
+    // The first list will contain just an integer (DOF))
+    connection.appendInt(BOTTLE_TAG_INT);
     connection.appendInt(q.size());
+    // The second list will contain the state of the robot
+    connection.appendInt(BOTTLE_TAG_LIST + BOTTLE_TAG_DOUBLE);
+    connection.appendInt(q.size() + qd.size() + 13);
     for(auto i=0; i<q.size(); ++i)
     {
         connection.appendDouble(q(i));
@@ -69,12 +77,30 @@ bool RobotState::write(yarp::os::ConnectionWriter& connection)
     connection.appendDouble(T_root.vx());
     connection.appendDouble(T_root.vy());
     connection.appendDouble(T_root.vz());
-    return true;
+    
+    // If someone connects in text mode, show something readable
+    connection.convertTextMode();
+    
+    return !connection.isError();
 }
 
 bool RobotState::read(yarp::os::ConnectionReader& connection)
 {
+    std::cout << "This is just a test " << std::endl;
+    // Auto-convert text mode interaction
+    connection.convertTextMode();
+    
+    if ( connection.expectInt() != BOTTLE_TAG_LIST || connection.expectInt() != 2)
+        return false;
+    
+    // Reading DOF
+    if ( connection.expectInt() != BOTTLE_TAG_INT )
+        return false;
     this->nDoF = connection.expectInt();
+    
+    if ( connection.expectInt() != BOTTLE_TAG_LIST + BOTTLE_TAG_DOUBLE || connection.expectInt()!= q.size() + qd.size() + 13 )
+        return false;
+    
     this->q.resize(nDoF);
     this->qd.resize(nDoF);
     for(auto i=0; i<this->nDoF; ++i)
