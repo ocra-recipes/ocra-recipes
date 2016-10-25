@@ -107,6 +107,9 @@ namespace ocra
     : NamedInstance(name)
     , pimpl(new Pimpl(model))
   {
+      // Assuming by default that humnanoid robots start in double support face
+      this->_isInLeftSupport = 1;
+      this->_isInRightSupport = 1;
   }
 
   Controller::~Controller()
