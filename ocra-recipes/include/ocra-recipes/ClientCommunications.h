@@ -43,15 +43,15 @@ public:
      *  @return True when the conection to tasks is successful.
      *
      */
-    
+     bool open(double timeout = 20.0, bool connectToTasks = true);
+
     /**
      *  Closes the RPC and input ports opened by this client.
      *
      *  @return True after all ports are closed.
      */
-    bool open(double timeout = 20.0, bool connectToTasks = true);
     bool close();
-    
+
     /**
      *  Closes the task-specific RPC ports and deletes this task from the list of current clients.
      *
@@ -67,7 +67,7 @@ public:
      *  @return True if the message is parsed succesfully, false otherwise.
      */
     virtual bool read(yarp::os::ConnectionReader& connection);
-    
+
     /**
      *  The method that does the real parsing. The expected messages from the server are: REMOVE_TASK_PORT or HELP.
      *
@@ -90,7 +90,7 @@ public:
      *  @return A bottled reply from the server.
      */
     yarp::os::Bottle queryController(yarp::os::Bottle& requestBottle);
-    
+
     /**
      *  Sends a request to the server among one of the predefined messages in ocra_recipes::SERVER_COMMUNICATIONS_MESSAGE.
      *
@@ -99,7 +99,7 @@ public:
      *  @return The reply of the server.
      */
     yarp::os::Bottle queryController(const SERVER_COMMUNICATIONS_MESSAGE request);
-    
+
     /**
      *  Allows to send a series of messages from ocra_recipes::SERVER_COMMUNICATIONS_MESSAGE.
      *
@@ -108,7 +108,7 @@ public:
      *  @return Bottled server reply.
      */
     yarp::os::Bottle queryController(const std::vector<SERVER_COMMUNICATIONS_MESSAGE> requestVector);
-    
+
     // void queryController(const SERVER_COMMUNICATIONS_MESSAGE request, yarp::os::Bottle& reply);
 
     // void queryTask(const std::string& taskName, const SERVER_COMMUNICATIONS_MESSAGE request, yarp::os::Bottle& reply);
