@@ -22,6 +22,8 @@
 #include <string>
 #include <iostream>
 
+#include <yarp/os/Semaphore.h>
+
 namespace ocra
 {
   /** @class Model
@@ -150,6 +152,7 @@ namespace ocra
     Variable& getInternalVelocityVariable()       const;
     Variable& getRootAccelerationVariable()       const;
     Variable& getInternalAccelerationVariable()   const;
+    yarp::os::Semaphore modelMutex;
 
     //subModels
     ModelContacts&       getModelContacts() const;
