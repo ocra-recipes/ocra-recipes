@@ -474,7 +474,15 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
 {
     int btlSize = input.size();
     for (auto i=0; i<btlSize; ++i) {
-        switch (input.get(i).asInt()) {
+        int msg;
+        int testInt = input.get(0).asInt();
+        std::string testStr = input.get(0).asString();
+        if ((testStr=="") && (testInt!=0)) {
+            msg = TASK_MESSAGE(testInt);
+        } else {
+            msg = TaskMessageHandler::stringToTaskManagerMessageTag(testStr);
+        }
+        switch (msg) {
 
             case GET_TASK_STATE:
             {
@@ -516,6 +524,28 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
                 }
                 TaskState state = this->task->getDesiredTaskState();
                 state.putIntoBottle(reply);
+            }break;
+
+            case GET_TASK_POSITION:
+            {
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_TASK_POSITION";
+                }
+                if ((this->task->getMetaTaskType()==Task::META_TASK_TYPE::POSITION) || (this->task->getMetaTaskType()==Task::META_TASK_TYPE::COM)) {
+                    Eigen::Vector3d pos = this->task->getTaskState().getPosition().getTranslation();
+                    util::pourEigenVectorIntoBottle(pos, reply);
+                }
+            }break;
+
+            case GET_DESIRED_TASK_POSITION:
+            {
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_DESIRED_TASK_POSITION";
+                }
+                if ((this->task->getMetaTaskType()==Task::META_TASK_TYPE::POSITION) || (this->task->getMetaTaskType()==Task::META_TASK_TYPE::COM)) {
+                    Eigen::Vector3d pos = this->task->getDesiredTaskState().getPosition().getTranslation();
+                    util::pourEigenVectorIntoBottle(pos, reply);
+                }
             }break;
 
             case GET_ACTIVITY_STATUS:
@@ -684,12 +714,31 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
                 bool extractSuccess = state.extractFromBottle(util::trimBottle(input, i+1), indexesToSkip);
                 i += indexesToSkip;
                 if (extractSuccess) {
-                    this->setDesiredTaskState(state);
+                    // TODO: Set to setDesiredTaskState (needs internal traj gen.) See Task::setDesiredTaskState()
+                    this->setDesiredTaskStateDirect(state);
                     reply.addInt(OCRA_SUCCESS);
                 } else {
                     reply.addInt(OCRA_FAILURE);
                 }
 
+            }break;
+
+            case SET_DESIRED_TASK_POSITION:
+            {
+                if (logMessages) {
+                    yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: SET_DESIRED_TASK_POSITION";
+                }
+                if (((this->task->getMetaTaskType()==Task::META_TASK_TYPE::POSITION) || (this->task->getMetaTaskType()==Task::META_TASK_TYPE::COM)) && (input.size()>=4)){
+                    Eigen::Vector3d pos(input.get(i+1).asDouble(), input.get(i+2).asDouble(), input.get(i+3).asDouble());
+                    TaskState state;
+                    state.setPosition(Eigen::Displacementd(pos, Eigen::Rotation3d::Identity()));
+                    // TODO: Set to setDesiredTaskState (needs internal traj gen.) See Task::setDesiredTaskState()
+                    this->setDesiredTaskStateDirect(state);
+                    i += 3;
+                    reply.addInt(OCRA_SUCCESS);
+                } else {
+                    reply.addInt(OCRA_FAILURE);
+                }
             }break;
 
             case ACTIVATE:

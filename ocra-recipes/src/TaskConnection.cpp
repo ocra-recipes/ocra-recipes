@@ -388,6 +388,23 @@ bool TaskConnection::openControlPorts()
     return portsConnected;
 }
 
+std::string TaskConnection::getTaskOutputPortName()
+{
+    if (controlPortsAreOpen) {
+        return taskOutputPortName;
+    } else {
+        return "";
+    }
+}
+std::string TaskConnection::getTaskInputPortName()
+{
+    if (controlPortsAreOpen) {
+        return taskInputPortName;
+    } else {
+        return "";
+    }
+}
+
 bool TaskConnection::closeControlPorts()
 {
     if (this->controlPortsAreOpen) {

@@ -202,7 +202,8 @@ public:
 
     bool closeControlPorts();
 
-
+    std::string getTaskOutputPortName();
+    std::string getTaskInputPortName();
 
     Eigen::Displacementd getTaskFrameDisplacement();
     Eigen::Twistd getTaskFrameVelocity();

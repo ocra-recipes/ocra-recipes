@@ -37,19 +37,19 @@ public:
     virtual ~ClientCommunications();
 
     /**
+     *
      *  Opens an RPC port for the client with the format /ControllerClient/<client-number>/rpc:o and an input one with the format /ControllerClient/<client-number>/:i
-     *
      *  @param[in]   connectToTasks True to automatically connect to task RPC ports. True by default.
-     *
      *  @return True when the conection to tasks is successful.
+     *
      */
-    bool open(const bool connectToTasks = true);
     
     /**
      *  Closes the RPC and input ports opened by this client.
      *
      *  @return True after all ports are closed.
      */
+    bool open(double timeout = 20.0, bool connectToTasks = true);
     bool close();
     
     /**
@@ -145,7 +145,7 @@ public:
 
 
 private:
-    bool openServerConnections();
+    bool openServerConnections(double timeout);
     bool openTaskConnections();
 
 private:
@@ -160,8 +160,6 @@ private:
 
     yarp::os::Network yarp;
     yarp::os::Log yLog;
-
-    static constexpr double CONNECTION_TIMEOUT = 20.0;
 
     TaskPortMap taskRpcClients;
 
