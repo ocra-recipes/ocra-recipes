@@ -7,6 +7,11 @@
 #include <Eigen/Lgsm>
 #include <yarp/os/Bottle.h>
 
+#include <algorithm>
+#include <string>
+#include <regex>
+#include <iterator>
+
 namespace ocra
 {
 
@@ -31,6 +36,8 @@ enum TASK_MESSAGE
     GET_TASK_ERROR,
     GET_TASK_STATE,
     GET_DESIRED_TASK_STATE,
+    GET_TASK_POSITION,
+    GET_DESIRED_TASK_POSITION,
     // Setters
     SET_STIFFNESS,
     SET_STIFFNESS_VECTOR,
@@ -41,6 +48,7 @@ enum TASK_MESSAGE
     SET_WEIGHT,
     SET_WEIGHT_VECTOR,
     SET_DESIRED_TASK_STATE,
+    SET_DESIRED_TASK_POSITION,
     // Other
     ACTIVATE,
     DEACTIVATE,
@@ -52,10 +60,15 @@ enum TASK_MESSAGE
 
 };
 
-inline TASK_MESSAGE stringToTaskManagerMessageTag(const std::string& testString)
+class TaskMessageHandler
 {
-    return OCRA_FAILURE;
-}
+public:
+    static const std::vector<std::string> TASK_MESSAGES_AS_STRINGS;
+
+    static std::string taskManagerMessageTagToString(TASK_MESSAGE msg);
+    static std::string removeUnderscores(std::string s);
+    static TASK_MESSAGE stringToTaskManagerMessageTag(std::string testString);
+};
 
 
 
