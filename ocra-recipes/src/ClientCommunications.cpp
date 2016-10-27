@@ -104,8 +104,8 @@ bool ClientCommunications::openServerConnections(double timeout)
     else{
         bool connected = false;
         double timeDelayed = 0.0;
-        double delayTime = 0.1;
-        while(!connected && timeDelayed < timeout)
+        double delayTime = 0.01;
+        while(!connected && (timeDelayed < timeout))
         {
             connected = yarp.connect(rpcClientPort_Name.c_str(), "/ControllerServer/rpc:i");
             yarp::os::Time::delay(delayTime);
