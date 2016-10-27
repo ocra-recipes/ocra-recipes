@@ -230,6 +230,8 @@ public:
 private:
     std::shared_ptr<inputCallback> inpCallback;
 
+    
+
 };
 } /* ocra_recipes */
 

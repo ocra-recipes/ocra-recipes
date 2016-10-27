@@ -11,13 +11,19 @@ ClientCommunications::ClientCommunications()
 {
     clientNumber = ++ClientCommunications::CONTROLLER_CLIENT_COUNT;
 
+    while(yarp.exists(("/ControllerClient/"+ std::to_string(clientNumber) +"/rpc:o")))
+    {
+        ++clientNumber;
+    }
+
     rpcClientPort_Name = "/ControllerClient/"+ std::to_string(clientNumber) +"/rpc:o";
-    inputPort_Name = "/ControllerClient/"+ std::to_string(clientNumber) +"/:i";
+    inputPort_Name = "/ControllerClient/"+ std::to_string(clientNumber) +":i";
 }
 
 ClientCommunications::~ClientCommunications()
 {
     close();
+    --ClientCommunications::CONTROLLER_CLIENT_COUNT;
 }
 
 bool ClientCommunications::open(double timeout, bool connectToTasks)
