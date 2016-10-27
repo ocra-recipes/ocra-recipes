@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include <ocra/util/Macros.h>
 #include <ocra/util/StringUtilities.h>
+#include <ocra/util/ErrorsHelper.h>
 #include "ocra/control/Feature.h"
 #include "ocra/control/Model.h"
 //

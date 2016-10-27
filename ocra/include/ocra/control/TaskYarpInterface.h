@@ -7,7 +7,7 @@
 #include "ocra/control/TaskState.h"
 #include "ocra/control/TaskYarpInterfaceVocab.h"
 #include "ocra/control/Trajectory/Trajectories.h"
-
+#include "ocra/util/ErrorsHelper.h"
 #include <Eigen/Dense>
 
 #include <yarp/os/Network.h>

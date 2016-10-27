@@ -315,7 +315,7 @@ namespace ocra
     else if(pimpl->mode == TASK_AS_OBJECTIVE)
       deactivate();
 
-    doActivateAsConstraint();
+//     doActivateAsConstraint();
     if(pimpl->contactActive)
       doActivateContactMode();
 
@@ -329,12 +329,12 @@ namespace ocra
 
     if(pimpl->mode == TASK_AS_OBJECTIVE)
       doDeactivateAsObjective();
-    else if(pimpl->mode == TASK_AS_CONSTRAINT)
-      doDeactivateAsConstraint();
-
-    if(pimpl->contactActive)
-      doDeactivateContactMode();
-
+    else if(pimpl->mode == TASK_AS_CONSTRAINT) {
+//       doDeactivateAsConstraint();
+      if(pimpl->contactActive)
+        doDeactivateContactMode();
+    }
+    
     pimpl->mode = TASK_DEACTIVATED;
   }
 

@@ -155,7 +155,7 @@ bool StateListener::read(yarp::os::ConnectionReader& connection)
     RobotState state;
 
     if (!state.read(connection)){
-        OCRA_ERROR("Couldn't read state: " << state);
+        OCRA_ERROR("Couldn't read state: " << state << std::endl);
         return false;
     }
     else{

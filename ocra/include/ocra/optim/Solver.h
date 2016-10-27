@@ -18,6 +18,7 @@
 #include "ocra/optim/Objective.h"
 #include "ocra/optim/Constraint.h"
 #include "ocra/optim/NamedInstance.h"
+#include "ocra/util/ErrorsHelper.h"
 
 //boost
 #include <boost/circular_buffer.hpp>

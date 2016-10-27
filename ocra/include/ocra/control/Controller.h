@@ -24,7 +24,7 @@ File history:
 #include <map>
 #include <ocra/util/Macros.h>
 
-#include "ocra/control/Controller.h"
+// #include "ocra/control/Controller.h"
 #include "ocra/control/Task.h"
 #include "ocra/control/TaskYarpInterface.h"
 #include "ocra/control/Feature.h"

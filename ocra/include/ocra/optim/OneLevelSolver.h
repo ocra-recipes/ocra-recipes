@@ -18,6 +18,7 @@
 #include "ocra/optim/ObjQLD.h"
 #include "ocra/control/ControlEnum.h"
 #include "ocra/control/Model.h"
+#include <ocra/util/ErrorsHelper.h>
 
 #include "ocra/optim/QuadProg++.h"
 

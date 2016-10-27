@@ -13,7 +13,7 @@ TaskYarpInterface::TaskYarpInterface(Task::Ptr taskPtr)
 : task(taskPtr)
 , controlPortsOpen(false)
 , taskMode(TASK_NOT_DEFINED)
-, logMessages(false)
+, logMessages(true)
 {
     if(task) {
         portName = "/Task/"+task->getName()+"/rpc:i";
@@ -414,7 +414,10 @@ bool TaskYarpInterface::RpcMessageCallback::read(yarp::os::ConnectionReader& con
         tmBase.parseIncomingMessage(input, reply);
         yarp::os::ConnectionWriter* returnToSender = connection.getWriter();
         if (returnToSender!=NULL) {
-            reply.write(*returnToSender);
+            if (!reply.write(*returnToSender)) {
+                OCRA_ERROR("Reply was not successfully written");
+                return false;
+            }
         }
         return true;
     }

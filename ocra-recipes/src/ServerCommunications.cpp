@@ -44,7 +44,10 @@ bool ServerCommunications::read(yarp::os::ConnectionReader& connection)
     parseMessage(input, reply);
     yarp::os::ConnectionWriter* returnToSender = connection.getWriter();
     if (returnToSender!=NULL) {
-        reply.write(*returnToSender);
+        if (!reply.write(*returnToSender)) {
+            OCRA_ERROR("Error writing reply to sender");
+            return false;
+        }
     }
     return true;
 }
