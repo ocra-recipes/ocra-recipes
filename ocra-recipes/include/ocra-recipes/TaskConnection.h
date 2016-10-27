@@ -215,6 +215,8 @@ public:
     Eigen::Vector3d getTaskFrameLinearAcceleration();
     Eigen::Vector3d getTaskFrameAngularAcceleration();
 
+    void queryTask(ocra::TASK_MESSAGE tag, yarp::os::Bottle& bottle);
+
     /************** controlInputCallback *************/
     class inputCallback : public yarp::os::PortReader {
         private:
@@ -229,6 +231,8 @@ public:
 
 private:
     std::shared_ptr<inputCallback> inpCallback;
+
+    
 
 };
 } /* ocra_recipes */

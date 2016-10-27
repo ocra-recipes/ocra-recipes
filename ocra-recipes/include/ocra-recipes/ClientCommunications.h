@@ -145,7 +145,7 @@ public:
 
 
 private:
-    bool openServerConnections(double timeout);
+    bool openServerConnections(double timeout=20.0);
     bool openTaskConnections();
 
 private:

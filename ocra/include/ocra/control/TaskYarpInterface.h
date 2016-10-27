@@ -3,6 +3,7 @@
 
 
 #include "ocra/util/Macros.h"
+#include "ocra/util/ErrorsHelper.h"
 #include "ocra/control/Task.h"
 #include "ocra/control/TaskState.h"
 #include "ocra/control/TaskYarpInterfaceVocab.h"
@@ -300,7 +301,16 @@ private:
     std::string                 outputControlPortName;
     yarp::os::Port              outputControlPort;
 
+    yarp::os::Bottle            desiredStateOutBottle;
+    std::string                 desiredStateOutputPortName;
+    yarp::os::Port              desiredStateOutputPort;
+
+
+
+
     StateUpdateThread::Ptr      stateThread;
+    int numberOfOpenRequests;
+    
 
     bool logMessages;
 

@@ -14,6 +14,7 @@ TaskYarpInterface::TaskYarpInterface(Task::Ptr taskPtr)
 , controlPortsOpen(false)
 , taskMode(TASK_NOT_DEFINED)
 , logMessages(true)
+, numberOfOpenRequests(0)
 {
     if(task) {
         portName = "/Task/"+task->getName()+"/rpc:i";
@@ -275,20 +276,30 @@ void TaskYarpInterface::publishTaskState()
     stateOutBottle.clear();
     this->getTaskState().putIntoBottle(stateOutBottle);
     outputControlPort.write(stateOutBottle);
+
+    desiredStateOutBottle.clear();
+    this->getDesiredTaskState().putIntoBottle(desiredStateOutBottle);
+    desiredStateOutputPort.write(desiredStateOutBottle);
 }
 
 bool TaskYarpInterface::openControlPorts()
 {
+    ++numberOfOpenRequests;
     bool res = true;
     if (!controlPortsOpen)
     {
         inputControlPortName = "/Task/"+task->getName()+"/state:i";
         outputControlPortName = "/Task/"+task->getName()+"/state:o";
+        desiredStateOutputPortName = "/Task/"+task->getName()+"/desired_state:o";
 
         res = res && inputControlPort.open(inputControlPortName.c_str());
         res = res && outputControlPort.open(outputControlPortName.c_str());
+        res = res && desiredStateOutputPort.open(desiredStateOutputPortName.c_str());
 
         controlPortsOpen = res;
+
+    } else {
+        OCRA_WARNING("You already opened the control ports. No need to do so again.")
     }
 
     if (!controlCallback) {
@@ -307,21 +318,29 @@ bool TaskYarpInterface::openControlPorts()
 
 bool TaskYarpInterface::closeControlPorts()
 {
-    if(stateThread) {
-        if (stateThread->isRunning()) {
-            stateThread->stop();
+    --numberOfOpenRequests;
+    if (numberOfOpenRequests==0) {
+        if(stateThread) {
+            if (stateThread->isRunning()) {
+                stateThread->stop();
+            }
         }
+        if (controlPortsOpen) {
+            inputControlPort.close();
+            outputControlPort.close();
+            desiredStateOutputPort.close();
+        }
+
+        bool controlPortsClosed = !inputControlPort.isOpen() && !outputControlPort.isOpen() && !desiredStateOutputPort.isOpen();
+
+        controlPortsOpen = !controlPortsClosed;
+
+        return controlPortsClosed;
+    } else {
+        OCRA_WARNING("There are still other TaskConnection occurences using these ports so I am keeping them open... Muthafucka.")
+        return false;
     }
-    if (controlPortsOpen) {
-        inputControlPort.close();
-        outputControlPort.close();
-    }
 
-    bool controlPortsClosed = !inputControlPort.isOpen() && !outputControlPort.isOpen();
-
-    controlPortsOpen = !controlPortsClosed;
-
-    return controlPortsClosed;
 }
 
 bool TaskYarpInterface::parseControlInput(yarp::os::Bottle& input)
@@ -569,7 +588,8 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
                 if (logMessages) {
                     yLog.info() << " ["<< this->task->getName() <<"]: " << "Processing request: GET_DIMENSION";
                 }
-                reply.addInt(this->getWeight().size());
+                OCRA_WARNING("this->task->getWeight() " << this->task->getWeight().size())
+                reply.addInt(this->task->getWeight().size());
             }break;
 
             case GET_TYPE:
@@ -603,6 +623,7 @@ void TaskYarpInterface::parseIncomingMessage(yarp::os::Bottle& input, yarp::os::
                 }
                 reply.addString(this->inputControlPortName);
                 reply.addString(this->outputControlPortName);
+                reply.addString(this->desiredStateOutputPortName);
             }break;
 
             case GET_TASK_PORT_NAME:

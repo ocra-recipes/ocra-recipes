@@ -15,10 +15,19 @@ TaskConnection::TaskConnection(const std::string& destinationTaskName)
 {
     taskConnectionNumber = ++TaskConnection::TASK_CONNECTION_COUNT;
 
-    std::shared_ptr<ClientCommunications> ccComs = std::make_shared<ClientCommunications>();
-    ccComs->open();
-    taskRpcServerName = ccComs->getTaskPortName(taskName);
-    ccComs->close();
+    // std::shared_ptr<ClientCommunications> ccComs = std::make_shared<ClientCommunications>();
+    // ccComs->open();
+    // taskRpcServerName = ccComs->getTaskPortName(taskName);
+    // ccComs->close();
+
+    taskRpcServerName = "/Task/"+taskName+"/rpc:i";
+
+
+    while(yarp.exists(("/TaskConnection/"+std::to_string(taskConnectionNumber)+"/"+taskName+"/rpc:o")))
+    {
+        ++taskConnectionNumber;
+    }
+
 
     this->taskRpcClientName = "/TaskConnection/"+std::to_string(taskConnectionNumber)+"/"+taskName+"/rpc:o";
     this->taskRpcClient.open(taskRpcClientName.c_str());
@@ -30,6 +39,7 @@ TaskConnection::~TaskConnection()
 {
     this->taskRpcClient.close();
     this->closeControlPorts();
+    --TaskConnection::TASK_CONNECTION_COUNT;
 }
 
 bool TaskConnection::activate()
@@ -425,6 +435,12 @@ bool TaskConnection::closeControlPorts()
 
 }
 
+void TaskConnection::queryTask(ocra::TASK_MESSAGE tag, yarp::os::Bottle& reply)
+{
+    yarp::os::Bottle message;
+    message.addInt(tag);
+    this->taskRpcClient.write(message, reply);
+}
 
 
 /**************************************************************************************************
