@@ -435,6 +435,12 @@ bool TaskConnection::closeControlPorts()
 
 }
 
+void TaskConnection::queryTask(ocra::TASK_MESSAGE tag, yarp::os::Bottle& reply)
+{
+    yarp::os::Bottle message;
+    message.addInt(tag);
+    this->taskRpcClient.write(message, reply);
+}
 
 
 /**************************************************************************************************
