@@ -34,8 +34,8 @@ Eigen::MatrixXd TimeOptimalTrajectory::getDesiredValues(double _time)
 
 void TimeOptimalTrajectory::initializeTrajectory()
 {
-    Eigen::VectorXd maxAcceleration = Eigen::VectorXd::Constant(nDoF, 0.5);
-	Eigen::VectorXd maxVelocity = Eigen::VectorXd::Constant(nDoF, 0.5);
+    Eigen::VectorXd maxAcceleration = Eigen::VectorXd::Constant(nDoF, 0.05);
+	Eigen::VectorXd maxVelocity = Eigen::VectorXd::Constant(nDoF, 0.05);
 
     maxDeviation = 0.1;
     timeStep = 0.01;
