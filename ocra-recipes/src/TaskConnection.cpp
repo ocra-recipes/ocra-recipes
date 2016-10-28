@@ -42,6 +42,11 @@ TaskConnection::~TaskConnection()
     --TaskConnection::TASK_CONNECTION_COUNT;
 }
 
+void TaskConnection::reconnect()
+{
+    this->yarp.connect(taskRpcClientName.c_str(), taskRpcServerName.c_str());
+}
+
 bool TaskConnection::activate()
 {
     yarp::os::Bottle message, reply;

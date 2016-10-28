@@ -31,6 +31,9 @@ public:
     TaskConnection (const std::string& destinationTaskName);
     virtual ~TaskConnection ();
 
+    void reconnect();
+
+
 private:
     yarp::os::Network yarp;             /*!< Yarp network instance. */
     yarp::os::Log yLog;                 /*!< Yarp logging tool. */
@@ -232,7 +235,7 @@ public:
 private:
     std::shared_ptr<inputCallback> inpCallback;
 
-    
+
 
 };
 } /* ocra_recipes */
