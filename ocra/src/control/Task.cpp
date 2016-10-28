@@ -238,18 +238,19 @@ namespace ocra
       std::string metaTypeString;
 
       switch (metaType) {
-        case Task::UNKNOWN: {metaTypeString = "UNKNOWN";};
-        case Task::POSITION: {metaTypeString = "POSITION";};
-        case Task::ORIENTATION: {metaTypeString = "ORIENTATION";};
-        case Task::POSE: {metaTypeString = "POSE";};
-        case Task::FORCE: {metaTypeString = "FORCE";};
-        case Task::COM: {metaTypeString = "COM";};
-        case Task::COM_MOMENTUM: {metaTypeString = "COM_MOMENTUM";};
-        case Task::PARTIAL_POSTURE: {metaTypeString = "PARTIAL_POSTURE";};
-        case Task::FULL_POSTURE: {metaTypeString = "FULL_POSTURE";};
-        case Task::PARTIAL_TORQUE: {metaTypeString = "PARTIAL_TORQUE";};
-        case Task::FULL_TORQUE: {metaTypeString = "FULL_TORQUE";};
-        default: {metaTypeString = "UNKNOWN";};
+        case Task::UNKNOWN: {metaTypeString = "UNKNOWN";}break;
+        case Task::POSITION: {metaTypeString = "POSITION";}break;
+        case Task::ORIENTATION: {metaTypeString = "ORIENTATION";}break;
+        case Task::POSE: {metaTypeString = "POSE";}break;
+        case Task::FORCE: {metaTypeString = "FORCE";}break;
+        case Task::COM: {metaTypeString = "COM";}break;
+        case Task::COM_MOMENTUM: {metaTypeString = "COM_MOMENTUM";}break;
+        case Task::PARTIAL_POSTURE: {metaTypeString = "PARTIAL_POSTURE";}break;
+        case Task::FULL_POSTURE: {metaTypeString = "FULL_POSTURE";}break;
+        case Task::PARTIAL_TORQUE: {metaTypeString = "PARTIAL_TORQUE";}break;
+        case Task::FULL_TORQUE: {metaTypeString = "FULL_TORQUE";}break;
+        case Task::POINT_CONTACT: {metaTypeString = "POINT_CONTACT";}break;
+        default: {metaTypeString = "UNKNOWN";}break;
       }
 
       return util::convertToLowerCase(metaTypeString);
@@ -334,7 +335,7 @@ namespace ocra
       if(pimpl->contactActive)
         doDeactivateContactMode();
     }
-    
+
     pimpl->mode = TASK_DEACTIVATED;
   }
 
