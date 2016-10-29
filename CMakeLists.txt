@@ -62,8 +62,10 @@ find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in
                    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-   configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/docs/latexcustomcommands.sty
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/latexcustomcommands.sty
                    ${CMAKE_CURRENT_BINARY_DIR}/docs/html/latexcustomcommands.sty COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/latexcustomcommands.sty
+                   ${CMAKE_CURRENT_SOURCE_DIR}/../../main/ocra-wbi-plugins/html-gh-pages/doxy-ocra-recipes/html/latexcustomcommands.sty COPYONLY)
     add_custom_target(docs
         ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

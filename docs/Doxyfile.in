@@ -43,21 +43,23 @@ PROJECT_NUMBER         =
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          =
+PROJECT_BRIEF          = "Doxygen documentation for the ocra-recipes repository"
 
 # With the PROJECT_LOGO tag one can specify an logo or icon that is included in
 # the documentation. The maximum height of the logo should not exceed 55 pixels
 # and the maximum width should not exceed 200 pixels. Doxygen will copy the logo
 # to the output directory.
 
-PROJECT_LOGO           =
+PROJECT_LOGO           = @CMAKE_CURRENT_SOURCE_DIR@/../../main/ocra-wbi-plugins/html-gh-pages/static/img/logo-doxygen.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
+# WARNING: This is assuming that ocra-wbi-plugins and the whole OCRA project
+# have been installed through codyco-superbuild
 
-OUTPUT_DIRECTORY       = ./docs
+OUTPUT_DIRECTORY       = @CMAKE_CURRENT_SOURCE_DIR@/../../main/ocra-wbi-plugins/html-gh-pages/doxy-ocra-recipes
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
