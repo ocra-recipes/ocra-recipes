@@ -58,6 +58,7 @@ namespace QuadProgPP{
                the \f$G = L^T L\f$ cholesky factorization for further computations inside the function.
                If you need the original matrix \f$G\f$ you should make a copy of it and pass the copy
                to the function.
+     *  @cite goldfarb1983numerically
      *
      *  @return cost of the solution written in the x vector or
      std::numeric_limits::infinity() if the problem is infeasible. In the latter case
