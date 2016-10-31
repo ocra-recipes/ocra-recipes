@@ -66,6 +66,9 @@ if(DOXYGEN_FOUND)
                    ${CMAKE_CURRENT_BINARY_DIR}/docs/html/latexcustomcommands.sty COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/latexcustomcommands.sty
                    ${CMAKE_CURRENT_SOURCE_DIR}/../../main/ocra-wbi-plugins/html-gh-pages/doxy-ocra-recipes/html/latexcustomcommands.sty COPYONLY)
+    message("-- Copied file ocraReferences.bib into html-gh-pages " ${CMAKE_CURRENT_BINARY_DIR}/../../main/ocra-wbi-plugins/html-gh-pages/doxy-ocra-recipes/html/ocraReferences.bib)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/ocraReferences.bib
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../main/ocra-wbi-plugins/html-gh-pages/doxy-ocra-recipes/html/ocraReferences.bib COPYONLY)
     add_custom_target(docs
         ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

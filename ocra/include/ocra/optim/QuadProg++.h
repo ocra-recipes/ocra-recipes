@@ -1,76 +1,3 @@
-/*
-
- The quadprog_solve() function implements the algorithm of Goldfarb and Idnani
- for the solution of a (convex) Quadratic Programming problem
- by means of an active-set dual method.
-
-The problem is in the form:
-
-min 0.5 * x G x + g0 x
-s.t.
-    CE^T x + ce0 = 0
-    CI^T x + ci0 >= 0
-
- The matrix and vectors dimensions are as follows:
-     G: n * n
-    g0: n
-
-    CE: n * p
-   ce0: p
-
-    CI: n * m
-   ci0: m
-
-     x: n
-
- The function will return the cost of the solution written in the x vector or
- std::numeric_limits::infinity() if the problem is infeasible. In the latter case
- the value of the x vector is not correct.
-
- References: D. Goldfarb, A. Idnani. A numerically stable dual method for solving
-             strictly convex quadratic programs. Mathematical Programming 27 (1983) pp. 1-33.
-
- Notes:
-  1. pay attention in setting up the vectors ce0 and ci0.
-     If the constraints of your problem are specified in the form
-     A^T x = b and C^T x >= d, then you should set ce0 = -b and ci0 = -d.
-  2. The matrix G is modified within the function since it is used to compute
-     the G = L^T L cholesky factorization for further computations inside the function.
-     If you need the original matrix G you should make a copy of it and pass the copy
-     to the function.
-
- Author: Luca Di Gaspero
-         DIEGM - University of Udine, Italy
-         l.digaspero@uniud.it
-         http://www.diegm.uniud.it/digaspero/
-
- The author will be grateful if the researchers using this software will
- acknowledge the contribution of this function in their research papers.
-
-LICENSE
-
-This file is part of QuadProg++: a C++ library implementing
-the algorithm of Goldfarb and Idnani for the solution of a (convex)
-Quadratic Programming problem by means of an active-set dual method.
-Copyright (C) 2007-2009 Luca Di Gaspero.
-Copyright (C) 2009 Eric Moyer.
-
-QuadProg++ is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-QuadProg++ is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with QuadProg++. If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
-
 #ifndef _QUADPROGPP
 #define _QUADPROGPP
 
@@ -83,7 +10,66 @@ along with QuadProg++. If not, see <http://www.gnu.org/licenses/>.
 #include <Eigen/Core>
 
 namespace QuadProgPP{
-  double solve_quadprog(const Eigen::MatrixXd& _G,  const Eigen::VectorXd& g0,
+    
+    /**
+     *   The quadprog_solve() function implements the algorithm of Goldfarb and Idnani
+         for the solution of a (convex) Quadratic Programming problem
+         by means of an active-set dual method.
+         
+         The quadratic problem with \f$n\f$ variables and \f$m\f$ constraints is:
+     
+         \f{align*}{
+             \argmin{\x} &: \;  \frac{1}{2} \x\tp G \x + \vec{g}_0\tp \x \\
+             & CE\tp \x + \vec{ce}_0 =    \vec{0} \\
+             & CI\tp \x + \vec{ci}_0 \geq \vec{0}
+         \f}
+              
+         The matrix and vectors dimensions are as follows:
+     
+         \f$G\f$: \f$n \times n\f$
+     
+         \f$\vec{g}_0\f$: \f$n\f$
+         
+         \f$CE\f$: \f$n \times p\f$
+     
+         \f$\vec{ce}_0\f$: \f$p\f$
+         
+         \f$CI\f$: \f$n \times m\f$
+     
+         \f$\vec{ci}_0\f$: \f$m\f$
+         
+         \f$x\f$: \f$n\f$
+         
+         The function will return the cost of the solution written in the \f$x\f$ vector or
+         std::numeric_limits::infinity() if the problem is infeasible. In the latter case
+         the value of the \f$x\f$ vector is not correct.
+     *
+     *  @param _G  n x n Symmetric positive definite matrix.
+     *  @param g0  Vector of size n, where n is the number of variables.
+     *  @param _CE Matrix of size n x p, where p is the number of equalities.
+     *  @param ce0 Vector of size p.
+     *  @param _CI Matrix of size n x m, where m is the number of inequalities.
+     *  @param ci0 Vector of size m.
+     *  @param x   Problem variables of size n.
+     *  @note  Pay attention in setting up the vectors \f$\vec{ce}_0\f$ and \f$\vec{ci}_0\f$.
+               If the constraints of your problem are specified in the form
+               \f$A^T x = b\f$ and \f$C^T x \geq d\f$, then you should set \f$\vec{ce}_0 = -b\f$ and \f$\vec{ci}_0 = -d\f$. 
+               Also the matrix \f$G\f$ is modified within the function since it is used to compute
+               the \f$G = L^T L\f$ cholesky factorization for further computations inside the function.
+               If you need the original matrix \f$G\f$ you should make a copy of it and pass the copy
+               to the function.
+     *
+     *  @return cost of the solution written in the x vector or
+     std::numeric_limits::infinity() if the problem is infeasible. In the latter case
+     the value of the \f$ x \f$ vector is not correct.
+     *
+     *  @author Luca Di Gaspero, DIEGM - University of Udine, Italy.
+     *  @copyright GNU Lesser General Public License.
+     *  @copyright 2007-2009 Luca Di Gaspero.
+     *  @copyright 2007-2009 Luca Di Gaspero.
+     */
+    
+    double solve_quadprog(const Eigen::MatrixXd& _G,  const Eigen::VectorXd& g0,
                         const Eigen::MatrixXd& _CE, const Eigen::VectorXd& ce0,
                         const Eigen::MatrixXd& _CI, const Eigen::VectorXd& ci0,
                               Eigen::VectorXd& x);
