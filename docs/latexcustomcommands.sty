@@ -1,8 +1,15 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{latexcustomcommands}
+
+\RequirePackage{amsmath}
+\RequirePackage{amstext}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
 
 %%%%%%%%%%%%%%%%%%%%%%% NEW MATH COMMAND %%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\tens}[1]{#1}
 \providecommand{\vect}[1]{\mbox{\boldmath${#1}$}}%$
-\newcommand{\argmin}[1]{\underset{#1}{\operatorename{argmin}}}
+\newcommand{\argmin}[1]{\underset{#1}{\operatorname{argmin}}}
 \newcommand{\diag}{\mathop{\mathrm{diag}}}
 \newcommand{\norm}[1]{\ensuremath{\left\lVert #1 \right\rVert}}
 

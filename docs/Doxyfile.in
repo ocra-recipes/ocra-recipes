@@ -43,21 +43,23 @@ PROJECT_NUMBER         =
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          =
+PROJECT_BRIEF          = "Doxygen documentation for the ocra-recipes repository"
 
 # With the PROJECT_LOGO tag one can specify an logo or icon that is included in
 # the documentation. The maximum height of the logo should not exceed 55 pixels
 # and the maximum width should not exceed 200 pixels. Doxygen will copy the logo
 # to the output directory.
 
-PROJECT_LOGO           =
+PROJECT_LOGO           = @CMAKE_CURRENT_SOURCE_DIR@/../../main/ocra-wbi-plugins/html-gh-pages/static/img/logo-doxygen.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
+# WARNING: This is assuming that ocra-wbi-plugins and the whole OCRA project
+# have been installed through codyco-superbuild
 
-OUTPUT_DIRECTORY       = ./docs
+OUTPUT_DIRECTORY       = @CMAKE_CURRENT_SOURCE_DIR@/../../main/ocra-wbi-plugins/html-gh-pages/doxy-ocra-recipes
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
@@ -671,7 +673,7 @@ LAYOUT_FILE            =
 # search path. Do not use file names with spaces, bibtex cannot handle them. See
 # also \cite for info how to create references.
 
-CITE_BIB_FILES         =
+CITE_BIB_FILES         = @CMAKE_CURRENT_BINARY_DIR@/docs/ocraReferences.bib
 
 #---------------------------------------------------------------------------
 # Configuration options related to warning and progress messages
@@ -744,10 +746,12 @@ WARN_LOGFILE           =
 
 
 # INPUT					=   @CMAKE_CURRENT_SOURCE_DIR@
-INPUT					=   "@CMAKE_CURRENT_SOURCE_DIR@/ocra"
+INPUT					=    "@CMAKE_CURRENT_SOURCE_DIR@/ocra"
 INPUT					+=   "@CMAKE_CURRENT_SOURCE_DIR@/wocra"
 INPUT					+=   "@CMAKE_CURRENT_SOURCE_DIR@/gocra"
-INPUT					+=   "@CMAKE_CURRENT_SOURCE_DIR@/solvers"
+INPUT					+=   "@CMAKE_CURRENT_SOURCE_DIR@/hocra"
+INPUT         +=   "@CMAKE_CURRENT_SOURCE_DIR@/ocra-recipes"
+INPUT         +=   "@CMAKE_CURRENT_SOURCE_DIR@/README.md"
 
 
 # This tag can be used to specify the character encoding of the source files
@@ -885,7 +889,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE =
+USE_MDFILE_AS_MAINPAGE = README.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
@@ -1598,7 +1602,7 @@ PAPER_TYPE             = a4
 # If left blank no extra packages will be included.
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
-EXTRA_PACKAGES         = {amsmath} {amsfonts} {latex_custom_commands}
+EXTRA_PACKAGES         = amsmath amsfonts amstext latexcustomcommands
 
 # The LATEX_HEADER tag can be used to specify a personal LaTeX header for the
 # generated LaTeX document. The header should contain everything until the first
@@ -1682,7 +1686,7 @@ LATEX_SOURCE_CODE      = NO
 # The default value is: plain.
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
-LATEX_BIB_STYLE        = plain
+LATEX_BIB_STYLE        = ieeetr
 
 #---------------------------------------------------------------------------
 # Configuration options related to the RTF output
