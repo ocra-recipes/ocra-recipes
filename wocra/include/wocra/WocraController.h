@@ -83,7 +83,7 @@ namespace wocra
      *   Where \f$ x \f$ is the vector optimize, \f$ P \f$, \f$ q \f$ and \f$ r \f$ represent the quadratic cost function, \f$ G \f$, \f$ h \f$ define the inequality constraints and \f$ A \f$, \f$ b \f$ define the equality constraints, which are the concatenation of the different constraints previously mentioned. The controller, thus builds these matrices according to the task and the constraints acting on the robot and, when the solution is found, extracts the input torque vector \f$ \tau \f$ to actuate the system. \f$ x \f$ can be replaced by \f$ \left[ \ddq \tp \; x \tp \right] \tp \f$.
      * 
      *   But the story does not end here. In particular, Wocra will use a weighting strategy which associates each task with a coefficient that sets its importance with respect to the others (a task with a higher weights gets a higher priority). The first point is to set these coefficients as real values. As a consequence, priorities are not strict and all tasks are achieved according to the trade-off defined by the weights. Given a set of \f$ n \f$ tasks and their related weights \f$ (T_i(\q, \dq, \X), \omega_i) \; i \in [1...n] \f$ one solves their weighted sum subject to the concatenation of the constraints. The task \f$ T_0 \f$ is dedicated to the minimization of the whole optimization variable. This is required when the control problem has many solutions, in order to ensure the uniqueness and more specifically to provide a solution that minimizes the input torque vector \f$ \tau \f$. \f$ T_0 \f$ has a very small weight with respect to the others \f$ 0 < \omega_0 << 1 \f$ to limit the induced error. This program is solved only one time per call.
-     *  
+     *
      *   The algorithm consists then in finding  \f$\X_i^*\f$, the solution of the problem:
      *  
      *   \f{align*}{
@@ -92,7 +92,7 @@ namespace wocra
                          & \A \X = \b
          \f}
      *
-     *   For more detailed information see \cite{salini2012Thesis} Section 2.
+     *   @cite salini2012Thesis.
      *
      *   @note Put proper link to the Tasks class and document it well based on Salini's thesis.
      *
