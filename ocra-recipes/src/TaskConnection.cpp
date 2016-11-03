@@ -195,7 +195,7 @@ void TaskConnection::setDamping(const Eigen::MatrixXd& B)
 
 double TaskConnection::getDamping()
 {
-    return this->getStiffnessMatrix()(0,0);
+    return this->getDampingMatrix()(0,0);
 }
 
 Eigen::MatrixXd TaskConnection::getDampingMatrix()
