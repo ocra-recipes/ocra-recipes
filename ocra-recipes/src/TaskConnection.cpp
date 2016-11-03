@@ -44,7 +44,9 @@ TaskConnection::~TaskConnection()
 
 void TaskConnection::reconnect()
 {
-    this->yarp.connect(taskRpcClientName.c_str(), taskRpcServerName.c_str());
+    if (! this->yarp.isConnected(taskRpcClientName.c_str(), taskRpcServerName.c_str())) {
+        this->yarp.connect(taskRpcClientName.c_str(), taskRpcServerName.c_str());
+    }
 }
 
 bool TaskConnection::activate()
