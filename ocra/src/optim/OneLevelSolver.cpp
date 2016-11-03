@@ -282,6 +282,8 @@ void OneLevelSolverWithQuadProg::updateConstraintEquations()
     for (int i=0; i<_equalityConstraints.size(); ++i)
         ne += _equalityConstraints[i]->getDimension();
 
+    if (ne == 0 || n() == 0)
+        OCRA_WARNING("There is something wrong with either the current number of equalities or the the number of colums of A")
     _A.setZero(ne, n());
     _b.setZero(ne);
 
