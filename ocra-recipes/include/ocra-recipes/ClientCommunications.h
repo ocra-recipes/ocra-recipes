@@ -124,6 +124,8 @@ public:
     std::vector<std::string> getTaskNames();
     std::shared_ptr<yarp::os::RpcClient> getTaskClient(const std::string& taskName);
 
+    std::string getClientPortName() {return rpcClientPort_Name;}
+
 
     bool parseInput(yarp::os::Bottle& input);
 
