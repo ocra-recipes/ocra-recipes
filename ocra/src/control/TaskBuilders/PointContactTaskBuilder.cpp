@@ -25,7 +25,7 @@ Feature::Ptr PointContactTaskBuilder::buildFeature()
 
 Feature::Ptr PointContactTaskBuilder::buildFeatureDesired()
 {
-    Feature::Ptr emptyFeatureDesPtr; 
+    Feature::Ptr emptyFeatureDesPtr;
     return emptyFeatureDesPtr;
 }
 
@@ -39,6 +39,7 @@ void PointContactTaskBuilder::setTaskState()
 void PointContactTaskBuilder::setTaskType()
 {
     this->task->setTaskType(Task::ACCELERATIONTASK);
+    this->task->setMetaTaskType(Task::POINT_CONTACT);
 }
 
 void PointContactTaskBuilder::setTaskAsObjectiveOrConstraint()

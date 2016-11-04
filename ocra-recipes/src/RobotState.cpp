@@ -49,7 +49,15 @@ std::ostream& operator<<(std::ostream &out, const RobotState& state)
 
 bool RobotState::write(yarp::os::ConnectionWriter& connection)
 {
+    // Two lists will be transmitted.
+    connection.appendInt(BOTTLE_TAG_LIST);
+    connection.appendInt(2);
+    // The first list will contain just an integer (DOF))
+    connection.appendInt(BOTTLE_TAG_INT);
     connection.appendInt(q.size());
+    // The second list will contain the state of the robot
+    connection.appendInt(BOTTLE_TAG_LIST + BOTTLE_TAG_DOUBLE);
+    connection.appendInt(q.size() + qd.size() + 13);
     for(auto i=0; i<q.size(); ++i)
     {
         connection.appendDouble(q(i));
@@ -69,14 +77,37 @@ bool RobotState::write(yarp::os::ConnectionWriter& connection)
     connection.appendDouble(T_root.vx());
     connection.appendDouble(T_root.vy());
     connection.appendDouble(T_root.vz());
-    return true;
+    
+    // If someone connects in text mode, show something readable
+    connection.convertTextMode();
+    
+    return !connection.isError();
 }
 
 bool RobotState::read(yarp::os::ConnectionReader& connection)
 {
+    // Auto-convert text mode interaction
+    connection.convertTextMode();
+    
+    if ( connection.expectInt() != BOTTLE_TAG_LIST || connection.expectInt() != 2) {
+        OCRA_ERROR("Received malformed data. Expected two lists with the following structure: (DOF)(ROBOT STATE)");
+        return false;
+    }
+    
+    // Reading DOF
+    if ( connection.expectInt() != BOTTLE_TAG_INT ) {
+        OCRA_ERROR("Received malformed data. Expected one integer for DOF)");
+        return false;
+    }
     this->nDoF = connection.expectInt();
     this->q.resize(nDoF);
     this->qd.resize(nDoF);
+
+    if ( connection.expectInt() != BOTTLE_TAG_LIST + BOTTLE_TAG_DOUBLE || connection.expectInt()!= q.size() + qd.size() + 13 ) {
+        OCRA_ERROR("Received a list with less data than expected");
+        return false;
+    }
+
     for(auto i=0; i<this->nDoF; ++i)
     {
         this->q(i) = connection.expectDouble();
@@ -96,7 +127,7 @@ bool RobotState::read(yarp::os::ConnectionReader& connection)
     this->T_root.vx() = connection.expectDouble();
     this->T_root.vy() = connection.expectDouble();
     this->T_root.vz() = connection.expectDouble();
-
+    
     return !connection.isError();
 }
 
@@ -120,9 +151,11 @@ StateListener::StateListener(std::shared_ptr<ocra::Model> modelPtr)
 
 bool StateListener::read(yarp::os::ConnectionReader& connection)
 {
+
     RobotState state;
 
     if (!state.read(connection)){
+        OCRA_ERROR("Couldn't read state: " << state << std::endl);
         return false;
     }
     else{

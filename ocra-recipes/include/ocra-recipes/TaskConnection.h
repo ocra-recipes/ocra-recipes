@@ -31,6 +31,11 @@ public:
     TaskConnection (const std::string& destinationTaskName);
     virtual ~TaskConnection ();
 
+    void reconnect();
+    void disconnect();
+
+
+
 private:
     yarp::os::Network yarp;             /*!< Yarp network instance. */
     yarp::os::Log yLog;                 /*!< Yarp logging tool. */
@@ -175,9 +180,10 @@ public:
 
     /*! Opens the high speed task control ports.
      *
+     *  \param connect the TaskConnection ports to the highspeed Task control ports.
      *  \return True if the ports open successfully and are connected.
      */
-    bool openControlPorts();
+    bool openControlPorts(bool connect=true);
 
     /*! The name of the task we are connected to.
      *
@@ -215,6 +221,8 @@ public:
     Eigen::Vector3d getTaskFrameLinearAcceleration();
     Eigen::Vector3d getTaskFrameAngularAcceleration();
 
+    void queryTask(ocra::TASK_MESSAGE tag, yarp::os::Bottle& bottle);
+
     /************** controlInputCallback *************/
     class inputCallback : public yarp::os::PortReader {
         private:
@@ -229,6 +237,8 @@ public:
 
 private:
     std::shared_ptr<inputCallback> inpCallback;
+
+
 
 };
 } /* ocra_recipes */

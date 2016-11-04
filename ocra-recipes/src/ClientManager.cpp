@@ -62,8 +62,9 @@ int ClientManager::launchClient()
 
 bool ClientManager::interruptModule()
 {
-    if(client)
-        client->suspend();
+    close();
+    // if(client)
+    //     client->suspend();
     return true;
 }
 

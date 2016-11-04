@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include <ocra/util/Macros.h>
 #include <ocra/util/StringUtilities.h>
+#include <ocra/util/ErrorsHelper.h>
 #include "ocra/control/Feature.h"
 #include "ocra/control/Model.h"
 //
@@ -51,7 +52,8 @@ public:
         PARTIAL_POSTURE,
         FULL_POSTURE,
         PARTIAL_TORQUE,
-        FULL_TORQUE
+        FULL_TORQUE,
+        POINT_CONTACT
     };
 
     enum TYPETASK { UNKNOWNTASK, ACCELERATIONTASK, TORQUETASK, FORCETASK, COMMOMENTUMTASK };

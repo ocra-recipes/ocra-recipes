@@ -8,8 +8,8 @@ ServerCommunications::ServerCommunications()
 }
 
 ServerCommunications::ServerCommunications(ocra::Controller::Ptr ctrl, ocra::Model::Ptr mdl)
-: controller(ctrl)
-, model(mdl)
+: model(mdl),
+  controller(ctrl)
 {
     rpcServerPort_Name = "/ControllerServer/rpc:i";
     outputPort_Name = "/ControllerServer:o";
@@ -44,7 +44,10 @@ bool ServerCommunications::read(yarp::os::ConnectionReader& connection)
     parseMessage(input, reply);
     yarp::os::ConnectionWriter* returnToSender = connection.getWriter();
     if (returnToSender!=NULL) {
-        reply.write(*returnToSender);
+        if (!reply.write(*returnToSender)) {
+            OCRA_ERROR("Error writing reply to sender");
+            return false;
+        }
     }
     return true;
 }
@@ -75,10 +78,10 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
 
             case GET_IS_FLOATING_BASE:
             {
-                std::cout << "Got message: GET_IS_FLOATING_BASE." << std::endl;
+                OCRA_INFO("Got message: GET_IS_FLOATING_BASE.");
                 reply.addInt(!model->hasFixedRoot());
             }break;
-
+                
             case START_CONTROLLER:
             {
                 std::cout << "Got message: START_CONTROLLER." << std::endl;
@@ -98,6 +101,31 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
                 // this->suspend();
                 // TODO: Make a custom function that puts the robot in pos mode before suspend.
             }break;
+                
+            case CHANGE_FIXED_LINK_RIGHT:
+            {
+                OCRA_INFO("Got message: CHANGE_FIXED_LINK_RIGHT.");
+                this->controller->setFixedLinkForOdometry("r_sole");
+                int isInLeftSupport = input.get(++i).asInt();
+                OCRA_INFO("Got message: " << isInLeftSupport);
+                int isInRightSupport = input.get(++i).asInt();
+                OCRA_INFO("Got message: " << isInRightSupport);
+                this->controller->setContactState(isInLeftSupport, isInRightSupport);
+                reply.addInt(SUCCESS);
+            } break;
+            
+            case CHANGE_FIXED_LINK_LEFT:
+            {
+                OCRA_INFO("Got message: CHANGE_FIXED_LINK_LEFT.");
+                this->controller->setFixedLinkForOdometry("l_sole");
+                int isInLeftSupport = input.get(++i).asInt();
+                OCRA_INFO("Got message: " << isInLeftSupport);
+                int isInRightSupport = input.get(++i).asInt();
+                OCRA_INFO("Got message: " << isInRightSupport);
+                this->controller->setContactState(isInLeftSupport, isInRightSupport);
+                reply.addInt(SUCCESS);
+            } break;
+
 
             case ADD_TASKS:
             {
@@ -127,7 +155,7 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
             case REMOVE_TASK:
             {
                 ++i;
-                std::cout << "Got message: REMOVE_TASK." << std::endl;
+                OCRA_INFO("Got message: REMOVE_TASK.");
                 std::string taskToRemove = input.get(i).asString();
                 controller->removeTask(taskToRemove);
                 // if (taskRemoved) {
@@ -149,7 +177,7 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
 
             case GET_TASK_LIST:
             {
-                std::cout << "Got message: GET_TASK_LIST." << std::endl;
+                OCRA_INFO("Got message: GET_TASK_LIST.");
                 for(auto taskName : controller->getTaskNames()) {
                     reply.addString(taskName);
                 }
@@ -157,7 +185,7 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
 
             case GET_TASK_PORT_LIST:
             {
-                std::cout << "Got message: GET_TASK_PORT_LIST." << std::endl;
+                OCRA_INFO("Got message: GET_TASK_PORT_LIST.");
                 for(auto taskPort : controller->getTaskPortNames()) {
                     reply.addString(taskPort);
                 }
@@ -166,7 +194,7 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
             case GET_TASK_PORT_NAME:
             {
                 std::string taskName = input.get(++i).asString();
-                std::cout << "Got message: GET_TASK_PORT_NAME." << std::endl;
+                OCRA_INFO("Got message: GET_TASK_PORT_NAME.");
                 reply.addString(controller->getTaskPortName(taskName));
             }break;
 

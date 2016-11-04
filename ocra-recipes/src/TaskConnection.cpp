@@ -15,21 +15,55 @@ TaskConnection::TaskConnection(const std::string& destinationTaskName)
 {
     taskConnectionNumber = ++TaskConnection::TASK_CONNECTION_COUNT;
 
-    std::shared_ptr<ClientCommunications> ccComs = std::make_shared<ClientCommunications>();
-    ccComs->open();
-    taskRpcServerName = ccComs->getTaskPortName(taskName);
-    ccComs->close();
+    // std::shared_ptr<ClientCommunications> ccComs = std::make_shared<ClientCommunications>();
+    // ccComs->open();
+    // taskRpcServerName = ccComs->getTaskPortName(taskName);
+    // ccComs->close();
+
+    taskRpcServerName = "/Task/"+taskName+"/rpc:i";
+
+
+    while(yarp.exists(("/TaskConnection/"+std::to_string(taskConnectionNumber)+"/"+taskName+"/rpc:o")))
+    {
+        ++taskConnectionNumber;
+    }
+
 
     this->taskRpcClientName = "/TaskConnection/"+std::to_string(taskConnectionNumber)+"/"+taskName+"/rpc:o";
-    this->taskRpcClient.open(taskRpcClientName.c_str());
+    this->taskRpcClient.open(taskRpcClientName);
 
-    this->yarp.connect(taskRpcClientName.c_str(), taskRpcServerName.c_str());
+    this->yarp.connect(taskRpcClientName, taskRpcServerName);
 }
 
 TaskConnection::~TaskConnection()
 {
     this->taskRpcClient.close();
     this->closeControlPorts();
+    --TaskConnection::TASK_CONNECTION_COUNT;
+}
+
+void TaskConnection::disconnect()
+{
+    yarp.disconnect(taskRpcClientName, taskRpcServerName);
+    if (controlPortsAreOpen) {
+        yarp.disconnect(taskOutputPortName, inputPortName);
+        yarp.disconnect(outputPortName, taskInputPortName);
+    }
+    if (yarp.isConnected(taskRpcClientName, taskRpcServerName)) {
+        OCRA_WARNING("The ports "<< taskRpcClientName << " and " << taskRpcServerName << " are still connected.")
+    } else {
+        OCRA_INFO("Disconnected "<< taskRpcClientName << " from " << taskRpcServerName)
+    }
+}
+
+void TaskConnection::reconnect()
+{
+    if (! this->yarp.isConnected(taskRpcClientName, taskRpcServerName)) {
+        OCRA_INFO("Reconnecting "<< taskRpcClientName << " to " << taskRpcServerName)
+        while (!this->yarp.connect(taskRpcClientName, taskRpcServerName)){yarp::os::Time::delay(0.01);}
+    } else {
+        OCRA_WARNING("The ports "<< taskRpcClientName << " and " << taskRpcServerName << " are already connected.")
+    }
 }
 
 bool TaskConnection::activate()
@@ -180,7 +214,7 @@ void TaskConnection::setDamping(const Eigen::MatrixXd& B)
 
 double TaskConnection::getDamping()
 {
-    return this->getStiffnessMatrix()(0,0);
+    return this->getDampingMatrix()(0,0);
 }
 
 Eigen::MatrixXd TaskConnection::getDampingMatrix()
@@ -345,14 +379,14 @@ Eigen::Vector3d TaskConnection::getTaskFrameAngularAcceleration()
 
 }
 
-bool TaskConnection::openControlPorts()
+bool TaskConnection::openControlPorts(bool connect)
 {
     bool portsConnected = true;
 
     yarp::os::Bottle message, reply;
     message.addInt(ocra::TASK_MESSAGE::OPEN_CONTROL_PORTS);
     this->taskRpcClient.write(message, reply);
-    if(reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) {
+    if ( (reply.get(0).asInt() == ocra::TASK_MESSAGE::OCRA_SUCCESS) && connect) {
         message.clear();
         reply.clear();
         message.addInt(ocra::TASK_MESSAGE::GET_CONTROL_PORT_NAMES);
@@ -363,20 +397,20 @@ bool TaskConnection::openControlPorts()
         this->inputPortName = "/TaskConnection/"+std::to_string(taskConnectionNumber)+"/"+this->taskName+":i";
         this->outputPortName = "/TaskConnection/"+std::to_string(taskConnectionNumber)+"/"+this->taskName+":o";
 
-        portsConnected = portsConnected && inputPort.open(this->inputPortName.c_str());
-        portsConnected = portsConnected && outputPort.open(this->outputPortName.c_str());
+        portsConnected &= inputPort.open(this->inputPortName);
+        portsConnected &= outputPort.open(this->outputPortName);
 
         this->inpCallback = std::make_shared<inputCallback>(*this);
         inputPort.setReader(*(this->inpCallback));
 
 
         if (portsConnected) {
-            portsConnected = portsConnected && yarp.connect(this->taskOutputPortName.c_str(), this->inputPortName.c_str());
-            portsConnected = portsConnected && yarp.connect(this->outputPortName.c_str(), this->taskInputPortName.c_str());
+            portsConnected &= yarp.connect(this->taskOutputPortName, this->inputPortName);
+            portsConnected &= yarp.connect(this->outputPortName, this->taskInputPortName);
 
             this->controlPortsAreOpen = portsConnected;
             if (!this->controlPortsAreOpen) {
-                yLog.error() << "Could not open the control ports!";
+                OCRA_ERROR("Could not open the control ports!")
             }
         } else {
             return false;
@@ -425,6 +459,12 @@ bool TaskConnection::closeControlPorts()
 
 }
 
+void TaskConnection::queryTask(ocra::TASK_MESSAGE tag, yarp::os::Bottle& reply)
+{
+    yarp::os::Bottle message;
+    message.addInt(tag);
+    this->taskRpcClient.write(message, reply);
+}
 
 
 /**************************************************************************************************

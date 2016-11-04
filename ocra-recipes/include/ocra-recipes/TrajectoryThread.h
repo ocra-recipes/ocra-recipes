@@ -55,6 +55,9 @@ enum TRAJECTORY_TYPE
 enum TERMINATION_STRATEGY
 {
     BACK_AND_FORTH,
+    REVERSE,
+    REVERSE_STOP,
+    REVERSE_STOP_DEACTIVATE,
     STOP_THREAD,
     WAIT,
     STOP_THREAD_DEACTIVATE,
@@ -79,12 +82,12 @@ public:
      *  @return True when initial waypoints have been set.
      */
     virtual bool threadInit();
-    
+
     /**
      *  Closes the control ports opened by the task associated to this trajectory.
      */
     virtual void threadRelease();
-    
+
     /**
      *  If the control ports are open (for the specific task associated to the trajectory) this method will mainly write to a port the new desired task state.
      *  It also handles the trajectory termination strategy. When the goal is reached, there will be 6 possible termination strategies: BACK_AND_FORTH, CYCLE, STOP_THREAD, STOP_THREAD_DEACTIVATE, WAIT, WAIT_DEACTIVATE.
@@ -96,12 +99,12 @@ public:
      *   WAIT_DEACTIVATE: It will first deactivate the task and then wait for new commands. If the task cannot be deactivated, the thread will wait 1 second before trying once more.
      */
     virtual void run();
-    
+
     /**
      *  Sets isPaused to true of this class and registers the pausing time.
      */
     void pause();
-    
+
     /**
      *  Sets isPaused to false and stores the elapsed time during the pause.
      */
@@ -119,7 +122,7 @@ public:
      *  @return True when the new trajectory waypoints have been set, false otherwise.
      */
     bool setDisplacement(double dispDouble);
-    
+
     /**
      *  Adds a displacement offset to the waypoints.
      *
@@ -128,7 +131,7 @@ public:
      *  @return true when the new trajectory waypoints have been set, false otherwise.
      */
     bool setDisplacement(const Eigen::VectorXd& displacementVector);
-    
+
     /**
      *  Sets the trajectory waypoints and if the initial waypoint is not included, it adds it by checking the current state of the task at hand. E.g., if it's a COM trajectory it will check the current 3D position of this point and add it at the beginning of the waypoints matrix.
      *
@@ -138,7 +141,7 @@ public:
      *  @return True when the waypoints matrix is consistent with the task dimension and the full waypoints matrix is set. False otherwise.
      */
     bool setTrajectoryWaypoints(const Eigen::MatrixXd& userWaypoints, bool containsStartingWaypoint=false);
-    
+
     /**
      *  Sets the trajectory waypoints and if the initial waypoint is not included, it adds it by checking the current state of the task at hand. E.g., if it's a COM trajectory it will check the current 3D position of this point and add it at the beginning of the waypoints matrix.
      *
@@ -148,28 +151,28 @@ public:
      *  @return True when the waypoints matrix is consistent with the task dimension and the full waypoints matrix is set. False otherwise.
      */
     bool setTrajectoryWaypoints(const std::list<Eigen::VectorXd>& waypointList, bool containsStartingWaypoint=false);
-    
+
     /**
      *  Tells the thread what to do when the trajectory has been fulfilled. In particular sets the variable termimationStrategy of this class.
      *
      *  @param newTermStrat Options are: BACK_AND_FORTH, STOP_THREAD, WAIT, STOP_THREAD_DEACTIVE, WAIT_DEACTIVE, CYCLE
      */
     void setTerminationStrategy(const TERMINATION_STRATEGY newTermStrat){terminationStrategy = newTermStrat;}
-    
+
     /**
      *  Stablishes the admissible error for the trajectory at hand. In particular sets the variable errorThreshold of this class.
      *
      *  @param newErrorThresh Error threshold.
      */
     void setGoalErrorThreshold(const double newErrorThresh){errorThreshold = newErrorThresh;}
-    
+
     /**
      *  Assigns a user-given variance to the weights of the task when created the trajectory. Used only when trajectoryType is GAUSSIAN_PROCESS
      *
      *  @param newVarMod New weight variance modulation.
      */
     void setUseVarianceModulation(bool newVarMod){useVarianceModulation = newVarMod;}
-    
+
     /**
      *  Computes the norm of the difference between the goal state vector and its current state.
      *
@@ -206,6 +209,7 @@ protected:
     void flipWaypoints();
     void cycleWaypoints();
 
+    bool returningHome;
 
     Eigen::MatrixXd userWaypoints;
     std::list<Eigen::VectorXd> userWaypointList;

@@ -134,3 +134,32 @@ std::vector<std::string> ControllerClient::getTaskNames()
 {
     return clientComs->getTaskNames();
 }
+
+bool ControllerClient::changeFixedLink(std::string newFixedLink, int isInLeftSupport, int isInRightSupport)
+{
+    yarp::os::Bottle request;
+    if (!newFixedLink.compare("r_sole") || !newFixedLink.compare("right")) {
+        request.addInt(CHANGE_FIXED_LINK_RIGHT);
+        OCRA_INFO("Changed fixed link to right sole");
+    } else {
+        if (!newFixedLink.compare("l_sole") || !newFixedLink.compare("left")) {
+            request.addInt(CHANGE_FIXED_LINK_LEFT);
+            OCRA_INFO("Changed fixed link to left sole");
+        } else {
+            OCRA_ERROR("The new fixed link you specify is not supported yet. Please try r_sole, right, l_sole or left.");
+            return false;
+        }
+    }
+    OCRA_INFO("sending contact state (" << isInLeftSupport <<", " <<isInRightSupport << ")");
+    request.addInt(isInLeftSupport);
+    request.addInt(isInRightSupport);
+
+    
+    if(clientComs->queryController(request).get(0).asInt() != SUCCESS)
+    {
+        OCRA_ERROR("Communication with ocra-icub-server didn't work. Requested change to right foot link");
+        return false;
+    }
+
+    return true;
+}

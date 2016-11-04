@@ -24,7 +24,7 @@ File history:
 #include <map>
 #include <ocra/util/Macros.h>
 
-#include "ocra/control/Controller.h"
+// #include "ocra/control/Controller.h"
 #include "ocra/control/Task.h"
 #include "ocra/control/TaskYarpInterface.h"
 #include "ocra/control/Feature.h"
@@ -110,6 +110,12 @@ namespace ocra
     int getErrorFlag() const;
     void setMaxJointTorqueNorm(double maxTau);
     double getMaxJointTorqueNorm() const;
+    void  setFixedLinkForOdometry(std::string newFixedLink);
+    void  setUseOdometry(bool useOdometry) { this->_useOdometry = useOdometry; }
+    void  getFixedLinkForOdometry(std::string& currentFixedLink) { currentFixedLink = this->_fixedLink; }
+    void setContactState(int isInLeftSupport, int isInRightSupport) { this->_isInLeftSupport = isInLeftSupport; this->_isInRightSupport = isInRightSupport;}
+    void getContactState(int& leftSupport, int& rightSupport);
+      
     //@}
 
   public: // factory
@@ -144,6 +150,10 @@ namespace ocra
   private:
     struct Pimpl;
     boost::shared_ptr<Pimpl> pimpl;
+    bool _useOdometry;
+    std::string _fixedLink;
+    int _isInLeftSupport;
+    int _isInRightSupport;
   };
 }
 

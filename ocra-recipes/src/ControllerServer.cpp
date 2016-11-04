@@ -2,10 +2,14 @@
 
 using namespace ocra_recipes;
 
-ControllerServer::ControllerServer(CONTROLLER_TYPE ctrlType, SOLVER_TYPE solver, bool usingInterprocessCommunication)
+ControllerServer::ControllerServer(CONTROLLER_TYPE ctrlType,
+                                   SOLVER_TYPE solver,
+                                   bool usingInterprocessCommunication,
+                                   bool useOdometry)
 : controllerType(ctrlType)
 , solverType(solver)
 , usingComs(usingInterprocessCommunication)
+, usingOdometry(useOdometry)
 {
 }
 
@@ -80,8 +84,14 @@ bool ControllerServer::initialize()
 
     res &= bool(model);
     res &= bool(controller);
-
-    updateModel();
+    
+    // WARNING! If useOdometry is true we must call updateModel during initialization explicitly after ControllerServer::initialize()
+    if (!this->usingOdometry) {
+        // Setting up initial contact state. Both feet on the ground.
+        this->controller->setContactState(1,1);
+        updateModel();
+    }
+    
     return res;
 }
 
@@ -106,7 +116,9 @@ void ControllerServer::updateModel()
     }else{
         model->setState(rState.H_root, rState.q, rState.T_root, rState.qd);
     }
-    statesPort.write(rState);
+    if (!statesPort.write(rState)) {
+        OCRA_ERROR("Couldn't write robot state for client. Not really doing anything about it, except reporting.");
+    }
 }
 
 bool ControllerServer::addTasksFromXmlFile(const std::string& filePath)

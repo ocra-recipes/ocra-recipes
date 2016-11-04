@@ -11,6 +11,8 @@
 
 #include <ocra/control/Model.h>
 #include <ocra/util/Macros.h>
+#include <ocra/util/ErrorsHelper.h>
+#include <yarp/os/Bottle.h>
 
 
 namespace ocra_recipes

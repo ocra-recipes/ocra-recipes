@@ -99,6 +99,7 @@ void TrajectoryThread::init()
     deactivationLatch = false;
     isPaused = false;
     timeElapsedDuringPause = 0.0;
+    returningHome = false;
 
     isTaskCurrentlyActive = task->isActivated();
     weightDimension = task->getTaskDimension();
@@ -173,6 +174,62 @@ void TrajectoryThread::run()
                         setTrajectoryWaypoints(allWaypointList, true);
                     } else {
                         setTrajectoryWaypoints(allWaypoints, true);
+                    }
+                    break;
+
+                case REVERSE:
+                    if (returningHome) {
+                        if (printWaitingNoticeOnce) {
+                            std::cout << "Trajectory thread for task: " << task->getTaskName() << " has attained its goal state. Awaiting new commands." << std::endl;
+                            printWaitingNoticeOnce = false;
+                        }
+                    } else {
+                        flipWaypoints();
+                        if (trajType==TIME_OPTIMAL) {
+                            setTrajectoryWaypoints(allWaypointList, true);
+                        } else {
+                            setTrajectoryWaypoints(allWaypoints, true);
+                        }
+                        returningHome = true;
+                    }
+                    break;
+
+                case REVERSE_STOP:
+                    if (returningHome) {
+                        stop();
+                    } else {
+                        flipWaypoints();
+                        if (trajType==TIME_OPTIMAL) {
+                            setTrajectoryWaypoints(allWaypointList, true);
+                        } else {
+                            setTrajectoryWaypoints(allWaypoints, true);
+                        }
+                        returningHome = true;
+                    }
+                    break;
+
+                case REVERSE_STOP_DEACTIVATE:
+                    if (returningHome) {
+                        if(task->deactivate()){
+                            isTaskCurrentlyActive = task->isActivated();
+                            stop();
+                        }else{
+                            std::cout << "[WARNING] Trajectory thread for task: " << task->getTaskName() << " has attained its goal state, but cannot be deactivated." << std::endl;
+                            yarp::os::Time::delay(1.0); // try again in one second.
+                            deactivationDelay += 1.0;
+                            if(deactivationDelay >= deactivationTimeout){
+                                std::cout << "[WARNING] Deactivation timeout." << std::endl;
+                                stop();
+                            }
+                        }
+                    } else {
+                        flipWaypoints();
+                        if (trajType==TIME_OPTIMAL) {
+                            setTrajectoryWaypoints(allWaypointList, true);
+                        } else {
+                            setTrajectoryWaypoints(allWaypoints, true);
+                        }
+                        returningHome = true;
                     }
                     break;
 

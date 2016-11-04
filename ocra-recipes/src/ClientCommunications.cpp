@@ -11,13 +11,19 @@ ClientCommunications::ClientCommunications()
 {
     clientNumber = ++ClientCommunications::CONTROLLER_CLIENT_COUNT;
 
+    while(yarp.exists(("/ControllerClient/"+ std::to_string(clientNumber) +"/rpc:o")))
+    {
+        ++clientNumber;
+    }
+
     rpcClientPort_Name = "/ControllerClient/"+ std::to_string(clientNumber) +"/rpc:o";
-    inputPort_Name = "/ControllerClient/"+ std::to_string(clientNumber) +"/:i";
+    inputPort_Name = "/ControllerClient/"+ std::to_string(clientNumber) +":i";
 }
 
 ClientCommunications::~ClientCommunications()
 {
     close();
+    --ClientCommunications::CONTROLLER_CLIENT_COUNT;
 }
 
 bool ClientCommunications::open(double timeout, bool connectToTasks)
@@ -70,6 +76,7 @@ bool ClientCommunications::close()
         rpc_i.second->close();
     }
     taskRpcClients.clear();
+    return true;
 }
 
 void ClientCommunications::close(const std::string& taskName)
@@ -103,8 +110,8 @@ bool ClientCommunications::openServerConnections(double timeout)
     else{
         bool connected = false;
         double timeDelayed = 0.0;
-        double delayTime = 0.1;
-        while(!connected && timeDelayed < timeout)
+        double delayTime = 0.01;
+        while(!connected && (timeDelayed < timeout))
         {
             connected = yarp.connect(rpcClientPort_Name.c_str(), "/ControllerServer/rpc:i");
             yarp::os::Time::delay(delayTime);

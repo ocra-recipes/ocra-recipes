@@ -23,7 +23,7 @@
 
 #include <ocra-recipes/ServerCommunications.h>
 #include <ocra-recipes/RobotState.h>
-
+#include <iDynTree/Estimation/SimpleLeggedOdometry.h>
 
 namespace ocra_recipes
 {
@@ -49,7 +49,11 @@ protected:
     virtual void getRobotState(Eigen::VectorXd& q, Eigen::VectorXd& qd, Eigen::Displacementd& H_root, Eigen::Twistd& T_root) = 0;
 
 public:
-    ControllerServer(CONTROLLER_TYPE ctrlType/*=WOCRA_CONTROLLER*/, SOLVER_TYPE solver/*=QUADPROG*/, bool usingInterprocessCommunication=true);
+    ControllerServer(CONTROLLER_TYPE ctrlType/*=WOCRA_CONTROLLER*/,
+                     SOLVER_TYPE solver/*=QUADPROG*/,
+                     bool usingInterprocessCommunication=true,
+                     bool useOdometry=false);
+    
     virtual ~ControllerServer();
 
     bool initialize();
@@ -63,8 +67,15 @@ public:
     bool addTasksFromXmlFile(const std::string& filePath);
     bool addTasks(std::vector<ocra::TaskBuilderOptions>& tmOpts);
 
-protected:
+    /**
+     If the useOdometry flag is passed to the server, odometry is computed.
+     
+     - returns: True if properly initialized, false otherwise.
+     */
+    bool initializeOdometry();
     void updateModel();
+
+protected:
 
     ocra::Model::Ptr                     model;
     ocra::Controller::Ptr           controller;
@@ -80,11 +91,16 @@ protected:
     // Eigen::Twistd           T_root;
 
     CONTROLLER_TYPE    controllerType;
-    SOLVER_TYPE        solverType;
+    SOLVER_TYPE            solverType;
     bool                    usingComs;
+    bool                  usingOdometry;
 
     yarp::os::Bottle statesBottle;
     yarp::os::Port statesPort;
+
+    //Odometry options
+    std::string modelFile;
+    std::string initialFixedFrame;
 };
 
 } // namespace ocra_recipes

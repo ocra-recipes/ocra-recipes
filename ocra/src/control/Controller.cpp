@@ -107,6 +107,9 @@ namespace ocra
     : NamedInstance(name)
     , pimpl(new Pimpl(model))
   {
+      // Assuming by default that humnanoid robots start in double support face
+      this->_isInLeftSupport = 1;
+      this->_isInRightSupport = 1;
   }
 
   Controller::~Controller()
@@ -294,6 +297,19 @@ namespace ocra
     }
   }
 
+  void Controller::setFixedLinkForOdometry(std::string newFixedLink)
+  {
+      this->_fixedLink = newFixedLink;
+//       std::cout << "[DEBUG-JORH] Controller::setFixedLinkForOdometry: Changed _fixedLink = " << newFixedLink.c_str() << std::endl;
+  }
+    
+  void Controller::getContactState(int& leftSupport, int& rightSupport) 
+  { 
+      leftSupport = this->_isInLeftSupport; 
+      rightSupport = this->_isInRightSupport;     
+//       std::cout << "[DEBUG] Controller::getContactState set leftSupport to:  " << leftSupport << " and rightSupport to: " << rightSupport << std::endl;
+  }
+  
   void Controller::enableErrorHandling()
   {
     pimpl->handleError = true;
