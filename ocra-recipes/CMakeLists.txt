@@ -7,6 +7,7 @@ include_directories(
                     ${YARP_INCLUDE_DIRS}
                     ${WOCRA_INCLUDE_DIRS}
                     ${HOCRA_INCLUDE_DIRS}
+                    ${iDynTree_INCLUDE_DIRS}
                     )
 
 find_package(SMLT QUIET)
@@ -36,6 +37,7 @@ LIST(APPEND link_libs   ${Boost_LIBRARIES}
                         ocra-optim
                         wocra
                         hocra
+                        ${iDynTree_LIBRARIES}
                         )
 
 target_link_libraries(${PROJECT_NAME} ${link_libs})

@@ -35,6 +35,7 @@ find_package(Boost REQUIRED COMPONENTS system filesystem)
 find_package(TinyXML REQUIRED)
 find_package(YARP REQUIRED)
 find_package(qpOASES REQUIRED)
+find_package(iDynTree REQUIRED)
 
 include_directories( AFTER
     ${Eigen_INCLUDE_DIRS}
