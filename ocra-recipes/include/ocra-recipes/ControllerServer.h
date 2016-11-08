@@ -23,7 +23,6 @@
 
 #include <ocra-recipes/ServerCommunications.h>
 #include <ocra-recipes/RobotState.h>
-#include <iDynTree/Estimation/SimpleLeggedOdometry.h>
 
 namespace ocra_recipes
 {
@@ -53,7 +52,7 @@ public:
                      SOLVER_TYPE solver/*=QUADPROG*/,
                      bool usingInterprocessCommunication=true,
                      bool useOdometry=false);
-    
+
     virtual ~ControllerServer();
 
     bool initialize();
@@ -69,7 +68,7 @@ public:
 
     /**
      If the useOdometry flag is passed to the server, odometry is computed.
-     
+
      - returns: True if properly initialized, false otherwise.
      */
     bool initializeOdometry();
