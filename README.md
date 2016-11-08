@@ -1,6 +1,10 @@
-ocra-recipes
------
-Master : [![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg)](https://travis-ci.org/ocra-recipes/ocra-recipes)  Devel : [![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg?branch=dev)](https://travis-ci.org/ocra-recipes/ocra-recipes)
+# ocra-recipes
+
+
+#### Build Status
+| master | dev |
+|:------:|:---:|
+| [![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg?branch=master)](https://travis-ci.org/ocra-recipes/ocra-recipes) |  [![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg?branch=dev)](https://travis-ci.org/ocra-recipes/ocra-recipes) |
 
 
 [Installation instructions](#Installation)
