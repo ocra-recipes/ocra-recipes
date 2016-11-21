@@ -4,11 +4,10 @@
 #include <iostream>
 #include <memory>
 
+#include <ocra/util/Macros.h>
 #include <ocra/control/Controller.h>
 #include <ocra/control/Model.h>
-#include <ocra/control/TaskManagers/TaskManagerSet.h>
-#include <ocra/control/TaskManagers/TaskManagerFactory.h>
-#include <ocra/control/TaskManagers/TaskManagerOptions.h>
+#include <ocra/control/TaskBuilders/TaskConstructionManager.h>
 
 #include <ocra/optim/OneLevelSolver.h>
 #include <wocra/WocraController.h>
@@ -24,7 +23,6 @@
 
 #include <ocra-recipes/ServerCommunications.h>
 #include <ocra-recipes/RobotState.h>
-
 
 namespace ocra_recipes
 {
@@ -44,12 +42,17 @@ enum SOLVER_TYPE
 
 class ControllerServer
 {
+    DEFINE_CLASS_POINTER_TYPEDEFS(ControllerServer)
 protected:
     virtual std::shared_ptr<Model> loadRobotModel() = 0;
     virtual void getRobotState(Eigen::VectorXd& q, Eigen::VectorXd& qd, Eigen::Displacementd& H_root, Eigen::Twistd& T_root) = 0;
 
 public:
-    ControllerServer(CONTROLLER_TYPE ctrlType/*=WOCRA_CONTROLLER*/, SOLVER_TYPE solver/*=QUADPROG*/, bool usingInterprocessCommunication=true);
+    ControllerServer(CONTROLLER_TYPE ctrlType/*=WOCRA_CONTROLLER*/,
+                     SOLVER_TYPE solver/*=QUADPROG*/,
+                     bool usingInterprocessCommunication=true,
+                     bool useOdometry=false);
+
     virtual ~ControllerServer();
 
     bool initialize();
@@ -60,18 +63,24 @@ public:
     const std::shared_ptr<ocra::Controller> getController(){return controller;}
     const std::shared_ptr<ocra::Model> getRobotModel(){return model;}
 
-    bool addTaskManagersFromXmlFile(const std::string& filePath);
-    bool addTaskManagers(ocra::TaskManagerOptions& tmOpts);
+    bool addTasksFromXmlFile(const std::string& filePath);
+    bool addTasks(std::vector<ocra::TaskBuilderOptions>& tmOpts);
 
-private:
+    /**
+     If the useOdometry flag is passed to the server, odometry is computed.
+
+     - returns: True if properly initialized, false otherwise.
+     */
+    bool initializeOdometry();
     void updateModel();
 
-    std::shared_ptr<ocra::Model>                     model;
-    std::shared_ptr<ocra::Controller>           controller;
-    std::shared_ptr<ocra::Solver>           internalSolver;
-    std::shared_ptr<ocra::TaskManagerSet>   taskManagerSet;
+protected:
 
-    std::shared_ptr<ServerCommunications>       serverComs;
+    ocra::Model::Ptr                     model;
+    ocra::Controller::Ptr           controller;
+    ocra::Solver::Ptr           internalSolver;
+
+    ServerCommunications::Ptr       serverComs;
 
     Eigen::VectorXd            tau;
     RobotState              rState;
@@ -81,11 +90,16 @@ private:
     // Eigen::Twistd           T_root;
 
     CONTROLLER_TYPE    controllerType;
-    SOLVER_TYPE        solverType;
+    SOLVER_TYPE            solverType;
     bool                    usingComs;
+    bool                  usingOdometry;
 
     yarp::os::Bottle statesBottle;
     yarp::os::Port statesPort;
+
+    //Odometry options
+    std::string modelFile;
+    std::string initialFixedFrame;
 };
 
 } // namespace ocra_recipes

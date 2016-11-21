@@ -1,44 +1,44 @@
 #include "ocra/control/Controller.h"
-#include "ocra/control/Tasks/Task.h"
-#include "ocra/control/Feature.h"
-#include "ocra/control/Model.h"
-#include <map>
-#include <fstream>
-#include <iostream>
 
 namespace
 {
   template<class T>
-  class checked_map
+  class TaskMap
   {
   private:
     std::map<std::string, std::shared_ptr<T>> data;
     const std::string id;
 
   public:
-    checked_map(const std::string& id_): id(id_) {}
+    TaskMap(const std::string& id_): id(id_) {}
 
     const std::shared_ptr<T> get(const std::string& name) const
     {
       typename std::map<std::string, std::shared_ptr<T>>::const_iterator it = data.find(name);
-      if(it == data.end())
-        throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" not found!");
+      if(it == data.end()) {
+          std::cout << "[Controller::"+id+" set]: element with name "+name+" not found!" << std::endl;
+        // throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" not found!");
+        }
       return it->second;
     }
 
     std::shared_ptr<T> get(const std::string& name)
     {
       typename std::map<std::string, std::shared_ptr<T>>::iterator it = data.find(name);
-      if(it == data.end())
-        throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" not found!");
+      if(it == data.end()) {
+          std::cout << "[Controller::"+id+" set]: element with name "+name+" not found!" << std::endl;
+        // throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" not found!");
+        }
       return it->second;
     }
 
     void add(const std::string& name, std::shared_ptr<T> elm)
     {
       typename std::map<std::string, std::shared_ptr<T>>::const_iterator it = data.find(name);
-      if(it != data.end())
-        throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" already registered!");
+      if(it != data.end()) {
+          std::cout << "[Controller::"+id+" set]: element with name "+name+" already registered!" << std::endl;
+        // throw std::runtime_error("[Controller::"+id+" set]: element with name "+name+" already registered!");
+        }
       data[name] = elm;
     }
 
@@ -81,7 +81,8 @@ namespace ocra
     const Model& model;
     VectorXd tau_max;
     VectorXd tau;
-    checked_map<Task> tasks;
+    TaskMap<Task> tasks;
+    TaskMap<TaskYarpInterface> taskInterfaces;
     std::vector<std::shared_ptr<Task>> activeTasks;
     std::string errorMessage;
     double maxTau;
@@ -93,6 +94,7 @@ namespace ocra
       , tau_max( VectorXd::Constant(m.nbInternalDofs(), std::numeric_limits<double>::max()) )
       , tau( VectorXd::Constant(m.nbInternalDofs(), 0.) )
       , tasks("tasks")
+      , taskInterfaces("taskInterfaces")
       , activeTasks()
       , errorMessage("")
       , maxTau(500.)
@@ -105,6 +107,9 @@ namespace ocra
     : NamedInstance(name)
     , pimpl(new Pimpl(model))
   {
+      // Assuming by default that humnanoid robots start in double support face
+      this->_isInLeftSupport = 1;
+      this->_isInRightSupport = 1;
   }
 
   Controller::~Controller()
@@ -180,6 +185,7 @@ namespace ocra
   {
     pimpl->tasks.add(task->getName(), task);
     doAddTask(task);
+    pimpl->taskInterfaces.add(task->getName(), std::make_shared<TaskYarpInterface>(task));
   }
 
   void Controller::addTasks(const std::vector<std::shared_ptr<Task>>& tasks)
@@ -190,6 +196,7 @@ namespace ocra
 
   void Controller::removeTask(const std::string& taskName)
   {
+    pimpl->taskInterfaces.erase(taskName);
     pimpl->tasks.erase(taskName);
   }
 
@@ -207,6 +214,34 @@ namespace ocra
   std::shared_ptr<Task> Controller::getTask(const std::string& name)
   {
     return pimpl->tasks.get(name);
+  }
+
+  std::vector<std::string> Controller::getTaskNames()
+  {
+    std::vector<std::string> taskNames;
+    for (auto mapItem : pimpl->tasks.getData()) {
+        taskNames.push_back(mapItem.first);
+    }
+    return taskNames;
+  }
+
+  std::string Controller::getTaskPortName(const std::string& taskName)
+  {
+      auto interface = pimpl->taskInterfaces.get(taskName);
+      if (interface) {
+          return interface->getPortName();
+      } else {
+        return "";
+      }
+  }
+
+  std::vector<std::string> Controller::getTaskPortNames()
+  {
+    std::vector<std::string> taskPortNames;
+    for (auto mapItem : pimpl->taskInterfaces.getData()) {
+        taskPortNames.push_back(mapItem.second->getPortName());
+    }
+    return taskPortNames;
   }
 
   const std::shared_ptr<Task> Controller::getTask(const std::string& name) const
@@ -262,6 +297,19 @@ namespace ocra
     }
   }
 
+  void Controller::setFixedLinkForOdometry(std::string newFixedLink)
+  {
+      this->_fixedLink = newFixedLink;
+//       std::cout << "[DEBUG-JORH] Controller::setFixedLinkForOdometry: Changed _fixedLink = " << newFixedLink.c_str() << std::endl;
+  }
+    
+  void Controller::getContactState(int& leftSupport, int& rightSupport) 
+  { 
+      leftSupport = this->_isInLeftSupport; 
+      rightSupport = this->_isInRightSupport;     
+//       std::cout << "[DEBUG] Controller::getContactState set leftSupport to:  " << leftSupport << " and rightSupport to: " << rightSupport << std::endl;
+  }
+  
   void Controller::enableErrorHandling()
   {
     pimpl->handleError = true;
@@ -303,7 +351,7 @@ namespace ocra
     return pimpl->maxTau;
   }
 
-  std::shared_ptr<Task> Controller::createTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+  std::shared_ptr<Task> Controller::createTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const
   {
     std::shared_ptr<Task> task(doCreateTask(name, feature, featureDes));
     task->setDesiredMassToActualOne();
@@ -314,7 +362,7 @@ namespace ocra
     return task;
   }
 
-  std::shared_ptr<Task> Controller::createTask(const std::string& name, const Feature& feature) const
+  std::shared_ptr<Task> Controller::createTask(const std::string& name, Feature::Ptr feature) const
   {
     // Task* task = doCreateTask(name, feature);
     std::shared_ptr<Task> task(doCreateTask(name, feature));
@@ -326,8 +374,8 @@ namespace ocra
     return task;
   }
 
-  // Task& Controller::createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
-  std::shared_ptr<Task> Controller::createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+  // Task& Controller::createContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const
+  std::shared_ptr<Task> Controller::createContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const
   {
     // Task* task = doCreateContactTask(name, feature, mu, margin);
     std::shared_ptr<Task> task(doCreateContactTask(name, feature, mu, margin));

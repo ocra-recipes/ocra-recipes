@@ -12,7 +12,7 @@ ControllerClient::ControllerClient()
 
 }
 
-ControllerClient::ControllerClient(std::shared_ptr<ocra::Model> derivedModelPtr, const int loopPeriod)
+ControllerClient::ControllerClient(ocra::Model::Ptr derivedModelPtr, const int loopPeriod)
 : yarp::os::RateThread(loopPeriod)
 , model(derivedModelPtr)
 , expectedPeriod(loopPeriod)
@@ -42,6 +42,7 @@ ControllerClient::~ControllerClient()
 
 bool ControllerClient::threadInit()
 {
+    clientThreadHasBeenReleased = false;
     if(isReady)
         return initialize();
     else
@@ -56,6 +57,7 @@ void ControllerClient::run()
 void ControllerClient::threadRelease()
 {
     release();
+    clientThreadHasBeenReleased = true;
 }
 
 bool ControllerClient::removeTask(const std::string& taskName)
@@ -69,32 +71,32 @@ bool ControllerClient::removeTask(const std::string& taskName)
 
 bool ControllerClient::removeTasks(const std::vector<std::string>& taskNameVector)
 {
-
+    return false;
 }
 
 
 void ControllerClient::addTasks(const std::string& pathToXmlFile, bool overwrite)
 {
-    ocra::TaskManagerFactory factory = ocra::TaskManagerFactory();
-    factory.parseTasksXML(pathToXmlFile);
-    std::vector<ocra::TaskManagerOptions> tmOptsVec = factory.getParsedOptionsVector();
-    std::vector<ocra::TaskManagerOptions> addTmOptsVec;
-    std::vector<ocra::TaskManagerOptions> overwriteTmOptsVec;
-    for (auto tmOpts : tmOptsVec) {
-        if(!checkIfTaskExists(tmOpts)) {
-            addTmOptsVec.push_back(tmOpts);
+    ocra::TaskConstructionManager factory = ocra::TaskConstructionManager();
+
+    std::vector<ocra::TaskBuilderOptions> taskOptsVec = factory.parseTaskOptionsFromXml(pathToXmlFile);
+    std::vector<ocra::TaskBuilderOptions> addTaskOptsVec;
+    std::vector<ocra::TaskBuilderOptions> overwriteTaskOptsVec;
+    for (auto taskOpts : taskOptsVec) {
+        if(!checkIfTaskExists(taskOpts)) {
+            addTaskOptsVec.push_back(taskOpts);
         } else {
             if (overwrite) {
-                overwriteTmOptsVec.push_back(tmOpts);
+                overwriteTaskOptsVec.push_back(taskOpts);
             }
         }
     }
 
     yarp::os::Bottle request;
     request.addInt(ADD_TASKS);
-    request.addInt(addTmOptsVec.size());
-    for (auto tmOpts : addTmOptsVec) {
-        tmOpts.putIntoBottle(request);
+    request.addInt(addTaskOptsVec.size());
+    for (auto taskOpts : addTaskOptsVec) {
+        taskOpts.putIntoBottle(request);
     }
     if(clientComs->queryController(request).get(0).asInt() != SUCCESS)
     {
@@ -103,13 +105,13 @@ void ControllerClient::addTasks(const std::string& pathToXmlFile, bool overwrite
     // Code to send the tm opts to the server.
 }
 
-bool ControllerClient::checkIfTaskExists(ocra::TaskManagerOptions& tmOpts)
+bool ControllerClient::checkIfTaskExists(ocra::TaskBuilderOptions& tmOpts)
 {
     std::vector<std::string> tmNames = getTaskNames();
     for (auto name : tmNames) {
         if (tmOpts.taskName == name) {
             TaskConnection tCon(tmOpts.taskName);
-            if (tmOpts.taskType == tCon.getTaskType()) {
+            if (tmOpts.taskType == tCon.getTaskTypeAsString()) {
                 return true;
             }
             else {
@@ -131,4 +133,33 @@ std::vector<std::string> ControllerClient::getTaskTypes()
 std::vector<std::string> ControllerClient::getTaskNames()
 {
     return clientComs->getTaskNames();
+}
+
+bool ControllerClient::changeFixedLink(std::string newFixedLink, int isInLeftSupport, int isInRightSupport)
+{
+    yarp::os::Bottle request;
+    if (!newFixedLink.compare("r_sole") || !newFixedLink.compare("right")) {
+        request.addInt(CHANGE_FIXED_LINK_RIGHT);
+        OCRA_INFO("Changed fixed link to right sole");
+    } else {
+        if (!newFixedLink.compare("l_sole") || !newFixedLink.compare("left")) {
+            request.addInt(CHANGE_FIXED_LINK_LEFT);
+            OCRA_INFO("Changed fixed link to left sole");
+        } else {
+            OCRA_ERROR("The new fixed link you specify is not supported yet. Please try r_sole, right, l_sole or left.");
+            return false;
+        }
+    }
+    OCRA_INFO("sending contact state (" << isInLeftSupport <<", " <<isInRightSupport << ")");
+    request.addInt(isInLeftSupport);
+    request.addInt(isInRightSupport);
+
+    
+    if(clientComs->queryController(request).get(0).asInt() != SUCCESS)
+    {
+        OCRA_ERROR("Communication with ocra-icub-server didn't work. Requested change to right foot link");
+        return false;
+    }
+
+    return true;
 }

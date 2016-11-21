@@ -45,22 +45,22 @@ void HocraController::doComputeOutput(VectorXd& tau)
         throw std::runtime_error("[HocraController::doComputeOutput] Error while computing output");
     }
 }
-Task::Ptr HocraController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+Task::Ptr HocraController::doCreateContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const
 {
     std::cout << "HocraController::doCreateContactTask" << std::endl;
-    return std::make_shared<ocra::OneLevelTask>(name, innerModel, feature);
+    return std::make_shared<ocra::Task>(name, innerModel, feature);
 
 }
-Task::Ptr HocraController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+Task::Ptr HocraController::doCreateTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const
 {
     std::cout << "HocraController::doCreateTask des" << std::endl;
-    return std::make_shared<ocra::OneLevelTask>(name, innerModel, feature, featureDes);
+    return std::make_shared<ocra::Task>(name, innerModel, feature, featureDes);
 
 }
-Task::Ptr HocraController::doCreateTask(const std::string& name, const Feature& feature) const
+Task::Ptr HocraController::doCreateTask(const std::string& name, Feature::Ptr feature) const
 {
     std::cout << "HocraController::doCreateTask" << std::endl;
-    return  std::make_shared<ocra::OneLevelTask>(name, innerModel, feature);
+    return  std::make_shared<ocra::Task>(name, innerModel, feature);
 }
 
 }

@@ -1,0 +1,114 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{latexcustomcommands}
+
+\RequirePackage{amsmath}
+\RequirePackage{amstext}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+
+%%%%%%%%%%%%%%%%%%%%%%% NEW MATH COMMAND %%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\tens}[1]{#1}
+\providecommand{\vect}[1]{\mbox{\boldmath${#1}$}}%$
+\newcommand{\argmin}[1]{\underset{#1}{\operatorname{argmin}}}
+\newcommand{\diag}{\mathop{\mathrm{diag}}}
+\newcommand{\norm}[1]{\ensuremath{\left\lVert #1 \right\rVert}}
+
+
+%%%%%%%%%% MY OWN COMMANDS %%%%%%%%%%
+\newcommand{\Frame}[1]{\ensuremath{\Psi_{#1}}}	%frame				\Psi_{\uppercase{#1}}
+\newcommand{\R}[1]{\ensuremath{\mathbb{R}^{#1}}}	%R for real
+\newcommand{\Id}[1]{\ensuremath{\tens{I}_{#1}}}		%Identity matrix
+\newcommand{\ft}[2]{\ensuremath{_{#1,#2}}} 			%from to
+\newcommand{\rt}[1]{\ensuremath{^{#1}}}				%relative to
+\newcommand{\tp}{\ensuremath{^{\mathsf{T}}}}		%transpose
+\newcommand{\HM}{\ensuremath{\tens{H}}}				%homogenous matrix
+\newcommand{\Rot}{\ensuremath{\tens{R}}}			%rotation matrix
+\newcommand{\homo}[1]{\ensuremath{\widetilde{#1}}}	%homogeneous coordinate
+\renewcommand{\skew}[1]{\ensuremath{\widehat{#1}}}	%skew-matrix related to a vector
+
+\newcommand{\pt}[1][p]{\ensuremath{\vect{#1}}}		%point in space
+\newcommand{\ve}[1][u]{\ensuremath{\vect{#1}}}		%vector in space
+\newcommand{\lvel}{\ensuremath{\vect{v}}}			%linear velocity
+\newcommand{\rvel}{\ensuremath{\vect{\omega}}}		%rotational velocity
+\newcommand{\T}{\ensuremath{\vect{T}}}				%twist
+\newcommand{\W}{\ensuremath{\vect{W}}}				%wrench
+\newcommand{\work}{\ensuremath{\mathcal{W}}}
+\newcommand{\Ad}{\ensuremath{\tens{Ad}}}			%Adjoint
+\newcommand{\ad}{\ensuremath{\tens{ad}}}			%adcacency
+\newcommand{\force}{\ensuremath{\vect{f}}}			%force
+\newcommand{\torque}{\ensuremath{\vect{\tau}}}		%torque
+\newcommand{\ttorque}{\ensuremath{\tau}}			%torque for subscript
+
+\newcommand{\SO}{\ensuremath{SO(3)}}
+\newcommand{\SE}{\ensuremath{SE(3)}}
+\newcommand{\so}{\ensuremath{\mathfrak{so}(3)}}
+\newcommand{\se}{\ensuremath{\mathfrak{se}(3)}}
+\newcommand{\sestar}{\ensuremath{\mathfrak{se}^{*}(3)}}
+
+\newcommand{\gQ}{\ensuremath{\tens{Q}}}				%generalized coordinate
+\newcommand{\gv}{\ensuremath{\vect{\nu}}}			%generalized velocity
+\newcommand{\J}{\ensuremath{\tens{J}}}				%Jacobian
+\newcommand{\dJ}{\ensuremath{\dot{\tens{J}}}}		%derivative Jacobian
+\newcommand{\q}{\ensuremath{\vect{q}}}				%generalized coordinate q
+\newcommand{\dq}{\ensuremath{\dot{\vect{q}}}}		%generalized velocity dq
+\newcommand{\ddq}{\ensuremath{\ddot{\vect{q}}}}		%generalized acceleration ddq
+\newcommand{\lagrangian}{\ensuremath{\mathcal{L}}}	%Lagrangian
+
+\newcommand{\m}{\ensuremath{m}}						%mass
+\newcommand{\In}{\ensuremath{\tens{\mathcal{I}}}}				%Inertia
+\newcommand{\M}{\ensuremath{\tens{M}}}				%generalized mass matrix
+\newcommand{\N}{\ensuremath{\tens{N}}}				%generalized nleffects matrix
+\newcommand{\n}{\ensuremath{\vect{n}}}				%generalized nleffects vector
+\newcommand{\B}{\ensuremath{\tens{B}}}				%generalized damping matrix
+\newcommand{\g}{\ensuremath{\vect{g}}}				%generalized gravity vector
+
+\newcommand{\Y}{\ensuremath{\tens{Y}}}				%admittance
+\newcommand{\Z}{\ensuremath{\tens{Z}}}				%impedance
+
+
+%%%%%%%%% For Arboris-python
+\newcommand{\py}[1]{\texttt{#1}}
+\newcommand{\pysmall}[1]{\texttt{\footnotesize #1}}
+
+%%%%%%%%% For optimization
+\newcommand{\x}{\ensuremath{\vect{x}}}				%variable of the problem
+\newcommand{\dualsol}{\ensuremath{\vect{y}}}		%variable of the dual problem
+\newcommand{\av}{\ensuremath{\vect{\chi}}}			%action variable
+\newcommand{\X}{\mathbb{X}}							%Dynymic variable, concatenation of \ddq and
+\renewcommand{\S}{\ensuremath{\tens{S}}}			%Selection matrix
+\newcommand{\w}{\ensuremath{\vect{\mathrm{w}}}}		%vector of a subset of a wrench
+\renewcommand{\t}{\ensuremath{\vect{\mathrm{t}}}}	%vector of a subset of a twist
+\newcommand{\A}{\ensuremath{\tens{A}}}				%matrix coeff in equality const
+\renewcommand{\b}{\ensuremath{\vect{b}}}			%vector solution in equality const
+\newcommand{\G}{\ensuremath{\tens{G}}}				%matrix coeff in inequality const
+\newcommand{\h}{\ensuremath{\vect{h}}}				%vector solution in inequality const
+\newcommand{\E}{\ensuremath{\tens{E}}}				%matrix coeff in task function
+\newcommand{\f}{\ensuremath{\vect{\mathrm{f}}}}				%vector solution in task function
+\newcommand{\K}{\ensuremath{\tens{K}}}				%matrix of coefficient in task function
+
+\newcommand{\tddq}{\ensuremath{\ddot{q}}}
+\newcommand{\tav}{\ensuremath{\chi}}				%tiny action variable, for subscript
+\newcommand{\tw}{\ensuremath{\mathrm{w}}}			%tiny vector of wrench subset, for subscript
+
+\newcommand{\mtask}{\ensuremath{\tens{\Lambda}}}	%mass matrix in task space
+\newcommand{\pond}{\ensuremath{\omega}}				%ponderation for the tasks
+
+%%%%%%%%% For miscalleneous output
+\newcommand{\Eq}[1]{Eq.(\ref{#1})}
+\newcommand{\Eqs}[2]{Eqs.(\ref{#1})--(\ref{#2})}
+\newcommand{\Equation}[1]{Equation~(\ref{#1})}
+\newcommand{\Problem}[1]{Problem~(\ref{#1})}
+\newcommand{\Algo}[1]{Algorithm~(\ref{#1})}
+\newcommand{\Algos}[2]{Algorithms~(\ref{#1})--(\ref{#2})}
+\newcommand{\Fig}[1]{Fig.~\ref{#1}}
+\newcommand{\Figs}[2]{Figs.~\ref{#1}~\&~\ref{#2}}
+\newcommand{\Figure}[1]{Figure~\ref{#1}}
+\newcommand{\Sec}[1]{Section~\ref{#1}}
+\newcommand{\Chapter}[1]{Chapter~\ref{#1}}
+\newcommand{\Chapters}[2]{Chapters~\ref{#1}--\ref{#2}}
+\newcommand{\Appendix}[1]{Appendix~\ref{#1}}
+\newcommand{\Sections}[2]{Sections~\ref{#1}--\ref{#2}}
+\newcommand{\Table}[1]{Table~(\ref{#1})}
+
+
+\newcommand{\cnum}[1]{\textcircled{\raisebox{-0.9pt}{#1}}}

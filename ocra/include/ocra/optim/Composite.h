@@ -803,4 +803,4 @@ namespace ocra
 
 #endif // _OCRA_COMPOSITE_H_
 
-// cmake:sourcegroup=Utils
+// cmake:sourcegroup=utils

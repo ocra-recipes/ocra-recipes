@@ -133,4 +133,4 @@ namespace ocra
 
 #endif//_OCRABASE_OBSERVER_SUBJECT_H_
 
-// cmake:sourcegroup=Utils
+// cmake:sourcegroup=utils

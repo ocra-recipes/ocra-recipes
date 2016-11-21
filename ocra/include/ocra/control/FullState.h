@@ -2,6 +2,7 @@
 #define _OCRA_FULLSTATE_H_
 
 #include "ocra/optim/NamedInstance.h"
+#include <ocra/util/Macros.h>
 #include <Eigen/Core>
 #include <boost/shared_ptr.hpp>
 
@@ -15,6 +16,7 @@ namespace ocra
   class FullState
     : public NamedInstance
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(FullState)
   public:
     enum
     {
@@ -47,9 +49,10 @@ namespace ocra
   };
 
 
-  class FullModelState
-    : public FullState
+  class FullModelState : public FullState
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(FullModelState)
+
   public:
     FullModelState(const std::string& name, const Model& model, int whichPart);
 
@@ -66,9 +69,10 @@ namespace ocra
   };
 
 
-  class FullTargetState
-    : public FullState
+  class FullTargetState : public FullState
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(FullTargetState)
+
   public:
     FullTargetState(const std::string& name, const Model& model, int whichPart);
 

@@ -70,14 +70,18 @@ namespace ocra
 
   void Model::setJointPositions(const VectorXd& q)
   {
+    this->modelMutex.wait();
     getInternalConfigurationVariable().setValue(q);
     doSetJointPositions(q);
+    this->modelMutex.post();
   }
 
   void Model::setJointVelocities(const VectorXd& q_dot)
   {
+    this->modelMutex.wait();
     getInternalVelocityVariable().setValue(q_dot);
     doSetJointVelocities(q_dot);
+    this->modelMutex.post();
   }
 
   void Model::setFreeFlyerPosition(const Eigen::Displacementd& H_root)
@@ -98,9 +102,11 @@ namespace ocra
 
   void Model::setState(const VectorXd& q, const VectorXd& q_dot)
   {
+    this->modelMutex.wait();
     doSetState(q, q_dot);
     setJointPositions(q);
     setJointVelocities(q_dot);
+    this->modelMutex.post();
   }
 
   void Model::setState(const Eigen::Displacementd& H_root, const VectorXd& q, const Eigen::Twistd& T_root, const VectorXd& q_dot)
@@ -120,7 +126,7 @@ namespace ocra
     return *_q;
   }
 
-  Variable& Model::getVelocityVariable()const
+  Variable& Model::getVelocityVariable() const
   {
     return *_q_dot;
   }

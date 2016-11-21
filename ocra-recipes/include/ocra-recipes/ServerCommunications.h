@@ -4,10 +4,11 @@
 #include <iostream>
 #include <memory>
 
+#include <ocra/util/Macros.h>
+
 #include <ocra/control/Controller.h>
 #include <ocra/control/Model.h>
-#include <ocra/control/TaskManagers/TaskManagerSet.h>
-#include <ocra/control/TaskManagers/TaskManagerFactory.h>
+#include <ocra/control/TaskBuilders/TaskConstructionManager.h>
 
 #include <ocra/optim/OneLevelSolver.h>
 #include <wocra/WocraController.h>
@@ -25,14 +26,16 @@
 
 
 #include <ocra-recipes/MessageVocabulary.h>
+#include <ocra/util/ErrorsHelper.h>
 
 namespace ocra_recipes
 {
 class ServerCommunications : public yarp::os::PortReader
 {
+    DEFINE_CLASS_POINTER_TYPEDEFS(ServerCommunications)
 public:
     ServerCommunications();
-    ServerCommunications(std::shared_ptr<ocra::Controller> ctrl, std::shared_ptr<ocra::Model> mdl, std::shared_ptr<TaskManagerSet> tms);
+    ServerCommunications(ocra::Controller::Ptr ctrl, ocra::Model::Ptr mdl);
 
     virtual ~ServerCommunications();
 
@@ -44,9 +47,8 @@ public:
 
 
 private:
-    std::shared_ptr<ocra::Model>                     model;
-    std::shared_ptr<ocra::Controller>           controller;
-    std::shared_ptr<ocra::TaskManagerSet>   taskManagerSet;
+    ocra::Model::Ptr                     model;
+    ocra::Controller::Ptr           controller;
 
     yarp::os::RpcServer rpcServerPort;
     yarp::os::Port         outputPort;

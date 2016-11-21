@@ -36,12 +36,15 @@
 #include <Eigen/Dense>
 #include <Eigen/Lgsm>
 
+#include <ocra/util/Macros.h>
+
 
 
 namespace ocra_recipes
 {
 class TaskParameters
 {
+DEFINE_CLASS_POINTER_TYPEDEFS(TaskParameters)
 
 public:
     double kp;
@@ -73,6 +76,7 @@ public:
 
 class ControlThread: public yarp::os::RateThread
 {
+DEFINE_CLASS_POINTER_TYPEDEFS(ControlThread)
 
 public:
     // Constructor
@@ -97,7 +101,8 @@ public:
     bool deactivateTask();
     bool activateTask();
 
-
+    std::string getOutputPortName(){return outputPortName;}
+    std::string getInputPortName(){return inputPortName;}
 
 
     /************** controlInputCallback *************/

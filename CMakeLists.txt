@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(OcraRecipes)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated-declarations")
 
 if(APPLE)
     set(BUILD_SHARED_LIBS FALSE)
@@ -23,7 +23,7 @@ set(${VARS_PREFIX}_VERSION ${${VARS_PREFIX}_MAJOR_VERSION}.${${VARS_PREFIX}_MINO
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
-set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_BUILD_TYPE Release)
 # set(CMAKE_BUILD_TYPE Debug)
 
 
@@ -36,7 +36,7 @@ find_package(TinyXML REQUIRED)
 find_package(YARP REQUIRED)
 find_package(qpOASES REQUIRED)
 
-include_directories(
+include_directories( AFTER
     ${Eigen_INCLUDE_DIRS}
     ${EigenLgsm_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
@@ -62,8 +62,13 @@ find_package(Doxygen QUIET)
 if(DOXYGEN_FOUND)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in
                    ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-   configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/docs/latex_custom_commands.sty
-                    ${CMAKE_CURRENT_BINARY_DIR}/latex_custom_commands.sty COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/latexcustomcommands.sty
+                   ${CMAKE_CURRENT_BINARY_DIR}/docs/html/latexcustomcommands.sty COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/latexcustomcommands.sty
+                   ${CMAKE_CURRENT_SOURCE_DIR}/../../main/ocra-wbi-plugins/html-gh-pages/doxy-ocra-recipes/html/latexcustomcommands.sty COPYONLY)
+    message("-- Copied file ocraReferences.bib into html-gh-pages " ${CMAKE_CURRENT_BINARY_DIR}/../../main/ocra-wbi-plugins/html-gh-pages/doxy-ocra-recipes/html/ocraReferences.bib)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/ocraReferences.bib
+                   ${CMAKE_CURRENT_BINARY_DIR}/../../libraries/ocra-recipes/docs/ocraReferences.bib COPYONLY)
     add_custom_target(docs
         ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

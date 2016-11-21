@@ -1,7 +1,7 @@
 project(hocra CXX)
 
-include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
-include_directories(
+include_directories(BEFORE
+                    ${PROJECT_SOURCE_DIR}/include
                     ${OCRA_INCLUDE_DIRS}
                     ${YARP_INCLUDE_DIRS}
                     )

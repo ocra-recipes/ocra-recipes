@@ -14,12 +14,12 @@ File history:
 #ifndef _OCRACONTROL_UTILS_H_
 #define _OCRACONTROL_UTILS_H_
 
-#include "ocra/MathTypes.h"
+#include <ocra/util/MathTypes.h>
 #include <Eigen/Lgsm>
+#include "ocra/control/Model.h"
 
 namespace ocra
 {
-  class Model;
 
   namespace utils
   {

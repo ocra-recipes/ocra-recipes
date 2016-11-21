@@ -1,6 +1,11 @@
-Master : [![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg)](https://travis-ci.org/ocra-recipes/ocra-recipes)  Devel : [![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg?branch=dev)](https://travis-ci.org/ocra-recipes/ocra-recipes)
------
 # ocra-recipes
+
+
+#### Build Status
+| master | dev |
+|:------:|:---:|
+| [![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg?branch=master)](https://travis-ci.org/ocra-recipes/ocra-recipes) |  [![Build Status](https://travis-ci.org/ocra-recipes/ocra-recipes.svg?branch=dev)](https://travis-ci.org/ocra-recipes/ocra-recipes) |
+
 
 [Installation instructions](#Installation)
 
@@ -122,7 +127,7 @@ Well now that you have `ocra-core` up and running, you probably want to try it o
 Want to contribute? Maybe build a plugin or two? Read the [Contributing  section](#Contributing) for details on how to interface with OCRA and use it for world domination.
 
 ### Notes about OS X
-:warning: As a recent feature we added rpath support, therefore, by default the flag `OCRA_ICUB_ENABLE_RPATH` is `OFF`. Change it by configuring `ocra-wbi-plugins` as: `cmake -DOCRA_ICUB_ENABLE_PATH=ON ./`. Once we're sure this ''always'' works it will be `ON` by default. Therefore, if you encounter error messages such as: 
+:warning: As a recent feature we added rpath support, therefore, by default the flag `OCRA_ICUB_ENABLE_RPATH` is `OFF`. Change it by configuring `ocra-wbi-plugins` as: `cmake -DOCRA_ICUB_ENABLE_PATH=ON ./`. Once we're sure this ''always'' works it will be `ON` by default. Therefore, if you encounter error messages such as:
 
 ```bash
 dyld library not loaded @rpath/libYarpMath.dylib
@@ -131,7 +136,7 @@ dyld library not loaded @rpath/libYarpMath.dylib
 Most likely this variable is still `OFF`.
 
 :warning: When using XCode to debug your code, make sure you change your LLVM C++ Language settings manually to C++11, by heading to the `Build Settings` of your project, searching for `C++ Language Dialect` and changing it to `C++11 [-std=c++11]`
- 
+
 
 ### Contributing
 

@@ -7,10 +7,9 @@ ServerCommunications::ServerCommunications()
 {
 }
 
-ServerCommunications::ServerCommunications(std::shared_ptr<ocra::Controller> ctrl, std::shared_ptr<ocra::Model> mdl, std::shared_ptr<TaskManagerSet> tms)
-: controller(ctrl)
-, model(mdl)
-, taskManagerSet(tms)
+ServerCommunications::ServerCommunications(ocra::Controller::Ptr ctrl, ocra::Model::Ptr mdl)
+: model(mdl),
+  controller(ctrl)
 {
     rpcServerPort_Name = "/ControllerServer/rpc:i";
     outputPort_Name = "/ControllerServer:o";
@@ -45,7 +44,10 @@ bool ServerCommunications::read(yarp::os::ConnectionReader& connection)
     parseMessage(input, reply);
     yarp::os::ConnectionWriter* returnToSender = connection.getWriter();
     if (returnToSender!=NULL) {
-        reply.write(*returnToSender);
+        if (!reply.write(*returnToSender)) {
+            OCRA_ERROR("Error writing reply to sender");
+            return false;
+        }
     }
     return true;
 }
@@ -76,10 +78,10 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
 
             case GET_IS_FLOATING_BASE:
             {
-                std::cout << "Got message: GET_IS_FLOATING_BASE." << std::endl;
+                OCRA_INFO("Got message: GET_IS_FLOATING_BASE.");
                 reply.addInt(!model->hasFixedRoot());
             }break;
-
+                
             case START_CONTROLLER:
             {
                 std::cout << "Got message: START_CONTROLLER." << std::endl;
@@ -99,27 +101,50 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
                 // this->suspend();
                 // TODO: Make a custom function that puts the robot in pos mode before suspend.
             }break;
+                
+            case CHANGE_FIXED_LINK_RIGHT:
+            {
+                OCRA_INFO("Got message: CHANGE_FIXED_LINK_RIGHT.");
+                this->controller->setFixedLinkForOdometry("r_sole");
+                int isInLeftSupport = input.get(++i).asInt();
+                OCRA_INFO("Got message: " << isInLeftSupport);
+                int isInRightSupport = input.get(++i).asInt();
+                OCRA_INFO("Got message: " << isInRightSupport);
+                this->controller->setContactState(isInLeftSupport, isInRightSupport);
+                reply.addInt(SUCCESS);
+            } break;
+            
+            case CHANGE_FIXED_LINK_LEFT:
+            {
+                OCRA_INFO("Got message: CHANGE_FIXED_LINK_LEFT.");
+                this->controller->setFixedLinkForOdometry("l_sole");
+                int isInLeftSupport = input.get(++i).asInt();
+                OCRA_INFO("Got message: " << isInLeftSupport);
+                int isInRightSupport = input.get(++i).asInt();
+                OCRA_INFO("Got message: " << isInRightSupport);
+                this->controller->setContactState(isInLeftSupport, isInRightSupport);
+                reply.addInt(SUCCESS);
+            } break;
+
 
             case ADD_TASKS:
             {
                 int numberOfTasks = input.get(++i).asInt();
                 ++i;
-                TaskManagerFactory factory;
+
+                std::vector<ocra::TaskBuilderOptions> taskOptionsVector;
                 for (int j=0; j<numberOfTasks; ++j)
                 {
-                    int sizeOfOptions;
-                    ocra::TaskManagerOptions tmOpts;
-                    yarp::os::Bottle trimmedBottle = trimBottle(input, i);
-                    if (tmOpts.extractFromBottle(trimmedBottle, sizeOfOptions)) {
-                        factory.addTaskManagerOptions(tmOpts);
+                    int sizeOfOptions = 0;
+                    yarp::os::Bottle trimmedBottle = ocra::util::trimBottle(input, i);
+                    ocra::TaskBuilderOptions taskOptions;
+                    if (taskOptions.extractFromBottle(trimmedBottle, sizeOfOptions)) {
+                        taskOptionsVector.push_back(taskOptions);
                     }
                     i += sizeOfOptions;
                 }
-                if(factory.addTaskManagersToSet(controller, model, taskManagerSet)) {
-                    reply.addInt(SUCCESS);
-                } else {
-                    reply.addInt(FAILURE);
-                }
+                ocra::TaskConstructionManager factory(model, controller, taskOptionsVector);
+                reply.addInt(SUCCESS);
             }break;
 
             case ADD_TASKS_FROM_FILE:
@@ -130,18 +155,18 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
             case REMOVE_TASK:
             {
                 ++i;
-                std::cout << "Got message: REMOVE_TASK." << std::endl;
+                OCRA_INFO("Got message: REMOVE_TASK.");
                 std::string taskToRemove = input.get(i).asString();
-                bool taskRemoved = taskManagerSet->removeTaskManager(taskToRemove);
-                if (taskRemoved) {
+                controller->removeTask(taskToRemove);
+                // if (taskRemoved) {
                     reply.addInt(SERVER_COMMUNICATIONS_MESSAGE::SUCCESS);
                     yarp::os::Bottle outputMessage;
                     outputMessage.addInt(SERVER_COMMUNICATIONS_MESSAGE::REMOVE_TASK_PORT);
                     outputMessage.addString(taskToRemove);
                     outputPort.write(outputMessage);
-                }else{
-                    reply.addInt(SERVER_COMMUNICATIONS_MESSAGE::FAILURE);
-                }
+                // }else{
+                //     reply.addInt(SERVER_COMMUNICATIONS_MESSAGE::FAILURE);
+                // }
                 ++i;
             }break;
 
@@ -152,39 +177,25 @@ void ServerCommunications::parseMessage(yarp::os::Bottle& input, yarp::os::Bottl
 
             case GET_TASK_LIST:
             {
-                std::cout << "Got message: GET_TASK_LIST." << std::endl;
-                for(auto taskName : taskManagerSet->getTaskList()){
+                OCRA_INFO("Got message: GET_TASK_LIST.");
+                for(auto taskName : controller->getTaskNames()) {
                     reply.addString(taskName);
                 }
             }break;
 
             case GET_TASK_PORT_LIST:
             {
-                std::cout << "Got message: GET_TASK_PORT_LIST." << std::endl;
-                for(auto taskPort : taskManagerSet->getTaskPorts()){
+                OCRA_INFO("Got message: GET_TASK_PORT_LIST.");
+                for(auto taskPort : controller->getTaskPortNames()) {
                     reply.addString(taskPort);
                 }
             }break;
 
             case GET_TASK_PORT_NAME:
             {
-                ++i;
-                std::string taskName = input.get(i).asString();
-                std::cout << "Got message: GET_TASK_PORT_NAME." << std::endl;
-                int taskCounter = 0;
-                int taskFoundIndex = -1;
-                for(auto tName : taskManagerSet->getTaskList()){
-                    if (taskName == tName) {
-                        taskFoundIndex = taskCounter;
-                    } else {
-                        ++taskCounter;
-                    }
-                }
-                if (taskFoundIndex >= 0)
-                {
-                    reply.addString(taskManagerSet->getTaskPorts()[taskFoundIndex]);
-                }
-
+                std::string taskName = input.get(++i).asString();
+                OCRA_INFO("Got message: GET_TASK_PORT_NAME.");
+                reply.addString(controller->getTaskPortName(taskName));
             }break;
 
             case HELP:

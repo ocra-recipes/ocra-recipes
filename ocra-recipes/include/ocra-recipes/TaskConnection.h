@@ -2,9 +2,9 @@
 #define TASK_CONNECTION_H
 
 #include <iostream>
-
-#include <ocra/control/TaskManagers/TaskManager.h>
-#include <ocra/control/TaskManagers/TaskManagerMessageVocab.h>
+#include <string>
+#include <ocra/control/TaskYarpInterfaceVocab.h>
+#include <ocra/control/Task.h>
 
 #include <yarp/os/RpcClient.h>
 #include <yarp/os/Network.h>
@@ -14,14 +14,27 @@
 
 #include <ocra-recipes/ClientCommunications.h>
 
+#include <Eigen/Dense>
+#include <Eigen/Lgsm>
+#include <ocra/util/Macros.h>
+#include <ocra/util/EigenUtilities.h>
+#include <ocra/util/YarpUtilities.h>
+
+
 namespace ocra_recipes {
 
 class TaskConnection {
+DEFINE_CLASS_POINTER_TYPEDEFS(TaskConnection)
 
 public:
     TaskConnection ();
     TaskConnection (const std::string& destinationTaskName);
     virtual ~TaskConnection ();
+
+    void reconnect();
+    void disconnect();
+
+
 
 private:
     yarp::os::Network yarp;             /*!< Yarp network instance. */
@@ -39,8 +52,12 @@ private:
     yarp::os::Port inputPort;
     yarp::os::Port outputPort;
 
-    Eigen::VectorXd currentStateVector;
+    ocra::TaskState currentState;
     bool controlPortsAreOpen;
+    bool firstUpdateOfTaskStateHasOccured;
+
+    static int TASK_CONNECTION_COUNT;
+    int taskConnectionNumber;
 
 
 private:
@@ -96,13 +113,13 @@ public:
     /*! Sets the stiffness, or proportional (Kp) gains, of the task.
      *  \param K The proportional gains to set for each DoF. Creates a diagonal matrix from K.
      */
-    void setStiffness(const VectorXd& K);
+    void setStiffness(const Eigen::VectorXd& K);
 
 
     /*! Sets the stiffness, or proportional (Kp) gains, of the task.
      *  \param K The proportional gains to set for the task. Off diagonal components will create stiffness correlations between the task DoF.
      */
-    void setStiffness(const MatrixXd& K);
+    void setStiffness(const Eigen::MatrixXd& K);
 
     /*! Gets the current stiffness, or proportional (Kp) gain, of the task.
      *
@@ -124,13 +141,13 @@ public:
     /*! Sets the damping, or damping (Kd) gains, of the task.
      *  \param K The damping gains to set for each DoF. Creates a diagonal matrix from K.
      */
-    void setDamping(const VectorXd& B);
+    void setDamping(const Eigen::VectorXd& B);
 
 
     /*! Sets the damping, or damping (Kd) gains, of the task.
      *  \param K The damping gains to set for the task. Off diagonal components will create damping correlations between the task DoF.
      */
-    void setDamping(const MatrixXd& B);
+    void setDamping(const Eigen::MatrixXd& B);
 
     /*! Gets the current damping, or damping (Kd) gain, of the task.
      *
@@ -163,21 +180,10 @@ public:
 
     /*! Opens the high speed task control ports.
      *
+     *  \param connect the TaskConnection ports to the highspeed Task control ports.
      *  \return True if the ports open successfully and are connected.
      */
-    bool openControlPorts();
-
-    /*! If the control ports are open then this will return the current task state vector.
-     *
-     *  \return The task's current state.
-     */
-    Eigen::VectorXd getCurrentState();
-
-    /*! Gets the current task state vector via a message over the Rpc port. This should not be used for high speed querying.
-     *
-     *  \return The task's current state.
-     */
-    Eigen::VectorXd getCurrentStateRpc();
+    bool openControlPorts(bool connect=true);
 
     /*! The name of the task we are connected to.
      *
@@ -190,17 +196,20 @@ public:
      *
      *  \return The type of the task we are connected to.
      */
-    std::string getTaskType();
+    ocra::Task::META_TASK_TYPE getTaskType();
+    std::string getTaskTypeAsString();
 
     int getTaskDimension();
 
-    int getTaskStateDimension();
-
-    void sendDesiredStateAsBottle(yarp::os::Bottle& bottle);
+    ocra::TaskState getTaskState();
+    ocra::TaskState getDesiredTaskState();
+    void setDesiredTaskState(const ocra::TaskState& newDesiredTaskState);
+    void setDesiredTaskStateDirect(const ocra::TaskState& newDesiredTaskState);
 
     bool closeControlPorts();
 
-
+    std::string getTaskOutputPortName();
+    std::string getTaskInputPortName();
 
     Eigen::Displacementd getTaskFrameDisplacement();
     Eigen::Twistd getTaskFrameVelocity();
@@ -211,6 +220,8 @@ public:
     Eigen::Vector3d getTaskFrameAngularVelocity();
     Eigen::Vector3d getTaskFrameLinearAcceleration();
     Eigen::Vector3d getTaskFrameAngularAcceleration();
+
+    void queryTask(ocra::TASK_MESSAGE tag, yarp::os::Bottle& bottle);
 
     /************** controlInputCallback *************/
     class inputCallback : public yarp::os::PortReader {
@@ -226,6 +237,8 @@ public:
 
 private:
     std::shared_ptr<inputCallback> inpCallback;
+
+
 
 };
 } /* ocra_recipes */

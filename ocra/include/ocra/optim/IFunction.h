@@ -10,7 +10,7 @@
  * Given a (mathematical) function \a f depending on a set of time-dependant variable \a x and possibly explicitly of
  * the time t, the coding mechanism to obtain the value at the point \f$ \left(x(t),t\right) \f$ of this function or
  * one of its (partial) derivative is always the same, despite the fact that the output spaces can be different. For
- * example, if \f$ f: R^n \times R \rightarrow R^m \f, \f$ f(x,t) \f$ is a m-vector and
+ * example, if \f$ f: R^n \times R \rightarrow R^m \f$, \f$ f(x,t) \f$ is a m-vector and
  * \f$ \frac{\partial^2 f}{\partial t \partial x}(x,t) \f$ is mxn matrix, yet obtaining this value eventually boils
  * down on a programmer viewpoint to calling a method of a class.
  * The IFunction interface aims at taking advantage of this similarity to factorize code.
@@ -42,7 +42,7 @@
 # pragma once
 #endif
 
-#include "ocra/MathTypes.h"
+#include <ocra/util/MathTypes.h>
 #include "ocra/optim/ocra_assert.h"
 #include <iostream>
 #include <vector>
@@ -96,7 +96,7 @@ namespace ocra
   * How to identify this subpart is specified by the \a access function name. The (optional) \a preAccess
   * is used to cast (for exemple, to make a conversion from/to pointer or reference).
   * - resize gives an implementation of a resize function for objects of class \a type. \a m (resp. \a n)
-  * should correspond to the output (resp. input) space dimension, i.e. \f$ f: R^n \times R \rightarrow R^m \f
+  * should correspond to the output (resp. input) space dimension, i.e. \f$ f: R^n \times R \rightarrow R^m \f$
   *
   * \param[in] type The type for which the struct is specialized
   * \param[in] subTypeReturn The return type of the operation preAccess type::access(index), where index is
@@ -423,4 +423,3 @@ namespace ocra
 #endif //_OCRABASE_IFUNCTION_H_
 
 // cmake:sourcegroup=Function
-

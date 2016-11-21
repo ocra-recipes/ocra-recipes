@@ -21,6 +21,8 @@ File history:
 #include "ocra/control/Model.h"
 #include "ocra/control/FullState.h"
 #include "ocra/control/PartialState.h"
+#include "ocra/control/TaskState.h"
+#include <ocra/util/Macros.h>
 
 #include <Eigen/Lgsm>
 #include <boost/shared_ptr.hpp>
@@ -50,10 +52,9 @@ namespace ocra
   Concurrent call of computeXXX() and computeXXX(FeatureDes) are not thread-safe
   by default (most implementations use the same cache).
   */
-  class Feature
-    : public NamedInstance
-    , boost::noncopyable
+  class Feature : public NamedInstance, boost::noncopyable
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(Feature)
   protected:
     Feature(const std::string& name);
 
@@ -79,6 +80,9 @@ namespace ocra
     virtual const Eigen::MatrixXd& computeJacobian() const = 0;
     virtual const Eigen::MatrixXd& computeProjectedMass() const = 0;
     virtual const Eigen::MatrixXd& computeProjectedMassInverse() const = 0;
+
+    virtual TaskState getState() const = 0;
+    virtual void setState(const TaskState& newState) = 0;
   };
 
 
@@ -94,11 +98,12 @@ namespace ocra
   Use getSpaceTransform() to get the transformation from the control frame space to
   the output space.
   */
-  class PositionFeature
-    : public Feature
+  class PositionFeature : public Feature
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(PositionFeature)
+
   public:
-    PositionFeature(const std::string& name, const ControlFrame& frame, ECartesianDof axes);
+    PositionFeature(const std::string& name, ControlFrame::Ptr frame, ECartesianDof axes);
 
     int getDimension() const;
 
@@ -119,6 +124,9 @@ namespace ocra
     const Eigen::MatrixXd& computeJacobian() const;
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
+
+    TaskState getState() const;
+    void setState(const TaskState& newState);
 
   private:
     struct Pimpl;
@@ -136,11 +144,12 @@ namespace ocra
   with friction cones. The space transform is identity: the error is
   computed in the controlled frame.
   */
-  class PointContactFeature
-    : public Feature
+  class PointContactFeature : public Feature
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(PointContactFeature)
+
   public:
-    PointContactFeature(const std::string& name, const ControlFrame& frame);
+    PointContactFeature(const std::string& name, ControlFrame::Ptr frame);
 
     int getDimension() const;
 
@@ -161,6 +170,9 @@ namespace ocra
     const Eigen::MatrixXd& computeJacobian() const;
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
+
+    TaskState getState() const;
+    void setState(const TaskState& newState);
 
   private:
     struct Pimpl;
@@ -176,11 +188,12 @@ namespace ocra
   The error between two orientation features is the log of Rdes.inverse() * R, where R is
   the orientation of the orientation frame and Rdes is the desired orientation.
   */
-  class OrientationFeature
-    : public Feature
+  class OrientationFeature : public Feature
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(OrientationFeature)
+
   public:
-    OrientationFeature(const std::string& name, const ControlFrame& frame);
+    OrientationFeature(const std::string& name, ControlFrame::Ptr frame);
 
     int getDimension() const;
 
@@ -201,6 +214,9 @@ namespace ocra
     const Eigen::MatrixXd& computeJacobian() const;
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
+
+    TaskState getState() const;
+    void setState(const TaskState& newState);
 
   private:
     struct Pimpl;
@@ -216,11 +232,12 @@ namespace ocra
   and orientation of a control frame. See the documentation of PositionFeature and
   OrientationFeature.
   */
-  class DisplacementFeature
-    : public Feature
+  class DisplacementFeature : public Feature
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(DisplacementFeature)
+
   public:
-    DisplacementFeature(const std::string& name, const ControlFrame& frame, ECartesianDof axes);
+    DisplacementFeature(const std::string& name, ControlFrame::Ptr frame, ECartesianDof axes);
 
     int getDimension() const;
 
@@ -241,6 +258,9 @@ namespace ocra
     const Eigen::MatrixXd& computeJacobian() const;
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
+
+    TaskState getState() const;
+    void setState(const TaskState& newState);
 
   private:
     struct Pimpl;
@@ -256,11 +276,12 @@ namespace ocra
   expressed in the controlled frame (space transform is identity). Desired
   features are irrelevant and computeXXX(const Feature&) will throw.
   */
-  class ContactConstraintFeature
-    : public Feature
+  class ContactConstraintFeature : public Feature
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(ContactConstraintFeature)
+
   public:
-    ContactConstraintFeature(const std::string& name, const ControlFrame& frame);
+    ContactConstraintFeature(const std::string& name, ControlFrame::Ptr frame);
 
     int getDimension() const;
 
@@ -282,45 +303,18 @@ namespace ocra
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
 
+
+    TaskState getState() const;
+    void setState(const TaskState& newState);
+
+
   private:
     struct Pimpl;
     boost::shared_ptr<Pimpl> pimpl;
   };
 
 
-  // --- LOOK AT ------------------------------------------------
 
-  //! Not implemented yet.
-  class LookAtFeature
-    : public Feature
-  {
-  public:
-    LookAtFeature(const std::string& name, const ControlFrame& frame);
-
-    int getDimension() const;
-
-    const Eigen::MatrixXd& getSpaceTransform() const;
-
-    const Eigen::VectorXd& computeEffort(const Feature& featureDes) const;
-    const Eigen::VectorXd& computeAcceleration(const Feature& featureDes) const;
-    const Eigen::VectorXd& computeError(const Feature& featureDes) const;
-    const Eigen::VectorXd& computeErrorDot(const Feature& featureDes) const;
-    const Eigen::MatrixXd& computeJacobian(const Feature& featureDes) const;
-    const Eigen::MatrixXd& computeProjectedMass(const Feature& featureDes) const;
-    const Eigen::MatrixXd& computeProjectedMassInverse(const Feature& featureDes) const;
-
-    const Eigen::VectorXd& computeEffort() const;
-    const Eigen::VectorXd& computeAcceleration() const;
-    const Eigen::VectorXd& computeError() const;
-    const Eigen::VectorXd& computeErrorDot() const;
-    const Eigen::MatrixXd& computeJacobian() const;
-    const Eigen::MatrixXd& computeProjectedMass() const;
-    const Eigen::MatrixXd& computeProjectedMassInverse() const;
-
-  private:
-    struct Pimpl;
-    boost::shared_ptr<Pimpl> pimpl;
-  };
 
 
   // --- ARTICULAR ----------------------------------------------
@@ -329,11 +323,12 @@ namespace ocra
   /*!
   Can be used e.g. for Joint PD control.
   */
-  class FullStateFeature
-    : public Feature
+  class FullStateFeature : public Feature
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(FullStateFeature)
+
   public:
-    FullStateFeature(const std::string& name, const FullState& state);
+    FullStateFeature(const std::string& name, FullState::Ptr state);
 
     int getDimension() const;
 
@@ -354,6 +349,11 @@ namespace ocra
     const Eigen::MatrixXd& computeJacobian() const;
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
+
+
+    TaskState getState() const;
+    void setState(const TaskState& newState);
+
 
   private:
     struct Pimpl;
@@ -366,11 +366,12 @@ namespace ocra
   /*!
   Can be used e.g. for Joint PD control.
   */
-  class PartialStateFeature
-    : public Feature
+  class PartialStateFeature : public Feature
   {
+      DEFINE_CLASS_POINTER_TYPEDEFS(PartialStateFeature)
+
   public:
-    PartialStateFeature(const std::string& name, const PartialState& state);
+    PartialStateFeature(const std::string& name, PartialState::Ptr state);
 
     int getDimension() const;
 
@@ -391,6 +392,11 @@ namespace ocra
     const Eigen::MatrixXd& computeJacobian() const;
     const Eigen::MatrixXd& computeProjectedMass() const;
     const Eigen::MatrixXd& computeProjectedMassInverse() const;
+
+
+    TaskState getState() const;
+    void setState(const TaskState& newState);
+
 
   private:
     struct Pimpl;

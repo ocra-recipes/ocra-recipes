@@ -47,10 +47,10 @@ class gOcraFullPostureTaskManager : public gOcraTaskManagerBase
         gocra::GHCJTTask*              task;
 
         ocra::FullStateFeature*          feat;
-        ocra::FullModelState*            featState;
+        ocra::FullModelState::Ptr            featState;
 
         ocra::FullStateFeature*          featDes;
-        ocra::FullTargetState*           featDesState;
+        ocra::FullTargetState::Ptr           featDesState;
 
         void _init(int fullStateType, double stiffness, double damping);
 };

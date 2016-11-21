@@ -22,7 +22,18 @@ File history:
 #include <string>
 #include <vector>
 #include <map>
-#include <memory>
+#include <ocra/util/Macros.h>
+
+// #include "ocra/control/Controller.h"
+#include "ocra/control/Task.h"
+#include "ocra/control/TaskYarpInterface.h"
+#include "ocra/control/Feature.h"
+#include "ocra/control/Model.h"
+#include <map>
+#include <fstream>
+#include <iostream>
+
+
 
 namespace ocra
 {
@@ -43,6 +54,7 @@ namespace ocra
     : public NamedInstance
     , boost::noncopyable
   {
+  DEFINE_CLASS_POINTER_TYPEDEFS(Controller)
   protected:
     Controller(const std::string& name, Model& model);
 
@@ -59,6 +71,11 @@ namespace ocra
 
     void removeTask(const std::string& taskName);
     void removeTasks(const std::vector<std::string> tasks);
+
+    std::vector<std::string> getTaskNames();
+    std::string getTaskPortName(const std::string& taskName);
+    std::vector<std::string> getTaskPortNames();
+
 
     void addContactSet(const ContactSet& contacts);
     std::shared_ptr<Task> getTask(const std::string& name);
@@ -93,20 +110,26 @@ namespace ocra
     int getErrorFlag() const;
     void setMaxJointTorqueNorm(double maxTau);
     double getMaxJointTorqueNorm() const;
+    void  setFixedLinkForOdometry(std::string newFixedLink);
+    void  setUseOdometry(bool useOdometry) { this->_useOdometry = useOdometry; }
+    void  getFixedLinkForOdometry(std::string& currentFixedLink) { currentFixedLink = this->_fixedLink; }
+    void setContactState(int isInLeftSupport, int isInRightSupport) { this->_isInLeftSupport = isInLeftSupport; this->_isInRightSupport = isInRightSupport;}
+    void getContactState(int& leftSupport, int& rightSupport);
+      
     //@}
 
   public: // factory
     //@{
     //! Generic task creation
-    std::shared_ptr<Task> createTask(const std::string& name, const Feature& feature, const Feature& featureDes) const;
-    std::shared_ptr<Task> createTask(const std::string& name, const Feature& feature) const;
+    std::shared_ptr<Task> createTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const;
+    std::shared_ptr<Task> createTask(const std::string& name, Feature::Ptr feature) const;
     //@}
 
     //! Creates a contact task
     /*!
     The parameters describe the friction cone parameters for the force applied by the manikin on the environment.
     */
-    std::shared_ptr<Task> createContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const;
+    std::shared_ptr<Task> createContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const;
 
   protected:
     const std::vector<std::shared_ptr<Task>>& getActiveTasks() const;
@@ -120,13 +143,17 @@ namespace ocra
     virtual void doSetMaxJointTorques(const Eigen::VectorXd& tauMax); // Does nothing if not overloaded
 
   protected: // factory
-    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const = 0;
-    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, const Feature& feature) const = 0;
-    virtual std::shared_ptr<Task> doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const = 0;
+    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const = 0;
+    virtual std::shared_ptr<Task> doCreateTask(const std::string& name, Feature::Ptr feature) const = 0;
+    virtual std::shared_ptr<Task> doCreateContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const = 0;
 
   private:
     struct Pimpl;
     boost::shared_ptr<Pimpl> pimpl;
+    bool _useOdometry;
+    std::string _fixedLink;
+    int _isInLeftSupport;
+    int _isInRightSupport;
   };
 }
 

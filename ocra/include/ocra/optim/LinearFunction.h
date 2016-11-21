@@ -15,7 +15,7 @@
 
 // ocra includes
 #include "ocra/optim/Function.h"
-#include "ocra/utilities.h"
+#include <ocra/util/Macros.h>
 //#define LINEAR_FUNCTION_PROVIDES_HESSIANS
 
 /** @namespace ocra

@@ -16,12 +16,11 @@
 #include "ocra/optim/Constraint.h"
 #include "ocra/optim/QuadraticFunction.h"
 #include "ocra/optim/CascadeQPStructures.h"
-#include <ocra/control/Tasks/Task.h>
+#include "ocra/control/Task.h"
 #include <ocra/optim/SumOfLinearFunctions.h>
 #include <ocra/optim/FunctionHelpers.h>
 #include <ocra/optim/LinearFunction.h>
 #include <ocra/control/ControlConstraint.h>
-#include <ocra/control/Tasks/OneLevelTask.h>
 #include <ocra/control/FullDynamicEquationFunction.h>
 
 #include <memory>
@@ -34,14 +33,14 @@
   */
 namespace ocra
 {
-    
-/* 
+
+/*
 struct LevelConstraints
 {
     std::vector<Function*> _exclusion_constraints;
     std::map<Function*,EqualZeroConstraintPtr<LinearFunction> > _allowed_constraints;
 };
-    
+
 class HierarchyConstraints
 {
     HierarchyConstraints(int level):_level(level){}
@@ -61,7 +60,7 @@ class CascadeQPSolver : public ocra::Solver
     {
         return std::find(v.begin(),v.end(),e) != v.end();
     }
-    
+
 public:
     DEFINE_CLASS_POINTER_TYPEDEFS(CascadeQPSolver)
 
@@ -90,7 +89,7 @@ protected:
     OneLevelSolver::Ptr levelSolver;
     bool useReducedProblem;
     Model::Ptr innerModel;
-    
+
 private:
     // NOTE : For each level, it contains a list of the n-1 * m constraints ( Each level can have m tasks, so we need to add m constraints from that level)
     std::map<int, std::map<int,std::map<Function*,EqualZeroConstraintPtr<LinearFunction> > > > levelConstraints;

@@ -36,10 +36,10 @@ class gOcraPartialPostureTaskManager : public gOcraTaskManagerBase
     private:
         gocra::GHCJTTask*                      task;
         ocra::PartialStateFeature*           feat;
-        ocra::PartialModelState*             featState;
+        ocra::PartialModelState::Ptr             featState;
 
         ocra::PartialStateFeature*           featDes;
-        ocra::PartialTargetState*            featDesState;
+        ocra::PartialTargetState::Ptr            featDesState;
 
 /*
         Eigen::Vector3d                 _posDes;

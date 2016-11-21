@@ -2,10 +2,14 @@
 
 using namespace ocra_recipes;
 
-ControllerServer::ControllerServer(CONTROLLER_TYPE ctrlType, SOLVER_TYPE solver, bool usingInterprocessCommunication)
+ControllerServer::ControllerServer(CONTROLLER_TYPE ctrlType,
+                                   SOLVER_TYPE solver,
+                                   bool usingInterprocessCommunication,
+                                   bool useOdometry)
 : controllerType(ctrlType)
 , solverType(solver)
 , usingComs(usingInterprocessCommunication)
+, usingOdometry(useOdometry)
 {
 }
 
@@ -69,23 +73,25 @@ bool ControllerServer::initialize()
                 controller = std::make_shared<wocra::WocraController>("WocraController", model, std::static_pointer_cast<ocra::OneLevelSolver>(internalSolver), useReducedProblem);
             }break;
         }
-        if(controller){
-            taskManagerSet = std::make_shared<ocra::TaskManagerSet>(controller, model);
-        }
     }
 
     if(usingComs)
     {
-        serverComs = std::make_shared<ServerCommunications>(controller, model, taskManagerSet);
+        serverComs = std::make_shared<ServerCommunications>(controller, model);
         res &= serverComs->open();
         res &= statesPort.open("/ControllerServer/states:o");
     }
 
     res &= bool(model);
     res &= bool(controller);
-    res &= bool(taskManagerSet);
-
-    updateModel();
+    
+    // WARNING! If useOdometry is true we must call updateModel during initialization explicitly after ControllerServer::initialize()
+    if (!this->usingOdometry) {
+        // Setting up initial contact state. Both feet on the ground.
+        this->controller->setContactState(1,1);
+        updateModel();
+    }
+    
     return res;
 }
 
@@ -110,25 +116,19 @@ void ControllerServer::updateModel()
     }else{
         model->setState(rState.H_root, rState.q, rState.T_root, rState.qd);
     }
-    statesPort.write(rState);
+    if (!statesPort.write(rState)) {
+        OCRA_ERROR("Couldn't write robot state for client. Not really doing anything about it, except reporting.");
+    }
 }
 
-bool ControllerServer::addTaskManagersFromXmlFile(const std::string& filePath)
+bool ControllerServer::addTasksFromXmlFile(const std::string& filePath)
 {
-    ocra::TaskManagerFactory factory;
-    if(factory.parseTasksXML(filePath))
-        return factory.addTaskManagersToSet(controller, model, taskManagerSet);
-
-    else
-        return false;
+    ocra::TaskConstructionManager factory(model, controller, filePath);
+    return true;
 }
 
-bool ControllerServer::addTaskManagers(ocra::TaskManagerOptions& tmOpts)
+bool ControllerServer::addTasks(std::vector<ocra::TaskBuilderOptions>& taskOptions)
 {
-    ocra::TaskManagerFactory factory;
-    if(factory.addTaskManagerOptions(tmOpts))
-        return factory.addTaskManagersToSet(controller, model, taskManagerSet);
-
-    else
-        return false;
+    ocra::TaskConstructionManager factory(model, controller, taskOptions);
+    return true;
 }

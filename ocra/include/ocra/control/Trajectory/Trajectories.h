@@ -3,8 +3,8 @@
 *
 */
 
-#ifndef WOCRATRAJECTORIES_H
-#define WOCRATRAJECTORIES_H
+#ifndef OCRA_TRAJECTORIES_H
+#define OCRA_TRAJECTORIES_H
 
 #include "ocra/control/Trajectory/Trajectory.h"
 #include "ocra/control/Trajectory/MinimumJerkTrajectory.h"
@@ -14,7 +14,11 @@
 #include "ocra/control/Trajectory/GaussianProcessTrajectory.h"
 #endif
 
+#if USING_GTTRAJ
+#include "ocra/control/Trajectory/TimeOptimalTrajectory.h"
+#endif
+
 // Not sure if this will be junked eventually.
 // #include "ocra/control/Trajectory/ExperimentalTrajectory.h"
 
-#endif // WOCRATRAJECTORIES_H
+#endif // OCRA_TRAJECTORIES_H

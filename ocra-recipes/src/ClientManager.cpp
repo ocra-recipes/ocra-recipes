@@ -62,8 +62,9 @@ int ClientManager::launchClient()
 
 bool ClientManager::interruptModule()
 {
-    if(client)
-        client->suspend();
+    close();
+    // if(client)
+    //     client->suspend();
     return true;
 }
 
@@ -87,6 +88,9 @@ bool ClientManager::close()
 
 bool ClientManager::updateModule()
 {
+    if (client->hasBeenReleased()) {
+        return false;
+    }
     // Get the average time between two calls of the Rate.run() method.
     client->getEstPeriod(avgTime, stdDev);
 

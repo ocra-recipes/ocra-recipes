@@ -11,33 +11,39 @@ ClientCommunications::ClientCommunications()
 {
     clientNumber = ++ClientCommunications::CONTROLLER_CLIENT_COUNT;
 
+    while(yarp.exists(("/ControllerClient/"+ std::to_string(clientNumber) +"/rpc:o")))
+    {
+        ++clientNumber;
+    }
+
     rpcClientPort_Name = "/ControllerClient/"+ std::to_string(clientNumber) +"/rpc:o";
-    inputPort_Name = "/ControllerClient/"+ std::to_string(clientNumber) +"/:i";
+    inputPort_Name = "/ControllerClient/"+ std::to_string(clientNumber) +":i";
 }
 
 ClientCommunications::~ClientCommunications()
 {
     close();
+    --ClientCommunications::CONTROLLER_CLIENT_COUNT;
 }
 
-bool ClientCommunications::open(const bool connectToTaskManagers)
+bool ClientCommunications::open(double timeout, bool connectToTasks)
 {
     rpcClientPort.open(rpcClientPort_Name.c_str());
     rpcClientPort.setReader(*this);
     inputPort.open(inputPort_Name.c_str());
     inputPort.setReader(inputCallback);
 
-    bool isConOpen = openServerConnections();
-    if(isConOpen && connectToTaskManagers)
+    bool isConOpen = openServerConnections(timeout);
+    if(isConOpen && connectToTasks)
     {
-        isConOpen &= openTaskManagerConnections();
+        isConOpen &= openTaskConnections();
 
         if(isConOpen)
         {
             for(auto rpc_i : taskRpcClients)
             {
                 yarp::os::Bottle message, reply;
-                message.addInt(ocra::TASK_MESSAGE::GET_TYPE);
+                message.addInt(ocra::TASK_MESSAGE::GET_TYPE_AS_STRING);
                 rpc_i.second->write(message, reply);
             }
         }else{
@@ -53,7 +59,7 @@ std::vector<std::string> ClientCommunications::getTaskTypes()
     for(auto rpc_i : taskRpcClients)
     {
         yarp::os::Bottle message, reply;
-        message.addInt(ocra::TASK_MESSAGE::GET_TYPE);
+        message.addInt(ocra::TASK_MESSAGE::GET_TYPE_AS_STRING);
         rpc_i.second->write(message, reply);
         retVec.push_back(reply.get(0).asString());
     }
@@ -70,6 +76,7 @@ bool ClientCommunications::close()
         rpc_i.second->close();
     }
     taskRpcClients.clear();
+    return true;
 }
 
 void ClientCommunications::close(const std::string& taskName)
@@ -94,7 +101,7 @@ bool ClientCommunications::read(yarp::os::ConnectionReader& connection)
     }
 }
 
-bool ClientCommunications::openServerConnections()
+bool ClientCommunications::openServerConnections(double timeout)
 {
     if (!yarp.checkNetwork()) {
         yLog.error() << "Yarp network isn't running.";
@@ -103,28 +110,28 @@ bool ClientCommunications::openServerConnections()
     else{
         bool connected = false;
         double timeDelayed = 0.0;
-        double delayTime = 0.1;
-        while(!connected && timeDelayed < CONNECTION_TIMEOUT)
+        double delayTime = 0.01;
+        while(!connected && (timeDelayed < timeout))
         {
             connected = yarp.connect(rpcClientPort_Name.c_str(), "/ControllerServer/rpc:i");
             yarp::os::Time::delay(delayTime);
             timeDelayed += delayTime;
-            if (timeDelayed>= CONNECTION_TIMEOUT) {
+            if (timeDelayed>= timeout) {
                 yLog.error() << "Could not connect to the ocra controller server. Are you sure it is running?";
             }
         }
 
-        connected = false;
-        timeDelayed = 0.0;
-        while(!connected && timeDelayed < CONNECTION_TIMEOUT)
-        {
-            connected = yarp.connect("/ControllerServer:o", inputPort_Name.c_str());
-            yarp::os::Time::delay(delayTime);
-            timeDelayed += delayTime;
-            if (timeDelayed>= CONNECTION_TIMEOUT) {
-                yLog.error() << "Could not connect to the ocra controller port. Are you sure it is running?";
-            }
-        }
+        // connected = false;
+        // timeDelayed = 0.0;
+        // while(!connected && timeDelayed < timeout)
+        // {
+        //     connected = yarp.connect("/ControllerServer:o", inputPort_Name.c_str());
+        //     yarp::os::Time::delay(delayTime);
+        //     timeDelayed += delayTime;
+        //     if (timeDelayed>= timeout) {
+        //         yLog.error() << "Could not connect to the ocra controller port. Are you sure it is running?";
+        //     }
+        // }
         return connected;
     }
 }
@@ -204,7 +211,7 @@ yarp::os::Bottle ClientCommunications::queryController(const std::vector<SERVER_
     return reply;
 }
 
-bool ClientCommunications::openTaskManagerConnections()
+bool ClientCommunications::openTaskConnections()
 {
     std::vector<std::string> taskNames = getTaskNames();
     std::vector<std::string> taskPortNames = getTaskPortNames();

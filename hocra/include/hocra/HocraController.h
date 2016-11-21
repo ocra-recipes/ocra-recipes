@@ -11,7 +11,7 @@
 #include <ocra/optim/CascadeQPSolver.h>
 #include <ocra/control/Model.h>
 #include <ocra/control/Controller.h>
-#include <ocra/control/Tasks/OneLevelTask.h>
+#include "ocra/control/Task.h"
 
 namespace hocra
 
@@ -42,11 +42,11 @@ public:
     virtual void doAddContactSet(const ContactSet& contacts);
     virtual void doAddTask(Task::Ptr task);
     virtual void doComputeOutput(VectorXd& tau);
-    Task::Ptr doCreateContactTask(const std::string& name, const ocra::PointContactFeature& feature, double mu, double margin) const;
-    Task::Ptr doCreateTask(const std::string& name, const ocra::Feature& feature) const;
-    Task::Ptr doCreateTask(const std::string& name, const ocra::Feature& feature, const ocra::Feature& featureDes) const;
+    Task::Ptr doCreateContactTask(const std::string& name, ocra::PointContactFeature::Ptr feature, double mu, double margin) const;
+    Task::Ptr doCreateTask(const std::string& name, ocra::Feature::Ptr feature) const;
+    Task::Ptr doCreateTask(const std::string& name, ocra::Feature::Ptr feature, ocra::Feature::Ptr featureDes) const;
     virtual ~HocraController(){};
-    
+
 private:
     CascadeQPSolver::Ptr cascadeQPSolver;
     Model::Ptr innerModel;

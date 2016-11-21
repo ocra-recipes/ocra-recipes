@@ -6,7 +6,9 @@
 namespace ocra
 {
 
-class MinimumJerkTrajectory : public Trajectory {
+class MinimumJerkTrajectory : public Trajectory
+{
+DEFINE_CLASS_POINTER_TYPEDEFS(MinimumJerkTrajectory)
     public:
         Eigen::MatrixXd getDesiredValues(double time);
     protected:

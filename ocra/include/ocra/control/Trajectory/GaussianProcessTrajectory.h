@@ -15,7 +15,10 @@ namespace ocra
     typedef std::vector<bool> boolVector;
 
 
-class GaussianProcessTrajectory : public Trajectory {
+class GaussianProcessTrajectory : public Trajectory
+{
+DEFINE_CLASS_POINTER_TYPEDEFS(GaussianProcessTrajectory)
+
     public:
 
         Eigen::MatrixXd getDesiredValues(double time);

@@ -185,19 +185,19 @@ void GHCJTController::doAddContactSet(const ContactSet& contacts)
 
 
 
-GHCJTTask& GHCJTController::createGHCJTTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+GHCJTTask& GHCJTController::createGHCJTTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const
 {
     auto taskPtr = createTask(name, feature, featureDes).get();
     return dynamic_cast<GHCJTTask&>(*taskPtr);
 }
 
-GHCJTTask& GHCJTController::createGHCJTTask(const std::string& name, const Feature& feature) const
+GHCJTTask& GHCJTController::createGHCJTTask(const std::string& name, Feature::Ptr feature) const
 {
     auto taskPtr = createTask(name, feature).get();
     return dynamic_cast<GHCJTTask&>(*taskPtr);
 }
 
-GHCJTTask& GHCJTController::createGHCJTContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+GHCJTTask& GHCJTController::createGHCJTContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const
 {
     auto taskPtr = createContactTask(name, feature, mu, margin).get();
     return dynamic_cast<GHCJTTask&>(*taskPtr);
@@ -217,7 +217,7 @@ GHCJTTask& GHCJTController::createGHCJTContactTask(const std::string& name, cons
  * This method is called by the higher level methods #createGHCJTTask(const std::string&, const Feature&, const Feature&, int, double) const
  * and #createGHCJTTask(const std::string&, const Feature&, int, double) const and is the concrete implementation required by the xde Controller class.
  */
-Task* GHCJTController::doCreateTask(const std::string& name, const Feature& feature, const Feature& featureDes) const
+Task* GHCJTController::doCreateTask(const std::string& name, Feature::Ptr feature, Feature::Ptr featureDes) const
 {
     GHCJTTask* nTask = new GHCJTTask(name, pimpl->innerModel, feature, featureDes);
     pimpl->createdTask.push_back(nTask);
@@ -233,7 +233,7 @@ Task* GHCJTController::doCreateTask(const std::string& name, const Feature& feat
  * This method is called by the higher level methods #createGHCJTTask(const std::string&, const Feature&, const Feature&, int, double) const
  * and #createGHCJTTask(const std::string&, const Feature&, int, double) const and is the concrete implementation required by the xde Controller class.
  */
-Task* GHCJTController::doCreateTask(const std::string& name, const Feature& feature) const
+Task* GHCJTController::doCreateTask(const std::string& name, Feature::Ptr feature) const
 {
     GHCJTTask* nTask = new GHCJTTask(name, pimpl->innerModel, feature);
     pimpl->createdTask.push_back(nTask);
@@ -248,10 +248,10 @@ Task* GHCJTController::doCreateTask(const std::string& name, const Feature& feat
  * \param margin The margin inside the friction cone
  * \return The pointer to the new created contact task
  *
- * This method is called by the higher level methods #createGHCJTContactTask(const std::string&, const PointContactFeature&, , double, double, int, double) const
+ * This method is called by the higher level methods #createGHCJTContactTask(const std::string&, PointContactFeature::Ptr, , double, double, int, double) const
  * and is the concrete implementation required by the xde Controller class.
  */
-Task* GHCJTController::doCreateContactTask(const std::string& name, const PointContactFeature& feature, double mu, double margin) const
+Task* GHCJTController::doCreateContactTask(const std::string& name, PointContactFeature::Ptr feature, double mu, double margin) const
 {
     GHCJTTask* nTask = new GHCJTTask(name, pimpl->innerModel, feature);
     pimpl->createdTask.push_back(nTask);

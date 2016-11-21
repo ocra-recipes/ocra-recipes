@@ -4,8 +4,7 @@
 #include <ocra-recipes/ClientCommunications.h>
 #include <ocra-recipes/TaskConnection.h>
 #include <ocra/control/Model.h>
-#include <ocra/control/TaskManagers/TaskManagerFactory.h>
-#include <ocra/control/TaskManagers/TaskManagerOptions.h>
+#include <ocra/control/TaskBuilders/TaskConstructionManager.h>
 #include <ocra-recipes/RobotState.h>
 #include <yarp/os/Network.h>
 #include <yarp/os/Port.h>
@@ -14,15 +13,21 @@
 #include <yarp/os/RateThread.h>
 #include <yarp/os/ResourceFinder.h>
 
+#include <ocra/util/Macros.h>
+#include <ocra/util/ErrorsHelper.h>
+
+
+
 namespace ocra_recipes
 {
 
 class ControllerClient : public yarp::os::RateThread
 {
+DEFINE_CLASS_POINTER_TYPEDEFS(ControllerClient)
 
 public:
     ControllerClient ();
-    ControllerClient (std::shared_ptr<ocra::Model> derivedModelPtr, const int loopPeriod = DEFAULT_LOOP_PERIOD);
+    ControllerClient (ocra::Model::Ptr derivedModelPtr, const int loopPeriod = DEFAULT_LOOP_PERIOD);
     virtual ~ControllerClient ();
 
     // RateThread virtual functions
@@ -43,15 +48,16 @@ public:
 
 public:
     void addTasks(const std::string& pathToXmlFile, bool overwrite);
-    void addTask(ocra::TaskManagerOptions& tmOpts, bool overwrite);
-    bool checkIfTaskExists(ocra::TaskManagerOptions& tmOpts);
+    void addTask(ocra::TaskBuilderOptions& tmOpts, bool overwrite);
+    bool checkIfTaskExists(ocra::TaskBuilderOptions& tmOpts);
     std::vector<std::string> getTaskTypes();
     std::vector<std::string> getTaskNames();
 
     bool removeTask(const std::string& taskName);
     bool removeTasks(const std::vector<std::string>& taskNameVector);
 
-
+    bool hasBeenReleased(){return clientThreadHasBeenReleased;}
+    bool changeFixedLink(std::string newFixedLink, int isInLeftSupport, int isInRightSupport);
 
 
 protected:
@@ -59,11 +65,11 @@ protected:
     virtual void release(){/* Do nothing. */}
     virtual void loop() = 0;
 
-    std::shared_ptr<ClientCommunications> clientComs;
-    std::shared_ptr<ocra::Model> model;
+    ClientCommunications::Ptr clientComs;
+    ocra::Model::Ptr model;
 
 private:
-
+    bool clientThreadHasBeenReleased;
     bool isReady;
 
     yarp::os::Port statesPort;

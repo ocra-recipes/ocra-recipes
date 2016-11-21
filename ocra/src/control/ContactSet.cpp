@@ -1,28 +1,15 @@
 #include "ocra/control/ContactSet.h"
 
-#include "ocra/optim/Constraint.h"
-#include "ocra/optim/LinearizedCoulombFunction.h"
-#include "ocra/optim/WeightedSquareDistanceFunction.h"
-#include "ocra/optim/Objective.h"
 
-#include "ocra/control/Model.h"
-#include "ocra/control/ControlFrame.h"
-#include "ocra/control/ControlEnum.h"
-#include "ocra/control/Feature.h"
-#include "ocra/control/Tasks/Task.h"
-#include "ocra/control/Controller.h"
-
-#include <stdexcept>
-#include <sstream>
 
 namespace ocra
 {
-  ContactSet::ContactSet(const std::string& name, const Controller& factory, const SegmentFrame& body, double mu, double margin)
+  ContactSet::ContactSet(const std::string& name, const Controller& factory, SegmentFrame::Ptr body, double mu, double margin)
     : NamedInstance(name)
     , _factory(factory)
     , _body(body)
-    , _bodyFeature(new ContactConstraintFeature(body.getName()+".feature", body))
-    , _bodyTask(factory.createTask(body.getName()+".task", *_bodyFeature))
+    , _bodyFeature(std::make_shared<ContactConstraintFeature>(body->getName()+".feature", body))
+    , _bodyTask(factory.createTask(body->getName()+".task", _bodyFeature))
     , _points()
     , _mu(mu)
     , _margin(margin)
@@ -40,17 +27,17 @@ namespace ocra
     std::stringstream ss;
     ss << getName() << "." << _points.size();
 
-    SegmentFrame* sf = new SegmentFrame(ss.str(), _body.getModel(), _body.getSegmentIndex(), frame);
+    SegmentFrame::Ptr sf = std::make_shared<SegmentFrame>(ss.str(), _body->getModel(), _body->getSegmentIndex(), frame);
     _points.push_back(sf);
 
-    PointContactFeature* pf = new PointContactFeature(sf->getName()+".feature", *sf);
+    PointContactFeature::Ptr pf = std::make_shared<PointContactFeature>(sf->getName()+".feature", sf);
     _features.push_back(pf);
 
-    std::shared_ptr<Task> task = _factory.createContactTask(sf->getName()+".task", *pf, _mu, _margin);
+    std::shared_ptr<Task> task = _factory.createContactTask(sf->getName()+".task", pf, _mu, _margin);
     _tasks.push_back(task);
   }
 
-  const SegmentFrame& ContactSet::getBodyFrame() const
+  SegmentFrame::Ptr ContactSet::getBodyFrame() const
   {
     return _body;
   }
@@ -65,12 +52,12 @@ namespace ocra
     return _bodyTask;
   }
 
-  const std::vector<SegmentFrame*>& ContactSet::getPoints() const
+  const std::vector<SegmentFrame::Ptr>& ContactSet::getPoints() const
   {
     return _points;
   }
 
-  const std::vector<PointContactFeature*>& ContactSet::getFeatures() const
+  const std::vector<PointContactFeature::Ptr>& ContactSet::getFeatures() const
   {
     return _features;
   }
