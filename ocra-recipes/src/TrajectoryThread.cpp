@@ -106,6 +106,12 @@ void TrajectoryThread::init()
     taskType = task->getTaskType();
 
 
+    if (terminationStrategy==TERMINATION_STRATEGY::NONE) {
+        isUsingTerminationStrategy = false;
+    } else {
+        isUsingTerminationStrategy = true;
+    }
+
     switch (trajType)
     {
         case MIN_JERK:
@@ -363,7 +369,11 @@ Eigen::VectorXd TrajectoryThread::varianceToWeights(Eigen::VectorXd& desiredVari
 
 bool TrajectoryThread::goalAttained()
 {
-    return (goalStateVector - getCurrentTaskStateAsVector()).norm() <= errorThreshold;
+    if (isUsingTerminationStrategy) {
+        return (goalStateVector - getCurrentTaskStateAsVector()).norm() <= errorThreshold;
+    } else {
+        return false;
+    }
 }
 
 void TrajectoryThread::flipWaypoints()
@@ -568,6 +578,17 @@ ocra::TaskState TrajectoryThread::matrixToTaskState(const Eigen::MatrixXd& desMa
     }
 
     return desState;
+}
+
+void TrajectoryThread::returnToHome()
+{
+    flipWaypoints();
+    if (trajType==TIME_OPTIMAL) {
+        setTrajectoryWaypoints(allWaypointList, true);
+    } else {
+        setTrajectoryWaypoints(allWaypoints, true);
+    }
+    returningHome = true;
 }
 
 Eigen::VectorXd TrajectoryThread::getCurrentTaskStateAsVector()

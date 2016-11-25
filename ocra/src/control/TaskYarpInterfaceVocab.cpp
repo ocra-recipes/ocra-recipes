@@ -55,7 +55,8 @@ std::string TaskMessageHandler::taskManagerMessageTagToString(TASK_MESSAGE msg)
 std::string TaskMessageHandler::removeUnderscores(std::string s)
 {
     std::regex e ("_*");
-    return std::regex_replace (s,e,"");
+    std::string empty("");
+    return std::regex_replace (s,e,empty);
 }
 
 TASK_MESSAGE TaskMessageHandler::stringToTaskManagerMessageTag(std::string testString)

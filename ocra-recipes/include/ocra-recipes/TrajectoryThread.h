@@ -62,7 +62,8 @@ enum TERMINATION_STRATEGY
     WAIT,
     STOP_THREAD_DEACTIVATE,
     WAIT_DEACTIVATE,
-    CYCLE
+    CYCLE,
+    NONE
 };
 
 class TrajectoryThread : public yarp::os::RateThread
@@ -182,6 +183,8 @@ public:
 
     double getDuration(){return trajectory->getDuration();}
     std::list<Eigen::VectorXd> getWaypointList(){return allWaypointList;}
+    void returnToHome();
+
     Eigen::MatrixXd getWaypoints(){return allWaypoints;}
 
     #if USING_SMLT
@@ -242,6 +245,7 @@ protected:
 
     bool isTaskCurrentlyActive;
     bool isPaused;
+    bool isUsingTerminationStrategy;
 
     double timeElapsedDuringPause;
     double pauseTime;
