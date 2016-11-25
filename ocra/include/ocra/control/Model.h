@@ -33,7 +33,7 @@ namespace ocra
     * TODO: complete description
     *
     * terms of the dynamic equation are given so that the equation writes this way :
-    * M\dot{T} + N + G = L tau - J_c^T f
+    * \f$ M\dot{T} + N + G = L tau - J_c^T f \f$
     */
   class Model : public ObserverSubject, public NamedInstance
   {
