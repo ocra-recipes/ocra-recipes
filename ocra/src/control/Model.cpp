@@ -102,11 +102,9 @@ namespace ocra
 
   void Model::setState(const VectorXd& q, const VectorXd& q_dot)
   {
-    this->modelMutex.wait();
     doSetState(q, q_dot);
     setJointPositions(q);
     setJointVelocities(q_dot);
-    this->modelMutex.post();
   }
 
   void Model::setState(const Eigen::Displacementd& H_root, const VectorXd& q, const Eigen::Twistd& T_root, const VectorXd& q_dot)
