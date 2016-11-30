@@ -743,7 +743,7 @@ void Task::removeContactPointInModel()
 
 /** Update linear function of the task for the full formalism.
  *
- * It computes a desired acceleration \f$ \vec{a}^{des} = - \left( \vec{a}_{ref} + K_p (\vec{p}^{des} - vec{p}) +  K_d (\vec{v}^{des} - vec{v}) \right) \f$ .
+ * It computes a desired acceleration \f$ \vec{a}^{des} = - \left( \vec{a}_{ref} + K_p (\vec{p}^{des} - \vec{p}) +  K_d (\vec{v}^{des} - \vec{v}) \right) \f$ .
  * Then The linear function is set as follows:
  *
  * - if it use the reduced problem:
