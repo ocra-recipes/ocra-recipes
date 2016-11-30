@@ -1006,7 +1006,7 @@ TaskState Task::getTaskState()
 
 TaskState Task::getDesiredTaskState()
 {
-    return getFeatureDes()->getState();
+    return pimpl->featureDes ? getFeatureDes()->getState() : getFeature()->getState();
 }
 
 void Task::setDesiredTaskState(const TaskState& newDesiredTaskState)
@@ -1016,7 +1016,9 @@ void Task::setDesiredTaskState(const TaskState& newDesiredTaskState)
 
 void Task::setDesiredTaskStateDirect(const TaskState& newDesiredTaskState)
 {
-    getFeatureDes()->setState(newDesiredTaskState);
+    if (pimpl->featureDes) {
+        getFeatureDes()->setState(newDesiredTaskState);
+    }
 }
 
 
