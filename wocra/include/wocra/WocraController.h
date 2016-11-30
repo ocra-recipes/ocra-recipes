@@ -57,7 +57,7 @@ namespace wocra
      *
      *   The following are types of internal and external physical constraints of the system, describing a robot and its interaction with the environment:
      *
-     *    - Equations of motion (with interactions).
+     *    - Equations of motion (with interactions) (See ocra::FullDynamicEquationFunction).
      *    - Actuation limits.
      *      - Torque limits.
      *      - Acceleration limits.
@@ -75,21 +75,21 @@ namespace wocra
      *   Different tasks can be mixed in wocra to achieve a desired high-level motion. These tasks will be subject to the aforementioned equality and inequality constraints, which motivate the use of an LQP, which solves the following problem:
      *
      *      \f{align*}{
-     *          \argmin{\x} &: \;  \frac{1}{2} \x\tp G \x + \vec{g}_0\tp \x \\
-     *          & CE \x + \vec{ce}_0 =    \vec{0} \\
-     *          & CI \x + \vec{ci}_0 \geq \vec{0}
+     *          \underset{\x}{\text{min}}  &\;  \frac{1}{2} \left( \x\tp P \x + \q\tp\x + r \right) \\
+     *                               s.t. &:\;  \G\x \leq h \\
+     *                                     &\;  A\x = \b
      *      \f}
      *
-     *   Where \f$ x \f$ is the vector optimize, \f$ P \f$, \f$ q \f$ and \f$ r \f$ represent the quadratic cost function, \f$ G \f$, \f$ h \f$ define the inequality constraints and \f$ A \f$, \f$ b \f$ define the equality constraints, which are the concatenation of the different constraints previously mentioned. The controller, thus builds these matrices according to the task and the constraints acting on the robot and, when the solution is found, extracts the input torque vector \f$ \tau \f$ to actuate the system. \f$ x \f$ can be replaced by \f$ \left[ \ddq \tp \; x \tp \right] \tp \f$.
+     *   Where \f$ x \f$ is the vector to optimize, \f$ P \f$, \f$ q \f$ and \f$ r \f$ represent the quadratic cost function, \f$ G \f$, \f$ h \f$ define the inequality constraints and \f$ A \f$, \f$ b \f$ define the equality constraints, which are the concatenation of the different constraints previously mentioned. The controller thus builds these matrices according to the tasks and the constraints acting on the robot and, when the solution is found, extracts the input torque vector \f$ \tau \f$ to actuate the system. \f$ x \f$ can be replaced by \f$ \left[ \ddq \tp \; f_c \tp \; \tau \tp \right] \tp \f$ which we also denote by the **dynamic variable** \f$ \X = [\ddq\tp \av] \f$, where \f$ \av \f$ is further referred to as the **action variable**.
      * 
      *   But the story does not end here. In particular, Wocra will use a weighting strategy which associates each task with a coefficient that sets its importance with respect to the others (a task with a higher weights gets a higher priority). The first point is to set these coefficients as real values. As a consequence, priorities are not strict and all tasks are achieved according to the trade-off defined by the weights. Given a set of \f$ n \f$ tasks and their related weights \f$ (T_i(\q, \dq, \X), \omega_i) \; i \in [1...n] \f$ one solves their weighted sum subject to the concatenation of the constraints. The task \f$ T_0 \f$ is dedicated to the minimization of the whole optimization variable. This is required when the control problem has many solutions, in order to ensure the uniqueness and more specifically to provide a solution that minimizes the input torque vector \f$ \tau \f$. \f$ T_0 \f$ has a very small weight with respect to the others \f$ 0 < \omega_0 << 1 \f$ to limit the induced error. This program is solved only one time per call.
      *
      *   The algorithm consists then in finding  \f$\X_i^*\f$, the solution of the problem:
      *  
      *   \f{align*}{
-                \min{\X} & \frac{1}{2} \; \left( \sum_{i=1}^{n} (\omega_i^2 T_i (\q, \dq, \X)) + \omega_0^2 T_0(\q, \dq, \X) \right) \\
-                   s.t.: & G \X \leq \h \\
-                         & \A \X = \b
+                \underset{\X}{\text{min}} &\; \frac{1}{2} \left( \sum_{i=1}^{n} (\omega_i^2 T_i (\q, \dq, \X)) + \omega_0^2 T_0(\q, \dq, \X) \right) \\
+                   s.t.: &\; G \X \leq \h \\
+                         &\; \A \X = \b
          \f}
      *
      *   @cite salini2012Thesis.
