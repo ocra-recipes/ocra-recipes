@@ -98,7 +98,6 @@ bool ControllerServer::initialize()
 
 const Eigen::VectorXd& ControllerServer::computeTorques()
 {
-    updateModel();
     computeTorques(tau);
     return tau;
 }
