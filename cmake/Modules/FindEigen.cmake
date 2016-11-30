@@ -51,7 +51,7 @@
 ###############################################################################
 
 find_package(PkgConfig)
-pkg_check_modules(PC_EIGEN eigen3 <= 3.3)
+pkg_check_modules(PC_EIGEN eigen3)
 set(EIGEN_DEFINITIONS ${PC_EIGEN_CFLAGS_OTHER})
 
 
