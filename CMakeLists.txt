@@ -11,6 +11,14 @@ else()
 endif()
 
 
+option(USING_ATOM_EDITOR "If using atom as an IDE build the necessary json files." FALSE)
+if(USING_ATOM_EDITOR)
+    # https://atom.io/packages/linter-clang
+    # http://clang.llvm.org/docs/JSONCompilationDatabase.html
+    message("-- Using Atom editor as a C++ IDE. Generating necessary files.")
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+endif()
+
 option(BUILD_TESTS "(Developers Only) Build the various unit tests." FALSE)
 
 
@@ -18,7 +26,7 @@ set(VARS_PREFIX "OcraRecipes")
 
 set(${VARS_PREFIX}_MAJOR_VERSION 1)
 set(${VARS_PREFIX}_MINOR_VERSION 1)
-set(${VARS_PREFIX}_PATCH_VERSION 0)
+set(${VARS_PREFIX}_PATCH_VERSION 1)
 set(${VARS_PREFIX}_VERSION ${${VARS_PREFIX}_MAJOR_VERSION}.${${VARS_PREFIX}_MINOR_VERSION}.${${VARS_PREFIX}_PATCH_VERSION})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
@@ -84,3 +92,14 @@ install_basic_package_files(OcraRecipes VARS_PREFIX ${VARS_PREFIX}
                                         NO_CHECK_REQUIRED_COMPONENTS_MACRO
                                     )
 include(AddUninstallTarget)
+
+
+if(USING_ATOM_EDITOR)
+    add_custom_target(  atom-files ALL
+                        DEPENDS ocra-recipes
+                        COMMAND ${CMAKE_COMMAND} -E copy
+                        ${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json
+                        ${CMAKE_SOURCE_DIR}
+                        COMMENT "Copying 'compile_commands.json' to '${CMAKE_SOURCE_DIR}'"
+                     )
+endif()

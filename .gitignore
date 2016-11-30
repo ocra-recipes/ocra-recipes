@@ -1,6 +1,7 @@
 # Created by https://www.gitignore.io/api/inux,osx,kdevelop4,emacs,sublimetext,c++,python,cmake
 
-#!! ERROR: inux is undefined. Use list command to see defined gitignore types !!#
+html/
+compile_commands.json
 
 ### OSX ###
 .DS_Store
