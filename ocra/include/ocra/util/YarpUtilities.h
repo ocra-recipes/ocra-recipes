@@ -177,12 +177,19 @@ inline void pourTwistdIntoBottle(const Eigen::Twistd& twist, yarp::os::Bottle& b
     const int TWIST_VECTOR_SIZE = 6;
     bottle.addInt(TWIST_VECTOR_SIZE);
 
-    // bottle.addDouble(twist.rx());
-    // bottle.addDouble(twist.ry());
-    // bottle.addDouble(twist.rz());
-    // bottle.addDouble(twist.vx());
-    // bottle.addDouble(twist.vy());
-    // bottle.addDouble(twist.vz());
+    double rx = twist(0);
+    double ry = twist(1);
+    double rz = twist(2);
+    double vx = twist(3);
+    double vy = twist(4);
+    double vz = twist(5);
+    
+     bottle.addDouble(rx);
+     bottle.addDouble(ry);
+     bottle.addDouble(rz);
+     bottle.addDouble(vx);
+     bottle.addDouble(vy);
+     bottle.addDouble(vz);
 }
 
 inline void pourWrenchdIntoBottle(const Eigen::Wrenchd& wrench, yarp::os::Bottle& bottle)
