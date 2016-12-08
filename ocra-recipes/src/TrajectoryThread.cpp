@@ -49,7 +49,6 @@ TrajectoryThread::TrajectoryThread( int period,
 : RateThread(period)
 , trajType(trajectoryType)
 , terminationStrategy(_terminationStrategy)
-, waypointsHaveBeenSet(false)
 {
     task = std::make_shared<TaskConnection>(taskName);
     task->openControlPorts();
@@ -64,8 +63,7 @@ TrajectoryThread::TrajectoryThread( int period,
 RateThread(period),
 userWaypoints(waypoints),
 trajType(trajectoryType),
-terminationStrategy(_terminationStrategy),
-waypointsHaveBeenSet(true)
+terminationStrategy(_terminationStrategy)
 {
     task = std::make_shared<TaskConnection>(taskName);
     task->openControlPorts();
@@ -80,8 +78,7 @@ TrajectoryThread::TrajectoryThread( int period,
 RateThread(period),
 userWaypointList(waypoints),
 trajType(trajectoryType),
-terminationStrategy(_terminationStrategy),
-waypointsHaveBeenSet(true)
+terminationStrategy(_terminationStrategy)
 {
     task = std::make_shared<TaskConnection>(taskName);
     task->openControlPorts();
@@ -91,6 +88,7 @@ waypointsHaveBeenSet(true)
 void TrajectoryThread::init()
 {
     // Set up class variables:
+    waypointsHaveBeenSet = false;
     printWaitingNoticeOnce = true;
     errorThreshold = 0.03;
     useVarianceModulation = true;
@@ -149,7 +147,7 @@ bool TrajectoryThread::threadInit()
         varianceThresh = Eigen::ArrayXd::Constant(weightDimension, VAR_THRESH);
     }
 
-    if (waypointsHaveBeenSet) {
+    if ( (userWaypointList.size()>0) || (userWaypoints.size()>0) ) {
         if (trajType==TIME_OPTIMAL) {
             return setTrajectoryWaypoints(userWaypointList);
         } else {
@@ -658,6 +656,66 @@ Eigen::VectorXd TrajectoryThread::getCurrentTaskStateAsVector()
     }
     return startVector;
 }
+
+void TrajectoryThread::setMaxVelocity(double maxVel)
+{
+    // OCRA_INFO("Waiting for mutex")
+    // mutex.lock();
+    trajectory->setMaxVelocity(maxVel);
+    if ( (trajType==TIME_OPTIMAL) && (waypointsHaveBeenSet) ) {
+        trajectory->recalculateTrajectory();
+    }
+    // mutex.unlock();
+}
+void TrajectoryThread::setMaxVelocity(Eigen::VectorXd maxVel)
+{
+    // OCRA_INFO("Waiting for mutex")
+    // mutex.lock();
+    trajectory->setMaxVelocity(maxVel);
+    if ( (trajType==TIME_OPTIMAL) && (waypointsHaveBeenSet) ) {
+        trajectory->recalculateTrajectory();
+    }
+    // mutex.unlock();
+}
+void TrajectoryThread::setMaxAcceleration(double maxAcc)
+{
+    // OCRA_INFO("Waiting for mutex")
+    // mutex.lock();
+    trajectory->setMaxAcceleration(maxAcc);
+    if ( (trajType==TIME_OPTIMAL) && (waypointsHaveBeenSet) ) {
+        trajectory->recalculateTrajectory();
+    }
+    // mutex.unlock();
+}
+void TrajectoryThread::setMaxAcceleration(Eigen::VectorXd maxAcc)
+{
+    // OCRA_INFO("Waiting for mutex")
+    // mutex.lock();
+    trajectory->setMaxAcceleration(maxAcc);
+    if ( (trajType==TIME_OPTIMAL) && (waypointsHaveBeenSet) ) {
+        trajectory->recalculateTrajectory();
+    }
+    // mutex.unlock();
+}
+
+void TrajectoryThread::setMaxVelocityAndAcceleration(double maxVel, double maxAcc)
+{
+    trajectory->setMaxVelocity(maxVel);
+    trajectory->setMaxAcceleration(maxAcc);
+    if ( (trajType==TIME_OPTIMAL) && (waypointsHaveBeenSet) ) {
+        trajectory->recalculateTrajectory();
+    }
+}
+
+void TrajectoryThread::setMaxVelocityAndAcceleration(const Eigen::VectorXd& maxVel, const Eigen::VectorXd& maxAcc)
+{
+    trajectory->setMaxVelocity(maxVel);
+    trajectory->setMaxAcceleration(maxAcc);
+    if ( (trajType==TIME_OPTIMAL) && (waypointsHaveBeenSet) ) {
+        trajectory->recalculateTrajectory();
+    }
+}
+
 
 #if USING_SMLT
 void TrajectoryThread::setMeanWaypoints(std::vector<bool>& isMeanWaypoint)

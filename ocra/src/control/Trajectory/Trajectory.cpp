@@ -15,8 +15,9 @@ namespace ocra
 /**
 * Constructor function.
 */
-Trajectory::Trajectory():
-maximumVelocity(MAX_VEL)
+Trajectory::Trajectory()
+: maximumVelocity(MAX_VEL)
+, nDoF(-1)
 {
 }
 
@@ -148,11 +149,18 @@ void Trajectory::setWaypoints(Eigen::MatrixXd& _waypoints, bool _endsWithQuatern
 void Trajectory::setMaxVelocity(double newMaxVel)
 {
     maximumVelocity = newMaxVel;
+    if (nDoF >= 0) {
+        maximumVelocityVector = Eigen::VectorXd::Constant(nDoF, newMaxVel);
+    }
 }
 
 void Trajectory::setMaxVelocity(const Eigen::VectorXd& newMaxVel)
 {
-    maximumVelocityVector = newMaxVel;
+    if (newMaxVel.size()==nDoF) {
+        maximumVelocityVector = newMaxVel;
+    } else {
+        OCRA_ERROR("The size of the newMaxVel vector ("<<newMaxVel.size()<<") doesn't match the nDoF (" << nDoF << ") of the trajectory. Ignoring.")
+    }
 }
 
 double Trajectory::getMaxVelocity()
@@ -168,11 +176,18 @@ Eigen::VectorXd Trajectory::getMaxVelocityVector()
 void Trajectory::setMaxAcceleration(double newMaxAcc)
 {
     maximumAcceleration = newMaxAcc;
+    if (nDoF >= 0) {
+        maximumAccelerationVector = Eigen::VectorXd::Constant(nDoF, newMaxAcc);
+    }
 }
 
 void Trajectory::setMaxAcceleration(const Eigen::VectorXd& newMaxAcc)
 {
-    maximumAccelerationVector = newMaxAcc;
+    if (newMaxAcc.size()==nDoF) {
+        maximumAccelerationVector = newMaxAcc;
+    } else {
+        OCRA_ERROR("The size of the newMaxAcc vector ("<<newMaxAcc.size()<<") doesn't match the nDoF (" << nDoF << ") of the trajectory. Ignoring.")
+    }
 }
 
 double Trajectory::getMaxAcceleration()
