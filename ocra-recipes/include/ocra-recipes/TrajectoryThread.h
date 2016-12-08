@@ -113,7 +113,10 @@ public:
 
 
     // Setters
-    void setMaxVelocity(double maxVel){trajectory->setMaxVelocity(maxVel);}
+    void setMaxVelocity(double maxVel);
+    void setMaxVelocity(Eigen::VectorXd maxVel);
+    void setMaxAcceleration(double maxAcc);
+    void setMaxAcceleration(Eigen::VectorXd maxAcc);
 
     /**
      *  Sets a displacement vector with the same constant value for each element and consistent with the weight dimension.
@@ -197,6 +200,10 @@ public:
     // Getters
     Eigen::VectorXd getBayesianOptimizationVariables();
     #endif
+
+    void setMaxVelocityAndAcceleration(double maxVel, double maxAcc);
+    void setMaxVelocityAndAcceleration(const Eigen::VectorXd& maxVel, const Eigen::VectorXd& maxAcc);
+
 
 
 protected:

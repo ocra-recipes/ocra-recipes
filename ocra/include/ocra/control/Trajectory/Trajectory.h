@@ -12,6 +12,7 @@
 #include <list>
 
 #include <ocra/util/Macros.h>
+#include <ocra/util/ErrorsHelper.h>
 
 
 #define TRANSLATION_DIM 3
@@ -96,6 +97,7 @@ DEFINE_CLASS_POINTER_TYPEDEFS(Trajectory)
         bool eigenVectorToTwist(const Eigen::VectorXd& twistVec, Eigen::Twistd& twist);
 
         // bool dumpToFile(const Eigen::MatrixXd& desiredVals);
+        virtual void recalculateTrajectory(){/*do nothing unless overloaded in derived classes.*/};
 
     protected:
 
