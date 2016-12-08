@@ -659,43 +659,31 @@ Eigen::VectorXd TrajectoryThread::getCurrentTaskStateAsVector()
 
 void TrajectoryThread::setMaxVelocity(double maxVel)
 {
-    // OCRA_INFO("Waiting for mutex")
-    // mutex.lock();
     trajectory->setMaxVelocity(maxVel);
     if ( (trajType==TIME_OPTIMAL) && (waypointsHaveBeenSet) ) {
         trajectory->recalculateTrajectory();
     }
-    // mutex.unlock();
 }
 void TrajectoryThread::setMaxVelocity(Eigen::VectorXd maxVel)
 {
-    // OCRA_INFO("Waiting for mutex")
-    // mutex.lock();
     trajectory->setMaxVelocity(maxVel);
     if ( (trajType==TIME_OPTIMAL) && (waypointsHaveBeenSet) ) {
         trajectory->recalculateTrajectory();
     }
-    // mutex.unlock();
 }
 void TrajectoryThread::setMaxAcceleration(double maxAcc)
 {
-    // OCRA_INFO("Waiting for mutex")
-    // mutex.lock();
     trajectory->setMaxAcceleration(maxAcc);
     if ( (trajType==TIME_OPTIMAL) && (waypointsHaveBeenSet) ) {
         trajectory->recalculateTrajectory();
     }
-    // mutex.unlock();
 }
 void TrajectoryThread::setMaxAcceleration(Eigen::VectorXd maxAcc)
 {
-    // OCRA_INFO("Waiting for mutex")
-    // mutex.lock();
     trajectory->setMaxAcceleration(maxAcc);
     if ( (trajType==TIME_OPTIMAL) && (waypointsHaveBeenSet) ) {
         trajectory->recalculateTrajectory();
     }
-    // mutex.unlock();
 }
 
 void TrajectoryThread::setMaxVelocityAndAcceleration(double maxVel, double maxAcc)
