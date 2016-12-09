@@ -731,3 +731,14 @@ Eigen::VectorXd TrajectoryThread::getBayesianOptimizationVariables()
     return std::dynamic_pointer_cast<ocra::GaussianProcessTrajectory>(trajectory)->getBoptVariables();
 }
 #endif
+
+
+double TrajectoryThread::getDuration()
+{
+    return trajectory->getDuration();
+}
+
+std::list<Eigen::VectorXd> TrajectoryThread::getWaypointList()
+{
+    return allWaypointList;
+}
