@@ -12,6 +12,7 @@ TaskConnection::TaskConnection(const std::string& destinationTaskName)
 : taskName(destinationTaskName)
 , controlPortsAreOpen(false)
 , firstUpdateOfTaskStateHasOccured(false)
+, firstUpdateOfTaskDesiredStateHasOccured(false)
 {
     taskConnectionNumber = ++TaskConnection::TASK_CONNECTION_COUNT;
 
@@ -306,13 +307,19 @@ ocra::TaskState TaskConnection::getTaskState()
 
 ocra::TaskState TaskConnection::getDesiredTaskState()
 {
-    yarp::os::Bottle message, reply;
-    ocra::TaskState state;
-    message.addInt(ocra::TASK_MESSAGE::GET_DESIRED_TASK_STATE);
-    this->taskRpcClient.write(message, reply);
-    int dummy;
-    state.extractFromBottle(reply, dummy);
-    return state;
+
+    if (this->controlPortsAreOpen && firstUpdateOfTaskDesiredStateHasOccured) {
+        return currentDesiredState;
+    } else {
+        ocra::TaskState state;
+        int dummy;
+        yarp::os::Bottle message, reply;
+        message.addInt(ocra::TASK_MESSAGE::GET_DESIRED_TASK_STATE);
+        this->taskRpcClient.write(message, reply);
+        state.extractFromBottle(reply, dummy);
+        return state;
+    }
+
 }
 
 void TaskConnection::setDesiredTaskState(const ocra::TaskState& newDesiredTaskState)
@@ -393,19 +400,25 @@ bool TaskConnection::openControlPorts(bool connect)
         this->taskRpcClient.write(message, reply);
         this->taskInputPortName = reply.get(0).asString();
         this->taskOutputPortName = reply.get(1).asString();
+        this->taskDesiredStateOutputPortName = reply.get(2).asString();
 
         this->inputPortName = "/TaskConnection/"+std::to_string(taskConnectionNumber)+"/"+this->taskName+":i";
+        this->desiredStateInputPortName = "/TaskConnection/"+std::to_string(taskConnectionNumber)+"/"+this->taskName+"/desired_state:i";
         this->outputPortName = "/TaskConnection/"+std::to_string(taskConnectionNumber)+"/"+this->taskName+":o";
 
         portsConnected &= inputPort.open(this->inputPortName);
+        portsConnected &= desiredStateInputPort.open(this->desiredStateInputPortName);
         portsConnected &= outputPort.open(this->outputPortName);
 
-        this->inpCallback = std::make_shared<inputCallback>(*this);
+        this->inpCallback = std::make_shared<InputCallback>(*this);
+        this->desiredStateInputCallback = std::make_shared<DesiredStateInputCallback>(*this);
         inputPort.setReader(*(this->inpCallback));
+        desiredStateInputPort.setReader(*(this->desiredStateInputCallback));
 
 
         if (portsConnected) {
             portsConnected &= yarp.connect(this->taskOutputPortName, this->inputPortName);
+            portsConnected &= yarp.connect(this->taskDesiredStateOutputPortName, this->desiredStateInputPortName);
             portsConnected &= yarp.connect(this->outputPortName, this->taskInputPortName);
 
             this->controlPortsAreOpen = portsConnected;
@@ -470,17 +483,40 @@ void TaskConnection::queryTask(ocra::TASK_MESSAGE tag, yarp::os::Bottle& reply)
 /**************************************************************************************************
                                     Nested PortReader Class
 **************************************************************************************************/
-TaskConnection::inputCallback::inputCallback(TaskConnection& _tcRef)
+TaskConnection::InputCallback::InputCallback(TaskConnection& _tcRef)
 : tcRef(_tcRef)
 {
     //do nothing
 }
 
-bool TaskConnection::inputCallback::read(yarp::os::ConnectionReader& connection)
+bool TaskConnection::InputCallback::read(yarp::os::ConnectionReader& connection)
 {
     yarp::os::Bottle input;
     if (input.read(connection)){
         tcRef.parseInput(input);
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+/**************************************************************************************************
+**************************************************************************************************/
+
+/**************************************************************************************************
+                                    Nested PortReader Class
+**************************************************************************************************/
+TaskConnection::DesiredStateInputCallback::DesiredStateInputCallback(TaskConnection& _tcRef)
+: tcRef(_tcRef)
+{
+    //do nothing
+}
+
+bool TaskConnection::DesiredStateInputCallback::read(yarp::os::ConnectionReader& connection)
+{
+    yarp::os::Bottle input;
+    if (input.read(connection)){
+        tcRef.parseDesiredStateInput(input);
         return true;
     }
     else{
@@ -497,4 +533,13 @@ void TaskConnection::parseInput(yarp::os::Bottle& input)
         firstUpdateOfTaskStateHasOccured = true;
     }
     this->currentState.extractFromBottle(input, dummy);
+}
+
+void TaskConnection::parseDesiredStateInput(yarp::os::Bottle& input)
+{
+    int dummy;
+    if(!firstUpdateOfTaskDesiredStateHasOccured) {
+        firstUpdateOfTaskDesiredStateHasOccured = true;
+    }
+    this->currentDesiredState.extractFromBottle(input, dummy);
 }

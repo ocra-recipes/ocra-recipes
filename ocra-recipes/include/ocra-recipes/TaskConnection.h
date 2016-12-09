@@ -49,19 +49,25 @@ private:
     std::string inputPortName;
     std::string outputPortName;
 
+    std::string taskDesiredStateOutputPortName;
+    std::string desiredStateInputPortName;
+
+    yarp::os::Port desiredStateInputPort;
     yarp::os::Port inputPort;
     yarp::os::Port outputPort;
 
     ocra::TaskState currentState;
-    bool controlPortsAreOpen;
+    ocra::TaskState currentDesiredState;
     bool firstUpdateOfTaskStateHasOccured;
+    bool firstUpdateOfTaskDesiredStateHasOccured;
+    bool controlPortsAreOpen;
 
     static int TASK_CONNECTION_COUNT;
     int taskConnectionNumber;
 
-
 private:
     void parseInput(yarp::os::Bottle& input);
+    void parseDesiredStateInput(yarp::os::Bottle& input);
 
 
 public:
@@ -224,19 +230,31 @@ public:
     void queryTask(ocra::TASK_MESSAGE tag, yarp::os::Bottle& bottle);
 
     /************** controlInputCallback *************/
-    class inputCallback : public yarp::os::PortReader {
+    class InputCallback : public yarp::os::PortReader {
         private:
             TaskConnection& tcRef;
 
         public:
-            inputCallback(TaskConnection& _tcRef);
+            InputCallback(TaskConnection& _tcRef);
 
             virtual bool read(yarp::os::ConnectionReader& connection);
     };
     /************** controlInputCallback *************/
+    /************** desStateInputCallback *************/
+    class DesiredStateInputCallback : public yarp::os::PortReader {
+        private:
+            TaskConnection& tcRef;
+
+        public:
+            DesiredStateInputCallback(TaskConnection& _tcRef);
+
+            virtual bool read(yarp::os::ConnectionReader& connection);
+    };
+    /************** desStateInputCallback *************/
 
 private:
-    std::shared_ptr<inputCallback> inpCallback;
+    std::shared_ptr<InputCallback> inpCallback;
+    std::shared_ptr<DesiredStateInputCallback> desiredStateInputCallback;
 
 
 
