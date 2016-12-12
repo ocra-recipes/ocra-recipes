@@ -17,8 +17,9 @@ DEFINE_CLASS_POINTER_TYPEDEFS(TimeOptimalTrajectory)
 
         Eigen::MatrixXd getDesiredValues(double time);
         virtual double getDuration();
+        virtual void recalculateTrajectory();
 
-        
+
     protected:
         virtual void initializeTrajectory();
 

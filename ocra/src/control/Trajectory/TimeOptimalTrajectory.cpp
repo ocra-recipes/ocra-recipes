@@ -34,26 +34,38 @@ Eigen::MatrixXd TimeOptimalTrajectory::getDesiredValues(double _time)
 
 void TimeOptimalTrajectory::initializeTrajectory()
 {
-    Eigen::VectorXd maxAcceleration = Eigen::VectorXd::Constant(nDoF, 0.05);
-	Eigen::VectorXd maxVelocity = Eigen::VectorXd::Constant(nDoF, 0.05);
+    duration = 0.0;
+    /* For reaching */
+    // maximumVelocityVector = Eigen::VectorXd::Constant(nDoF, 0.05);
+	// maximumAccelerationVector = Eigen::VectorXd::Constant(nDoF, 0.05);
 
+
+    /* For standing up */
+    maximumVelocityVector = Eigen::VectorXd::Constant(nDoF, 0.1);
+    maximumAccelerationVector = Eigen::VectorXd::Constant(nDoF, 0.1);
     maxDeviation = 0.1;
     timeStep = 0.01;
-    gttraj::Path path = gttraj::Path(waypointList, maxDeviation);
-	gt_trajectory = new gttraj::Trajectory(path, maxVelocity, maxAcceleration, timeStep);
-	if(gt_trajectory->isValid()) {
-		duration = this->getDuration();
-        // std::cout << "Time-optimal duration: " << duration << "(sec)" << std::endl;
-    }
-	else {
-		std::cout << "Trajectory generation failed." << std::endl;
-	}
+
+    recalculateTrajectory();
 }
 
 double TimeOptimalTrajectory::getDuration()
 {
-    return gt_trajectory->getDuration();
+    return duration;
 }
+
+void TimeOptimalTrajectory::recalculateTrajectory()
+{
+    gttraj::Path path = gttraj::Path(waypointList, maxDeviation);
+    gt_trajectory = new gttraj::Trajectory(path, maximumVelocityVector, maximumAccelerationVector, timeStep);
+    if(gt_trajectory->isValid()) {
+		duration = gt_trajectory->getDuration();
+    }
+	else {
+		OCRA_WARNING("Trajectory generation failed.")
+	}
+}
+
 
 
 } //namespace ocra

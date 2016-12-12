@@ -26,7 +26,7 @@ set(VARS_PREFIX "OcraRecipes")
 
 set(${VARS_PREFIX}_MAJOR_VERSION 1)
 set(${VARS_PREFIX}_MINOR_VERSION 1)
-set(${VARS_PREFIX}_PATCH_VERSION 0)
+set(${VARS_PREFIX}_PATCH_VERSION 1)
 set(${VARS_PREFIX}_VERSION ${${VARS_PREFIX}_MAJOR_VERSION}.${${VARS_PREFIX}_MINOR_VERSION}.${${VARS_PREFIX}_PATCH_VERSION})
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
@@ -38,6 +38,25 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 set(CMAKE_POSITION_INDEPENDENT_CODE "TRUE")
 
 find_package(Eigen REQUIRED)
+IF(${Eigen_VERSION} VERSION_GREATER "3.2.999")
+    message(FATAL_ERROR "
+++++++++++++++++++
+++  WATCH OUT!  ++
+++++++++++++++++++
+
+Found Eigen version: ${Eigen_VERSION}
+Versions greater than 3.2.X are not compatible with OcraRecipes yet :(
+
+--> Check out this issue for more details: https://github.com/ocra-recipes/ocra-recipes/issues/26
+
+++++++++++++++++++
+")
+ELSE()
+    message("-- Found Eigen version: ${Eigen_VERSION}")
+ENDIF()
+
+
+
 find_package(EigenLgsm REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 find_package(TinyXML REQUIRED)

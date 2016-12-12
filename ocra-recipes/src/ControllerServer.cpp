@@ -84,21 +84,21 @@ bool ControllerServer::initialize()
 
     res &= bool(model);
     res &= bool(controller);
-    
+
     // WARNING! If useOdometry is true we must call updateModel during initialization explicitly after ControllerServer::initialize()
     if (!this->usingOdometry) {
         // Setting up initial contact state. Both feet on the ground.
         // TODO: The initial contact state should be obtained from the initial configuration of the robot automatically.
-        this->controller->setContactState(1,1);
+        if (!model->hasFixedRoot()) {
+            this->controller->setContactState(1,1);
+        }
         updateModel();
     }
-    
     return res;
 }
 
 const Eigen::VectorXd& ControllerServer::computeTorques()
 {
-    updateModel();
     computeTorques(tau);
     return tau;
 }

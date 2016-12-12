@@ -113,7 +113,10 @@ public:
 
 
     // Setters
-    void setMaxVelocity(double maxVel){trajectory->setMaxVelocity(maxVel);}
+    void setMaxVelocity(double maxVel);
+    void setMaxVelocity(Eigen::VectorXd maxVel);
+    void setMaxAcceleration(double maxAcc);
+    void setMaxAcceleration(Eigen::VectorXd maxAcc);
 
     /**
      *  Sets a displacement vector with the same constant value for each element and consistent with the weight dimension.
@@ -181,8 +184,9 @@ public:
      */
     bool goalAttained();
 
-    double getDuration(){return trajectory->getDuration();}
-    std::list<Eigen::VectorXd> getWaypointList(){return allWaypointList;}
+    double getDuration();
+    std::list<Eigen::VectorXd> getWaypointList();
+
     void returnToHome();
 
     Eigen::MatrixXd getWaypoints(){return allWaypoints;}
@@ -197,6 +201,10 @@ public:
     // Getters
     Eigen::VectorXd getBayesianOptimizationVariables();
     #endif
+
+    void setMaxVelocityAndAcceleration(double maxVel, double maxAcc);
+    void setMaxVelocityAndAcceleration(const Eigen::VectorXd& maxVel, const Eigen::VectorXd& maxAcc);
+
 
 
 protected:
