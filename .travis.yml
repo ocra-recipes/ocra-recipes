@@ -31,7 +31,7 @@ install:
     - if [ "$TRAVIS_OS_NAME" = linux -o -z "$TRAVIS_OS_NAME" ]; then sudo apt-get update ; fi
     - if [ "$TRAVIS_OS_NAME" = linux -o -z "$TRAVIS_OS_NAME" ]; then sudo apt-get install -qq -y yarp --force-yes ; fi
     - if [ "$TRAVIS_OS_NAME" = linux -o -z "$TRAVIS_OS_NAME" ]; then sudo apt-get install -qq -y libeigen3-dev libboost-all-dev ; fi
-    - if [ "$TRAVIS_OS_NAME" = osx -o -z "$TRAVIS_OS_NAME" ]; then gem install xcpretty; brew update  &> /dev/null; brew tap robotology/cask; brew tap homebrew/x11; brew tap homebrew/versions; brew tap robotology/science; brew install yarp --HEAD; brew install homebrew/versions/eigen32 tinyxml; fi
+    - if [ "$TRAVIS_OS_NAME" = osx -o -z "$TRAVIS_OS_NAME" ]; then gem install xcpretty; brew update  &> /dev/null; brew tap robotology/cask; brew tap homebrew/x11; brew tap homebrew/versions; brew tap robotology/science; brew install homebrew/versions/eigen32 tinyxml; brew install yarp --HEAD; fi
     - git clone https://github.com/ocra-recipes/eigen_lgsm.git
     - cd eigen_lgsm ; mkdir build ; cd build ; cmake ..
     - sudo make install
