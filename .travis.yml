@@ -1,15 +1,29 @@
 sudo: required
 dist: trusty
 
+os:
+  - linux
+  - osx
+
 language: cpp
 cache: ccache
 
 compiler:
   - gcc
   - clang
-os:
-  - linux
-  - osx
+
+env:
+  - TRAVIS_BUILD_TYPE=Debug TRAVIS_CMAKE_GENERATOR="Unix Makefiles"
+  - TRAVIS_BUILD_TYPE=Release TRAVIS_CMAKE_GENERATOR="Unix Makefiles"
+  - TRAVIS_BUILD_TYPE=Debug TRAVIS_CMAKE_GENERATOR="Xcode"
+  - TRAVIS_BUILD_TYPE=Release TRAVIS_CMAKE_GENERATOR="Xcode"
+
+matrix:
+  exclude:
+    - os: linux
+      env: TRAVIS_BUILD_TYPE=Release TRAVIS_CMAKE_GENERATOR="Xcode"
+    - os: linux
+      env: TRAVIS_BUILD_TYPE=Debug TRAVIS_CMAKE_GENERATOR="Xcode"
 
 install:
     - CI_DIR=$PWD
@@ -17,9 +31,8 @@ install:
     - if [ "$TRAVIS_OS_NAME" = linux -o -z "$TRAVIS_OS_NAME" ]; then sudo apt-get update ; fi
     - if [ "$TRAVIS_OS_NAME" = linux -o -z "$TRAVIS_OS_NAME" ]; then sudo apt-get install -qq -y yarp --force-yes ; fi
     - if [ "$TRAVIS_OS_NAME" = linux -o -z "$TRAVIS_OS_NAME" ]; then sudo apt-get install -qq -y libeigen3-dev libboost-all-dev ; fi
-    - if [ "$TRAVIS_OS_NAME" = osx -o -z "$TRAVIS_OS_NAME" ]; then brew update ; fi
-    - if [ "$TRAVIS_OS_NAME" = osx -o -z "$TRAVIS_OS_NAME" ]; then brew install eigen tinyxml ; fi
-    - if [ "$TRAVIS_OS_NAME" = osx -o -z "$TRAVIS_OS_NAME" ]; then brew tap homebrew/x11 && brew install yarp ; fi
+    - if [ "$TRAVIS_OS_NAME" = osx -o -z "$TRAVIS_OS_NAME" ]; then brew update  &> /dev/null; brew tap robotology/cask; brew tap homebrew/versions; brew tap homebrew/science; brew unlink eigen; brew install homebrew/versions/eigen32; export PKG_CONFIG_PATH=${PKG_CONFIG_PATH}:/usr/local/opt/eigen32/share/pkgconfig; brew install tinyxml; fi
+    - if [ "$TRAVIS_OS_NAME" = osx -o -z "$TRAVIS_OS_NAME" ]; then brew install yarp; fi
     - git clone https://github.com/ocra-recipes/eigen_lgsm.git
     - cd eigen_lgsm ; mkdir build ; cd build ; cmake ..
     - sudo make install
