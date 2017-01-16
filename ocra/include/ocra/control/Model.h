@@ -59,7 +59,8 @@ namespace ocra
     void  setState(const Eigen::Displacementd& H_root, const Eigen::VectorXd& q, const Eigen::Twistd& T_root, const Eigen::VectorXd& q_dot);
     virtual const Eigen::VectorXd& getJointPositions()         const = 0;
     virtual const Eigen::VectorXd& getJointVelocities()        const = 0;
-    virtual const Eigen::VectorXd& getJointTorques()            const = 0;
+    virtual const Eigen::VectorXd& getJointAccelerations()     const { std::cout << "getJointAccelerations() has not been implemented" << std::endl; };
+    virtual const Eigen::VectorXd& getJointTorques()           const = 0;
     virtual const Eigen::Displacementd& getFreeFlyerPosition() const = 0;
     virtual const Eigen::Twistd& getFreeFlyerVelocity()        const = 0;
 
@@ -76,6 +77,7 @@ namespace ocra
     virtual double            getMass()             const = 0;
     virtual const Eigen::Vector3d&   getCoMPosition()      const = 0;
     virtual const Eigen::Vector3d&   getCoMVelocity()      const = 0;
+    virtual const Eigen::Vector3d&   getCoMAcceleration()  const { std::cout << "getCoMAngularVelocity() Not implemented" << std::endl; };
     virtual const Eigen::Vector3d&   getCoMAngularVelocity()      const{ std::cout << "getCoMAngularVelocity() Not implemented" << std::endl; }
     virtual const Eigen::Vector3d&   getCoMJdotQdot()      const = 0;
     virtual const Eigen::Matrix<double,3,Eigen::Dynamic>& getCoMJacobian()      const = 0;
