@@ -77,7 +77,7 @@ namespace ocra
     virtual double            getMass()             const = 0;
     virtual const Eigen::Vector3d&   getCoMPosition()      const = 0;
     virtual const Eigen::Vector3d&   getCoMVelocity()      const = 0;
-    virtual const Eigen::Vector3d&   getCoMAcceleration()  const { std::cout << "getCoMAngularVelocity() Not implemented" << std::endl; };
+    virtual const Eigen::Vector3d&   getCoMAcceleration()  const { std::cout << "getCoMAcceleration() Not implemented" << std::endl; };
     virtual const Eigen::Vector3d&   getCoMAngularVelocity()      const{ std::cout << "getCoMAngularVelocity() Not implemented" << std::endl; }
     virtual const Eigen::Vector3d&   getCoMJdotQdot()      const = 0;
     virtual const Eigen::Matrix<double,3,Eigen::Dynamic>& getCoMJacobian()      const = 0;
