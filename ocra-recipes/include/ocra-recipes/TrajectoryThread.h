@@ -188,6 +188,7 @@ public:
     std::list<Eigen::VectorXd> getWaypointList();
 
     void returnToHome();
+    bool isReturningHome(){return returningHome;}
 
     Eigen::MatrixXd getWaypoints(){return allWaypoints;}
 
