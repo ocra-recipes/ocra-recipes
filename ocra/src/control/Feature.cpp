@@ -271,9 +271,9 @@ namespace ocra
   {
       TaskState state;
       state.setPosition(pimpl->controlFrame->getPosition());
-      state.setVelocity(pimpl->controlFrame->getVelocity());
-      state.setAcceleration(pimpl->controlFrame->getAcceleration());
-      state.setWrench(pimpl->controlFrame->getWrench());
+    //   state.setVelocity(pimpl->controlFrame->getVelocity());
+    //   state.setAcceleration(pimpl->controlFrame->getAcceleration());
+    //   state.setWrench(pimpl->controlFrame->getWrench());
 
       return state;
   }
