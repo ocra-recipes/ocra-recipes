@@ -133,3 +133,10 @@ bool ControllerServer::addTasks(std::vector<ocra::TaskBuilderOptions>& taskOptio
     ocra::TaskConstructionManager factory(model, controller, taskOptions);
     return true;
 }
+
+void ControllerServer::setRegularizationTermWeights(double wDdq, double wTau, double wFc)
+{
+    if ( controllerType == WOCRA_CONTROLLER ) {
+        std::dynamic_pointer_cast<wocra::WocraController>(controller)->setVariableMinimizationWeights(wDdq, wTau, wFc);
+    }
+}
