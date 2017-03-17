@@ -37,7 +37,13 @@ void TimeOptimalTrajectory::initializeTrajectory()
     duration = 0.0;
     /* For reaching */
     // maximumVelocityVector = Eigen::VectorXd::Constant(nDoF, 0.05);
-	// maximumAccelerationVector = Eigen::VectorXd::Constant(nDoF, 0.05);
+    // maximumAccelerationVector = Eigen::VectorXd::Constant(nDoF, 0.05);
+
+    /* For reaching on real robot */
+    // maximumVelocityVector = Eigen::VectorXd::Constant(nDoF, 0.05); // will work for original case
+    // maximumAccelerationVector = Eigen::VectorXd::Constant(nDoF, 0.05); // will work for original case
+    // maximumVelocityVector = Eigen::VectorXd::Constant(nDoF, 0.01);
+	// maximumAccelerationVector = Eigen::VectorXd::Constant(nDoF, 0.01);
 
 
     /* For standing up */
