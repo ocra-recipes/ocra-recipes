@@ -205,7 +205,7 @@ public:
     void setMaxVelocityAndAcceleration(double maxVel, double maxAcc);
     void setMaxVelocityAndAcceleration(const Eigen::VectorXd& maxVel, const Eigen::VectorXd& maxAcc);
 
-
+    ocra::Trajectory::Ptr getTrajectory(){return trajectory;}
 
 protected:
 
