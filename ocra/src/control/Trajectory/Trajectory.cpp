@@ -479,7 +479,23 @@ bool Trajectory::eigenVectorToTwist(const Eigen::VectorXd& _twistVec, Eigen::Twi
 };
 
 
+Eigen::MatrixXd Trajectory::getFullTrajectory(double dt)
+{
+    double t = 0.0;
+    int nCols = nDoF*3;
+    int rowCounter = 0;
+    int nRows = std::ceil(totalTrajectoryDuration / dt)*2;
 
+    Eigen::MatrixXd posVelAcc(nRows, nCols);
+    while (t <= totalTrajectoryDuration) {
+        Eigen::MatrixXd vals = getDesiredValues(t);
+        posVelAcc.row(rowCounter) << vals.col(POS_INDEX).transpose(), vals.col(VEL_INDEX).transpose(), vals.col(ACC_INDEX).transpose();
+        t += dt;
+        ++rowCounter;
+    }
+
+    return posVelAcc.topRows(rowCounter-1);
+}
 
 // bool Trajectory::dumpToFile(const Eigen::MatrixXd& _desiredVals)
 // {

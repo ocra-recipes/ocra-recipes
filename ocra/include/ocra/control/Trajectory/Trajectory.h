@@ -78,6 +78,9 @@ DEFINE_CLASS_POINTER_TYPEDEFS(Trajectory)
         };
 
 
+        Eigen::MatrixXd getFullTrajectory(double dt=0.01);
+
+
         void getDesiredValues(double time, std::vector<double>& doubleVec);
         void getDesiredValues(double time, Eigen::Displacementd& disp);
         void getDesiredValues(double time, Eigen::Rotation3d& orient);
