@@ -61,6 +61,7 @@ DEFINE_CLASS_POINTER_TYPEDEFS(Trajectory)
 
         // Primary user interface functions
         void setDuration();
+        void setDuration(const Eigen::VectorXd& _pointToPointDurationVector);
         void setDuration(double time);
 
         bool isFinished(){return trajectoryFinished;}
@@ -121,7 +122,8 @@ DEFINE_CLASS_POINTER_TYPEDEFS(Trajectory)
 
         Eigen::VectorXd pointToPointDurationVector; /**< the estimated durations between points */
         double pointToPointDuration;        /**< the total duration between the current two waypoints */
-
+        double totalTrajectoryDuration;
+        bool usingDurationVector;
         bool trajectoryFinished;
         // double t0;
 

@@ -18,6 +18,7 @@ namespace ocra
 Trajectory::Trajectory()
 : maximumVelocity(MAX_VEL)
 , nDoF(-1)
+, usingDurationVector(false)
 {
 }
 
@@ -296,10 +297,24 @@ void Trajectory::setDuration()
     setDuration(pointToPointDurationVector(0));
 }
 
+void Trajectory::setDuration(const Eigen::VectorXd& _pointToPointDurationVector)
+{
+    if (_pointToPointDurationVector.size() == (nWaypoints-1)) {
+        pointToPointDurationVector = _pointToPointDurationVector;
+        setDuration(pointToPointDurationVector(0));
+        totalTrajectoryDuration = pointToPointDurationVector.sum();
+        usingDurationVector = true;
+    } else {
+        setDuration();
+        OCRA_WARNING("The point to point duration vector you passed is not the right size.")
+    }
+}
+
 
 void Trajectory::setDuration(double _duration)
 {
     pointToPointDuration = _duration;
+    totalTrajectoryDuration = pointToPointDuration*(nWaypoints-1);
 }
 
 
