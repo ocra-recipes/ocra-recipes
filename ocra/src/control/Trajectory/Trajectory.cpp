@@ -390,9 +390,11 @@ bool Trajectory::eigenMatrixToStdVector(const Eigen::MatrixXd& _dispMat, std::ve
             _doubleVec[i] = *eigPtr;
             eigPtr++;
         }
+        return true;
     }
     else {
         // std::cout << "[ERROR] (Trajectory::eigenMatrixToStdVector): Matrix size and vector size do not match." << std::endl;
+        return false;
     }
 }
 
