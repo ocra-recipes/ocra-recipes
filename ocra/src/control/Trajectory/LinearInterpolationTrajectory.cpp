@@ -14,7 +14,12 @@ Eigen::MatrixXd LinearInterpolationTrajectory::getDesiredValues(double _time)
 
     Eigen::MatrixXd desiredValue = Eigen::MatrixXd::Zero(nDoF,TRAJ_DIM);
 
-    double tau = (_time - t0) / pointToPointDuration;
+    double tau;
+    if (usingDurationVector) {
+        tau = (_time - t0) / pointToPointDurationVector(currentWaypointIndex);
+    } else {
+        tau = (_time - t0) / pointToPointDuration;
+    }
 
 
     if ((tau <= TAU_MAX) && (currentWaypointIndex<(nWaypoints-1)))
