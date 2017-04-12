@@ -74,6 +74,8 @@ public:
     bool initializeOdometry();
     void updateModel();
 
+    void setRegularizationTermWeights(double wDdq, double wTau, double wFc); 
+
 protected:
 
     ocra::Model::Ptr                     model;

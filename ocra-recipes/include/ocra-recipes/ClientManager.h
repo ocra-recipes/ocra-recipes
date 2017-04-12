@@ -51,7 +51,7 @@ DEFINE_CLASS_POINTER_TYPEDEFS(ClientManager)
 public:
     /*! Constructor which essentially does nothing.
      */
-    ClientManager(std::shared_ptr<ControllerClient> customClient);
+    ClientManager(std::shared_ptr<ControllerClient> customClient, bool suppressPerformanceWarnings=false);
 
     /*! Destructor which essentially does nothing.
      */
@@ -142,6 +142,7 @@ private:
     static int CONTROLLER_CLIENT_MANAGER_COUNT;              /*!< A count that is incremented each time a client thread is constructed. */
     int moduleNumber;                                       /*!< The unique thread number. */
 
+    bool suppressWarnings;
 
 };
 
