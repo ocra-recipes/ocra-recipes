@@ -30,13 +30,15 @@ using namespace ocra_recipes;
 
 int ClientManager::CONTROLLER_CLIENT_MANAGER_COUNT = 0;
 
-ClientManager::ClientManager(std::shared_ptr<ControllerClient> customClient)
+ClientManager::ClientManager(std::shared_ptr<ControllerClient> customClient, bool suppressPerformanceWarnings)
 {
     // Increment the module counter and save it in module number.
     moduleNumber = ++ClientManager::CONTROLLER_CLIENT_MANAGER_COUNT;
 
     client = customClient;
     expectedClientPeriod = client->getExpectedPeriod();
+
+    suppressWarnings = suppressPerformanceWarnings;
 }
 
 ClientManager::~ClientManager()
@@ -75,14 +77,16 @@ bool ClientManager::close()
         client->stop();
     }
 
-    /* Print performance information */
-    printf("[PERFORMANCE INFORMATION]:\n");
-    printf("Expected period %d ms.\nReal period: %3.1f+/-%3.1f ms.\n", expectedClientPeriod, avgTime, stdDev);
-    printf("Real duration of 'run' method: %3.1f+/-%3.1f ms.\n", avgTimeUsed, stdDevUsed);
-    if(avgTime<0.5*(double)expectedClientPeriod)
-        printf("Next time you could set a lower period to improve the controller performance.\n");
-    else if(avgTime>1.3*(double)expectedClientPeriod)
-        printf("The period you set was impossible to attain. Next time you could set a higher period.\n");
+    if (!suppressWarnings) {
+        /* Print performance information */
+        printf("[PERFORMANCE INFORMATION]:\n");
+        printf("Expected period %d ms.\nReal period: %3.1f+/-%3.1f ms.\n", expectedClientPeriod, avgTime, stdDev);
+        printf("Real duration of 'run' method: %3.1f+/-%3.1f ms.\n", avgTimeUsed, stdDevUsed);
+        if(avgTime<0.5*(double)expectedClientPeriod)
+            printf("Next time you could set a lower period to improve the controller performance.\n");
+        else if(avgTime>1.3*(double)expectedClientPeriod)
+            printf("The period you set was impossible to attain. Next time you could set a higher period.\n");
+    }
     return true;
 }
 
@@ -98,7 +102,7 @@ bool ClientManager::updateModule()
     client->getEstUsed(avgTimeUsed, stdDevUsed);
 
     // If the period of the control thread is too slow then print a warning.
-    if(avgTime > 1.3*(double)expectedClientPeriod)
+    if( (avgTime > 1.3*(double)expectedClientPeriod) && !suppressWarnings)
     {
         yLog.warning() << "CLIENT THREAD LOOP IS TOO SLOW\nReal period: "<< avgTime <<"+/-"<< stdDev <<"\nExpected period: " << expectedClientPeriod <<"\nDuration of 'run' method: "<<avgTimeUsed<<"+/-"<< stdDevUsed<<"\n";
     }
