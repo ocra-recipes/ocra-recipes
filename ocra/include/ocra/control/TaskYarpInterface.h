@@ -195,6 +195,8 @@ public:
     void setDesiredTaskState(const TaskState& newDesiredTaskState);
     void setDesiredTaskStateDirect(const TaskState& newDesiredTaskState);
     void publishTaskState();
+private:
+//     yarp::os::Mutex getTaskStateMutex;
 
 
 public: /* Segment Frame Based Tasks */

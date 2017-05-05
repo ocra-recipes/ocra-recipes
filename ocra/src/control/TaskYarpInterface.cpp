@@ -253,7 +253,11 @@ Eigen::VectorXd TaskYarpInterface::getWeight()
 
 TaskState TaskYarpInterface::getTaskState()
 {
-    return this->task->getTaskState();
+//     getTaskStateMutex.wait();
+//     std::cout<<"task state queried"<<std::endl;
+    TaskState tmp = this->task->getTaskState();
+//     getTaskStateMutex.post();
+    return tmp;
 }
 
 TaskState TaskYarpInterface::getDesiredTaskState()
@@ -320,8 +324,11 @@ bool TaskYarpInterface::closeControlPorts()
 {
     --numberOfOpenRequests;
     if (numberOfOpenRequests==0) {
+        std::cout<<"TaskYarpInterface::closeControlPorts() - " << std::endl;
         if(stateThread) {
+            std::cout<<"Check if StateThreadis running"<<std::endl;
             if (stateThread->isRunning()) {
+                std::cout<<"Telling stateThread stop! motherfucker!!! "<< std::endl;
                 stateThread->stop();
             }
         }

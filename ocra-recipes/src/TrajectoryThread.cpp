@@ -39,7 +39,10 @@ using namespace ocra_recipes;
 
 TrajectoryThread::~TrajectoryThread()
 {
-
+    if(this->isRunning()) {
+//         task->closeControlPorts();
+        this->stop();
+    }
 }
 
 TrajectoryThread::TrajectoryThread( int period,
@@ -161,7 +164,7 @@ bool TrajectoryThread::threadInit()
 
 void TrajectoryThread::threadRelease()
 {
-    task->closeControlPorts();
+        task->closeControlPorts();
     std::cout<< "\nTrajectoryThread: Trajectory thread finished.\n";
 }
 
@@ -372,6 +375,11 @@ bool TrajectoryThread::goalAttained()
     } else {
         return false;
     }
+}
+
+double TrajectoryThread::getDiffError()
+{
+    return (goalStateVector - getCurrentTaskStateAsVector()).norm();
 }
 
 void TrajectoryThread::flipWaypoints()

@@ -28,6 +28,7 @@
 //#ifdef USE_QPOASES
 
 #include <qpOASES.hpp>
+#include <mutex>
 //#endif
 
 namespace ocra
@@ -162,7 +163,7 @@ protected:
     virtual void doSolve();
     virtual void updateObjectiveEquations();
     virtual void updateConstraintEquations();
-
+    std::mutex mutex;
 };
 
 //#ifdef USE_QPOASES

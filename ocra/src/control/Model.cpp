@@ -31,6 +31,7 @@ namespace ocra
 
     _q->connect<EVT_CHANGE_VALUE>(*this, &Model::invalidate);
     _q_dot->connect<EVT_CHANGE_VALUE>(*this, &Model::invalidate);
+    
   }
 
   Model::~Model()
@@ -102,14 +103,13 @@ namespace ocra
 
   void Model::setState(const VectorXd& q, const VectorXd& q_dot)
   {
-    doSetState(q, q_dot);
     setJointPositions(q);
     setJointVelocities(q_dot);
+    doSetState(q, q_dot);
   }
 
   void Model::setState(const Eigen::Displacementd& H_root, const VectorXd& q, const Eigen::Twistd& T_root, const VectorXd& q_dot)
   {
-    doSetState(H_root, q, T_root, q_dot);
     setJointPositions(q);
     setJointVelocities(q_dot);
     if(!_fixedRoot)
@@ -117,6 +117,7 @@ namespace ocra
       setFreeFlyerPosition(H_root);
       setFreeFlyerVelocity(T_root);
     }
+    doSetState(H_root, q, T_root, q_dot);
   }
 
   Variable& Model::getConfigurationVariable() const

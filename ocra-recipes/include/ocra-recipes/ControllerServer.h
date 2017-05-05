@@ -82,10 +82,14 @@ protected:
     ocra::Controller::Ptr           controller;
     ocra::Solver::Ptr           internalSolver;
 
+    bool firstRun;
+    
     ServerCommunications::Ptr       serverComs;
 
     Eigen::VectorXd            tau;
     RobotState              rState;
+    Eigen::VectorXd         qdPrevious;
+    Eigen::VectorXd         qPrevious;
     // Eigen::VectorXd              q;
     // Eigen::VectorXd             qd;
     // Eigen::Displacementd    H_root;

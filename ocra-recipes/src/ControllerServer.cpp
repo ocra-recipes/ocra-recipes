@@ -23,7 +23,8 @@ bool ControllerServer::initialize()
 {
     bool res = true;
     model = loadRobotModel();
-
+    firstRun = true;
+    
     rState = RobotState(model->nbDofs());
     if(model)
     {

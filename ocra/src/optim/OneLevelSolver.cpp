@@ -277,29 +277,61 @@ void OneLevelSolverWithQuadProg::updateObjectiveEquations()
  */
 void OneLevelSolverWithQuadProg::updateConstraintEquations()
 {
+    this->mutex.lock();
     // UPDATE EQUALITY CONSTRAINTS
     this->ne = 0;
+    int initialSize = (int) _equalityConstraints.size();
     for (int i=0; i<_equalityConstraints.size(); ++i)
         ne += _equalityConstraints[i]->getDimension();
 
-    if (ne == 0 || n() == 0)
-        OCRA_WARNING("There is something wrong with either the current number of equalities or the the number of colums of A")
-    _A.setZero(ne, n());
-    _b.setZero(ne);
+//     OCRA_WARNING("Going to update constraints with " << ne << " equalities and " << n() <<" variables");
+    
+    _A.resize(ne, n()); _A.setZero();
+    _b.resize(ne); _b.setZero();
+    
+    int initialRows = ne;
 
     int idx = 0;
     for (int i=0; i<_equalityConstraints.size(); ++i)
     {
+        // WARNING The size of _equalityConstraints may change after _A has been resized before this for-loop
+        // if a new request for a contact task deactivation arrives. The ocra::Task class would update the size
+        // of _equalityConstraints thus making this for-loop access add more rows to _A than originally intended, 
+        // thus causing a memory corruption and crashing the server.
+//         std::cout << "Going to access constraint: " << i << std::endl;
         ocra::LinearConstraint* cstr = _equalityConstraints[i];
         int dim = cstr->getDimension();
-
+//         std::cout << "Dimension obtained: " << dim << std::endl;
         if (dim > 0)
         {
+            if (_equalityConstraints.size() != initialSize) {
+                OCRA_ERROR("The size of equality constraints changed after _A had been resized.");
+                std::cout << "Initial number of equality constraints was: " << initialSize << std::endl;
+                std::cout << "New size of equality constraints is: " << _equalityConstraints.size() << std::endl;
+                std::cout << "Resizing A accordingly... " << std::endl;
+                // First copy current A with the initial size into a temporary
+                Eigen::MatrixXd Atmp(initialRows, n());
+                Atmp = _A.block(0,0,initialRows, n());
+                // Then get the new number of rows
+                for (int i=0; i<_equalityConstraints.size(); ++i)
+                    ne += _equalityConstraints[i]->getDimension();
+                // Resize _A accordingly
+                _A.resize(ne, n());
+                // Copy the previous content
+                _A.block(0,0,initialRows, n()) = Atmp;
+                initialSize = _equalityConstraints.size();
+            }
+            
             Eigen::Block<Eigen::MatrixXd> _A_block = _A.block(idx, 0, dim, n());
             Eigen::VectorBlock<Eigen::VectorXd> _b_segment = _b.segment(idx, dim);
 
             Eigen::VectorXd v; // ?? is it useless ??
             ocra::utils::convert(*cstr, findMapping(cstr->getVariable()), ocra::CSTR_PLUS_EQUAL, _A_block, _b_segment, v);
+
+            if (_equalityConstraints.size() != 1 && i > 0) {
+//                 std::cout << "Equality constraint (" << i << ") is of size: " << dim << "x" << n() << std::endl;
+//                 std::cout << "_A equality: \n " << _A_block << std::endl;
+            }
 
             idx += dim;
         }
@@ -307,6 +339,7 @@ void OneLevelSolverWithQuadProg::updateConstraintEquations()
     }
 
     reduceConstraints(_A, _b, _Atotal, _btotal);
+    this->mutex.unlock();
 
 
 

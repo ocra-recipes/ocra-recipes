@@ -20,6 +20,7 @@ File history:
 #include "Eigen/Lgsm"
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
+#include <yarp/os/Semaphore.h>
 
 namespace ocra
 {

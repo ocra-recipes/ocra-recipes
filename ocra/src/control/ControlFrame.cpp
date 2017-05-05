@@ -220,7 +220,8 @@ namespace ocra
 
   Eigen::Displacementd CoMFrame::getPosition() const
   {
-    return Eigen::Displacementd(pimpl->model.getCoMPosition(), Quaterniond::Identity());
+    Eigen::Vector3d tmp = pimpl->model.getCoMPosition();
+    return Eigen::Displacementd(tmp, Quaterniond::Identity());
   }
 
   Eigen::Twistd CoMFrame::getVelocity() const

@@ -227,8 +227,7 @@ namespace ocra
     Variable*   _tau;
     Variable*   _q;
     Variable*   _q_dot;
-    Variable*   _q_ddot;
-
+    Variable*   _q_ddot;    
 
     ModelContacts* _modelContacts;
     // ------------------------ private static members --------------------------

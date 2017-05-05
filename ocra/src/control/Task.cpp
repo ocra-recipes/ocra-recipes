@@ -331,6 +331,7 @@ namespace ocra
     if(pimpl->mode == TASK_AS_OBJECTIVE)
       doDeactivateAsObjective();
     else if(pimpl->mode == TASK_AS_CONSTRAINT) {
+        OCRA_WARNING("Deactivating foot contacts");
 //       doDeactivateAsConstraint();
       if(pimpl->contactActive)
         doDeactivateContactMode();

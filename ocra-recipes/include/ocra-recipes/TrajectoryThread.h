@@ -183,6 +183,11 @@ public:
      *  @return True if the difference is less than the error threshold.
      */
     bool goalAttained();
+    
+    /**
+     * Computes the task error as the difference between the goal state vector and its current state
+     */
+    double getDiffError(); 
 
     double getDuration();
     std::list<Eigen::VectorXd> getWaypointList();
