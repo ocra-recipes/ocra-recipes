@@ -37,19 +37,37 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE "TRUE")
 
-find_package(Eigen REQUIRED)
+find_package(Eigen)
 IF(${Eigen_VERSION} VERSION_GREATER "3.2.999")
-    message(FATAL_ERROR "
-++++++++++++++++++
-++  WATCH OUT!  ++
-++++++++++++++++++
+    message("
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                          ++  WARNING: WATCH OUT!  ++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Found Eigen version: ${Eigen_VERSION}
 Versions greater than 3.2.X are not compatible with OcraRecipes yet :(
 
---> Check out this issue for more details: https://github.com/ocra-recipes/ocra-recipes/issues/26
+It seems like you activated the flag CODYCO_BUILD_OCRA_MODULES in codyco-superbuild.
+Recently Eigen 3.3.X has been enforced. We're very close to be fully compatible
+with this requirement, but for the meantime you can install an earlier version,
+e.g. Eigen 3.9:
 
-++++++++++++++++++
+git clone https://github.com/RLovelett/eigen
+git checkout tags/ae3b232588719cabb878c9bada44de3fdd77a9f8
+cd eigen
+mkdir build && cd build
+cmake ../ && make install
+
+If ocra-recipes still complains, you can manually specify the include directory
+
+cd $CODYCO_SUPERBUILD_DIR/libraries/ocra-recipes
+cmake -DEIGEN_INCLUDE_DIR=/path/to/eigen3.9/include/directory  ../
+
+--> Check out these issues for more details:
+https://github.com/ocra-recipes/ocra-recipes/issues/26
+https://github.com/ocra-recipes/ocra-wbi-plugins/issues/18
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ")
 ELSE()
     message("-- Found Eigen version: ${Eigen_VERSION}")
