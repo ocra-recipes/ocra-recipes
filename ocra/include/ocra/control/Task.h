@@ -82,6 +82,9 @@ public:
     bool isActiveAsObjective() const;
     bool isActiveAsConstraint() const;
 
+    void saveObjectiveData(const std::string& dir_path);
+
+
     void setDesiredMassToActualOne();
     void setDesiredMass(double Md);
     void setDesiredMass(const Eigen::VectorXd& Md);

@@ -1,5 +1,6 @@
 // #pragma warning(disable: 4244) // XXX Eigen 3 JacobiSVD
 #include "ocra/control/Task.h"
+#include <ocra/util/FileOperations.h>
 
 
 // #pragma warning(default: 4244)
@@ -292,6 +293,13 @@ namespace ocra
               break;
           }
       }
+  }
+
+  void Task::saveObjectiveData(const std::string& dir_path)
+  {
+      utils::writeInFile( pimpl->innerObjectiveFunction->getA(), dir_path+this->getName()+"_E.txt", false);
+      utils::writeInFile( pimpl->innerObjectiveFunction->getb(), dir_path+this->getName()+"_f.txt", false);
+      utils::writeInFile( this->getWeight(), dir_path+this->getName()+"_weights.txt", false);
   }
 
 

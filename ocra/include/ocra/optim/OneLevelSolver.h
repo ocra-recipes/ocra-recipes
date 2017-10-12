@@ -91,7 +91,9 @@ public:
     const std::vector<ObjectiveType*>& getObjectives(){return _objectives;}
     const Eigen::MatrixXd& getQuadraticMatrix(){return _C;}
     const Eigen::VectorXd& getQuadraticVector(){return _d;}
-    
+
+    void saveOptimizationData(const std::string& dir_path);
+
 protected:
 
     virtual void doPrepare();
@@ -181,9 +183,9 @@ protected:
  * \f}
  */
 class OneLevelSolverWithQPOASES: public OneLevelSolver
-{    
+{
     DEFINE_CLASS_POINTER_TYPEDEFS(OneLevelSolverWithQPOASES)
-public: 
+public:
     virtual OneLevelSolver::Ptr clone() const{ return std::make_shared<OneLevelSolverWithQPOASES>();}
 public:
     OneLevelSolverWithQPOASES();
@@ -201,7 +203,7 @@ protected:
         qpOASES::real_t* lbA;
         qpOASES::real_t* ubA;
     //};
-    
+
     Eigen::VectorXd _xl;
     Eigen::VectorXd _xu;
 
@@ -209,7 +211,7 @@ protected:
     Eigen::MatrixXd _RegTerm;
     Eigen::VectorXd _lbAandG,_ubAandG;
     Eigen::VectorXd _lbA,_lbG,_ubA,_ubG;
-    
+
     int _nWSR_every_run,nWSR;
     // function in doPrepare
     virtual void doSolve();
@@ -244,7 +246,7 @@ protected:
 class OneLevelSolverWithQLD: public OneLevelSolver
 {
     DEFINE_CLASS_POINTER_TYPEDEFS(OneLevelSolverWithQLD)
-public: 
+public:
     virtual OneLevelSolver::Ptr clone() const{ return std::make_shared<OneLevelSolverWithQLD>();}
 public:
     OneLevelSolverWithQLD();
