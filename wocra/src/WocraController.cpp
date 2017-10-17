@@ -295,6 +295,13 @@ namespace wocra
             aof.close();
         }
 
+        aof.open(dir_path+"absTime.txt");
+        if (aof.is_open())
+        {
+            aof << yarp::os::Time::now() << std::endl;
+            aof.close();
+        }
+
 
         pimpl->updateTasksRecorder.initializeTime();
 
