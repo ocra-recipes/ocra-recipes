@@ -1,4 +1,5 @@
 # ocra-recipes
+[![DOI](https://zenodo.org/badge/45686059.svg)](https://zenodo.org/badge/latestdoi/45686059)
 
 
 #### Build Status
